@@ -42,5 +42,6 @@
 ## Standard workflow (follow this when changing this module)
 1. Unfamiliar code → `/workspace-code-trace-spec` → update `<name>-flow.md`, figure out where to cut.
 2. Before acting → `/workspace-task-brief` (fuzzy requirement) or `/workspace-grill-with-docs` (clear goal) → save the plan to `plans/<name>-<date>-<slug>.md`.
+   Need the technical cut nailed down before coding? → `/workspace-brief-to-technical-design` (appends "Technical Design" to the same plan file).
 3. After done → `/workspace-save-implementation` → save the record to `impl/<name>-<date>-<slug>.md` AND sync `<name>-flow.md`.
 4. If new rules or gotchas emerged → backfill the lists above in this file.

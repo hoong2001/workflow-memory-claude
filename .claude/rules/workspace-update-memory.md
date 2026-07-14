@@ -14,7 +14,8 @@ Every entry must include four things:
 So the same trap isn't hit again.
 
 ## 3. Plan saved? → `.claude/modules/<name>/plans/<name>-<date>-<slug>.md` (`/workspace-task-brief` or `/workspace-grill-with-docs`)
-Use the same name as its impl file so they pair up.
+Use the same name as its impl file so they pair up. If `/workspace-brief-to-technical-design`
+was run, its "Technical Design" section lives inside this same plan file — never a separate file.
 
 ## 4. Update the index
 - New module → add a row to the module map in root `CLAUDE.md` (**path + one-line description**).

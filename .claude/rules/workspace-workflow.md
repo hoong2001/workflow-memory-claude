@@ -39,6 +39,9 @@ Branch first, then act, saving as you go:
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/workspace-code-trace-spec` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `.claude/modules/<name>/` (copy the example-module template) → `/workspace-task-brief` for requirements + plan (or `/workspace-grill-with-docs` if the goal is already clear; either lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
 
+Plan landed but the technical cut still needs nailing down (API / classes / SQL / frontend)?
+→ `/workspace-brief-to-technical-design` — appends a "Technical Design" section to the SAME plan file, then wait for the go.
+
 → Act: **code → build → test** → **save on every change**.
 
 ## Step 3 · Wrap up: update memory

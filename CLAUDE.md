@@ -34,7 +34,7 @@
 <!--
 　Standard contents of each module folder (a module's whole brain lives in its own folder):
 　  MODULE.md (rules/gotchas) · <name>-flow.md (call chain) · plans/ (pre-change plans) · impl/ (post-change records)
-　Workflow: /workspace-code-trace-spec→flow ; /workspace-task-brief or /workspace-grill-with-docs→plans ; /workspace-save-implementation→impl (also syncs flow)
+　Workflow: /workspace-code-trace-spec→flow ; /workspace-task-brief or /workspace-grill-with-docs→plans (optionally deepened by /workspace-brief-to-technical-design) ; /workspace-save-implementation→impl (also syncs flow)
 　Full explanation: see the comment at the top of any module's MODULE.md.
 -->
 

@@ -37,7 +37,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
     ├── schema/                        .sql table schemas for CRUD
     ├── references/                    module reference material you provide (docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-task-brief, /workspace-grill-with-docs)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-task-brief, /workspace-grill-with-docs; /workspace-brief-to-technical-design appends the design)
     └── impl/<name>-<date>-<slug>.md   post-change records (/save-implementation)
 ```
 
@@ -75,8 +75,8 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
 with the folder: `workspace-system-overview-spec-generator`, `workspace-save-implementation`,
-`workspace-task-brief`, `workspace-grill-with-docs`, `workspace-spec-discuss`,
-`workspace-code-trace-spec`. No user-level (global) skill is required:
+`workspace-task-brief`, `workspace-grill-with-docs`, `workspace-brief-to-technical-design`,
+`workspace-spec-discuss`, `workspace-code-trace-spec`. No user-level (global) skill is required:
 copying `.claude/` + `CLAUDE.md` brings the whole framework along.
 
 > `workspace-save-implementation` is this project's replacement for the generic global `save-implementation`:
