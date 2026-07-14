@@ -1,0 +1,94 @@
+---
+name: workspace-brief-to-technical-design
+description: Turn a confirmed task brief (produced by /workspace-task-brief or /workspace-grill-with-docs) into a concrete technical design — API endpoints, Controllers, Services, Repositories, Result classes, SQL approach, and frontend structure — and append it as a "Technical Design" section to the SAME plan document in the module's plans/ folder. Use when a brief exists and the user wants the technical breakdown nailed down before coding, says "generate technical design", "design the API/classes", "how do we cut this technically", or "brief to design". Do NOT use when no brief/plan exists yet (run /workspace-task-brief first), and do NOT use for requirement discussion (that is /workspace-spec-discuss).
+---
+
+<what-to-do>
+
+Take a confirmed brief and derive the technical design from it, decision by decision, then append the design to the same plan file. The brief owns the WHAT; this skill produces the HOW for this change.
+
+## Step 1: Locate and absorb the inputs
+
+1. **The brief** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/workspace-task-brief`.
+2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
+3. **Hard rules** — `.claude/workspace-project-stack-architecture.md` is non-negotiable: layering (Web → Services → UnitOfWork), Dapper-only, no async/DI/interfaces, C# 7.3, Base-class inheritance, naming conventions.
+4. **Project skills** — follow `concrete-repository-pattern` for the data layer and `asp.net-mvc-frontend-standards` for the JS/view layer; the design must not contradict them.
+
+## Step 2: Explore before inventing
+
+Before proposing anything new, search the real codebase for existing patterns to reuse: a similar page/dashboard, an existing Controller/Service/Repository for the same entity, shared Result classes, existing menu/permission wiring. **Reuse beats create** — every "new file" in the design must justify why nothing existing fits.
+
+## Step 3: Design, one decision at a time
+
+Walk the layers top-down. For each design decision follow the two-step pattern:
+
+1. **Infer first** — state your recommended design with reasoning (from the brief, the code, the constraints). Let the user simply accept it.
+2. **Options on rejection** — if rejected, present 3 concrete alternatives plus one free-form choice (use AskUserQuestion when available; recommendation first, marked "(Recommended)"). Each option is a real direction with a one-line trade-off.
+
+Cover at minimum:
+- **Routes & API surface** — MVC action(s) for the page, Web API endpoints (URL, verb, request/response shape)
+- **Class map** — Controller / ApiController / Service / Repository / Result classes: which are NEW, which are MODIFIED, exact names per naming rules
+- **Data access** — per Repository method: the SQL approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern
+- **Frontend** — view file, JS file structure, which stack components (DataTables/ECharts/Select2/datepicker) render which widget
+- **Wiring** — menu/permission registration, route config, bundle registration, anything the project needs for the page to actually appear
+
+Batch related small decisions into one round; don't interrogate trivia the architecture doc already dictates — just apply the rules.
+
+## Step 4: Append the design to the plan
+
+When the design has converged, append a `## Technical Design` section to the SAME plan document (`plans/<name>-<date>-<slug>.md`) — never a separate file, so the plan/impl pairing stays one-to-one. Use the output template below. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
+
+Stop after the design is confirmed. Coding starts only on the user's go.
+
+</what-to-do>
+
+<supporting-info>
+
+## Output template (appended section)
+
+```markdown
+## Technical Design
+
+> Designed: YYYY-MM-DD · derived from the brief above
+
+### API surface
+
+| Endpoint | Verb | Purpose | Request → Response |
+|----------|------|---------|--------------------|
+
+### Class & file map
+
+| File | New/Modified | Layer | Responsibility |
+|------|--------------|-------|----------------|
+
+### Data access
+
+Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.
+
+### Frontend structure
+
+- View: ...
+- JS: ... (widget → component mapping)
+
+### Wiring
+
+- Menu / permission: ...
+- Routes / bundles: ...
+
+### Decisions + why
+
+- **Decision:** ... **Why:** ...
+
+### Risks / open technical items
+
+- ...
+```
+
+## Guardrails
+
+- A design that violates the stack hard rules is dead on arrival — fix it before presenting, don't present-then-apologise.
+- If the brief is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution back into the brief's element sections, not just the design.
+- New gotchas or conventions discovered while exploring code → backfill the module's MODULE.md immediately (one line each).
+- Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
+
+</supporting-info>

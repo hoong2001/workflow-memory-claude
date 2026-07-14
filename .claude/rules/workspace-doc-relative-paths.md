@@ -13,4 +13,5 @@ local environment details into shared documentation.
 letters or user-home prefixes and rewrite them as project-root-relative paths. This
 also applies to documents produced by skills such as
 `/workspace-save-implementation`, `/workspace-task-brief`, `/workspace-grill-with-docs`,
-`/workspace-spec-discuss`, and `/workspace-code-trace-spec`.
+`/workspace-brief-to-technical-design`, `/workspace-spec-discuss`, and
+`/workspace-code-trace-spec`.
