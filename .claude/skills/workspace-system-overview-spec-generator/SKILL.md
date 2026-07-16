@@ -1,6 +1,6 @@
 ---
 name: workspace-system-overview-spec-generator
-description: Bootstrap a brand-new system from a spec document — generate the System Overview & Spec governance file (the WHAT) AND scaffold the modules derived from it. Use this skill whenever the user provides a reasonably complete spec, design doc, PRD, requirements file, README, or Spec-kit output for a NEW system and wants it turned into the "system overview spec" / "治理檔 / 總覽 spec" PLUS the corresponding module structure. Also trigger on "fill in the spec template", "convert this into our system spec", "draft the system overview", or "build the modules from this spec". It reconciles the spec's tech stack against the project architecture doc and surfaces overlaps/conflicts for sign-off. Bound to the project workflow's "Brand-new system" bootstrap. Do NOT use for a single module/component spec, for editing the architecture (HOW) doc itself, or for the module index.
+description: Bootstrap a brand-new system from a spec document — generate the System Overview & Spec governance file (the WHAT) AND scaffold the modules derived from it. Use this skill whenever the user provides a reasonably complete spec, design doc, PRD, requirements file, README, or Spec-kit output for a NEW system and wants it turned into the "system overview spec" / "治理檔 / 總覽 spec" PLUS the corresponding module structure. Also trigger on "fill in the spec template", "convert this into our system spec", "draft the system overview", or "build the modules from this spec". It reconciles the spec's tech stack against the project architecture doc and surfaces overlaps/conflicts for sign-off. Also handles the EXPANSION RE-RUN: a new expansion spec for a live system updates the overview in place and scaffolds only the NEW modules - existing module folders are never re-scaffolded or overwritten (idempotence hard rule). Bound to the project workflow's "Brand-new system" bootstrap. Do NOT use for a single module/component spec, for editing the architecture (HOW) doc itself, or for the module index.
 ---
 
 # System Overview & Spec Generator (System Bootstrap)
@@ -34,9 +34,15 @@ overview.
 
 ## Workflow
 
-### Step 0 — Confirm this is a system bootstrap
+### Step 0 — Confirm this is a system bootstrap (or a system expansion re-run)
 This skill needs a reasonably **complete** spec (purpose, capabilities, ideally data entities). If
-the spec is thin or fuzzy, stop and route to `/workspace-spec-discuss` (discuss the spec into existence) instead of forcing a build.
+the spec is thin or fuzzy, stop and route to `/workspace-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
+
+Two run modes, same procedure:
+- **First bootstrap** — no overview filled yet, no real modules exist.
+- **Expansion re-run** — the system is live and a new expansion spec arrives. The overview is
+  updated **in place** (§4/§5 grow; it stays ONE file per system), and the idempotence hard rule
+  in Step 7 protects every existing module from being overwritten.
 
 ### Step 1 — Load the template
 Read `assets/system-overview-spec.template.md`. This is the skeleton you fill. Preserve every
@@ -75,10 +81,18 @@ Present together:
 - **(a) Tech Reconciliation Report** — the Overlaps + Inconsistencies from Step 4, for the user to
   verify and decide (e.g. update the architecture doc, or accept as-is).
 - **(b) Module Decomposition Proposal** — each proposed module as `name → capabilities it owns →
-  key dependencies`. Module boundaries are an architecture decision; the user may adjust them here.
+  key dependencies`, and **mark each one NEW or EXISTING** (check whether `.claude/modules/<name>/`
+  already exists — EXISTING modules will only receive incremental updates, never a re-scaffold).
+  Module boundaries are an architecture decision; the user may adjust them here.
 
 ### Step 7 — One-shot build (only after sign-off)
-For each agreed module:
+
+**Idempotence hard rule: an EXISTING module folder is NEVER re-scaffolded or template-overwritten.**
+Its `MODULE.md`, `plans/`, `impl/`, `schema/`, `references/`, and flow doc are the project's
+accumulated memory — there is no undo on a synced drive. Before touching any module, check whether
+`.claude/modules/<name>/` already exists; that check decides the branch below.
+
+For each agreed **NEW** module:
 1. **Scaffold** `.claude/modules/<name>/` by copying the example-module template
    (`.claude/modules/example-module/`) and renaming per its header note.
 2. **Seed** the module's `MODULE.md`: fill "What this module does" from the spec, and **bind the
@@ -86,6 +100,11 @@ For each agreed module:
    stays HOW-free).
 3. **Register** the module in root `CLAUDE.md` "Module Map" (one row: name · one-line responsibility
    · path · deep-doc path).
+
+For each agreed **EXISTING** module (expansion touches it): incremental updates only —
+append the new capabilities to its `MODULE.md` "What this module does" / "Local conventions",
+and refresh its Module Map row if the one-line responsibility changed. Do NOT copy anything
+from the template into it; the actual feature work then flows through the normal Step 2 loop.
 
 Also record the agreed decomposition into overview **§5 Module Composition** (how modules fit; not
 the index/paths).
@@ -118,8 +137,10 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
   report, not into the overview.
 - The architecture doc was **not** auto-edited; any change to it was the user's explicit decision.
 - §4 capabilities and §5 modules are consistent — every module traces back to capabilities.
-- Every signed-off module is both **scaffolded** and **registered in the Module Map**, and §5
+- Every signed-off NEW module is both **scaffolded** and **registered in the Module Map**, and §5
   reflects the same set.
+- **No EXISTING module folder was re-scaffolded or overwritten** — existing modules received
+  incremental `MODULE.md` / Module Map updates only.
 - Module-relevant tech lives in each module's `MODULE.md` (Local conventions), not the overview.
 - No component-internal detail or duplicated module paths in the overview.
 - All template headings and governance comments preserved verbatim; first-use acronyms expanded.

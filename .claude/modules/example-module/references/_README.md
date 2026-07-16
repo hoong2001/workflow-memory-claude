@@ -1,7 +1,8 @@
 # references/ — reference materials for THIS module
 
-Supporting material for this module that is neither a requirement spec nor a table schema:
-docs, diagrams, screenshots, exported PDFs, sample files, API dumps, etc.
+Source material for this module that YOU provide: requirement docs, diagrams, screenshots,
+exported PDFs, sample files, API dumps, external links, etc. (`.sql` table schemas go in
+`schema/` instead; the work-ready plan derived from a requirement doc lands in `plans/`).
 
 - Source: provided by you.
 - **Read on demand** — Claude consults these when working in this module; they are NOT auto-loaded

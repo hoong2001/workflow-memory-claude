@@ -8,7 +8,7 @@
 　It is NOT:
 　  - HOW it is built        → .claude/workspace-project-stack-architecture.md (stack, layers, patterns)
 　  - the module index       → root CLAUDE.md "Module Map"
-　  - a single component's requirement → .claude/modules/<name>/specs/  (per-feature, many)
+　  - a single component's requirement → talked into a work doc in .claude/modules/<name>/plans/  (per-feature, many)
 　
 　A module is a COMPONENT (a part). This file is the WHOLE. Never put the system
 　overview inside a module folder, and never put component-level detail here.

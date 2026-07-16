@@ -17,7 +17,7 @@
 
 | Path | What it is |
 |---|---|
-| `.claude/modules/<any real module>/` | MODULE.md, specs/, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
+| `.claude/modules/<any real module>/` | MODULE.md, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
 | `.claude/overview/system-overview-spec.md` | That system's functional spec |
 | `.claude/overview/references/` | That system's reference materials |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |

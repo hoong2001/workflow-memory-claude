@@ -5,7 +5,7 @@
 > **NOT a changelog** — change history lives in `impl/`, plans in `plans/`.
 >
 > Keep it current when the module's structure changes. You can seed/refresh it with
-> `/workspace-code-trace-spec`, but keep only the stable "how it works" parts — a specific change's
+> `/workspace-module-code-trace-flow`, but keep only the stable "how it works" parts — a specific change's
 > "where to cut" belongs in that change's plan (`plans/`), not here.
 
 ## Flow

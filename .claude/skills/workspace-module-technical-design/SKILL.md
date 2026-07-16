@@ -1,6 +1,6 @@
 ---
-name: workspace-brief-to-technical-design
-description: Turn a confirmed task brief (produced by /workspace-task-brief or /workspace-grill-with-docs) into a concrete technical design — API endpoints, Controllers, Services, Repositories, Result classes, SQL approach, and frontend structure — and append it as a "Technical Design" section to the SAME plan document in the module's plans/ folder. Use when a brief exists and the user wants the technical breakdown nailed down before coding, says "generate technical design", "design the API/classes", "how do we cut this technically", or "brief to design". Do NOT use when no brief/plan exists yet (run /workspace-task-brief first), and do NOT use for requirement discussion (that is /workspace-spec-discuss).
+name: workspace-module-technical-design
+description: Turn a confirmed plan (produced by /workspace-module-plan-discuss) into a concrete technical design — API endpoints, Controllers, Services, Repositories, Result classes, SQL approach, and frontend structure — and append it as a "Technical Design" section to the SAME plan document in the module's plans/ folder. Use when a brief exists and the user wants the technical breakdown nailed down before coding, says "generate technical design", "design the API/classes", "how do we cut this technically", or "brief to design". Do NOT use when no brief/plan exists yet (run /workspace-module-plan-discuss first), and do NOT use for requirement discussion (that is /workspace-module-plan-discuss, or /workspace-system-spec-discuss for a whole-system spec).
 ---
 
 <what-to-do>
@@ -9,10 +9,10 @@ Take a confirmed brief and derive the technical design from it, decision by deci
 
 ## Step 1: Locate and absorb the inputs
 
-1. **The brief** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/workspace-task-brief`.
+1. **The brief** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/workspace-module-plan-discuss`.
 2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
 3. **Hard rules** — `.claude/workspace-project-stack-architecture.md` is non-negotiable: layering (Web → Services → UnitOfWork), Dapper-only, no async/DI/interfaces, C# 7.3, Base-class inheritance, naming conventions.
-4. **Project skills** — follow `concrete-repository-pattern` for the data layer and `asp.net-mvc-frontend-standards` for the JS/view layer; the design must not contradict them.
+4. **Project skills** — follow `workspace-concrete-repository-pattern` for the data layer and `workspace-asp.net-mvc-frontend-standards` for the JS/view layer; the design must not contradict them.
 
 ## Step 2: Explore before inventing
 
