@@ -1,5 +1,5 @@
 ---
-name: workspace-code-trace-spec
+name: workspace-module-code-trace-flow
 description: Trace a feature's call chain through the codebase by reading real source, then produce a flow spec (flow.md) covering the flow overview, call chain, touched files, and a concrete "where to cut" section for the intended change. Use this skill when the user wants to modify or extend an existing feature but does not yet know where in the code to start — e.g. "add a display field", "change this behavior", "where do I touch for...", "trace this feature", or any maintenance task that needs the code mapped before editing. Do NOT trigger for greenfield work with no existing code to trace, or for trivial one-line edits whose location is already known.
 ---
 

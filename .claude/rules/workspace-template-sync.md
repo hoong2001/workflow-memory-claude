@@ -11,7 +11,7 @@ whitelist in `SYNC-MANIFEST.md` at the project root:
 - 🚫 Never overwrite: real module folders under `.claude/modules/`, `.claude/overview/`
 - ⚠️ Manual merge only: root `CLAUDE.md`, `.claude/workspace-project-stack-architecture.md`
 
-**Why:** real module folders (`plans/`, `impl/`, `specs/`, MODULE.md, flow docs) and
+**Why:** real module folders (`plans/`, `impl/`, `references/`, `schema/`, MODULE.md, flow docs) and
 the system overview are the project's accumulated memory. A blind overwrite destroys
 that progress permanently — there is no undo on a synced drive.
 

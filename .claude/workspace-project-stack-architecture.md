@@ -184,7 +184,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 ### 4.2 Frontend (JavaScript & CSS)
 
-> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`asp.net-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
+> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`workspace-asp.net-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
 
 ### 4.3 Code Quality
 
@@ -220,4 +220,4 @@ These apply regardless of language; the per-language casing rules below only ref
 | Repositories | `[Entity]Repository` | `CustomerRepository` |
 | Services | `[Entity]Service` | `ProductService` |
 
-> Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`asp.net-mvc-frontend-standards`** skill.
+> Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`workspace-asp.net-mvc-frontend-standards`** skill.

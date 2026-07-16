@@ -1,11 +1,11 @@
 ---
-name: workspace-spec-discuss
-description: Discuss a spec into existence when no spec document exists yet. Routes by scope - whole-system spec (feeds /workspace-system-overview-spec-generator for the brand-new-system bootstrap, saved to .claude/overview/references/) or single module/feature spec (saved to the module's specs/ folder). Can start from scratch, or continue from an existing plan/brief in plans/ and upgrade it into a spec. Use when the user wants to "discuss the spec", "turn this plan into a spec", "write the requirements doc together", or when the bootstrap needs a spec that does not exist yet. Do NOT use when a reasonably complete spec doc already exists - hand that straight to the generator or the module's specs/.
+name: workspace-system-spec-discuss
+description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /workspace-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec", "write the system requirements doc together", or when the bootstrap needs a spec that does not exist yet. Do NOT use for a single module/feature requirement - those are talked straight into a work doc in the module's plans/ via /workspace-module-plan-discuss. Do NOT use when a reasonably complete system spec already exists - hand that straight to the generator.
 ---
 
 <what-to-do>
 
-Drive a structured discussion that converges on a written spec — the WHAT of a system or feature, precise enough for someone else (or a future session) to build from without asking you again.
+Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/workspace-module-plan-discuss`, never into a spec.
 
 Each question follows the two-step pattern:
 
@@ -38,22 +38,21 @@ exist. The technical pass (section 6) flips role: instead of checking against co
 the architecture doc is always the user's to write (same rule as the generator's tech
 reconciliation).
 
-## Step 0b — Determine the scope (routes everything after)
+## Step 0b — Confirm the scope is the whole system
 
-| Scope | Signal | Output lands in |
-|---|---|---|
-| **Whole system** | a new system with multiple capabilities/modules; the bootstrap needs a spec | `.claude/overview/references/spec-<date>-<slug>.md` |
-| **Single module / feature** | one capability inside an existing or planned module | `.claude/modules/<name>/specs/spec-<nnn>-<slug>.md` (next free `<nnn>`) |
+This skill produces exactly one kind of output: a whole-system spec at
+`.claude/overview/references/spec-<date>-<slug>.md`, ready for the bootstrap.
 
-If the scope is ambiguous, ask — it changes both the content depth and the destination.
+If what the user actually describes is a single module/feature requirement, STOP and route to
+`/workspace-module-plan-discuss` — module-level requirements are talked straight into a work doc
+in `plans/`, never into a spec.
 
 ## Step 1 — Gather seed material
 
 A spec rarely starts from nothing. Before questioning, read what already exists:
 
-- An existing plan/brief in `.claude/modules/<name>/plans/` — the most common seed: this skill upgrades a crystallised plan into a spec.
-- The module's `MODULE.md`, `<name>-flow.md`, and `specs/` (for consistency with earlier specs).
-- For system scope: `.claude/overview/system-overview-spec.md` (if partially filled) and `.claude/overview/references/`.
+- `.claude/overview/system-overview-spec.md` (if partially filled) and `.claude/overview/references/`.
+- Any existing module docs (`MODULE.md`, `<name>-flow.md`) if parts of the system are already built.
 
 ## Step 2 — Discuss, section by section
 
@@ -62,7 +61,7 @@ The spec body is the **WHAT** — capabilities, boundaries, data, and done-crite
 1. **Purpose** — what problem this solves and for whom. One paragraph.
 2. **Capabilities** — what it must do, as a numbered list of verifiable statements. Where naming the actor and benefit adds clarity, write the statement as a user story: "As an <actor>, I want <feature>, so that <benefit>".
 3. **Boundaries** — explicitly out of scope. As valuable as the capabilities list.
-4. **Data** — the entities involved and their key relationships. If concrete tables emerge for a module spec, note that their `.sql` schemas belong in the module's `schema/` folder.
+4. **Data** — the entities involved and their key relationships. If concrete tables emerge, note that their `.sql` schemas belong in the owning module's `schema/` folder once modules are scaffolded.
 5. **Acceptance criteria** — how we will know each capability works.
 6. **Technical considerations** — a deliberate technical pass over the finished capability list, grounded in the architecture doc read in Step 0a. For each capability, probe:
    - **Feasibility on this stack** — can it be built within the stack and forbidden-pattern rules? If a capability genuinely needs something outside them (a new library, a scheduled job, an external API), name it here explicitly — never smuggle it in.
@@ -70,23 +69,20 @@ The spec body is the **WHAT** — capabilities, boundaries, data, and done-crite
    - **Integration points** — external systems, file formats, notifications, existing modules it must talk to.
    - **Performance / volume traits** — data volumes, batch vs interactive, anything that shapes the design later.
 
-   Anything that deviates from or adds to the architecture doc gets flagged as an explicit **delta** — for system scope this section is exactly what the generator's tech-reconciliation step consumes; for module scope the agreed items later land in that module's `MODULE.md` "Local conventions".
+   Anything that deviates from or adds to the architecture doc gets flagged as an explicit **delta** — this section is exactly what the generator's tech-reconciliation step consumes.
 
 7. **Implementation decisions** — the concrete technical decisions settled during the discussion, as a list: modules to build or modify and their interfaces, architectural decisions, schema changes, API contracts, specific interactions, and technical clarifications from the user. Section 6 is the pass that *surfaces* the questions; this section records what was *decided*. Honour the spec durability rule (Step 3): name modules and interfaces, never source-file paths or code snippets.
 
 8. **Testing decisions** — at which seams the feature will be tested: prefer existing seams over new ones, the highest seam possible, and as few as possible (the ideal number is one); confirm the chosen seams match the user's expectations. Plus what makes a good test here (external behavior only, never implementation details), which modules get tested, and prior art if similar tests already exist in the codebase.
 
-For **system scope**, the spec must be complete enough to pass the generator's own entry check: purpose, capability map, and data entities all present. Thin sections mean the bootstrap will bounce it back.
+The spec must be complete enough to pass the generator's own entry check: purpose, capability map, and data entities all present. Thin sections mean the bootstrap will bounce it back.
 
 ## Step 3 — Write and hand off
 
-Write the spec to the destination from Step 0, using project-root-relative paths in the content (see `workspace-doc-relative-paths.md`). Then hand off:
+Write the spec to `.claude/overview/references/spec-<date>-<slug>.md`, using project-root-relative paths in the content (see `workspace-doc-relative-paths.md`). Then hand off:
 
 **Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
 
-- **System scope** → tell the user the spec is ready and recommend running `/workspace-system-overview-spec-generator` on it to execute the bootstrap.
-- **Module scope** → the spec now drives the normal Step 2 work loop; route to `/workspace-task-brief` or `/workspace-grill-with-docs` to derive the plan.
-
-If the spec grew out of an existing plan document, add a one-line pointer in that plan ("superseded by / expanded into `<spec path>`") so the pair stays traceable.
+Tell the user the spec is ready and recommend running `/workspace-system-overview-spec-generator` on it to execute the bootstrap.
 
 </supporting-info>
