@@ -37,12 +37,13 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   ├── workspace-module-technical-design/  append "Technical Design" to the SAME plan file
 │   ├── workspace-module-code-trace-flow/  legacy code → extract <name>-flow.md
 │   ├── workspace-module-save-implementation/  save impl record + sync flow (user-triggered)
+│   ├── workspace-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
 │   ├── workspace-asp.net-mvc-frontend-standards/  frontend coding standards (SSOT)
 │   ├── workspace-concrete-repository-pattern/  data-layer pattern (SSOT)
 │   └── workspace-update-from-master/  pull template updates per SYNC-MANIFEST.md
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
-    ├── schema/                        .sql table schemas for CRUD
+    ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
     ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-module-plan-discuss; /workspace-module-technical-design appends the design)
