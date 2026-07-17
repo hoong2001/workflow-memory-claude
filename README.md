@@ -26,6 +26,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes
+│   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-plan.impl.md         plan / impl documentation triggers
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
 │   ├── workspace-template-sync.md     never blind-overwrite project state on sync

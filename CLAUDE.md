@@ -59,6 +59,7 @@
 @.claude/rules/workspace-doc-relative-paths.md
 @.claude/rules/workspace-tech-mentor.md
 @.claude/rules/workspace-reduce-coding-mistake.md
+@.claude/rules/workspace-library-docs-first.md
 @.claude/rules/workspace-plan.impl.md
 @.claude/rules/workspace-template-sync.md
 
