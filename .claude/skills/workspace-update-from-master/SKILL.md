@@ -11,7 +11,7 @@ be copied; this skill is the executor, not the policy.
 
 **Hard safety rules (non-negotiable):**
 - NEVER copy the whole `.claude/` tree or repo root wholesale.
-- NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills.
+- NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
 - NEVER touch real module folders under `.claude/modules/` (anything other than `example-module`) or `.claude/overview/`.
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
@@ -39,7 +39,8 @@ manifest lists paths this skill doesn't mention, follow the manifest.
 Before copying anything, show the user a dry-run summary:
 - ✅ paths that will be overwritten (list files that actually differ, not everything — compare content or timestamps)
 - 🆕 files that exist only in master (will be added)
-- 🏠 files that exist only in the target's `rules/`/`skills/` (project-own additions — will be left untouched; list them so the user knows they're safe)
+- 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
+- 🏠 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
 
 If nothing differs, report "already up to date" and stop.
@@ -58,6 +59,21 @@ Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 
 If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first.
 
+## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
+
+Renames and merges in the master leave stale copies behind in the target — and a stale
+skill keeps auto-triggering alongside its replacement. For each path in the master
+manifest's 🗑️ Renames / deletions section that exists in the target:
+
+1. Verify its replacement was just copied in Step 4 (never delete before the replacement
+   is in place; a "merged into" entry counts if the merge target exists).
+2. Delete it — the user already confirmed via the Step 3 pre-flight report.
+
+Anything NOT on that list is never deleted, no matter how obsolete it looks. Real module
+folders are always out of scope (🚫) even if they contain a `specs/` folder — that content
+is migrated by hand per the workflow routing rule (material → `references/`, `.sql` →
+`schema/`, work docs → `plans/`), never deleted by sync.
+
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
 For each ⚠️ file (per the manifest — typically root `CLAUDE.md` and
@@ -74,6 +90,6 @@ line MUST be added to the target's `CLAUDE.md` — flag this explicitly.
 
 ## Step 6 · Report
 
-Summarize in one short block: files overwritten / added / merged / skipped (project-own),
+Summarize in one short block: files overwritten / added / deleted (manifest-listed) / merged / skipped (project-own),
 and anything that needs the user's follow-up. Remind the user to start a fresh session
 (or continue) so newly imported rules take effect.

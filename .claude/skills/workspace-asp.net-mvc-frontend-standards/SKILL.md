@@ -1,6 +1,6 @@
 ---
 name: workspace-asp.net-mvc-frontend-standards
-description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and Web API 2.2. Use this skill whenever writing, reviewing, or modifying frontend JavaScript in an ASP.NET MVC project � including jQuery AJAX calls, form submissions, dropdown binding, Razor-to-JS data passing, frontend validation, file export, or page structure. Also trigger when the user asks about @Model, ViewBag, $.ajax(), JSON.stringify, contentType, Store-Then-Bind, hidden form POST, or any ASP.NET MVC frontend-backend data flow question. Do NOT use for Vue.js, React.js, or other SPA frameworks.
+description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and Web API 2.2. Use this skill whenever writing, reviewing, or modifying frontend JavaScript in an ASP.NET MVC project — including jQuery AJAX calls, form submissions, dropdown binding, Razor-to-JS data passing, frontend validation, file export, or page structure. Also trigger when the user asks about @Model, ViewBag, $.ajax(), JSON.stringify, contentType, Store-Then-Bind, hidden form POST, or any ASP.NET MVC frontend-backend data flow question. Do NOT use for Vue.js, React.js, or other SPA frameworks.
 ---
 
 # Frontend Skill — ASP.NET MVC JavaScript Standards
@@ -89,7 +89,7 @@ $.ajax({
 ```
 
 **Frontend → Backend (outbound):**
-1. Collect form data into a module-scope variable
+1. Collect form data into a named variable — a function-local `const` by default; promote it to module scope only when the payload must be re-read after the call (e.g. retry, debugging inspection)
 2. Validate the collected variable (see *Frontend Validation Rules*)
 3. Send it — by the method chosen per *Form Submit Rules* (AJAX POST for mutations, MVC Form GET for navigation, Hidden Form POST for export)
 
@@ -108,18 +108,18 @@ $.ajax({
 | Save / Update / Delete | AJAX only | Requires response handling |
 | Partial page updates | AJAX only | No full page reload |
 
-? **Forbidden:**
-- Using `@Model` to pass search results � bind via AJAX instead
+❌ **Forbidden:**
+- Using `@Model` to pass search results — bind via AJAX instead
 - Mixing `ViewBag` and AJAX for the same data on the same page
 - Reading Razor values in JS after page load (use `data-*` attributes instead)
 
 ---
 
-## Razor ? JavaScript Data Passing
+## Razor → JavaScript Data Passing
 
 When backend data must be available in JS on page load, use `data-*` attributes or a dedicated init block. Never scatter Razor expressions inside JS logic.
 
-? **Correct � pass via data attribute:**
+✅ **Correct — pass via data attribute:**
 ```html
 <div id="page-context"
      data-user-id="@ViewBag.UserId"
@@ -131,17 +131,25 @@ const USER_ID = parseInt($('#page-context').data('user-id'));
 const REGION_ID = parseInt($('#page-context').data('region-id'));
 ```
 
-? **Correct � init block at top of script:**
+✅ **Correct — init block at top of script:**
 ```javascript
 // Page init data from server
 const PAGE_CONFIG = {
-    userId: @ViewBag.UserId,
-    regionId: @Model.RegionId,
-    defaultDate: '@DateTime.Today.ToString("yyyy-MM-dd")'
+    userId: @Model.UserId,                                   // Numeric property — unquoted
+    userName: '@Model.UserName',                             // String — must be quoted
+    userList: @Html.Raw(Json.Encode(Model.Users)),           // Complex object/collection — JSON serialize
+    defaultDate: '@DateTime.Today.ToString("yyyy-MM-dd")'    // Formatted date is a string — quoted
 };
 ```
 
-? **Wrong � Razor mixed into JS logic:**
+> Init block safety rules — **quoting is type-driven**:
+> - **Numeric / boolean typed properties** — output unquoted: `userId: @Model.UserId`.
+> - **String values** — always quoted: `userName: '@Model.UserName'`.
+> - **Nullable / ViewBag values** — null-guard them: `@(ViewBag.UserId ?? 0)`. ViewBag is dynamic; a null renders as empty (`userId: ,`) and breaks the script with a JS syntax error.
+> - **Complex objects / collections** — serialize to JSON: `@Html.Raw(Json.Encode(Model.Users))` (MVC 5 / .NET Framework API; `Json.Serialize` is the ASP.NET Core equivalent — do not use it here). Never hand-build object literals.
+> - **External `.js` files** — Razor only executes inside `.cshtml`. Never put `@` expressions in a `.js` file; inject values into `data-*` attributes in the view and read them from the external script (the *pass via data attribute* pattern above).
+
+❌ **Wrong — Razor mixed into JS logic:**
 ```javascript
 function loadData() {
     $.ajax({ data: { id: @Model.Id } }); // Never do this
@@ -155,12 +163,12 @@ function loadData() {
 Dropdowns are always initialized from `@Model` / `ViewBag` on page load.
 Never fetch dropdown options via AJAX unless they are dependent (cascading).
 
-? **Static dropdown � Razor only:**
+✅ **Static dropdown — Razor only:**
 ```html
 @Html.DropDownList("regionId", Model.RegionList, "-- Select --", new { @class = "form-control" })
 ```
 
-? **Cascading dropdown � AJAX:**
+✅ **Cascading dropdown — AJAX:**
 ```javascript
 function loadDistricts(regionId) {
     $.ajax({
@@ -175,22 +183,71 @@ function loadDistricts(regionId) {
 
 ---
 
+## Control Initialization Patterns (Mandated Widgets)
+
+The stack mandates these widgets for their jobs (see architecture doc §1.2). Standard init per widget — settings shown here are the required project defaults.
+
+**DataTables — ALL tabular data.** Initialize once, keep the instance in a module-scope variable, reload via `clear().rows.add().draw()`. Never re-initialize on data refresh; destroy/re-init only if the column structure itself changes.
+```javascript
+let $orderTable = null;
+
+function initOrderTable() {
+    $orderTable = $('#orderTable').DataTable(getDataTableConfig());
+}
+
+function getDataTableConfig() {
+    return {
+        pageLength: 25,
+        responsive: true,
+        columns: [
+            { data: 'orderNo' },
+            { data: 'amount' }
+        ]
+    };
+}
+
+// Store-Then-Bind step 3 for tables
+function bindDataToTable(data) {
+    $orderTable.clear().rows.add(data).draw();
+}
+```
+
+**Select2 — ALL select boxes:**
+```javascript
+$('#regionSelect').select2({
+    allowClear: true,
+    width: '100%',
+    placeholder: SELECT_PLACEHOLDER
+});
+```
+
+**Bootstrap Datepicker — ALL date inputs:**
+```javascript
+$('.date-input').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true
+});
+```
+
+**ECharts — ALL charts.** Build the option object in a configuration factory (`getChartOption()`, section 10 of the page structure), never inline in the AJAX callback; bind via a `renderChart(data)` function following Store-Then-Bind.
+
+**moment.js — ALL date formatting:** `moment(date).format('YYYY-MM-DD')`.
+
+---
+
 ## AJAX Standard Pattern
 
 ### Payload Rules (Mandatory)
 
-1. **Always use a module-scope variable as payload** � collect form data into a variable first, then pass it to AJAX. Never construct the object inline inside `$.ajax()`.
-2. **`JSON.stringify()` is mandatory** � always wrap the payload. Omitting it will cause the backend to receive malformed data.
-3. **Always set `contentType: 'application/json'`** � required when sending JSON, otherwise the backend cannot deserialize correctly.
+1. **Always collect the payload into a named variable first** — never construct the object inline inside `$.ajax()`. A function-local `const` is the default; module scope only when the payload must be re-read after the call.
+2. **`JSON.stringify()` + `contentType: 'application/json'` are mandatory for JSON bodies (POST/PUT)** — omitting either causes the backend to receive malformed data. **Exception: GET requests** — pass `data: { ... }` as a plain object so jQuery serializes it into the query string; never stringify a GET payload.
 
 ```javascript
-// ? Correct � collect into module-scope variable first
-let submitPayload = null;
-
+// ✅ Correct — collect into a variable first, then send
 function handleSubmit() {
     if (!validateForm()) return;
 
-    submitPayload = {
+    const submitPayload = {
         name: $('#name').val().trim(),
         regionId: parseInt($('#regionId').val()),
         startDate: $('#startDate').val()
@@ -199,8 +256,8 @@ function handleSubmit() {
     $.ajax({
         url: API_URL,
         type: 'POST',
-        contentType: 'application/json',        // Required
-        data: JSON.stringify(submitPayload),     // Required � never skip
+        contentType: 'application/json',        // Required for JSON body
+        data: JSON.stringify(submitPayload),     // Required — never skip
         beforeSend: () => showLoading(),
         success: (response) => {
             if (response.success) {
@@ -214,7 +271,7 @@ function handleSubmit() {
     });
 }
 
-// ? Wrong � inline object, no variable, no JSON.stringify
+// ❌ Wrong — inline object, no variable, no JSON.stringify
 $.ajax({
     url: API_URL,
     type: 'POST',
@@ -234,18 +291,32 @@ All Web API responses must return this structure:
 ```
 
 ### Standard Error Handler
+
+Surface the backend's `message` when the response carries one; fall back to a generic message only when it doesn't.
 ```javascript
 function handleAjaxError(xhr) {
     if (xhr.status === 401) {
         toastr.error('Session expired. Please login again.');
-        window.location.href = '/Account/Login';
+        window.location.href = LOGIN_URL + '?returnUrl=' + encodeURIComponent(window.location.pathname);
     } else if (xhr.status === 403) {
         toastr.error('You do not have permission to perform this action.');
     } else {
-        toastr.error('An unexpected error occurred. Please try again.');
+        const serverMessage = xhr.responseJSON && xhr.responseJSON.message;
+        toastr.error(serverMessage || 'An unexpected error occurred. Please try again.');
     }
 }
 ```
+
+---
+
+## Output Encoding (XSS Prevention)
+
+Any value that came from the server or the user is untrusted when it re-enters the DOM.
+
+- **Bind data with `.text()`, never `.html()`** — the same applies to `$('<td>').text(value)` style construction.
+- **DataTables**: use `columns.data` / text rendering; if a custom `render` builds HTML, escape every data value in it.
+- **toastr / notification messages**: static strings or escaped values only — never concatenate raw user input or server data into the message HTML.
+- When an HTML string must be built by hand, escape values through a shared helper (e.g. an `escapeHtml()` utility in section 9), not ad-hoc `.replace()` calls.
 
 ---
 
@@ -254,10 +325,10 @@ function handleAjaxError(xhr) {
 Validate before every AJAX submission. Backend validation is the safety net, not the first line of defence.
 
 ### Validation Order
-1. Required fields � block empty submission
-2. Format checks � dates, numbers, length
-3. Business rules � date range logic, dependency checks
-4. Submit ? AJAX
+1. Required fields — block empty submission
+2. Format checks — dates, numbers, length
+3. Business rules — date range logic, dependency checks
+4. Submit → AJAX
 
 ### Standard Validation Pattern
 ```javascript
@@ -279,6 +350,7 @@ function validateForm() {
     if (end.isBefore(start)) errors.push('End date must be after start date.');
 
     if (errors.length > 0) {
+        // Static messages only — never join user input into this HTML (see Output Encoding)
         toastr.warning(errors.join('<br>'));
         return false;
     }
@@ -318,26 +390,26 @@ function isPositiveNumber(value) {
 | File upload | MVC Form POST with `enctype="multipart/form-data"` |
 | File export with complex filters | Hidden Form POST (see below) |
 
-? **Never use MVC Form POST for save/update/delete** � always use AJAX so errors can be handled without full page reload.
+❌ **Never use MVC Form POST for save/update/delete** — always use AJAX so errors can be handled without full page reload.
 
 ### File Export Pattern (Hidden Form POST)
 
 Use this pattern when exporting files (Excel, PDF) with complex filter parameters.
-GET requests have URL length limits � hidden Form POST bypasses this and triggers browser download via `target: '_blank'`.
+GET requests have URL length limits — hidden Form POST bypasses this and triggers browser download via `target: '_blank'`.
 
 ```javascript
-$('#btnExport').click(function () {
-    // Collect filters into variable first (Store-Then-Bind)
-    var filters = getFilterData();
+$('#btnExport').click(() => {
+    // Collect filters into a variable first (Store-Then-Bind)
+    const filters = getFilterData();
 
-    var $form = $('<form>', {
+    const $form = $('<form>', {
         action: apiUrlObj.exportExcel,  // Your export API URL
         method: 'POST',
         target: '_blank'                // Triggers browser download
     });
 
-    // Append each filter as hidden input � skip null/empty values
-    $.each(filters, function(key, value) {
+    // Append each filter as hidden input — skip null/empty values
+    $.each(filters, (key, value) => {
         if (value !== null && value !== '') {
             $form.append($('<input>', { type: 'hidden', name: key, value: value }));
         }
@@ -351,7 +423,7 @@ $('#btnExport').click(function () {
 **Why this works:**
 - Avoids URL length limits from complex multi-select filters
 - `target: '_blank'` lets browser handle the file download naturally
-- Form is removed from DOM immediately after submit � no side effects
+- Form is removed from DOM immediately after submit — no side effects
 
 ---
 

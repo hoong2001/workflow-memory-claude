@@ -4,6 +4,32 @@
 
 ---
 
+## 0. Adoption Mode
+
+> This document is PRESCRIPTIVE (it governs code Claude will WRITE), not descriptive
+> (it is never an inventory of existing code). Set **Current mode** per project.
+
+- **greenfield** — new system built on this stack from day one. Hard rules apply to ALL code.
+- **brownfield-conformant** — existing system verified (by the conformance scan below) to
+  already follow this stack. Hard rules apply to ALL code; keep this file as-is.
+- **brownfield** — existing system with a different or mixed architecture. Hard rules govern
+  NEW code only. When modifying existing code, match local style; never rewrite old code to
+  satisfy these rules unless explicitly asked. Module-level deviations are recorded in that
+  module's `MODULE.md` (Local conventions / Known gotchas) as you touch them — never here,
+  and never via an up-front whole-system survey. Exception: security-critical rules
+  (e.g. parameterized SQL) apply to ALL code, old and new.
+
+**Conformance scan** (run ONCE when adopting this framework on an existing system): check
+each hard rule against repo evidence — `.csproj` (`TargetFrameworkVersion` / `LangVersion`),
+`packages.config`, `.sln` project layout, Base class inheritance, grep for forbidden patterns
+(async / DI / EF), frontend library versions. All pass → declare `brownfield-conformant`.
+Any deviation → report the list and let the user rule: amend this file, or record it as debt
+in the affected module's `MODULE.md`. Never silently edit either side.
+
+**Current mode:** greenfield
+
+---
+
 ## 1. Technology Stack
 
 ### 1.1 Backend
