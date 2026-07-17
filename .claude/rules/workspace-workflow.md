@@ -48,6 +48,9 @@ Plan landed but the technical cut still needs nailing down (API / classes / SQL 
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio). Claude never
    auto-runs MSBuild or tests: after coding, remind the user in one line to build + test, wait
    for the results they report back, and fix from there.
+   **Sole exception:** the user explicitly invokes `/workspace-auto-test-loop` — that invocation
+   IS the authorization for Claude to build (MSBuild), auto-fix compile errors, run CRUD-only SQL
+   checks, and web-test, for that run only. Never auto-trigger it; the site is still user-started.
 
 ## Step 3 · Wrap up: update memory
 After the task completes, run through `workspace-update-memory.md`:

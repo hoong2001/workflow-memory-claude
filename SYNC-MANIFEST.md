@@ -66,3 +66,7 @@ content untouched.
 4. Never touch the 🚫 paths.
 5. If the master added a new rule file, remember to add its `@import` line to the
    target's `CLAUDE.md` (step 3 covers this).
+6. Alignment scan: grep the target's LIVING docs (root `CLAUDE.md`, overview spec,
+   each module's `MODULE.md` + `<name>-flow.md`) for the 🗑️ obsolete names; fix hits
+   with user confirmation. Historical `plans/` / `impl/` / `references/` stay untouched —
+   stale names there are history, not defects.

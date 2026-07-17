@@ -88,8 +88,27 @@ For each ⚠️ file (per the manifest — typically root `CLAUDE.md` and
 Special case: if Step 4 copied a rule file that is new to the target, its `@import`
 line MUST be added to the target's `CLAUDE.md` — flag this explicitly.
 
+## Step 5b · Post-sync alignment scan (the target's OWN docs)
+
+Copying updates template files, but the target's project-state docs still reference
+whatever was renamed or removed. Scan and align them — this step is NOT optional:
+
+1. Build the search-term list from the manifest's 🗑️ Renames / deletions table: each
+   obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
+   `specs/` folder), plus anything the manifest's grey-zone notes flag as renamed.
+2. Grep those terms across the target's LIVING docs only:
+   root `CLAUDE.md`, `.claude/overview/system-overview-spec.md`,
+   `.claude/modules/*/MODULE.md`, `.claude/modules/*/<name>-flow.md`.
+   **Leave historical archives untouched**: `plans/`, `impl/`, `references/` describe what
+   was true at the time — stale names there are correct history, not defects.
+3. For each hit, propose the fix (old → new, using the manifest mapping) and apply only
+   after user confirmation — these files are project state; never mechanically rewrite them.
+4. If a real module still has a `specs/` folder, don't touch it — remind the user of the
+   routing rule (material → `references/`, `.sql` → `schema/`, work docs → `plans/`) and
+   offer to migrate its content as a separate, per-file confirmed task.
+
 ## Step 6 · Report
 
-Summarize in one short block: files overwritten / added / deleted (manifest-listed) / merged / skipped (project-own),
+Summarize in one short block: files overwritten / added / deleted (manifest-listed) / merged / skipped (project-own) / alignment fixes applied (Step 5b),
 and anything that needs the user's follow-up. Remind the user to start a fresh session
 (or continue) so newly imported rules take effect.
