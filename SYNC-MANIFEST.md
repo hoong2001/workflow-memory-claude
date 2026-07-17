@@ -33,6 +33,26 @@
 template-side changes (e.g. a newly added `@import` line), keep all project-side
 content untouched.
 
+## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
+
+> Copying never removes files, so a renamed or merged template path lingers in the
+> target — and a stale skill keeps auto-triggering alongside its replacement. This
+> list is the ONLY deletion authority: sync may delete a target path ONLY if it
+> appears here, and only after user confirmation. Nothing else is ever deleted.
+
+| Obsolete path (delete in target) | Replaced by |
+|---|---|
+| `.claude/skills/workspace-spec-discuss/` | `.claude/skills/workspace-system-spec-discuss/` |
+| `.claude/skills/workspace-brief-to-technical-design/` | `.claude/skills/workspace-module-technical-design/` |
+| `.claude/skills/workspace-code-trace-spec/` | `.claude/skills/workspace-module-code-trace-flow/` |
+| `.claude/skills/workspace-save-implementation/` | `.claude/skills/workspace-module-save-implementation/` |
+| `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
+| `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
+| `.claude/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+
+> Scope: TEMPLATE paths only. A real module's `specs/` folder is project state (🚫) —
+> its content is migrated by hand per the workflow routing rule, never deleted by sync.
+
 ## Sync procedure
 
 > Preferred: run `/workspace-update-from-master` in the target project — it executes
@@ -40,7 +60,9 @@ content untouched.
 > The manual steps:
 
 1. Copy the ✅ paths from master into the target project, overwriting.
-2. Diff the ⚠️ files; hand-merge template-side changes only.
-3. Never touch the 🚫 paths.
-4. If the master added a new rule file, remember to add its `@import` line to the
-   target's `CLAUDE.md` (step 2 covers this).
+2. Delete the 🗑️ paths from the target — ONLY those on the list above, only after the
+   replacement has been copied in step 1, and only with user confirmation.
+3. Diff the ⚠️ files; hand-merge template-side changes only.
+4. Never touch the 🚫 paths.
+5. If the master added a new rule file, remember to add its `@import` line to the
+   target's `CLAUDE.md` (step 3 covers this).

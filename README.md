@@ -52,7 +52,10 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 ## Apply to a new project (3 steps)
 
 1. Copy the whole `.claude/` folder **and** `CLAUDE.md` into the project.
-2. Replace `.claude/workspace-project-stack-architecture.md` with that project's stack / architecture / constraints.
+2. Replace `.claude/workspace-project-stack-architecture.md` with that project's stack / architecture / constraints,
+   and set its **§0 Adoption Mode**. For an existing system, run the conformance scan defined
+   there first — fully conformant keeps the file as-is (`brownfield-conformant`); any deviation
+   is reported as a list for the user to rule on (amend the file vs. record as module debt).
 3. Clear `CLAUDE.md`'s "What this system is" and "Module Map" — fill them in as you work.
 
 That's it for the framework files. The rules, the workflow, the module template, and all
