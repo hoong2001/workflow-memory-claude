@@ -1,6 +1,6 @@
 ---
 name: workspace-module-plan-discuss
-description: Talk a module-level requirement into a work-ready plan document - the ONLY on-ramp for module work docs (replaces the old workspace-module-task-brief and workspace-module-grill-with-docs). Adaptive depth via five-element gap detection (Goal, Background, Material, Boundary, Definition of Done) against module docs and real code - a trivial bug fix converges in one confirmation round (mini plan), a conflicting approach gets challenged point by point, genuinely blank elements get interviewed one at a time. Entry requires the user to state a purpose/goal/requirement first. Lands plans/<name>-<date>-<slug>.md in the target module. Use whenever a module-level task needs a plan before coding. Do NOT use for a whole-system spec (that is /workspace-system-spec-discuss), and do NOT use when a plan already exists and only the technical cut is missing (that is /workspace-module-technical-design).
+description: Talk a module-level requirement into a work-ready plan document - the ONLY on-ramp for module work docs. Adaptive depth via five-element gap detection (Goal, Background, Material, Boundary, Definition of Done) against module docs and real code. Entry requires the user to state a purpose/goal first. Lands plans/<name>-<date>-<slug>.md in the target module. Use whenever a module-level task needs a plan before coding. Do NOT use for a whole-system spec (/workspace-system-spec-discuss), or when a plan exists and only the technical cut is missing (/workspace-module-technical-design).
 ---
 
 <what-to-do>

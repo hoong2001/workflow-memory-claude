@@ -1,6 +1,6 @@
 ---
 name: workspace-auto-test-loop
-description: Automated build-and-test loop for the ASP.NET MVC solution - compile via vswhere-located MSBuild, auto-fix compile errors and rebuild until green, verify data with CRUD-only SQL (connection read from Web.config), and web-test the changed flow via Playwright MCP or Claude-in-Chrome against a site the USER has started. Invoke ONLY on the user's explicit request ("run auto test", "build and test this", "自動測試", "跑自動測試迴圈") - the invocation itself IS the authorization that overrides the workflow's manual build/test rule for this run. NEVER auto-trigger after coding; outside this skill, build and test remain manual. Do NOT use for DDL/schema changes, deployments, starting/stopping the site, or running unit-test frameworks.
+description: Automated build-and-test loop for the ASP.NET MVC solution - compile via vswhere-located MSBuild, auto-fix compile errors and rebuild until green, verify data with CRUD-only SQL (connection read from Web.config), and web-test the changed flow against a site the USER has started. Invoke ONLY on the user's explicit request ("run auto test", "build and test this", "自動測試") - never auto-trigger after coding. Do NOT use for DDL/schema changes, deployments, starting/stopping the site, or running unit-test frameworks.
 ---
 
 # Auto Test Loop — build → fix → verify → web-test

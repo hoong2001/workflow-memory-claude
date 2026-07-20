@@ -7,10 +7,8 @@ that is copied into different projects. Template updates flow master → project
 copy the whole `.claude/` tree or the whole repo over the target. Follow the
 whitelist in `SYNC-MANIFEST.md` at the project root:
 
-- ✅ Overwrite freely: `.claude/rules/`, `.claude/skills/`, `.claude/modules/example-module/`, `SYNC-MANIFEST.md`
-- 🚫 Never overwrite: real module folders under `.claude/modules/`, `.claude/overview/`
-- ⚠️ Manual merge only: root `CLAUDE.md`, `.claude/workspace-project-stack-architecture.md`
-- 🗑️ Delete in target ONLY paths on the manifest's "Renames / deletions" list (stale renamed/merged skills), after user confirmation — nothing else, ever
+- 🚫 Never overwrite: real module folders under `.claude/modules/`, `.claude/overview/` — the project's accumulated memory.
+- Everything else (✅ overwrite freely / ⚠️ manual merge / 🗑️ confirmed deletions) → per the `SYNC-MANIFEST.md` categories.
 
 **Why:** real module folders (`plans/`, `impl/`, `references/`, `schema/`, MODULE.md, flow docs) and
 the system overview are the project's accumulated memory. A blind overwrite destroys

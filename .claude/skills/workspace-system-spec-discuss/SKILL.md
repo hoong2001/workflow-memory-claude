@@ -1,6 +1,6 @@
 ---
 name: workspace-system-spec-discuss
-description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /workspace-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec", "write the system requirements doc together", or when the bootstrap needs a spec that does not exist yet. Do NOT use for a single module/feature requirement - those are talked straight into a work doc in the module's plans/ via /workspace-module-plan-discuss. Do NOT use when a reasonably complete system spec already exists - hand that straight to the generator.
+description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /workspace-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/workspace-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
 ---
 
 <what-to-do>
@@ -10,7 +10,7 @@ Drive a structured discussion that converges on a written whole-system spec — 
 Each question follows the two-step pattern:
 
 1. **Infer first** — state your recommended answer up front, with the reasoning behind it (from existing plans, module docs, the code, or the constraints). Let me simply accept it.
-2. **Options on rejection** — if I reject or doubt the inference, immediately present **3 concrete alternative options plus 1 free-form custom choice** (when the AskUserQuestion tool is available, use it — put your recommendation first with "(Recommended)"; its built-in "Other" serves as the custom choice). Each option must be a real, distinct direction with a one-line trade-off — never filler to pad the count.
+2. **Options on rejection** — if I reject or doubt the inference, immediately present **4 concrete alternative options plus 1 free-form custom choice** (when the AskUserQuestion tool is available, use it — put your recommendation first with "(Recommended)"; its built-in "Other" serves as the custom choice). Each option must be a real, distinct direction with a one-line trade-off — never filler to pad the count.
 
 Ask the questions one at a time, waiting for feedback on each question before continuing.
 
@@ -27,8 +27,8 @@ If a question can be answered by exploring the codebase or existing docs, explor
 Before the first question, read `.claude/workspace-project-stack-architecture.md` in full. It is the
 single source of truth for the stack, the layering, and the forbidden patterns. Every inference you
 offer and every option you present must already respect it — never propose a capability that quietly
-assumes forbidden tech (e.g. async jobs, an ORM, a SPA framework), and challenge me immediately if
-my own wording does.
+assumes tech the doc's forbidden-patterns section rules out (in some stacks that might be async
+jobs, an ORM, or a SPA framework), and challenge me immediately if my own wording does.
 
 **If the file is missing or still a placeholder** (framework freshly copied, or the stack genuinely
 undecided): say so explicitly, then continue — do NOT block, and do NOT silently pretend constraints

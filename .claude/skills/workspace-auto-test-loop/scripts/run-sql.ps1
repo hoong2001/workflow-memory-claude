@@ -1,5 +1,6 @@
 # run-sql.ps1 — execute CRUD-ONLY SQL against the connection string in Web.config.
-# Hard whitelist: SELECT / INSERT / UPDATE / DELETE (+ WITH/DECLARE/SET helpers). Everything else is rejected.
+# Hard whitelist: EVERY statement in the batch must start with SELECT / INSERT / UPDATE / DELETE
+# (or a WITH/DECLARE/SET/IF/BEGIN helper). Everything else is rejected.
 # Exit codes: 0 = ok, 3 = query rejected by whitelist, 4 = connection resolution error, 5 = SQL execution error.
 param(
     [Parameter(Mandatory = $true)][string]$Query,
@@ -22,7 +23,8 @@ $text = [regex]::Replace($text, "/\*[\s\S]*?\*/", " ")     # block comments
 $text = [regex]::Replace($text, "--[^\r\n]*", " ")         # line comments
 
 $forbidden = @('DROP','ALTER','CREATE','TRUNCATE','GRANT','REVOKE','DENY','EXEC','EXECUTE','MERGE',
-               'BACKUP','RESTORE','DBCC','SHUTDOWN','KILL','OPENROWSET','OPENQUERY','RECONFIGURE','USE')
+               'BACKUP','RESTORE','DBCC','SHUTDOWN','KILL','OPENROWSET','OPENQUERY','OPENDATASOURCE',
+               'RECONFIGURE','USE','DISABLE','ENABLE','BULK','WAITFOR')
 foreach ($kw in $forbidden) {
     if ($text -match "(?i)(?<![\w@#$])$kw\b") {
         Write-Host "REJECTED: forbidden keyword '$kw' — this skill allows CRUD only (SELECT/INSERT/UPDATE/DELETE)."
@@ -34,15 +36,21 @@ if ($text -match "(?i)\b(xp_|sp_)\w+") {
     exit 3
 }
 # SELECT ... INTO creates a table (DDL in disguise); INTO is only legal right after INSERT.
-if ($text -match "(?i)(?<!\bINSERT\s{1,20})\bINTO\b") {
+# Neutralize legal INSERT [ ] INTO pairs first (any whitespace incl. newlines), then reject leftover INTO.
+$intoChecked = [regex]::Replace($text, "(?i)\bINSERT\s+INTO\b", "INSERT")
+if ($intoChecked -match "(?i)\bINTO\b") {
     Write-Host "REJECTED: 'INTO' outside INSERT (SELECT ... INTO creates a table) — CRUD only."
     exit 3
 }
-$firstKeyword = [regex]::Match($text, "(?i)[A-Za-z]+").Value.ToUpperInvariant()
+# Whitelist applies to EVERY statement in the batch, not just the first —
+# otherwise "SELECT 1; <anything>" sails through on the denylist alone.
 $allowedStart = @('SELECT','INSERT','UPDATE','DELETE','WITH','DECLARE','SET','IF','BEGIN')
-if ($allowedStart -notcontains $firstKeyword) {
-    Write-Host "REJECTED: statement starts with '$firstKeyword' — must start with one of: $($allowedStart -join ', ')."
-    exit 3
+foreach ($statement in ($text -split ';')) {
+    $kw = [regex]::Match($statement, "(?i)[A-Za-z]+").Value.ToUpperInvariant()
+    if ($kw -and $allowedStart -notcontains $kw) {
+        Write-Host "REJECTED: statement starts with '$kw' — every statement must start with one of: $($allowedStart -join ', ')."
+        exit 3
+    }
 }
 # Guard against accidental mass modification: any UPDATE/DELETE present requires a WHERE somewhere.
 if (-not $AllowNoWhere -and $text -match "(?i)\b(UPDATE|DELETE)\b" -and $text -notmatch "(?i)\bWHERE\b") {
@@ -96,11 +104,15 @@ try {
     $cmd.CommandText = $Query
     $cmd.CommandTimeout = $TimeoutSeconds
 
-    if ($firstKeyword -in @('SELECT', 'WITH')) {
-        $adapter = New-Object System.Data.SqlClient.SqlDataAdapter($cmd)
-        $dataSet = New-Object System.Data.DataSet
-        [void]$adapter.Fill($dataSet)
-        foreach ($table in $dataSet.Tables) {
+    # Always ExecuteReader: a batch may return result sets regardless of its first keyword
+    # (e.g. "DECLARE @m ...; SELECT ..."), and ExecuteNonQuery would silently discard them.
+    $reader = $cmd.ExecuteReader()
+    $resultSetCount = 0
+    while (-not $reader.IsClosed) {
+        $table = New-Object System.Data.DataTable
+        $table.Load($reader)   # loads the current result set and advances; closes the reader after the last one
+        if ($table.Columns.Count -gt 0) {
+            $resultSetCount++
             Write-Host "--- result set: $($table.Rows.Count) row(s) ---"
             if ($AsJson) {
                 $rows = @($table | Select-Object $($table.Columns | ForEach-Object { $_.ColumnName }))
@@ -109,9 +121,9 @@ try {
                 $table | Format-Table -AutoSize | Out-String -Width 4096 | Write-Host
             }
         }
-    } else {
-        $affected = $cmd.ExecuteNonQuery()
-        Write-Host "OK: $affected row(s) affected."
+    }
+    if ($resultSetCount -eq 0) {
+        Write-Host "OK: $($reader.RecordsAffected) row(s) affected."
     }
     exit 0
 } catch {

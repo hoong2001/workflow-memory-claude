@@ -19,12 +19,8 @@
   and never via an up-front whole-system survey. Exception: security-critical rules
   (e.g. parameterized SQL) apply to ALL code, old and new.
 
-**Conformance scan** (run ONCE when adopting this framework on an existing system): check
-each hard rule against repo evidence — `.csproj` (`TargetFrameworkVersion` / `LangVersion`),
-`packages.config`, `.sln` project layout, Base class inheritance, grep for forbidden patterns
-(async / DI / EF), frontend library versions. All pass → declare `brownfield-conformant`.
-Any deviation → report the list and let the user rule: amend this file, or record it as debt
-in the affected module's `MODULE.md`. Never silently edit either side.
+**Conformance scan** (run ONCE when adopting this framework on an existing system) →
+procedure in `.claude/adoption-conformance-scan.md` (read on demand at adoption time).
 
 **Current mode:** greenfield
 
@@ -60,13 +56,12 @@ in the affected module's `MODULE.md`. Never silently edit either side.
 | Markup | HTML5 | Page structure | |
 | JavaScript | ES6 (limited) | Frontend logic | |
 | jQuery | 3.6 | DOM manipulation & AJAX | ALL DOM manipulation and AJAX calls |
-| DataTables | 2.0.7 | Tabular data | ALL tabular data — `pageLength: 25`, `responsive: true` |
+| DataTables | 2.0.7 | Tabular data | ALL tabular data |
 | ECharts | 6.0.0 | Data visualization | ALL charts and graphs |
-| Gijgo | 1.9.13 | Date picker (alternative) | |
-| Bootstrap Datepicker | 1.10.0 | Date input fields | ALL date inputs — `format: 'yyyy-mm-dd'`, `autoclose: true` |
-| Select2 | 4.0.13 | Enhanced select | ALL select boxes — `allowClear: true`, `width: '100%'` |
-| moment.js | 2.30.1 | Date/time formatting | ALL date formatting — `moment(date).format('YYYY-MM-DD')` |
-| Toastr | 2.1.1 | User notifications | ALL notifications — `.success()` `.info()` `.warning()` `.error()` |
+| Bootstrap Datepicker | 1.10.0 | Date input fields | ALL date inputs |
+| Select2 | 4.0.13 | Enhanced select | ALL select boxes |
+| moment.js | 2.30.1 | Date/time formatting | ALL date formatting |
+| Toastr | 2.1.4 | User notifications | ALL notifications |
 
 ### 1.3 Deployment
 
@@ -79,15 +74,15 @@ in the affected module's `MODULE.md`. Never silently edit either side.
 
 ## 2. Architecture
 
-### 2.1 Layer Overview
+### 2.1 Layers & Responsibilities
 
 The solution follows a classic layered architecture. Each project maps to exactly one layer. Never mix responsibilities across projects.
 
 | Layer | Project | Responsibility |
 |-------|---------|---------------|
-| Presentation | [Name].Web | MVC controllers, Razor views, ViewModels, Web API controllers |
-| Business Logic | [Name].Services | All shared business logic — used by both Web and ServBackend |
-| Data Access | [Name].UnitOfWork | Repository implementations, Dapper queries, transaction control |
+| Presentation | [Name].Web | MVC/Web API controllers (route to Service — no business logic, no data access), Razor views, ViewModels |
+| Business Logic | [Name].Services | All business logic, shared by Web and ServBackend — no direct data access, no UI concerns |
+| Data Access | [Name].UnitOfWork | Repositories (SQL via Dapper only — no business logic); UnitOfWork owns transactions (`Commit()` / `Rollback()`) and DB connection lifetime |
 | Windows Service | [Name].ServBackend | Background workers, scheduled jobs — depends on Services + UnitOfWork |
 
 ### 2.2 Dependency Direction
@@ -101,16 +96,7 @@ ServBackend  ──►  Services  ──►  UnitOfWork  ──►  SQL Server
 
 > Web and ServBackend are independent entry points. Neither knows the other exists.
 
-### 2.3 Layer Responsibilities
-
-| Layer | Responsibility |
-|-------|---------------|
-| Controller | Route requests to Service — no business logic, no data access |
-| Service | Business logic only — no direct data access, no UI concerns |
-| Repository | Data access only — SQL queries via Dapper, no business logic |
-| UnitOfWork | Transaction control: `Commit()` / `Rollback()`, owns DB connection lifetime |
-
-### 2.4 Base Classes
+### 2.3 Base Classes
 
 Every layer has a mandatory Base class. All concrete classes must inherit from it — no exceptions.
 
@@ -122,7 +108,7 @@ Every layer has a mandatory Base class. All concrete classes must inherit from i
 
 > Base class contents evolve during development — the rule is that they exist and are inherited, not what specific members they contain.
 
-### 2.5 Data Model: Result Objects
+### 2.4 Data Model: Result Objects
 
 Dapper query results are wrapped in Result classes. There are no separate DTO or Entity layers.
 
@@ -145,26 +131,26 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── ApiControllers/            ← Web API 2.2 controllers
 │   ├── Controllers/               ← MVC controllers
 │   ├── Views/                     ← Razor views
-│   ├── Models/                    ← ViewModels (Web-only, not shared)
+│   ├── Models/                    ← ViewModels
 │   ├── Scripts/                   ← JavaScript files
 │   ├── Content/                   ← CSS, images
 │   └── App_Start/                 ← Route, bundle config
 │
 ├── [ProjectName].Services         ← Business Logic Layer
 │   ├── Web/                       ← Web-only services (namespace: Services.Web)
-│   │   └── [Entity]Service.cs     ← inherits BaseService
+│   │   └── [Entity]Service.cs
 │   ├── Backend/                   ← Backend-only services (namespace: Services.Backend)
-│   │   └── [Entity]Service.cs     ← inherits BaseService
-│   ├── BaseService.cs             ← Base — ALL Services must inherit
-│   └── [Entity]Service.cs        ← Shared services, inherits BaseService
+│   │   └── [Entity]Service.cs
+│   ├── BaseService.cs
+│   └── [Entity]Service.cs        ← Shared services
 │
 ├── [ProjectName].UnitOfWork       ← Data Access Layer
 │   ├── ConstValues/                ← Shared constants and Enums
 │   ├── Repositories/              ← Repository classes, organised by Entity
-│   │   ├── BaseRepository.cs      ← Base — all Repositories must inherit
+│   │   ├── BaseRepository.cs
 │   │   └── [Entity]Repository.cs
-│   ├── Results/                    ← Result objects (shared across Repository methods)
-│   │   ├── BaseResult.cs          ← Base — all Result classes must inherit
+│   ├── Results/                    ← Result objects
+│   │   ├── BaseResult.cs
 │   │   └── [Entity]Result.cs
 │   └── UnitOfWork.cs              ← Implements IDisposable
 │
@@ -210,7 +196,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 ### 4.2 Frontend (JavaScript & CSS)
 
-> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`workspace-asp.net-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
+> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`workspace-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
 
 ### 4.3 Code Quality
 
@@ -226,11 +212,8 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 These apply regardless of language; the per-language casing rules below only refine *how* to spell them.
 
-- ✔ **Human-readable** — a person can read the name and understand it without decoding abbreviations or guessing.
-- ✔ **Self-descriptive** — the name alone tells you what a method *does* or what a variable *holds*. `GetActiveCustomersByRegion`, not `GetData2`; `unpaidInvoiceCount`, not `cnt`.
-- ✔ **Length ≤ 50 characters** — a hard cap. Be descriptive, but if a name approaches 50 chars, it usually means the method/variable is doing too much — reconsider the design, don't just truncate into cryptic shorthand.
-- ✘ No single-letter or cryptic names (`d`, `tmp`, `x1`) except a conventional loop index (`i`, `j`) in a short, obvious loop.
-- ✘ No abbreviations that aren't universally understood — prefer `errorMessage` over `errMsg`, `customer` over `cust`. Domain-standard acronyms (`Id`, `Url`, `Html`, `Sql`) are fine.
+- ✔ **Self-descriptive, no cryptic shorthand** — the name alone says what a method *does* or a variable *holds*: `GetActiveCustomersByRegion`, not `GetData2`; `errorMessage`, not `errMsg`. Exceptions: a conventional loop index (`i`, `j`) in a short loop; domain-standard acronyms (`Id`, `Url`, `Html`, `Sql`).
+- ✔ **Length ≤ 50 characters** — a hard cap. If a name approaches 50 chars, the method/variable is usually doing too much — reconsider the design, don't truncate into cryptic shorthand.
 
 > The test: a teammate with no context reads the name and knows roughly what it is. If they'd have to open the definition to find out, rename it.
 
@@ -246,4 +229,4 @@ These apply regardless of language; the per-language casing rules below only ref
 | Repositories | `[Entity]Repository` | `CustomerRepository` |
 | Services | `[Entity]Service` | `ProductService` |
 
-> Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`workspace-asp.net-mvc-frontend-standards`** skill.
+> Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`workspace-aspnet-mvc-frontend-standards`** skill.

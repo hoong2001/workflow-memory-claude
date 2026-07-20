@@ -1,5 +1,5 @@
 ---
-name: workspace-asp.net-mvc-frontend-standards
+name: workspace-aspnet-mvc-frontend-standards
 description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and Web API 2.2. Use this skill whenever writing, reviewing, or modifying frontend JavaScript in an ASP.NET MVC project — including jQuery AJAX calls, form submissions, dropdown binding, Razor-to-JS data passing, frontend validation, file export, or page structure. Also trigger when the user asks about @Model, ViewBag, $.ajax(), JSON.stringify, contentType, Store-Then-Bind, hidden form POST, or any ASP.NET MVC frontend-backend data flow question. Do NOT use for Vue.js, React.js, or other SPA frameworks.
 ---
 

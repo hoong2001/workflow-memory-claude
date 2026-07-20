@@ -8,10 +8,11 @@ frontend plugin), never guess signatures, option names, events, or CSS classes. 
 2. **No existing usage, or any uncertainty** → read the docs BEFORE coding.
    First CONFIRM the context7 MCP is actually connected (its `mcp__context7__*` tools
    appear in the tool list / ToolSearch finds them) — other users/machines may not have
-   it installed. Connected → invoke it through the `context7-mcp` skill, which carries
-   the correct call sequence. Not connected → fall back to official docs via web without
-   stalling or erroring. If neither is available, say exactly what is unverified instead
-   of inventing it.
+   it installed. Connected → invoke it through the `context7-mcp` skill if it appears in
+   the available-skills list; otherwise call the `mcp__context7__*` tools directly
+   (resolve-library-id → query-docs). Not connected → fall back to official docs via web
+   without stalling or erroring. If neither is available, say exactly what is unverified
+   instead of inventing it.
 3. **Version-pin the lookup** — docs must match the version pinned in
    `.claude/workspace-project-stack-architecture.md` §1. Latest-version docs routinely
    describe APIs that don't exist in the pinned version; when the docs are newer,

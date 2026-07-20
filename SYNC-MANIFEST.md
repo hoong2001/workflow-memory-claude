@@ -13,6 +13,10 @@
 | `.claude/modules/example-module/` | Module scaffold template |
 | `SYNC-MANIFEST.md` | This manifest itself |
 
+## 🏠 Master-only (never copied to projects)
+
+Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master repo itself.
+
 ## 🚫 Never overwrite (project state — overwriting loses progress permanently)
 
 | Path | What it is |
@@ -48,6 +52,7 @@ content untouched.
 | `.claude/skills/workspace-save-implementation/` | `.claude/skills/workspace-module-save-implementation/` |
 | `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
 | `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
+| `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/workspace-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
 | `.claude/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
 
 > Scope: TEMPLATE paths only. A real module's `specs/` folder is project state (🚫) —

@@ -1,6 +1,6 @@
 ---
 name: workspace-update-from-master
-description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. Prompts the user to confirm the master path before touching anything. Use when the user says "sync from master", "update the template", "pull template updates" (in any language), or wants to pull the latest rules/skills/module-template into a project that already adopted this workflow. Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
+description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. Prompts the user to confirm the master path before touching anything. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
 ---
 
 # Update From Master — Template Sync (project side)
@@ -44,6 +44,9 @@ Before copying anything, show the user a dry-run summary:
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
 
 If nothing differs, report "already up to date" and stop.
+
+**Gate: present the report and WAIT for the user's go before executing Steps 4–5b.** The
+deletions in Step 4b rely on this confirmation — without it, nothing is copied or deleted.
 
 ## Step 4 · Copy the whitelist paths
 
