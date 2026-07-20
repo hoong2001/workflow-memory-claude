@@ -11,7 +11,4 @@ local environment details into shared documentation.
 
 **How to apply:** Before saving any document that references files, scan it for drive
 letters or user-home prefixes and rewrite them as project-root-relative paths. This
-also applies to documents produced by skills such as
-`/workspace-module-save-implementation`, `/workspace-module-plan-discuss`,
-`/workspace-module-technical-design`, `/workspace-system-spec-discuss`, and
-`/workspace-module-code-trace-flow`.
+includes documents produced by any skill.

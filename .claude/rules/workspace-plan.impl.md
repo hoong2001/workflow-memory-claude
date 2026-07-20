@@ -1,28 +1,18 @@
 # Project Documentation Rules
 
-## Documentation Automation Rules
+## Plan documents
+A module-level requirement is talked into a plan via `/workspace-module-plan-discuss` —
+fixed path `.claude/modules/<name>/plans/<name>-<date>-<slug>.md`. When a plan exists and
+only the technical cut is missing, `/workspace-module-technical-design` appends a
+"Technical Design" section to the SAME plan file (never a separate file).
 
-### Plan Documents
-After completing any of the following, **immediately** invoke the `workspace-module-plan-discuss` skill:
-- Requirements analysis or feature planning
-- Architecture design proposal
-- Task breakdown completion
-- User confirms a plan or design direction
+## Implementation documents
+Saving the impl record is the USER's trigger — they judge when the task is complete.
+After a feature, refactor, or significant bug fix is done, remind in one line that
+`/workspace-module-save-implementation` is ready (this project's version — saves to the
+module's `impl/` folder AND syncs `<name>-flow.md`); NEVER auto-run it.
 
-The skill will determine the appropriate storage path based on the project environment.
-
-When a brief already exists and the user wants the technical breakdown nailed down before
-coding, invoke `workspace-module-technical-design` — it appends a "Technical Design"
-section to the SAME plan document (never a separate file).
-
-### Implementation Documents
-After completing any of the following, **remind the user in one line** that `/workspace-module-save-implementation` is ready to run (this project's version — saves to the module's `impl/` folder AND syncs `<name>-flow.md`; do NOT use the generic `save-implementation`). **Do NOT auto-run it — the trigger belongs to the user**; run only on their go or explicit invocation:
-- Completing a feature module
-- Completing a refactor
-- Resolving a significant bug
-- User confirms implementation is done
-
-### Core Principles
-- Do not wait until the session ends — **document immediately after each milestone**
-- Documents must be readable by a future Claude session with no prior context
-- If a document already exists, update it — do not create a duplicate
+## Core principles
+- Document immediately after each milestone — don't wait for the session to end.
+- Documents must be readable by a future Claude session with no prior context.
+- If a document already exists, update it — never create a duplicate.

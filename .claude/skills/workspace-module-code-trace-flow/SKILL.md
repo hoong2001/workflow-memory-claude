@@ -1,15 +1,15 @@
 ---
 name: workspace-module-code-trace-flow
-description: Trace a feature's call chain through the codebase by reading real source, then produce a flow spec (flow.md) covering the flow overview, call chain, touched files, and a concrete "where to cut" section for the intended change. Use this skill when the user wants to modify or extend an existing feature but does not yet know where in the code to start — e.g. "add a display field", "change this behavior", "where do I touch for...", "trace this feature", or any maintenance task that needs the code mapped before editing. Do NOT trigger for greenfield work with no existing code to trace, or for trivial one-line edits whose location is already known.
+description: Trace a feature's call chain through the codebase by reading real source, then refresh the module's <name>-flow.md handover map (flow, called files/methods) and deliver a concrete "where to cut" recommendation to the change's plan. Use when the user wants to modify an existing feature but does not know where in the code to start — "add a display field", "where do I touch for...", "trace this feature". Do NOT trigger for greenfield work with no code to trace, or trivial edits whose location is already known.
 ---
 
-# Code Trace Spec — Feature-to-Flow Mapping
+# Module Code Trace Flow — Feature-to-Flow Mapping
 
 ## Core Idea
 
-In maintenance, the hard part is never editing code — it's knowing *where to cut*. This skill does not make the change itself; it starts from a feature or method name, traces the call chain bidirectionally through the **actual source** (grep/read, never recall), and produces a `flow.md` that ends in a concrete "where to cut" recommendation for the user's intended change.
+In maintenance, the hard part is never editing code — it's knowing *where to cut*. This skill does not make the change itself; it starts from a feature or method name, traces the call chain bidirectionally through the **actual source** (grep/read, never recall), and produces two deliverables: a refreshed module flow doc (`<name>-flow.md`) and a concrete "where to cut" recommendation for the user's intended change.
 
-A spec built from memory is worthless and dangerous. **Every link in the chain must be backed by a file the skill actually read.** If a link can't be verified in source, it is marked as a gap, not guessed.
+A map built from memory is worthless and dangerous. **Every link in the chain must be backed by a file the skill actually read.** If a link can't be verified in source, it is marked as a gap, not guessed.
 
 ## Entry & Boundaries
 
@@ -30,7 +30,7 @@ Before touching the codebase, ask the user **what change they intend** — this 
 - Ask one short question with concrete options, e.g.: add a display field? change a behavior? fix a bug in this flow? extend an output?
 - Also confirm the **entry symbol** to trace from (the feature/method name) if not already clear.
 - Ask for an **optional scope hint** — a starting file, module, or directory. If given, it narrows the search; if not, proceed with a codebase-wide grep. Never demand it: not knowing where to look is the exact problem this skill solves.
-- If the user says "just map it, no specific change yet" — accept it, skip the cut-recommendation tailoring, and note in the spec that the cut section is general.
+- If the user says "just map it, no specific change yet" — accept it, skip the cut-recommendation tailoring, and deliver only the flow doc.
 
 ### Step 1: Locate the entry symbol in source
 
@@ -44,9 +44,9 @@ From the entry symbol, follow callers upward until reaching a controller / handl
 
 From the entry symbol, follow callees downward through the process layers until reaching persistence / external call / output. Record each hop as `file:method`. Stop at the output boundary.
 
-### Step 4: Assemble and produce flow.md
+### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, group the touched files by layer, and write the tailored "where to cut" section for the Step 0 change. Then save (see Save Workflow).
+Combine both directions into a single input → process → output chain, group the touched files, and write the tailored "where to cut" recommendation for the Step 0 change. Then persist per the Save Workflow: **the stable flow goes into the module's `<name>-flow.md`; the where-to-cut goes into the change's plan (`plans/`), never into the flow doc.**
 
 ## Verification Rule
 
@@ -56,68 +56,50 @@ Combine both directions into a single input → process → output chain, group 
 - If a call target cannot be resolved in source (dynamic dispatch, reflection, config-driven wiring, generated code), mark it `unverified` with a one-line reason — never paper over it with a plausible guess.
 - Substituting recalled framework knowledge for an actual read is the primary failure mode this skill exists to prevent.
 
-## Output Template
+## Output Templates (two deliverables)
 
-Produce a file named `flow.md` (or named after the feature, e.g. `flow-<feature>.md`), following this structure.
+**Deliverable 1 — the module flow doc.** Persisted to `.claude/modules/<name>/<name>-flow.md`, using the module template's structure (same headings as `example-module-flow.md`). Keep only the stable "how it works" parts:
 
 ```markdown
-# Flow Spec: [Feature Name]
+# [Module Name] — Flow (handover map)
 
-> Created: YYYY-MM-DD
-> Entry symbol: `file:method`
-> Intended change: [from Step 0, or "general mapping"]
+## Flow
 
-## 1. Overview
-
-[One or two sentences: what this flow does, what goes in, what comes out.]
-- **Input:** ...
-- **Output:** ...
-
-## 2. Call Chain
-
-Main data path only, input → process → output:
-
+[The main path end to end, input → process → output. One numbered chain:]
 1. `path/File.ext : Method()` — [one-line role]
-2. `path/File.ext : Method()` — [one-line role]
-3. ...
+2. ...
 
-> Cross-cutting (noted, not expanded): logging via …, DI via …
+## Called files & methods
 
-## 3. Touched Files (by layer)
+| File | Method | Role (short) |
+|---|---|---|
+| ... | ... | ... |
 
-| Layer | File | Why it's in the flow |
-|-------|------|----------------------|
-| Entry (input) | ... | ... |
-| Process | ... | ... |
-| Persistence/Output | ... | ... |
+## Notes
 
-## 4. Where to Cut
+- Cross-cutting (noted, not expanded): logging via …, DI via …
+- Unverified links (could not be resolved in source): `...` — [reason]
+```
 
-For the intended change ([from Step 0]), the actual edit points:
+**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). Hand it to the change's plan (`plans/<name>-<date>-<slug>.md`, appended or created via `/workspace-module-plan-discuss`), or present it in the conversation if no plan exists yet:
+
+```markdown
+## Where to Cut — [intended change, from Step 0]
 
 - [ ] `path/File.ext : Method()` — [what to add/change here]
 - [ ] ...
-
-> Unverified links (could not be resolved in source):
-> - `...` — [reason]
 ```
-
-Section 4 is the payoff of the whole spec. Sections 1–3 exist to make section 4 trustworthy.
 
 ## Save Workflow
 
-After the user confirms `flow.md`, persist it to a real file. Decide the path in this order:
-
-1. **Establish the project root** for the codebase being traced.
-2. **Detect a `.code-workspace`** file; if found, offer to save relative to it.
-3. **Present save-path options** to the user (workspace-relative location, project root, or a custom folder/filename) — never pick a path silently.
-
-Default filename: `flow.md`. Offer `flow-<feature>.md` when multiple flows may coexist in one folder.
+1. **Module identified** (the normal case): persist Deliverable 1 to `.claude/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
+2. **Where-to-cut**: route Deliverable 2 to the change's plan as above — never into the flow doc.
+3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 
 ## Conduct Rules
 
 - Trace from real source every time. A spec not backed by reads is a liability, not a deliverable.
 - One entry symbol per run unless the user asks to map several. Keep the chain to the main data path.
 - The guided dialogue follows the language of the user's input. (This document is in English; the conversation need not be.)
-- This skill's output is the spec, not the change. Stop after `flow.md` is saved and wait for instruction before editing any traced file.
+- This skill's output is the map, not the change. Stop after the flow doc is saved and wait for instruction before editing any traced file.
 - When a call target is ambiguous, ask — do not guess and proceed silently.

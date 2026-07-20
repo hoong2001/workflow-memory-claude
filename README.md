@@ -10,8 +10,9 @@ consistent development workflow.
 stays lean and points to detail that loads on demand. Memory is layered so the "always-on"
 part stays small and depth is read only when needed.
 
-Only one file changes per project: **`.claude/workspace-project-stack-architecture.md`** (the stack,
-architecture, and hard constraints). Everything else is reusable as-is.
+Only one file is swapped per project: **`.claude/workspace-project-stack-architecture.md`** (the stack,
+architecture, and hard constraints). `CLAUDE.md`'s system description and Module Map then grow as
+you work; everything else is reusable as-is.
 
 ## Layout
 
@@ -39,7 +40,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   ├── workspace-module-code-trace-flow/  legacy code → extract <name>-flow.md
 │   ├── workspace-module-save-implementation/  save impl record + sync flow (user-triggered)
 │   ├── workspace-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
-│   ├── workspace-asp.net-mvc-frontend-standards/  frontend coding standards (SSOT)
+│   ├── workspace-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
 │   ├── workspace-concrete-repository-pattern/  data-layer pattern (SSOT)
 │   └── workspace-update-from-master/  pull template updates per SYNC-MANIFEST.md
 └── modules/<name>/                    one folder per module — its whole "brain"
@@ -53,7 +54,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 
 ## Apply to a new project (3 steps)
 
-1. Copy the whole `.claude/` folder **and** `CLAUDE.md` into the project.
+1. Copy the whole `.claude/` folder, `CLAUDE.md`, **and `SYNC-MANIFEST.md`** into the project.
 2. Replace `.claude/workspace-project-stack-architecture.md` with that project's stack / architecture / constraints,
    and set its **§0 Adoption Mode**. For an existing system, run the conformance scan defined
    there first — fully conformant keeps the file as-is (`brownfield-conformant`); any deviation
@@ -76,7 +77,7 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `rules/workspace-*.md`, `modules/example-module/` template, `CLAUDE.md` skeleton | unchanged |
+| Framework (copy as-is) | `rules/workspace-*.md`, `skills/workspace-*`, `modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
 | The one config | `.claude/workspace-project-stack-architecture.md` | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders | filled per project |
 
@@ -88,9 +89,11 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
 with the folder: `workspace-system-overview-spec-generator`, `workspace-module-save-implementation`,
-`workspace-module-plan-discuss`, `workspace-module-technical-design`,
-`workspace-system-spec-discuss`, `workspace-module-code-trace-flow`. No user-level (global) skill is required:
-copying `.claude/` + `CLAUDE.md` brings the whole framework along.
+`workspace-module-plan-discuss`, `workspace-module-technical-design` (which in turn follows the
+stack-bound `workspace-concrete-repository-pattern` + `workspace-aspnet-mvc-frontend-standards`),
+`workspace-system-spec-discuss`, `workspace-module-code-trace-flow`, `workspace-auto-test-loop`,
+and `workspace-update-from-master`. No user-level (global) skill is required:
+copying the framework files (adoption step 1) brings everything along.
 
 > `workspace-module-save-implementation` is this project's replacement for the generic global `save-implementation`:
 > it saves impl records to the module's `impl/` folder using this project's path convention **and** lightweight-syncs

@@ -1,6 +1,6 @@
 ---
 name: workspace-system-overview-spec-generator
-description: Bootstrap a brand-new system from a spec document — generate the System Overview & Spec governance file (the WHAT) AND scaffold the modules derived from it. Use this skill whenever the user provides a reasonably complete spec, design doc, PRD, requirements file, README, or Spec-kit output for a NEW system and wants it turned into the "system overview spec" / "治理檔 / 總覽 spec" PLUS the corresponding module structure. Also trigger on "fill in the spec template", "convert this into our system spec", "draft the system overview", or "build the modules from this spec". It reconciles the spec's tech stack against the project architecture doc and surfaces overlaps/conflicts for sign-off. Also handles the EXPANSION RE-RUN: a new expansion spec for a live system updates the overview in place and scaffolds only the NEW modules - existing module folders are never re-scaffolded or overwritten (idempotence hard rule). Bound to the project workflow's "Brand-new system" bootstrap. Do NOT use for a single module/component spec, for editing the architecture (HOW) doc itself, or for the module index.
+description: Bootstrap a brand-new system from a reasonably complete spec/PRD/design doc — generate .claude/overview/system-overview-spec.md (the WHAT) and scaffold the modules derived from it, after ONE sign-off on the tech-reconciliation diff + module decomposition. Also handles the expansion re-run - existing module folders are never re-scaffolded or overwritten. Trigger on "fill in the spec template", "draft the system overview", "build the modules from this spec", "治理檔 / 總覽 spec". Do NOT use for a single module/component spec, or to edit the architecture (HOW) doc.
 ---
 
 # System Overview & Spec Generator (System Bootstrap)
@@ -9,10 +9,9 @@ Turn an arbitrary external spec into **(1)** a filled-in **System Overview & Spe
 single governance file answering **WHAT a system is and does**) **and (2)** the **scaffolded
 modules** derived from it — in one run, with one human sign-off checkpoint.
 
-This skill is the **executor of the "Brand-new system" bootstrap** defined in
-`.claude/rules/workspace-workflow.md` (Step 1). That workflow file is the single source of the
-procedure; this skill carries it out. If the two ever diverge, the workflow file wins — update
-this skill to match it, not the other way around.
+This skill is the **single source of truth for the "Brand-new system" bootstrap procedure**.
+`.claude/rules/workspace-workflow.md` (Step 1) only routes here with a one-paragraph summary;
+if the two ever diverge, THIS skill wins — update the workflow's summary to match it.
 
 The canonical overview structure lives in `assets/system-overview-spec.template.md`. Always start
 from that file so section order, headings, and the embedded governance comments stay intact.

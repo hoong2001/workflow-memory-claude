@@ -1,6 +1,6 @@
 ---
 name: workspace-module-save-implementation
-description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, syncs the paired plan document, AND — the reason this project version exists — lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user. After completing a feature module, a refactor, or a significant bug fix, REMIND the user in one line that the impl record is ready to be saved, and run only when they say go (or explicitly invoke it).
+description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, syncs the paired plan document, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user: after a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
 ---
 
 # Workspace Save Implementation

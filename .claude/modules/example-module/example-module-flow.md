@@ -14,7 +14,7 @@
 ## Called files & methods
 | File | Method | Role (short) |
 |---|---|---|
-| (e.g.) OrderRepository.cs | `GetById` | reads one order via Dapper |
+| (e.g., any stack) order repository file | `getById` | reads one order from the DB |
 | | | |
 
 ## Notes

@@ -19,7 +19,6 @@
 <!-- One or two lines describing THIS project (not the framework). Template: This system is a ___, for ___, solving ___.
      Keep it to a summary here; the full functional overview lives in the system spec linked below. -->
 (TBD)
-> Full system overview & spec (WHAT the whole system is/does) → `.claude/overview/system-overview-spec.md`
 
 ## Module Map
 <!--
@@ -64,8 +63,8 @@
 @.claude/rules/workspace-template-sync.md
 
 ## About this memory system
-Layered memory: this file (layer 1, auto-loaded, keep lean) → module layer `.claude/modules/*/MODULE.md`
-(layer 2, read when needed) → `.claude/` (governance layer: `overview/system-overview-spec.md` the system's functional WHAT — one per system, read on demand; `workspace-project-stack-architecture.md` the technical HOW, @imported as the hard rules; `rules/` behavioral rules auto-applied; `skills/` project-bound skills, e.g. `workspace-system-overview-spec-generator` which executes the workflow's Brand-new-system bootstrap).
+Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `.claude/modules/*/MODULE.md`
+(layer 2, read when needed) → governance layer per Common Entry Points above (+ `.claude/skills/` project-bound skills).
 
 <!--
 　Advanced: the @import syntax
