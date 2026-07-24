@@ -41,6 +41,9 @@ Branch first, then act, saving as you go:
 Plan landed but the technical cut still needs nailing down (API / classes / SQL / frontend)?
 → `/workspace-module-technical-design` — appends a "Technical Design" section to the SAME plan file, then wait for the go.
 
+Plan describes a feature too big to build in one code→build→test pass?
+→ `/workspace-module-slice-plan` — appends a "Build Increments" section (ordered vertical slices, blockers-first) to the SAME plan file; then build them top-to-bottom, one at a time, each through the Act loop below. Skip for anything that builds in one pass.
+
 → Act: **code → build → test** → **save on every change**.
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).
    Claude never auto-runs the build or the tests: after coding, remind the user in one line to
