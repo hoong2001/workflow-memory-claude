@@ -61,6 +61,7 @@ Decide the scope of this task's change:
 - **Structural change** — a new file/method entered the call chain, an existing one was removed or repurposed, or the main flow path shifted. → Patch only the affected parts of flow.md:
   - **Flow** section: adjust the narrative only where the path actually changed.
   - **Called files & methods** table: add rows for new `file:method` links, fix the "Role" of any that changed, remove rows for calls that no longer exist.
+  - **Shared symbols & their callers (fan-in)** table: if this change added or removed a caller of a shared symbol (`Base*`, `ConstValues/`, `Results/`, or any multi-caller method), patch that symbol's caller row. This table is the module's blast-radius map — a stale one is worse than none.
   - **Notes**: update only if a note is now wrong or a genuinely useful new one emerged.
   - Anchor every added/changed `file:method` to code you actually touched or read this task — no guessing (same rule as `/workspace-module-code-trace-flow`).
 
