@@ -43,6 +43,7 @@
 @.claude/workspace-project-stack-architecture.md
 
 ## Common Entry Points
+- Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `.claude/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `.claude/workspace-project-stack-architecture.md`
 - Behavioral rules → `.claude/rules/` (auto-applied via @import below)

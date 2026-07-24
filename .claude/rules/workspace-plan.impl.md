@@ -4,7 +4,10 @@
 A module-level requirement is talked into a plan via `/workspace-module-plan-discuss` —
 fixed path `.claude/modules/<name>/plans/<name>-<date>-<slug>.md`. When a plan exists and
 only the technical cut is missing, `/workspace-module-technical-design` appends a
-"Technical Design" section to the SAME plan file (never a separate file).
+"Technical Design" section to the SAME plan file (never a separate file). Likewise, when a
+feature is too big for one build pass, `/workspace-module-slice-plan` appends a "Build
+Increments" section (ordered vertical slices) to that SAME plan file — one plan file per
+task, always.
 
 ## Implementation documents
 Saving the impl record is the USER's trigger — they judge when the task is complete.

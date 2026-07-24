@@ -17,6 +17,8 @@ Converge a stated module-level requirement into a work-ready plan in the module'
 
 Ask one question at a time, waiting for the answer before continuing. If a question can be answered by exploring the codebase or docs, explore instead of asking.
 
+**Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
+
 </what-to-do>
 
 <supporting-info>
@@ -53,7 +55,9 @@ An element is a **GAP** if it cannot be filled (blank) or if filling it contradi
 - **Element fillable but conflicting** → challenge exactly that point, quoting the doc or code it collides with ("MODULE.md says times here are UTC, but your plan formats them in the repository layer — which is it?"). Resolve with the question pattern (infer → 4+1).
 - **Element blank** → interview ONLY the blank elements, one at a time, with the question pattern.
 
-Mixed results are normal: two blanks + one conflict = two interview questions + one challenge. Loop until all five are CLEAR and conflicts are zero, then do a final confirmation of the assembled plan.
+Mixed results are normal: two blanks + one conflict = two interview questions + one challenge. Loop until all five are CLEAR and conflicts are zero.
+
+**Implicit-decision sweep before writing.** The five elements reading CLEAR does not prove every call has been made — a downstream decision can still sit silently assumed. Before the final confirmation, sweep once: "what has this plan quietly decided without saying so?" (error handling, an edge case, a default value, a boundary the user never named). Surface each one with the question pattern until nothing important is left implicit. Then do a final confirmation of the assembled plan.
 
 ## Step 4 — Write the plan and hand off
 
@@ -62,5 +66,9 @@ Save to `.claude/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming a
 The plan must cover: the goal, the decisions made **+ why** (this framework has no ADR layer — a decision worth remembering, hard to reverse, or born of a real trade-off is recorded here as decision + why), where to cut (files/methods), and the definition of done. **Length scales with content** — a trivial fix yields a mini plan (one line per element + the cut point); a complex task grows naturally. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
 
 If the technical cut (API / classes / SQL / frontend) still needs nailing down, route to `/workspace-module-technical-design` — it appends a "Technical Design" section to this SAME plan file.
+
+**Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. When it clearly builds in one pass (a trivial fix, one field, one method), say nothing. When it's borderline or clearly too big, add ONE reminder line — never auto-run it, the trigger is the user's:
+
+> "This looks like more than one build pass — run `/workspace-module-slice-plan` to break it into ordered vertical increments first?"
 
 </supporting-info>
