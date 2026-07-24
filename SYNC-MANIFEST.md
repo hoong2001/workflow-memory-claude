@@ -4,6 +4,19 @@
 > projects. When pushing template updates to a project already in use, copy ONLY the
 > paths listed under "Safe to overwrite". Everything else belongs to the target project.
 
+## 📦 Master source (where `/workspace-update-from-master` pulls from)
+
+Sync pulls the master by **git clone** — no machine-specific folder path to maintain.
+
+| Setting | Value |
+|---|---|
+| Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
+| Branch | `main` |
+
+Override by editing this block, or by giving the skill a different URL/branch when it asks.
+A **local master path** is the fallback only — for working offline or testing an unpushed
+master; git is the default source.
+
 ## ✅ Safe to overwrite (pure template logic — sync freely)
 
 | Path | What it is |
@@ -60,9 +73,9 @@ content untouched.
 
 ## Sync procedure
 
-> Preferred: run `/workspace-update-from-master` in the target project — it executes
-> the steps below with a master-path confirmation prompt and a dry-run report.
-> The manual steps:
+> Preferred: run `/workspace-update-from-master` in the target project — it git-clones the
+> master (per the Master source block above; local-path fallback on request) and executes
+> the steps below with a dry-run report. The manual steps:
 
 1. Copy the ✅ paths from master into the target project, overwriting.
 2. Delete the 🗑️ paths from the target — ONLY those on the list above, only after the
