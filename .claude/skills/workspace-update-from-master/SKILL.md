@@ -1,6 +1,6 @@
 ---
 name: workspace-update-from-master
-description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. Prompts the user to confirm the master path before touching anything. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
+description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. By default git-clones the master fresh (URL/branch from SYNC-MANIFEST.md's Master source block); a local master path is the offline/test fallback. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
 ---
 
 # Update From Master — Template Sync (project side)
@@ -15,24 +15,38 @@ be copied; this skill is the executor, not the policy.
 - NEVER touch real module folders under `.claude/modules/` (anything other than `example-module`) or `.claude/overview/`.
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
-## Step 1 · Confirm the master path (always ask)
+## Step 1 · Get the master (git clone by default)
 
-The master path is machine-specific, so it is never hardcoded here. Ask the user:
+The master is pulled fresh from git, so there is no machine-specific path to maintain.
 
-> "What is the root path of the master template repo?" — offer the last-used path
-> if one is known from memory/conversation as the default option, plus an
-> "other / type it" fallback.
+1. **Read the source** from the target project's **local** `SYNC-MANIFEST.md` → "📦 Master
+   source" block (URL + branch). If that block is missing (an older project), default to
+   `https://github.com/hoong2001/workflow-memory-claude.git`, branch `main`. Offer it as
+   the default; let the user override the URL/branch if they say so.
+2. **Shallow-clone** it into a fresh temp directory (deleted in Step 6):
 
-Then validate before proceeding — ALL must pass, otherwise stop and re-ask:
-1. The path exists and contains `SYNC-MANIFEST.md` at its root.
+   ```powershell
+   $master = Join-Path $env:TEMP ("wmc-master-" + [guid]::NewGuid().ToString('N'))
+   git clone --depth 1 --branch main https://github.com/hoong2001/workflow-memory-claude.git $master
+   ```
+
+   If the clone fails (no network, bad URL), report the exact error and offer the local
+   fallback below — never proceed with a half-cloned tree.
+3. **Local fallback** (offline, or testing an unpushed master): if the user asks to sync
+   from a local master folder instead, skip the clone and ask for that path.
+
+Then validate the master (clone OR local path) before proceeding — ALL must pass, else stop:
+1. It contains `SYNC-MANIFEST.md` at its root.
 2. It contains `.claude/rules/` and `.claude/skills/`.
-3. It is NOT the same directory as the current project (syncing master onto itself is a no-op; warn and stop).
+3. The current project is **not the master itself** — if the project's
+   `git remote get-url origin` equals the master URL, this repo IS the master; syncing onto
+   itself is a no-op. Warn and stop.
 
 ## Step 2 · Read the manifest (SSOT)
 
-Read `SYNC-MANIFEST.md` **from the master** (not the local copy — the master's version
-is newer by definition). Its ✅ / 🚫 / ⚠️ categories drive everything below. If the
-manifest lists paths this skill doesn't mention, follow the manifest.
+Read `SYNC-MANIFEST.md` **from the freshly cloned master** (not the target's local copy —
+the clone is the newest by definition). Its ✅ / 🚫 / ⚠️ categories drive everything below.
+If the manifest lists paths this skill doesn't mention, follow the manifest.
 
 ## Step 3 · Pre-flight report
 
@@ -115,3 +129,6 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
 Summarize in one short block: files overwritten / added / deleted (manifest-listed) / merged / skipped (project-own) / alignment fixes applied (Step 5b),
 and anything that needs the user's follow-up. Remind the user to start a fresh session
 (or continue) so newly imported rules take effect.
+
+**Clean up:** if a temp master clone was created in Step 1, delete it now —
+`Remove-Item $master -Recurse -Force`. (Nothing to clean up for the local-path fallback.)
