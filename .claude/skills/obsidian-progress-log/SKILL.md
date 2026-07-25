@@ -25,8 +25,19 @@ no personal folder names, no absolute paths.
 
 **Under the hood, reuse the global Obsidian skills** — do not reinvent them:
 `obsidian:obsidian-cli` (read/create/append notes), `obsidian:obsidian-markdown` (note format),
-`obsidian:obsidian-bases` (the dashboard `.base` file). Confirm Obsidian is running before any
-CLI call.
+`obsidian:obsidian-bases` (the dashboard `.base` file).
+
+**Writing is dual-track — detect per machine, never assume (this skill is portable):**
+1. **CLI present** (`obsidian` on PATH) → prefer it, via `obsidian:obsidian-cli`. It keeps
+   Obsidian's index in sync and unlocks daily-note / backlink / search commands. Obsidian must
+   be running. On Windows, a shell opened *before* the CLI was enabled in Settings → General
+   carries a stale PATH — refresh it from the registry, or just use a fresh terminal; no reboot
+   needed.
+2. **CLI absent** → fall back to writing the note and the `.base` file directly to the vault
+   folder with normal file tools. The vault is plain Markdown, so this is a sanctioned,
+   equivalent fallback. Read the vault path from the user's global config — never hardcode it.
+
+Either track still obeys Step 3: never write to the vault before the user confirms the draft.
 
 ## Identify the project
 
