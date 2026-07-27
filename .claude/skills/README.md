@@ -6,7 +6,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`.
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`, and the Obsidian memory skills (`workspace-obsidian-start`, `workspace-obsidian-progress-log`).
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -75,6 +75,15 @@ requirement ──────────────┤                       
 |-------|-------------|--------------------|
 | `workspace-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` |
 
+### Standing · Cross-project memory (Obsidian)
+
+Adjacent to the module flow — a lightweight record that lives in the user's central Obsidian vault, so a project paused for a while can be resumed and nothing built is lost from view. `workspace-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (shallow snapshot vs. the deep in-project record) and is reminded at Step 3 wrap-up.
+
+| Skill | When to use | Purpose / function | Trigger |
+|-------|-------------|--------------------|---------|
+| `workspace-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Keep ONE shallow card per project in the vault + a Base dashboard (oldest-first); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-invoked (reminded at Step 3) |
+| `workspace-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `workspace-obsidian-progress-log`); reinvents nothing | User-invoked |
+
 ## Quick "what do I reach for?" forks
 
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
@@ -82,5 +91,6 @@ requirement ──────────────┤                       
 - **Plan done, need API/class/SQL detail** → `technical-design`.
 - **Plan done, feature is large** → `slice-plan`, then build increments one at a time.
 - **Plan done, builds in one pass** → just code; skip 2 and 3.
-- **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's).
+- **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's); then `workspace-obsidian-progress-log` to refresh the cross-project card.
+- **Resuming a project after a gap / "where was I?"** → `workspace-obsidian-progress-log` (RESUME), or `workspace-obsidian-start` if unsure which Obsidian skill you need.
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
