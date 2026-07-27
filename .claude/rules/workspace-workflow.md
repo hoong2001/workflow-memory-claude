@@ -56,5 +56,5 @@ Plan describes a feature too big to build in one code→build→test pass?
 ## Step 3 · Wrap up: update memory
 After the task completes, run through `workspace-update-memory.md`:
 impl record → `/workspace-module-save-implementation` (user-triggered) → backfill gotchas to the module →
-archive the plan → update the index (module map, flow) → architecture changes → keep `CLAUDE.md` lean →
+archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean →
 remind: `/workspace-obsidian-progress-log` to refresh the central Obsidian progress card (user-triggered, never auto-run).
