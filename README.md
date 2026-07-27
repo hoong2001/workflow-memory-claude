@@ -104,11 +104,13 @@ copying the framework files (adoption step 1) brings everything along.
 ### Obsidian memory skills (optional add-on)
 
 `workspace-obsidian-start` and `workspace-obsidian-progress-log` are project-bound like the rest and travel with
-`.claude/`, but unlike the core workflow they reach into the user's Obsidian vault, so they carry
-one external dependency: the vault path — set once per machine in the skill's own gitignored
+`.claude/`, but unlike the core workflow they reach into the user's Obsidian vault. The two are
+fully independent (no cross-skill dependency) and can be split apart safely: `workspace-obsidian-start`
+is a pure dispatcher that resolves no path; `workspace-obsidian-progress-log` is the only one that
+needs the vault path, set once per machine in its own gitignored
 `references/vault-path.local.json` (copied from the committed `vault-path.example.json`, so the
-real path never syncs) — and, for the richest path, the `obsidian` CLI plus the global
-`obsidian:*` plugin skills. Both degrade gracefully:
+real path never syncs). For the richest path both prefer the `obsidian` CLI plus the global
+`obsidian:*` plugin skills, but degrade gracefully:
 `workspace-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
 unaffected. `workspace-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a

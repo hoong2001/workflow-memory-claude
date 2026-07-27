@@ -15,13 +15,11 @@ hardcoded vault path, no personal folder names), so it stays portable across pro
 
 ## Step 1 · Preflight
 
-- **Vault location** is the family's single source of truth:
-  `workspace-obsidian-progress-log/references/vault-path.local.json` (its `vaultPath`). Never
-  hardcode it and never make a second copy — both Obsidian skills read this one file. You only
-  need it when a routed action must write *directly* to the vault (e.g. the `obsidian` CLI is
-  absent); pure routing and CLI-backed actions don't touch it. If a direct write is needed and
-  that file is missing, tell the user to create it from `vault-path.example.json` in that folder,
-  then stop — do not guess a path.
+- **This dispatcher resolves no vault path itself** — it only routes. Every write path is owned
+  by the skill it hands off to: `workspace-obsidian-progress-log` reads its own config;
+  `obsidian:obsidian-cli` targets the focused vault; `obsidian:obsidian-markdown` composes and
+  writes through the CLI. So there is nothing to configure here and NO dependency on any sibling
+  skill — the two Obsidian skills stay fully independent and can be split apart without breaking.
 - Any command that talks to a live vault (via `obsidian:obsidian-cli`) needs **Obsidian open**.
   If a CLI action is coming and it may not be running, say so in one line before proceeding.
 
