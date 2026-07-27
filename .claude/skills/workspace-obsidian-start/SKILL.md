@@ -15,7 +15,13 @@ hardcoded vault path, no personal folder names), so it stays portable across pro
 
 ## Step 1 · Preflight
 
-- The vault location is defined in the user's global config — do not ask for it or hardcode it.
+- **Vault location** is the family's single source of truth:
+  `workspace-obsidian-progress-log/references/vault-path.local.json` (its `vaultPath`). Never
+  hardcode it and never make a second copy — both Obsidian skills read this one file. You only
+  need it when a routed action must write *directly* to the vault (e.g. the `obsidian` CLI is
+  absent); pure routing and CLI-backed actions don't touch it. If a direct write is needed and
+  that file is missing, tell the user to create it from `vault-path.example.json` in that folder,
+  then stop — do not guess a path.
 - Any command that talks to a live vault (via `obsidian:obsidian-cli`) needs **Obsidian open**.
   If a CLI action is coming and it may not be running, say so in one line before proceeding.
 
