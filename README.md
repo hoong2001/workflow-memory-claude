@@ -105,8 +105,10 @@ copying the framework files (adoption step 1) brings everything along.
 
 `workspace-obsidian-start` and `workspace-obsidian-progress-log` are project-bound like the rest and travel with
 `.claude/`, but unlike the core workflow they reach into the user's Obsidian vault, so they carry
-one external dependency: the vault path (from the user's global config) and — for the richest
-path — the `obsidian` CLI plus the global `obsidian:*` plugin skills. Both degrade gracefully:
+one external dependency: the vault path — set once per machine in the skill's own gitignored
+`references/vault-path.local.json` (copied from the committed `vault-path.example.json`, so the
+real path never syncs) — and, for the richest path, the `obsidian` CLI plus the global
+`obsidian:*` plugin skills. Both degrade gracefully:
 `workspace-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
 unaffected. `workspace-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a

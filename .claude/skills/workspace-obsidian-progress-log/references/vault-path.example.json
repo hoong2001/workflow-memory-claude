@@ -1,0 +1,4 @@
+{
+  "_comment": "TEMPLATE. Copy this file to 'vault-path.local.json' in the same folder and set vaultPath to THIS machine's absolute Obsidian vault path. The .local.json copy is gitignored (matches *.local.json), so your real path stays machine-local and never syncs to other projects. This .example.json carries only a placeholder into git.",
+  "vaultPath": "C:\\Users\\<you>\\Documents\\Obsidian Vault"
+}

@@ -19,9 +19,12 @@ counts too. The deep record — how it was built and why — stays in this proje
 line when a moment fits (task wrapped up → "want me to log progress?"; opening a stale project
 → "this project has a card — read it back?"). The user decides.
 
-**Vault path** comes from the user's global config — never hardcode it. Cards live under a
-`Project Progress/` folder in the vault (create it if missing). Keep this skill generic:
-no personal folder names, no absolute paths.
+**Vault path — read it from this skill's own config: `references/vault-path.local.json`**
+(machine-local, gitignored, never synced). Read its `vaultPath` value; never hardcode a path in
+the skill body. **If that file is missing, do NOT guess or use a default** — tell the user in one
+line to copy `references/vault-path.example.json` → `references/vault-path.local.json` (same
+folder) and set their vault's absolute path, then stop until they've done it. Cards live under a
+`Project Progress/` folder inside that vault (create it if missing).
 
 **Under the hood, reuse the global Obsidian skills** — do not reinvent them:
 `obsidian:obsidian-cli` (read/create/append notes), `obsidian:obsidian-markdown` (note format),
@@ -35,7 +38,8 @@ no personal folder names, no absolute paths.
    needed.
 2. **CLI absent** → fall back to writing the note and the `.base` file directly to the vault
    folder with normal file tools. The vault is plain Markdown, so this is a sanctioned,
-   equivalent fallback. Read the vault path from the user's global config — never hardcode it.
+   equivalent fallback. Use the vault path from `references/vault-path.local.json` (per the
+   Vault path note above) — never hardcode it.
 
 Either track still obeys Step 3: never write to the vault before the user confirms the draft.
 
