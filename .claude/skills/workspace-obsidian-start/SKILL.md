@@ -1,5 +1,5 @@
 ---
-name: obsidian-start
+name: workspace-obsidian-start
 description: Entry point for working with the user's Obsidian vault. Infers what the user wants to do with Obsidian and routes to the right underlying Obsidian skill (CLI, Markdown, Bases, Canvas, web capture) instead of reinventing them. Use when the user's request names Obsidian but the specific action is not yet pinned down — "open obsidian", "用 obsidian", "obsidian 幫我...", "put this in my vault", "start a note", or any vault task where the tool/format to use is unclear. Do NOT use when the action is already unambiguous — go straight to the specific skill (e.g. reading a note → obsidian:obsidian-cli; writing note syntax → obsidian:obsidian-markdown).
 ---
 
@@ -31,7 +31,7 @@ Only if you genuinely cannot tell, go to Step 3.
 | Build a database-like view over notes — table/card view, filters, formulas (`.base` files) | `obsidian:obsidian-bases` |
 | Make a visual canvas — mind map, flowchart, connected nodes (`.canvas` files) | `obsidian:json-canvas` |
 | Save a web page / article cleanly into the vault (strip clutter) | `obsidian:defuddle` |
-| Log / check a project's progress snapshot — modules, done work, next step — or see what's stalled across projects | `obsidian-progress-log` |
+| Log / check a project's progress snapshot — modules, done work, next step — or see what's stalled across projects | `workspace-obsidian-progress-log` |
 
 Many real tasks combine two: e.g. "save this note about X" = compose content with
 `obsidian:obsidian-markdown`, then write it with `obsidian:obsidian-cli`. Chain them in that order.

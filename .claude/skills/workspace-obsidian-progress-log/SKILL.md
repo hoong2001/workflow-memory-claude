@@ -1,5 +1,5 @@
 ---
-name: obsidian-progress-log
+name: workspace-obsidian-progress-log
 description: Record and read back a lightweight cross-project progress snapshot in the user's central Obsidian vault — what a project is, its modules and their state, what was done, and the next step — so a project paused for a while can be resumed without re-reading everything, and so nothing built gets lost from the system view. Two modes — LOG (draft this project's snapshot from its real memory, confirm, write to the vault) and RESUME (read the card back, or show the whole dashboard of projects oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project", or opens a project after a gap. Do NOT use for the detailed in-project implementation record — that is /workspace-module-save-implementation; this skill only keeps the shallow snapshot that links back to it.
 ---
 

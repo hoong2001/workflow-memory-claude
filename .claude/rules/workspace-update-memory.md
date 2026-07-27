@@ -28,7 +28,7 @@ was run, its "Technical Design" section lives inside this same plan file — nev
 
 ## 6. Wrap-up check: is root `CLAUDE.md` still lean? If too long, move details to the module layer or `.claude/`, leaving only path links.
 
-## 7. Log the cross-project snapshot → `/obsidian-progress-log` (REMIND the user; never auto-run, the trigger is theirs)
+## 7. Log the cross-project snapshot → `/workspace-obsidian-progress-log` (REMIND the user; never auto-run, the trigger is theirs)
 Once the local memory above is updated, remind the user in one line that this project's central Obsidian progress card can be refreshed — modules + state, done work, status, next step — so a paused project can be resumed later from the cross-project dashboard without reopening everything. Shallow snapshot only; the deep record stays in `impl/` and `plans/`. Writing to the vault always needs the user's go — never silent.
 
 For each file changed, briefly say what changed and why. End with a one-line summary of what was archived this time.
