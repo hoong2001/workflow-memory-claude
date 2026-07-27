@@ -24,7 +24,13 @@ was run, its "Technical Design" section lives inside this same plan file — nev
 
 ## 5. Architecture changed → update `.claude/workspace-project-stack-architecture.md`
 
-## 5b. System scope / capabilities changed → update `.claude/overview/system-overview-spec.md` (the functional WHAT)
+## 5b. Does this change the system's WHAT? → JUDGE, then REMIND (the user decides whether to write it)
+The overview (`.claude/overview/system-overview-spec.md`) is a CURATED system-level WHAT — NOT an
+inventory of every module. A module built only for a bug fix or a small tweak rightly never appears
+there, so never auto-write it. Instead, judge whether this task changed the system's capabilities or
+scope (a new user-facing capability, a new subsystem, a changed WHAT) versus a localized fix. If it
+looks overview-worthy, REMIND the user in one line — with your reasoning and a proposed one-line
+entry — and let the USER decide whether to add it. Never edit the overview silently.
 
 ## 6. Wrap-up check: is root `CLAUDE.md` still lean? If too long, move details to the module layer or `.claude/`, leaving only path links.
 
