@@ -81,7 +81,7 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
-| `workspace-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Keep ONE shallow card per project in the vault + a Base dashboard (oldest-first); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-invoked (reminded at Step 3) |
+| `workspace-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Expandable cards in the vault — a project card + one card per module, aggregated by two Bases (projects oldest-first, and modules grouped by project); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-invoked (reminded at Step 3) |
 | `workspace-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `workspace-obsidian-progress-log`); reinvents nothing | User-invoked |
 
 ## Quick "what do I reach for?" forks
