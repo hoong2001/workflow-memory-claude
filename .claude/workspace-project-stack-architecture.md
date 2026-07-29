@@ -57,6 +57,7 @@ procedure in `.claude/adoption-conformance-scan.md` (read on demand at adoption 
 | JavaScript | ES6 (limited) | Frontend logic | |
 | jQuery | 3.6 | DOM manipulation & AJAX | ALL DOM manipulation and AJAX calls |
 | DataTables | 2.0.7 | Tabular data | ALL tabular data |
+| jsTree | 3.3.17 | Tree / hierarchical view | ALL tree / hierarchical data displays |
 | ECharts | 6.0.0 | Data visualization | ALL charts and graphs |
 | Bootstrap Datepicker | 1.10.0 | Date input fields | ALL date inputs |
 | Select2 | 4.0.13 | Enhanced select | ALL select boxes |
@@ -131,7 +132,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── ApiControllers/            ← Web API 2.2 controllers
 │   ├── Controllers/               ← MVC controllers
 │   ├── Views/                     ← Razor views
-│   ├── Models/                    ← ViewModels
+│   ├── Models/                    ← ViewModels (Web-only, not shared)
 │   ├── Scripts/                   ← JavaScript files
 │   ├── Content/                   ← CSS, images
 │   └── App_Start/                 ← Route, bundle config
