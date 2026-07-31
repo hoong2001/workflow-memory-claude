@@ -61,7 +61,7 @@
 @.claude/rules/workspace-reduce-coding-mistake.md
 @.claude/rules/workspace-library-docs-first.md
 @.claude/rules/workspace-sql-house-style.md
-@.claude/rules/workspace-plan.impl.md
+@.claude/rules/workspace-plan-impl.md
 @.claude/rules/workspace-template-sync.md
 
 ## About this memory system
