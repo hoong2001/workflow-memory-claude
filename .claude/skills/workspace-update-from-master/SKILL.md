@@ -42,6 +42,31 @@ Then validate the master (clone OR local path) before proceeding — ALL must pa
    `git remote get-url origin` equals the master URL, this repo IS the master; syncing onto
    itself is a no-op. Warn and stop.
 
+### Known environment issues (handle these, never rediscover them)
+
+These have each cost a run before. Treat them as part of the procedure, not as surprises:
+
+- **The clone may download objects without populating the working tree** (`GIT_DIR` /
+  `GIT_WORK_TREE` leaking in from the parent shell). After cloning: clear both, force a
+  checkout, and assert the tree is non-empty **before** any diff. An empty tree is a hard
+  stop, not a warning.
+
+  ```powershell
+  Remove-Item Env:GIT_DIR, Env:GIT_WORK_TREE -ErrorAction SilentlyContinue
+  git -C "$master" checkout -f HEAD
+  if (-not (Get-ChildItem -Force "$master" | Where-Object Name -ne '.git')) {
+      throw "Clone left an empty working tree — stop, do not diff."
+  }
+  ```
+
+- **Quote every path.** The master temp path and the target project path may both contain
+  spaces; an unquoted path fails or, worse, resolves to the wrong depth.
+- **Never combine copy and delete in one command.** The permission layer misresolves
+  multi-action path commands — run them as separate steps (Step 4 then Step 4b).
+- **Run the Step 6 alignment scan with `--no-ignore`.** The TARGET project's `.gitignore`
+  may hide `.md` / `.claude` from ripgrep even when the master's does not, which makes the
+  scan silently find nothing and report "aligned".
+
 ## Step 2 · Read the manifest (SSOT)
 
 Read `SYNC-MANIFEST.md` **from the freshly cloned master** (not the target's local copy —

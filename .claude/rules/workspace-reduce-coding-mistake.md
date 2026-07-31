@@ -43,6 +43,11 @@ When your changes create orphans:
 - Remove imports/variables/functions that YOUR changes made unused.
 - Don't remove pre-existing dead code unless asked.
 
+When a change spans two skills or modules:
+
+- Keep them decoupled. State the coupling tradeoff for the user to decide, instead of
+  wiring them together on your own initiative.
+
 The test: Every changed line should trace directly to the user's request.
 
 ## 4. Goal-Driven Execution
