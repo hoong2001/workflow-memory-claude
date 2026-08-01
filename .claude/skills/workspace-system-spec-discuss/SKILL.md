@@ -7,14 +7,8 @@ description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - i
 
 Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/workspace-module-plan-discuss`, never into a spec.
 
-Each question follows the two-step pattern:
-
-1. **Infer first** — state your recommended answer up front, with the reasoning behind it (from existing plans, module docs, the code, or the constraints). Let me simply accept it.
-2. **Options on rejection** — if I reject or doubt the inference, immediately present **4 concrete alternative options plus 1 free-form custom choice** (when the AskUserQuestion tool is available, use it — put your recommendation first with "(Recommended)"; its built-in "Other" serves as the custom choice). Each option must be a real, distinct direction with a one-line trade-off — never filler to pad the count.
-
-Ask the questions one at a time, waiting for feedback on each question before continuing.
-
-If a question can be answered by exploring the codebase or existing docs, explore instead of asking.
+**Question pattern** (infer first → on rejection, 4 options + 1 custom) and **interview conduct**
+(one question at a time; explore before asking): follow `.claude/skills/_shared-conventions.md`.
 
 **Synthesize before you interview.** If the conversation that led here has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
 

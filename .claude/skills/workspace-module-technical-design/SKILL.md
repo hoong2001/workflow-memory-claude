@@ -20,10 +20,8 @@ Before proposing anything new, search the real codebase for existing patterns to
 
 ## Step 3: Design, one decision at a time
 
-Walk the layers top-down. For each design decision follow the two-step pattern:
-
-1. **Infer first** — state your recommended design with reasoning (from the plan, the code, the constraints). Let the user simply accept it.
-2. **Options on rejection** — if rejected, present 4 concrete alternatives plus one free-form choice (use AskUserQuestion when available; recommendation first, marked "(Recommended)"). Each option is a real direction with a one-line trade-off.
+Walk the layers top-down. For each design decision follow the **question pattern** (infer first →
+on rejection, 4 options + 1 custom) in `.claude/skills/_shared-conventions.md`.
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)

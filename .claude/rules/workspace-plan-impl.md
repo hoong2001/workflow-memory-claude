@@ -1,21 +1,12 @@
 # Project Documentation Rules
 
-## Plan documents
-A module-level requirement is talked into a plan via `/workspace-module-plan-discuss` —
-fixed path `.claude/modules/<name>/plans/<name>-<date>-<slug>.md`. When a plan exists and
-only the technical cut is missing, `/workspace-module-technical-design` appends a
-"Technical Design" section to the SAME plan file (never a separate file). Likewise, when a
-feature is too big for one build pass, `/workspace-module-slice-plan` appends a "Build
-Increments" section (ordered vertical slices) to that SAME plan file — one plan file per
-task, always.
+Paths and triggers live in `workspace-workflow.md` — Step 2 routes plans, Step 3 routes the
+wrap-up. This file owns only the principles that apply to EVERY document written under `.claude/`:
 
-## Implementation documents
-Saving the impl record is the USER's trigger — they judge when the task is complete.
-After a feature, refactor, or significant bug fix is done, remind in one line that
-`/workspace-module-save-implementation` is ready (this project's version — saves to the
-module's `impl/` folder AND syncs `<name>-flow.md`); NEVER auto-run it.
-
-## Core principles
-- Document immediately after each milestone — don't wait for the session to end.
-- Documents must be readable by a future Claude session with no prior context.
-- If a document already exists, update it — never create a duplicate.
+- **One task, one document.** A task's plan is a single file; `/workspace-module-technical-design`
+  and `/workspace-module-slice-plan` append their sections into it, never a sibling file — so the
+  plan and its paired `impl/` record stay one-to-one.
+- **Write at the milestone, not at session end.** A document deferred is a document lost.
+- **Write for a reader with no prior context** — a future session must be able to act on it
+  without re-deriving the conversation that produced it.
+- **If the document already exists, update it** — never create a duplicate.

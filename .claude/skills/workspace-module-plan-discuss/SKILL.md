@@ -11,11 +11,8 @@ Converge a stated module-level requirement into a work-ready plan in the module'
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Question pattern (every question in this skill):**
-1. **Infer first** — state your recommended answer with the reasoning (from the docs, the code, or the constraints). Let the user simply accept it.
-2. **Options on rejection** — if the user rejects or doubts the inference, immediately present **4 concrete alternative options plus 1 free-form custom choice** (when the AskUserQuestion tool is available, use it — put your recommendation first with "(Recommended)"; its built-in "Other" serves as the custom choice). Each option must be a real, distinct direction with a one-line trade-off — never filler to pad the count.
-
-Ask one question at a time, waiting for the answer before continuing. If a question can be answered by exploring the codebase or docs, explore instead of asking.
+**Question pattern** (infer first → on rejection, 4 options + 1 custom) and **interview conduct**
+(one question at a time; explore before asking): follow `.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
 
