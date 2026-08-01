@@ -52,13 +52,13 @@ The test: Every changed line should trace directly to the user's request.
 
 ## 4. Goal-Driven Execution
 
-**Define success criteria. Loop until verified.**
+**Define success criteria before coding, not after.**
 
-Transform tasks into verifiable goals:
+Turn a vague task into an observable done-criterion:
 
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- "Add validation" → "Submitting an empty required field shows the error and blocks the POST"
+- "Fix the bug" → "The exact input that failed now produces <expected output>"
+- "Refactor X" → "Same observable behavior before and after; every listed call site still compiles"
 
 For multi-step tasks, state a brief plan:
 
@@ -68,7 +68,9 @@ For multi-step tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+**Verification here is MANUAL — the user builds and runs** (`workspace-workflow.md` Step 2). So a
+criterion must be something THEY can observe and report back; you do not loop on it yourself.
+Weak criteria ("make it work") require constant clarification.
 
 ---
 

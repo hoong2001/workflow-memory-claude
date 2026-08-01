@@ -28,15 +28,18 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   ├── workspace-tech-mentor.md       technical mentorship style
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
+│   ├── workspace-sql-house-style.md   schema / seed .sql conventions
 │   ├── workspace-plan-impl.md        plan / impl documentation triggers
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
 │   ├── workspace-template-sync.md     never blind-overwrite project state on sync
 │   └── workspace-update-memory.md     Step 3: wrap-up memory update (read on demand, NOT @imported)
 ├── skills/                            project-bound skills (travel WITH .claude/)
+│   ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
 │   ├── workspace-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
 │   ├── workspace-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
 │   ├── workspace-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
 │   ├── workspace-module-technical-design/  append "Technical Design" to the SAME plan file
+│   ├── workspace-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
 │   ├── workspace-module-code-trace-flow/  legacy code → extract <name>-flow.md
 │   ├── workspace-module-save-implementation/  save impl record + sync flow (user-triggered)
 │   ├── workspace-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
@@ -50,7 +53,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
     ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-module-plan-discuss; /workspace-module-technical-design appends the design)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-module-plan-discuss; technical-design + slice-plan append into the same file)
     └── impl/<name>-<date>-<slug>.md   post-change records (/workspace-module-save-implementation)
 ```
 
@@ -93,6 +96,7 @@ All skills the workflow invokes are **project-bound** — they live in `.claude/
 with the folder: `workspace-system-overview-spec-generator`, `workspace-module-save-implementation`,
 `workspace-module-plan-discuss`, `workspace-module-technical-design` (which in turn follows the
 stack-bound `workspace-concrete-repository-pattern` + `workspace-aspnet-mvc-frontend-standards`),
+`workspace-module-slice-plan`,
 `workspace-system-spec-discuss`, `workspace-module-code-trace-flow`, `workspace-auto-test-loop`,
 and `workspace-update-from-master`. No user-level (global) skill is required:
 copying the framework files (adoption step 1) brings everything along.

@@ -26,7 +26,7 @@ Slice by **behavior**, never by layer. "Show the customer list" (a full thin pat
 - Each increment declares **Blocked by:** the increments that must land first (blockers-first ordering). List the blocking one earlier in the sequence.
 - This project is single-developer with **manual build/test** (see `workspace-workflow.md` Step 2): increments are worked **top-to-bottom, one at a time, in the loop** — build one, remind the user to build + test it, fix, then start the next. There is no parallel fleet; the blocking edges just fix the order.
 - **Just-in-time design** — if the plan has no `## Technical Design` yet, you do NOT need to design the whole feature up front. Slice first, then run `/workspace-module-technical-design` per increment as you reach it. Slicing first is often what keeps a big up-front design from over-reaching.
-- **Quiz the user before finalizing** — walk the proposed breakdown with them using the standard question pattern (infer a recommended slicing first with reasoning; on rejection, 4 concrete alternatives + 1 custom via AskUserQuestion). Confirm granularity, the blocking edges, and anything to merge or split. Don't publish the list until it's agreed.
+- **Quiz the user before finalizing** — walk the proposed breakdown with them using the **question pattern** (infer first → on rejection, 4 options + 1 custom) in `.claude/skills/_shared-conventions.md`. Confirm granularity, the blocking edges, and anything to merge or split. Don't publish the list until it's agreed.
 
 ## Step 4: Append the increments to the plan
 

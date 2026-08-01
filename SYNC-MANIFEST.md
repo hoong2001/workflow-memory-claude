@@ -39,6 +39,12 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 | `.claude/overview/references/` | That system's reference materials |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |
 
+> **Master maintenance note** — the master's own `.claude/overview/system-overview-spec.md` is a
+> pristine copy of the generator's
+> `.claude/skills/workspace-system-overview-spec-generator/assets/system-overview-spec.template.md`
+> (adoption seeds a project from it). Edit the **asset**, then re-copy it over the master's overview
+> so the two never drift. Projects never receive this file — on their side it is 🚫.
+
 ## ⚠️ Grey zone (manual merge only — never mechanical copy)
 
 | Path | Template part | Project part |
