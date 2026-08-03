@@ -1,5 +1,5 @@
 ---
-name: workspace-auto-test-loop
+name: wp-auto-test-loop
 description: Automated build-and-test loop for the ASP.NET MVC solution - compile via vswhere-located MSBuild, auto-fix compile errors and rebuild until green, verify data with CRUD-only SQL (connection read from Web.config), and web-test the changed flow against a site the USER has started. Invoke ONLY on the user's explicit request ("run auto test", "build and test this", "自動測試") - never auto-trigger after coding. Do NOT use for DDL/schema changes, deployments, starting/stopping the site, or running unit-test frameworks.
 ---
 
@@ -84,4 +84,4 @@ scripts/run-sql.ps1 -WebConfigPath <Web\Web.config> -ConnectionName <name> -Quer
 
 Summarize in one block: build rounds + what was fixed, SQL checks run and results, web-test
 pass/fail per acceptance point, anything left for the user. Then remind in one line that
-`/workspace-module-save-implementation` is ready to run — never auto-run it.
+`/wp-module-save-implementation` is ready to run — never auto-run it.

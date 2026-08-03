@@ -1,5 +1,5 @@
 ---
-name: workspace-concrete-repository-pattern
+name: wp-concrete-repository-pattern
 description: Repository Pattern implementation guide using Dapper.NET for C# 7.3 ASP.NET MVC 5 projects. Use this skill whenever writing, reviewing, or modifying Repository classes, BaseRepository, UnitOfWork, or any data access layer code. Also trigger when the user asks about Dapper queries, SQL parameterization, dynamic queries, transaction management, or DAL structure. Always use DynamicParameters for all queries. No interfaces, no async, no DI, no stored procedures.
 ---
 

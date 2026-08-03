@@ -1,11 +1,11 @@
 ---
-name: workspace-system-spec-discuss
-description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /workspace-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/workspace-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
+name: wp-system-spec-discuss
+description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /wp-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/wp-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
 ---
 
 <what-to-do>
 
-Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/workspace-module-plan-discuss`, never into a spec.
+Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/wp-module-plan-discuss`, never into a spec.
 
 **Question pattern** (infer first → on rejection, 4 options + 1 custom) and **interview conduct**
 (one question at a time; explore before asking): follow `.claude/skills/_shared-conventions.md`.
@@ -38,7 +38,7 @@ This skill produces exactly one kind of output: a whole-system spec at
 `.claude/overview/references/spec-<date>-<slug>.md`, ready for the bootstrap.
 
 If what the user actually describes is a single module/feature requirement, STOP and route to
-`/workspace-module-plan-discuss` — module-level requirements are talked straight into a work doc
+`/wp-module-plan-discuss` — module-level requirements are talked straight into a work doc
 in `plans/`, never into a spec.
 
 ## Step 1 — Gather seed material
@@ -77,6 +77,6 @@ Write the spec to `.claude/overview/references/spec-<date>-<slug>.md`, using pro
 
 **Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
 
-Tell the user the spec is ready and recommend running `/workspace-system-overview-spec-generator` on it to execute the bootstrap.
+Tell the user the spec is ready and recommend running `/wp-system-overview-spec-generator` on it to execute the bootstrap.
 
 </supporting-info>

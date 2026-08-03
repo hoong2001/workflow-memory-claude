@@ -1,5 +1,5 @@
 ---
-name: workspace-system-overview-spec-generator
+name: wp-system-overview-spec-generator
 description: Bootstrap a brand-new system from a reasonably complete spec/PRD/design doc — generate .claude/overview/system-overview-spec.md (the WHAT) and scaffold the modules derived from it, after ONE sign-off on the tech-reconciliation diff + module decomposition. Also handles the expansion re-run - existing module folders are never re-scaffolded or overwritten. Trigger on "fill in the spec template", "draft the system overview", "build the modules from this spec", "治理檔 / 總覽 spec". Do NOT use for a single module/component spec, or to edit the architecture (HOW) doc.
 ---
 
@@ -35,7 +35,7 @@ overview.
 
 ### Step 0 — Confirm this is a system bootstrap (or a system expansion re-run)
 This skill needs a reasonably **complete** spec (purpose, capabilities, ideally data entities). If
-the spec is thin or fuzzy, stop and route to `/workspace-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
+the spec is thin or fuzzy, stop and route to `/wp-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
 
 Two run modes, same procedure:
 - **First bootstrap** — no overview filled yet, no real modules exist.

@@ -1,5 +1,5 @@
 ---
-name: workspace-update-from-master
+name: wp-update-from-master
 description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. By default git-clones the master fresh (URL/branch from SYNC-MANIFEST.md's Master source block); a local master path is the offline/test fallback. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
 ---
 
@@ -135,8 +135,9 @@ line MUST be added to the target's `CLAUDE.md` — flag this explicitly.
 Copying updates template files, but the target's project-state docs still reference
 whatever was renamed or removed. Scan and align them — this step is NOT optional:
 
-1. Build the search-term list from the manifest's 🗑️ Renames / deletions table: each
-   obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
+1. Build the search-term list from **every table in** the manifest's 🗑️ Renames / deletions
+   section — it holds more than one, and a sub-heading table (e.g. a bulk prefix rename) counts.
+   Take each obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
    `specs/` folder), plus anything the manifest's grey-zone notes flag as renamed.
 2. Grep those terms across the target's LIVING docs only:
    root `CLAUDE.md`, `.claude/overview/system-overview-spec.md`,

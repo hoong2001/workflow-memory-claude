@@ -1,6 +1,6 @@
 ---
-name: workspace-module-slice-plan
-description: Slice a confirmed plan into ordered vertical increments (tracer bullets) — each a thin path through every layer (Web → Services → UnitOfWork → SQL + frontend) that is independently demoable and verifiable, with explicit blocking order — appended as a "Build Increments" section to the SAME plan document in the module's plans/ folder. Use when a plan describes a feature too big to build in one code→build→test pass and you want it broken into increments you can verify one at a time. Do NOT use for a trivial fix (plan-discuss's fast path already covers it), or before a plan exists (run /workspace-module-plan-discuss first).
+name: wp-module-slice-plan
+description: Slice a confirmed plan into ordered vertical increments (tracer bullets) — each a thin path through every layer (Web → Services → UnitOfWork → SQL + frontend) that is independently demoable and verifiable, with explicit blocking order — appended as a "Build Increments" section to the SAME plan document in the module's plans/ folder. Use when a plan describes a feature too big to build in one code→build→test pass and you want it broken into increments you can verify one at a time. Do NOT use for a trivial fix (plan-discuss's fast path already covers it), or before a plan exists (run /wp-module-plan-discuss first).
 ---
 
 <what-to-do>
@@ -9,7 +9,7 @@ Take a confirmed plan and cut it into an ordered list of **vertical increments**
 
 ## Step 1: Locate and absorb the inputs
 
-1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/workspace-module-plan-discuss`. If a `## Technical Design` section is present, slice against it; if not, that's fine — see the just-in-time note in Step 3.
+1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/wp-module-plan-discuss`. If a `## Technical Design` section is present, slice against it; if not, that's fine — see the just-in-time note in Step 3.
 2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain the order.
 3. **Hard rules** — the layering and forbidden patterns in `.claude/workspace-project-stack-architecture.md` define what "a path through every layer" means for this stack; they are non-negotiable.
 
@@ -25,7 +25,7 @@ Slice by **behavior**, never by layer. "Show the customer list" (a full thin pat
 
 - Each increment declares **Blocked by:** the increments that must land first (blockers-first ordering). List the blocking one earlier in the sequence.
 - This project is single-developer with **manual build/test** (see `workspace-workflow.md` Step 2): increments are worked **top-to-bottom, one at a time, in the loop** — build one, remind the user to build + test it, fix, then start the next. There is no parallel fleet; the blocking edges just fix the order.
-- **Just-in-time design** — if the plan has no `## Technical Design` yet, you do NOT need to design the whole feature up front. Slice first, then run `/workspace-module-technical-design` per increment as you reach it. Slicing first is often what keeps a big up-front design from over-reaching.
+- **Just-in-time design** — if the plan has no `## Technical Design` yet, you do NOT need to design the whole feature up front. Slice first, then run `/wp-module-technical-design` per increment as you reach it. Slicing first is often what keeps a big up-front design from over-reaching.
 - **Quiz the user before finalizing** — walk the proposed breakdown with them using the **question pattern** (infer first → on rejection, 4 options + 1 custom) in `.claude/skills/_shared-conventions.md`. Confirm granularity, the blocking edges, and anything to merge or split. Don't publish the list until it's agreed.
 
 ## Step 4: Append the increments to the plan
@@ -66,7 +66,7 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 ## Guardrails
 
 - Every increment must be a **full vertical path** that can be manually built, tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
-- Keep each increment at behavior level, not a task checklist — the HOW per increment belongs to `/workspace-module-technical-design`, the code to the work loop.
+- Keep each increment at behavior level, not a task checklist — the HOW per increment belongs to `/wp-module-technical-design`, the code to the work loop.
 - Don't over-slice: a feature that genuinely builds in one pass needs no increments — say so and stop rather than manufacturing ceremony.
 - New gotchas or conventions discovered while slicing → backfill the module's MODULE.md immediately (one line each).
 

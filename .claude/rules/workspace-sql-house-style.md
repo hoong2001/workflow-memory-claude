@@ -2,7 +2,7 @@
 
 Scope: `.sql` files — table/view definitions and seed/reference-data scripts. Runtime data
 access (Dapper queries, parameterization, transactions) is governed by the
-`workspace-concrete-repository-pattern` skill, not this rule.
+`wp-concrete-repository-pattern` skill, not this rule.
 
 ## 1. Seed scripts are plain INSERTs
 

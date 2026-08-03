@@ -33,7 +33,7 @@
 <!--
 　Standard contents of each module folder (a module's whole brain lives in its own folder):
 　  MODULE.md (rules/gotchas) · <name>-flow.md (call chain) · plans/ (pre-change plans) · impl/ (post-change records)
-　Workflow: /workspace-module-code-trace-flow→flow ; /workspace-module-plan-discuss→plans (optionally deepened by /workspace-module-technical-design) ; /workspace-module-save-implementation→impl (also syncs flow)
+　Workflow: /wp-module-code-trace-flow→flow ; /wp-module-plan-discuss→plans (optionally deepened by /wp-module-technical-design) ; /wp-module-save-implementation→impl (also syncs flow)
 　Full explanation: see the comment at the top of any module's MODULE.md.
 -->
 
