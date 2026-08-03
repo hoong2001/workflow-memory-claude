@@ -35,26 +35,26 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   └── workspace-update-memory.md     Step 3: wrap-up memory update (read on demand, NOT @imported)
 ├── skills/                            project-bound skills (travel WITH .claude/)
 │   ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
-│   ├── workspace-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
-│   ├── workspace-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
-│   ├── workspace-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
-│   ├── workspace-module-technical-design/  append "Technical Design" to the SAME plan file
-│   ├── workspace-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
-│   ├── workspace-module-code-trace-flow/  legacy code → extract <name>-flow.md
-│   ├── workspace-module-save-implementation/  save impl record + sync flow (user-triggered)
-│   ├── workspace-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
-│   ├── workspace-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
-│   ├── workspace-concrete-repository-pattern/  data-layer pattern (SSOT)
-│   ├── workspace-update-from-master/  pull template updates per SYNC-MANIFEST.md
-│   ├── workspace-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
-│   └── workspace-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
+│   ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
+│   ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
+│   ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
+│   ├── wp-module-technical-design/  append "Technical Design" to the SAME plan file
+│   ├── wp-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
+│   ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
+│   ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
+│   ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
+│   ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
+│   ├── wp-concrete-repository-pattern/  data-layer pattern (SSOT)
+│   ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
+│   ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
+│   └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
     ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/workspace-module-plan-discuss; technical-design + slice-plan append into the same file)
-    └── impl/<name>-<date>-<slug>.md   post-change records (/workspace-module-save-implementation)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file)
+    └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 ```
 
 ## Apply to a new project (3 steps)
@@ -74,9 +74,9 @@ self-contained (see **Skill dependencies** below).
 
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
-1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/workspace-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
+1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
 2. **Core loop** — branch by module state (A existing / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change.
-3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `workspace-obsidian-progress-log`.
+3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `wp-obsidian-progress-log`.
 
 ## Portable vs per-project
 
@@ -93,29 +93,29 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 ## Skill dependencies (important when copying)
 
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
-with the folder: `workspace-system-overview-spec-generator`, `workspace-module-save-implementation`,
-`workspace-module-plan-discuss`, `workspace-module-technical-design` (which in turn follows the
-stack-bound `workspace-concrete-repository-pattern` + `workspace-aspnet-mvc-frontend-standards`),
-`workspace-module-slice-plan`,
-`workspace-system-spec-discuss`, `workspace-module-code-trace-flow`, `workspace-auto-test-loop`,
-and `workspace-update-from-master`. No user-level (global) skill is required:
+with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementation`,
+`wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
+stack-bound `wp-concrete-repository-pattern` + `wp-aspnet-mvc-frontend-standards`),
+`wp-module-slice-plan`,
+`wp-system-spec-discuss`, `wp-module-code-trace-flow`, `wp-auto-test-loop`,
+and `wp-update-from-master`. No user-level (global) skill is required:
 copying the framework files (adoption step 1) brings everything along.
 
-> `workspace-module-save-implementation` is this project's replacement for the generic global `save-implementation`:
+> `wp-module-save-implementation` is this project's replacement for the generic global `save-implementation`:
 > it saves impl records to the module's `impl/` folder using this project's path convention **and** lightweight-syncs
 > `<name>-flow.md`. Use it instead of `/save-implementation` here.
 
 ### Obsidian memory skills (optional add-on)
 
-`workspace-obsidian-start` and `workspace-obsidian-progress-log` are project-bound like the rest and travel with
+`wp-obsidian-start` and `wp-obsidian-progress-log` are project-bound like the rest and travel with
 `.claude/`, but unlike the core workflow they reach into the user's Obsidian vault. The two are
-fully independent (no cross-skill dependency) and can be split apart safely: `workspace-obsidian-start`
-is a pure dispatcher that resolves no path; `workspace-obsidian-progress-log` is the only one that
+fully independent (no cross-skill dependency) and can be split apart safely: `wp-obsidian-start`
+is a pure dispatcher that resolves no path; `wp-obsidian-progress-log` is the only one that
 needs the vault path, set once per machine in its own gitignored
 `references/vault-path.local.json` (copied from the committed `vault-path.example.json`, so the
 real path never syncs). For the richest path both prefer the `obsidian` CLI plus the global
 `obsidian:*` plugin skills, but degrade gracefully:
-`workspace-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
+`wp-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
-unaffected. `workspace-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a
+unaffected. `wp-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a
 shallow snapshot vs. the deep in-project record) and is reminded at Step 3 wrap-up.

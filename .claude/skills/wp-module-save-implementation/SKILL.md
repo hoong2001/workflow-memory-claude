@@ -1,9 +1,9 @@
 ---
-name: workspace-module-save-implementation
-description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, syncs the paired plan document, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user: after a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
+name: wp-module-save-implementation
+description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, syncs the paired plan document, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
 ---
 
-# Workspace Save Implementation
+# Module Save Implementation
 
 Project-bound replacement for the generic `save-implementation` skill. Two differences from the generic one:
 
@@ -63,9 +63,9 @@ Decide the scope of this task's change:
   - **Called files & methods** table: add rows for new `file:method` links, fix the "Role" of any that changed, remove rows for calls that no longer exist.
   - **Shared symbols & their callers (fan-in)** table: if this change added or removed a caller of a shared symbol (`Base*`, `ConstValues/`, `Results/`, or any multi-caller method), patch that symbol's caller row. This table is the module's blast-radius map — a stale one is worse than none.
   - **Notes**: update only if a note is now wrong or a genuinely useful new one emerged.
-  - Anchor every added/changed `file:method` to code you actually touched or read this task — no guessing (same rule as `/workspace-module-code-trace-flow`).
+  - Anchor every added/changed `file:method` to code you actually touched or read this task — no guessing (same rule as `/wp-module-code-trace-flow`).
 
-- **Large structural change** — the flow was substantially rewritten, or flow.md is clearly far from reality. Hand-patching is untrustworthy here. → Don't fake it: recommend the user run the full `/workspace-module-code-trace-flow` to re-derive the map, and note in the report that flow.md was left for a full re-trace.
+- **Large structural change** — the flow was substantially rewritten, or flow.md is clearly far from reality. Hand-patching is untrustworthy here. → Don't fake it: recommend the user run the full `/wp-module-code-trace-flow` to re-derive the map, and note in the report that flow.md was left for a full re-trace.
 
 Keep flow.md to the stable "how it works" parts. A specific change's "where to cut" belongs in that change's plan (`plans/`), not here.
 
@@ -78,7 +78,7 @@ Report all paths touched and the flow.md outcome, e.g.:
 ✅ Plan synced: plans/<name>-2026-07-02-<slug>.md  (status → Done)
 ✅ flow.md: updated 2 call-chain rows (added OrderService.Validate, fixed Repository role)
    — or — flow.md unchanged (internal-only change)
-   — or — flow.md left for full /workspace-module-code-trace-flow (large structural rewrite)
+   — or — flow.md left for full /wp-module-code-trace-flow (large structural rewrite)
 ```
 
 ## Notes

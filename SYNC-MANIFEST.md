@@ -4,7 +4,7 @@
 > projects. When pushing template updates to a project already in use, copy ONLY the
 > paths listed under "Safe to overwrite". Everything else belongs to the target project.
 
-## 📦 Master source (where `/workspace-update-from-master` pulls from)
+## 📦 Master source (where `/wp-update-from-master` pulls from)
 
 Sync pulls the master by **git clone** — no machine-specific folder path to maintain.
 
@@ -41,7 +41,7 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 
 > **Master maintenance note** — the master's own `.claude/overview/system-overview-spec.md` is a
 > pristine copy of the generator's
-> `.claude/skills/workspace-system-overview-spec-generator/assets/system-overview-spec.template.md`
+> `.claude/skills/wp-system-overview-spec-generator/assets/system-overview-spec.template.md`
 > (adoption seeds a project from it). Edit the **asset**, then re-copy it over the master's overview
 > so the two never drift. Projects never receive this file — on their side it is 🚫.
 
@@ -65,22 +65,51 @@ content untouched.
 
 | Obsolete path (delete in target) | Replaced by |
 |---|---|
-| `.claude/skills/workspace-spec-discuss/` | `.claude/skills/workspace-system-spec-discuss/` |
-| `.claude/skills/workspace-brief-to-technical-design/` | `.claude/skills/workspace-module-technical-design/` |
-| `.claude/skills/workspace-code-trace-spec/` | `.claude/skills/workspace-module-code-trace-flow/` |
-| `.claude/skills/workspace-save-implementation/` | `.claude/skills/workspace-module-save-implementation/` |
-| `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
-| `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/workspace-module-plan-discuss/` |
-| `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/workspace-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
+| `.claude/skills/workspace-spec-discuss/` | `.claude/skills/wp-system-spec-discuss/` |
+| `.claude/skills/workspace-brief-to-technical-design/` | `.claude/skills/wp-module-technical-design/` |
+| `.claude/skills/workspace-code-trace-spec/` | `.claude/skills/wp-module-code-trace-flow/` |
+| `.claude/skills/workspace-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
+| `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/wp-module-plan-discuss/` |
+| `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/wp-module-plan-discuss/` |
+| `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
 | `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` (renamed to kebab-case, content unchanged — the target's `CLAUDE.md` `@import` line must be updated to match) |
 | `.claude/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+
+### `workspace-*` → `wp-*` skill prefix (all 13 skills, content unchanged)
+
+Renamed so typing `/wp` filters to exactly this workflow's skills. **Rule files keep the
+`workspace-` prefix on purpose** — they are never typed as commands, so the two prefixes now
+signal which is which: `wp-*` = a slash command you invoke, `workspace-*` = an always-on rule
+file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
+`.claude/workspace-project-stack-architecture.md`.
+
+| Obsolete path (delete in target) | Replaced by |
+|---|---|
+| `.claude/skills/workspace-system-spec-discuss/` | `.claude/skills/wp-system-spec-discuss/` |
+| `.claude/skills/workspace-system-overview-spec-generator/` | `.claude/skills/wp-system-overview-spec-generator/` |
+| `.claude/skills/workspace-module-plan-discuss/` | `.claude/skills/wp-module-plan-discuss/` |
+| `.claude/skills/workspace-module-technical-design/` | `.claude/skills/wp-module-technical-design/` |
+| `.claude/skills/workspace-module-slice-plan/` | `.claude/skills/wp-module-slice-plan/` |
+| `.claude/skills/workspace-module-code-trace-flow/` | `.claude/skills/wp-module-code-trace-flow/` |
+| `.claude/skills/workspace-module-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
+| `.claude/skills/workspace-auto-test-loop/` | `.claude/skills/wp-auto-test-loop/` |
+| `.claude/skills/workspace-aspnet-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
+| `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-concrete-repository-pattern/` |
+| `.claude/skills/workspace-update-from-master/` | `.claude/skills/wp-update-from-master/` |
+| `.claude/skills/workspace-obsidian-start/` | `.claude/skills/wp-obsidian-start/` |
+| `.claude/skills/workspace-obsidian-progress-log/` | `.claude/skills/wp-obsidian-progress-log/` |
+
+> Deleting these is not cosmetic: a leftover `workspace-*` skill keeps auto-triggering beside its
+> `wp-*` replacement, so the agent sees two copies of the same standard. The Step 5b alignment scan
+> then rewrites the target's own living docs (`CLAUDE.md`, overview, `MODULE.md`, `<name>-flow.md`)
+> from the old names to the new ones.
 
 > Scope: TEMPLATE paths only. A real module's `specs/` folder is project state (🚫) —
 > its content is migrated by hand per the workflow routing rule, never deleted by sync.
 
 ## Sync procedure
 
-> Preferred: run `/workspace-update-from-master` in the target project — it git-clones the
+> Preferred: run `/wp-update-from-master` in the target project — it git-clones the
 > master (per the Master source block above; local-path fallback on request) and executes
 > the steps below with a dry-run report. The manual steps:
 

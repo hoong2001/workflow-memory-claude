@@ -1,5 +1,5 @@
 ---
-name: workspace-module-code-trace-flow
+name: wp-module-code-trace-flow
 description: Trace a feature's call chain through the codebase by reading real source, then refresh the module's <name>-flow.md handover map (flow, called files/methods) and deliver a concrete "where to cut" recommendation to the change's plan. Use when the user wants to modify an existing feature but does not know where in the code to start — "add a display field", "where do I touch for...", "trace this feature". Do NOT trigger for greenfield work with no code to trace, or trivial edits whose location is already known.
 ---
 
@@ -109,7 +109,7 @@ Only the symbols reused across the chain (`Base*`, `ConstValues/`, `Results/`, o
 - Unverified links (could not be resolved in source): `...` — [reason]
 ```
 
-**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). Hand it to the change's plan (`plans/<name>-<date>-<slug>.md`, appended or created via `/workspace-module-plan-discuss`), or present it in the conversation if no plan exists yet:
+**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). Hand it to the change's plan (`plans/<name>-<date>-<slug>.md`, appended or created via `/wp-module-plan-discuss`), or present it in the conversation if no plan exists yet:
 
 ```markdown
 ## Where to Cut — [intended change, from Step 0]

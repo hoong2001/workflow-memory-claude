@@ -1,6 +1,6 @@
 ---
-name: workspace-obsidian-progress-log
-description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project", or opens a project after a gap. Do NOT use for the detailed in-project implementation record — that is /workspace-module-save-implementation; this skill only keeps the shallow cards that link back to it.
+name: wp-obsidian-progress-log
+description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project", or opens a project after a gap. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
 ---
 
 # Obsidian Progress Log — cross-project state board
@@ -18,7 +18,7 @@ opening every project or cramming everything into one flat note.
 
 Done work counts, not just to-dos. The deep record — how it was built and why — stays in the
 project's own `.claude/modules/*/impl/`, `plans/`, and `<name>-flow.md`
-(saved by `/workspace-module-save-implementation`). These cards only link back to it.
+(saved by `/wp-module-save-implementation`). These cards only link back to it.
 
 **Trigger is manual.** Never write to the vault on your own. At most, REMIND the user in one line
 when a moment fits (task wrapped up → "want me to log progress?"; opening a stale project → "this

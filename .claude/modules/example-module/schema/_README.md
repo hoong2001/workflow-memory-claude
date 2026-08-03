@@ -7,6 +7,6 @@ The `.sql` table definitions this module does CRUD on.
 
 ## test/ — test SQL scripts (generated)
 
-CRUD-only seed / verify / cleanup scripts produced by `/workspace-auto-test-loop`,
+CRUD-only seed / verify / cleanup scripts produced by `/wp-auto-test-loop`,
 named `<name>-<date>-<slug>.sql` to match the plan they verify. Kept so the same
 check can be re-run later instead of being rewritten.

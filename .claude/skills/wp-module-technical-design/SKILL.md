@@ -1,6 +1,6 @@
 ---
-name: workspace-module-technical-design
-description: Turn a confirmed plan (from /workspace-module-plan-discuss) into a concrete technical design — API surface, class/file map per the project's layering, data access, and frontend structure — appended as a "Technical Design" section to the SAME plan document in the module's plans/ folder. Use when a plan exists and the user wants the technical breakdown nailed down before coding, says "generate technical design", "design the API/classes", or "brief to design". Do NOT use when no plan exists yet (run /workspace-module-plan-discuss first), or for requirement discussion.
+name: wp-module-technical-design
+description: Turn a confirmed plan (from /wp-module-plan-discuss) into a concrete technical design — API surface, class/file map per the project's layering, data access, and frontend structure — appended as a "Technical Design" section to the SAME plan document in the module's plans/ folder. Use when a plan exists and the user wants the technical breakdown nailed down before coding, says "generate technical design", "design the API/classes", or "brief to design". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
 ---
 
 <what-to-do>
@@ -9,7 +9,7 @@ Take a confirmed plan and derive the technical design from it, decision by decis
 
 ## Step 1: Locate and absorb the inputs
 
-1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/workspace-module-plan-discuss`.
+1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/wp-module-plan-discuss`.
 2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
 3. **Hard rules** — apply whatever layering, forbidden patterns, language-version limits, and naming conventions `.claude/workspace-project-stack-architecture.md` defines; it is non-negotiable.
 4. **Project skills** — follow any stack-bound skills present in `.claude/skills/` (e.g. a data-layer pattern skill, a frontend-standards skill); the design must not contradict them.
