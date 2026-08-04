@@ -128,7 +128,10 @@ For each ⚠️ file (per the manifest — typically root `CLAUDE.md` and
 3. Present the proposed merge to the user and apply only after confirmation.
 
 Special case: if Step 4 copied a rule file that is new to the target, its `@import`
-line MUST be added to the target's `CLAUDE.md` — flag this explicitly.
+line MUST be added to the target's `CLAUDE.md` — flag this explicitly. **Exception:** a
+rule file whose own header says it is read-on-demand (e.g. `workspace-update-memory.md`,
+`workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
+make it always-on and defeat its purpose. Read the file's first lines before adding.
 
 ## Step 5b · Post-sync alignment scan (the target's OWN docs)
 
