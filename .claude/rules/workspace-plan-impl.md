@@ -10,3 +10,5 @@ wrap-up. This file owns only the principles that apply to EVERY document written
 - **Write for a reader with no prior context** — a future session must be able to act on it
   without re-deriving the conversation that produced it.
 - **If the document already exists, update it** — never create a duplicate.
+- **Writing style** — before writing any document, read
+  `.claude/rules/workspace-doc-writing-style.md` (read on demand, not always-on).

@@ -20,7 +20,7 @@
 
 - **Code & comments**: English
 - **Variable/function names**: English
-- **Technical documentation**: English
+- **Documents**: English — full style rules in `.claude/rules/workspace-doc-writing-style.md` (read on demand)
 
 ## Response Format (Technical)
 
