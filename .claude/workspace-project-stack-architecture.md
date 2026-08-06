@@ -199,12 +199,6 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 > Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
 
-### 4.3 Code Quality
-
-- ✔ KISS — keep it simple and readable
-- ✔ DRY — no duplicated logic across projects
-- ✔ All comments in English
-
 ---
 
 ## 5. Naming Conventions
