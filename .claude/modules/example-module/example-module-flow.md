@@ -17,5 +17,15 @@
 | (e.g., any stack) order repository file | `getById` | reads one order from the DB |
 | | | |
 
+## Shared symbols & their callers (fan-in)
+(Symbols reused beyond the main path — base classes, shared constants/enums, reused result
+objects, or anything a grep shows with more than one caller. The blast-radius map: who else
+inherits an edit to this symbol. Filled by `/wp-module-code-trace-flow` Step 3.5.)
+
+| Shared symbol | Callers (`file:method`) | Entry points |
+|---|---|---|
+| (e.g., any stack) base repository column builder | `orderRepo:insert`, `stockRepo:insert` | Web, Backend |
+| | | |
+
 ## Notes
 (Brief — only what genuinely helps someone pick this module up.)
