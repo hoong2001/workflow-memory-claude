@@ -73,6 +73,24 @@ Read `SYNC-MANIFEST.md` **from the freshly cloned master** (not the target's loc
 the clone is the newest by definition). Its ✅ / 🚫 / ⚠️ categories drive everything below.
 If the manifest lists paths this skill doesn't mention, follow the manifest.
 
+## Step 2.5 · Version pre-check (fast path)
+
+Compare versions before doing the full content diff:
+
+1. Read the **target's local** `SYNC-MANIFEST.md` → 📦 Master source table → `Version` row.
+   Missing (a project synced before versioning existed) → treat as unknown and go straight
+   to Step 3 — there is nothing to compare yet.
+2. Compare it to the **freshly cloned master's** Version (read in Step 2).
+3. **Equal** → report `Target already at vX.Y.Z — no template changes to pull.` and stop
+   here. Offer to run the full diff anyway if the user wants to be sure — the version is
+   advisory (it tracks commits, not a content hash), so Step 3 stays the ground truth
+   whenever there is any doubt.
+4. **Different, or target has no Version row** → proceed to Step 3 as normal, carrying both
+   numbers (`vX.Y.Z → vA.B.C`, or `none → vA.B.C`) into the Step 3 report and the Step 6 summary.
+
+This step only short-circuits the "nothing changed" case. It never substitutes for Step 3
+when versions differ or the target predates versioning.
+
 ## Step 3 · Pre-flight report
 
 Before copying anything, show the user a dry-run summary:
@@ -155,9 +173,11 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
 
 ## Step 6 · Report
 
-Summarize in one short block: files overwritten / added / deleted (manifest-listed) / merged / skipped (project-own) / alignment fixes applied (Step 5b),
-and anything that needs the user's follow-up. Remind the user to start a fresh session
-(or continue) so newly imported rules take effect.
+Summarize in one short block: version pulled (`vX.Y.Z → vA.B.C`, or `none → vA.B.C` for a
+pre-versioning project), files overwritten / added / deleted (manifest-listed) / merged /
+skipped (project-own) / alignment fixes applied (Step 5b), and anything that needs the
+user's follow-up. Remind the user to start a fresh session (or continue) so newly imported
+rules take effect.
 
 **Clean up:** if a temp master clone was created in Step 1, delete it now —
 `Remove-Item $master -Recurse -Force`. (Nothing to clean up for the local-path fallback.)

@@ -12,10 +12,21 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
+| Version | `1.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
+
+> **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
+> `.claude/skills/`, `.claude/modules/example-module/`, or this manifest). Semver:
+> **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
+> changes in a way that breaks a project already relying on the old one. **MINOR** — a new
+> rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
+> internal reorg with no behavior change. Since `SYNC-MANIFEST.md` is a ✅ path itself, the
+> target's local copy carries whatever version was current at its last sync — that's what
+> `/wp-update-from-master` compares against the freshly cloned master's version, before
+> running the full diff.
 
 ## ✅ Safe to overwrite (pure template logic — sync freely)
 
