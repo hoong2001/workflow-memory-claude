@@ -54,6 +54,8 @@ An element is a **GAP** if it cannot be filled (blank) or if filling it contradi
 
 Mixed results are normal: two blanks + one conflict = two interview questions + one challenge. Loop until all five are CLEAR and conflicts are zero.
 
+**Shared-symbol check before writing.** If the cut point lands on a shared symbol (`Base*`, `ConstValues/`, `Results/`, or anything with more than one caller), the plan is also changing every other caller — the five elements can all read CLEAR while this stays invisible. Read the fan-in table in `<name>-flow.md`; if it is missing or stale, run `/wp-module-code-trace-flow` Step 3.5 before confirming. List the affected callers in the plan: an unstated blast radius is the plan's largest silent decision.
+
 **Implicit-decision sweep before writing.** The five elements reading CLEAR does not prove every call has been made — a downstream decision can still sit silently assumed. Before the final confirmation, sweep once: "what has this plan quietly decided without saying so?" (error handling, an edge case, a default value, a boundary the user never named). Surface each one with the question pattern until nothing important is left implicit. Then do a final confirmation of the assembled plan.
 
 ## Step 4 — Write the plan and hand off
