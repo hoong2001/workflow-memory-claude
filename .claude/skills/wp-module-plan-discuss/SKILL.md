@@ -5,14 +5,15 @@ description: Talk a module-level requirement into a work-ready plan document - t
 
 <what-to-do>
 
-Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → (on rejection) 4 options + 1 custom → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
+Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → AskUserQuestion (recommended + 3 alternatives + 1 custom) → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
 
 **Entry requirement — no goal, no session.** The user must state a purpose / goal / requirement before this skill does anything. If it is missing, ask for it in one line and wait. Do not guess a goal on the user's behalf.
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Question pattern** (infer first → on rejection, 4 options + 1 custom) and **interview conduct**
-(one question at a time; explore before asking): follow `.claude/skills/_shared-conventions.md`.
+**Question pattern** (always via `AskUserQuestion`: recommended answer + 3 alternatives + 1
+custom) and **interview conduct** (one question at a time; explore before asking): follow
+`.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
 
@@ -49,7 +50,7 @@ An element is a **GAP** if it cannot be filled (blank) or if filling it contradi
 ## Step 3 — Converge (the gap list drives the depth)
 
 - **All five CLEAR, cut point obvious** → present the filled five elements + the cut point in one block for a **single confirmation**. This is the trivial-fix fast path — still a confirmation, never a silent assumption.
-- **Element fillable but conflicting** → challenge exactly that point, quoting the doc or code it collides with ("MODULE.md says times here are UTC, but your plan formats them in the repository layer — which is it?"). Resolve with the question pattern (infer → 4+1).
+- **Element fillable but conflicting** → challenge exactly that point, quoting the doc or code it collides with ("MODULE.md says times here are UTC, but your plan formats them in the repository layer — which is it?"). Resolve with the question pattern (infer, then `AskUserQuestion` with 4+1).
 - **Element blank** → interview ONLY the blank elements, one at a time, with the question pattern.
 
 Mixed results are normal: two blanks + one conflict = two interview questions + one challenge. Loop until all five are CLEAR and conflicts are zero.

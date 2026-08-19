@@ -7,8 +7,9 @@ description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - i
 
 Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/wp-module-plan-discuss`, never into a spec.
 
-**Question pattern** (infer first → on rejection, 4 options + 1 custom) and **interview conduct**
-(one question at a time; explore before asking): follow `.claude/skills/_shared-conventions.md`.
+**Question pattern** (always via `AskUserQuestion`: recommended answer + 3 alternatives + 1
+custom) and **interview conduct** (one question at a time; explore before asking): follow
+`.claude/skills/_shared-conventions.md`.
 
 **Synthesize before you interview.** If the conversation that led here has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
 

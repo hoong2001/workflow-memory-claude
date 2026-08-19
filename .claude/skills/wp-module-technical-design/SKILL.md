@@ -20,8 +20,8 @@ Before proposing anything new, search the real codebase for existing patterns to
 
 ## Step 3: Design, one decision at a time
 
-Walk the layers top-down. For each design decision follow the **question pattern** (infer first →
-on rejection, 4 options + 1 custom) in `.claude/skills/_shared-conventions.md`.
+Walk the layers top-down. For each design decision follow the **question pattern** (always via
+`AskUserQuestion`: recommended answer + 3 alternatives + 1 custom) in `.claude/skills/_shared-conventions.md`.
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)

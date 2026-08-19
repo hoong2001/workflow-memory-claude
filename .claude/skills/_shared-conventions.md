@@ -6,15 +6,18 @@ nothing here overrides a skill's own explicit instruction.
 
 ## Question pattern
 
-Every question a discussion skill asks follows two steps:
+Every question a discussion skill asks goes through the `AskUserQuestion` tool — never a
+plain-text statement waiting for a nod, and never gated behind a rejection first.
 
-1. **Infer first** — state your recommended answer up front, with the reasoning behind it (from
-   the plan, the module docs, the code, or the stack constraints). Let the user simply accept it.
-2. **Options on rejection** — if the user rejects or doubts the inference, immediately present
-   **4 concrete alternative options plus 1 free-form custom choice**. Use the AskUserQuestion tool
-   when it is available: put your recommendation first, marked "(Recommended)"; its built-in
-   "Other" serves as the custom choice. Each option must be a real, distinct direction with a
-   one-line trade-off — never filler to pad the count.
+1. **Infer, then ask** — work out your recommended answer from the plan, the module docs,
+   the code, or the stack constraints, and use it as the first option, marked "(Recommended)".
+2. **3 more real alternatives + 1 custom** — the other 3 options must each be a genuine,
+   distinct direction with a one-line trade-off, never filler to pad the count.
+   `AskUserQuestion`'s built-in "Other" serves as the free-form custom choice.
+
+If `AskUserQuestion` is unavailable in the current environment, fall back to listing the
+same 4 options as plain text and asking the user to pick one or state a custom answer —
+never revert to a bare statement waiting for a nod.
 
 ## Interview conduct
 
