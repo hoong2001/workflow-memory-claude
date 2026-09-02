@@ -76,7 +76,7 @@ self-contained (see **Skill dependencies** below).
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
-2. **Core loop** — branch by module state (A existing / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change.
+2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md` / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `wp-obsidian-progress-log`.
 
 ## Portable vs per-project
