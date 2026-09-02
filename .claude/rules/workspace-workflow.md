@@ -34,7 +34,7 @@ Branch first, then act, saving as you go:
 
 | Branch | Module state | First action |
 |---|---|---|
-| **A Existing module** | already has flow / plans / impl | read `<name>-flow.md` and pick up |
+| **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then pick up |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `.claude/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
 

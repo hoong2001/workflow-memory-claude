@@ -22,13 +22,15 @@
 
 ## Module Map
 <!--
-　Add one row per module. The 4th column is just a path — do NOT use @import.
-　Reason: a module's MODULE.md only needs reading when Claude works in that folder;
+　Add one row per module. The 4th column lists BOTH deep docs, as filenames relative to the
+　Location column: `MODULE.md` (rules + gotchas) AND `<name>-flow.md` (how it works now).
+　A module hand-over needs both — never list only one. Plain paths — do NOT use @import.
+　Reason: a module's deep docs only need reading when Claude works in that folder;
 　        force-mounting it here would break the layering and waste tokens.
 -->
-| Module | One-line responsibility | Location | Deep doc |
+| Module | One-line responsibility | Location | Deep docs (open BOTH) |
 |---|---|---|---|
-| Example module | Demo only, deletable | `.claude/modules/example-module/` | `.claude/modules/example-module/MODULE.md` |
+| Example module | Demo only, deletable | `.claude/modules/example-module/` | `MODULE.md` + `example-module-flow.md` |
 
 <!--
 　Standard contents of each module folder (a module's whole brain lives in its own folder):
@@ -43,6 +45,7 @@
 @.claude/workspace-project-stack-architecture.md
 
 ## Common Entry Points
+- Starting or resuming module work in a new conversation → open BOTH `.claude/modules/<name>/MODULE.md` (rules + gotchas) and `.claude/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `.claude/modules/` is auto-loaded.
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `.claude/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `.claude/workspace-project-stack-architecture.md`

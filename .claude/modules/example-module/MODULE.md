@@ -41,6 +41,7 @@
 - Depends on which modules:
 
 ## Standard workflow (follow this when changing this module)
+0. **New conversation → open two files, always:** this `MODULE.md` (the rules and gotchas) AND `<name>-flow.md` (how the module works now). Neither is auto-loaded — @-mention both, or just name the module and let Claude read them.
 1. Unfamiliar code → `/wp-module-code-trace-flow` → update `<name>-flow.md`, figure out where to cut.
 2. Before acting → `/wp-module-plan-discuss` (state the goal; gap detection scales the discussion depth) → save the plan to `plans/<name>-<date>-<slug>.md`.
    Need the technical cut nailed down before coding? → `/wp-module-technical-design` (appends "Technical Design" to the same plan file).
