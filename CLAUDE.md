@@ -68,8 +68,9 @@
 @.claude/rules/workspace-template-sync.md
 
 ## About this memory system
-Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `.claude/modules/*/MODULE.md`
-(layer 2, read when needed) → governance layer per Common Entry Points above (+ `.claude/skills/` project-bound skills).
+Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `.claude/modules/<name>/`
+(layer 2, read on demand — `MODULE.md` AND `<name>-flow.md`, always both) → governance layer per
+Common Entry Points above (+ `.claude/skills/` project-bound skills).
 
 <!--
 　Advanced: the @import syntax
