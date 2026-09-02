@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `1.1.0` |
+| Version | `1.2.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -66,6 +66,11 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. a newly added `@import` line), keep all project-side
 content untouched.
+
+> **Module Map 4th column:** master now lists BOTH deep docs (`MODULE.md` + `<name>-flow.md`).
+> A target synced from an older master has rows naming only `MODULE.md` — take the new header
+> from master, then backfill each existing row with its own flow-doc filename. The rows remain
+> project content; only this column gains a second filename.
 
 ## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
 

@@ -1,5 +1,7 @@
 # Example Module — Flow (handover map)
 
+> **Paired with `MODULE.md` — read that one FIRST.** It holds the rules and gotchas; this file holds the map. A new conversation needs BOTH.
+>
 > **Purpose: a handover document.** Orient anyone taking over this module (future-you or Claude).
 > Captures how the module works NOW: its flow, the files/methods it calls, with short notes.
 > **NOT a changelog** — change history lives in `impl/`, plans in `plans/`.
