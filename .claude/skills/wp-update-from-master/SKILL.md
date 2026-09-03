@@ -13,6 +13,7 @@ be copied; this skill is the executor, not the policy.
 - NEVER copy the whole `project-memory/` tree, the whole `.claude/` tree, or the repo root wholesale.
 - NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
 - NEVER touch real module folders under `project-memory/modules/` (anything other than `example-module`) or `project-memory/overview/`.
+- NEVER move or rename a target's real modules, overview, or architecture doc — including migrating them out of a pre-v2.0.0 `.claude/`. Sync creates the empty `project-memory/` skeleton and REPORTS what is left behind; the user migrates by hand (manifest 🚚 section).
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
 ## Step 1 · Get the master (git clone by default)
@@ -99,8 +100,8 @@ Before copying anything, show the user a dry-run summary:
 - 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
 - 🏠 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
-- 🚚 memory docs still sitting under `.claude/` (target predates v2.0.0) — list the three
-  moves Step 3.5 will make, and state plainly that they are moves, not deletions
+- 🚚 memory docs still sitting under `.claude/` (target predates v2.0.0) — list what was
+  found and state plainly that sync will NOT move them; the user migrates by hand
 
 If nothing differs, report "already up to date" and stop.
 
@@ -108,38 +109,37 @@ If nothing differs, report "already up to date" and stop.
 relocation in Step 3.5 and the deletions in Step 4b both rely on this confirmation — without
 it, nothing is moved, copied, or deleted.
 
-## Step 3.5 · Relocate memory docs out of `.claude/` (pre-v2.0.0 targets only)
+## Step 3.5 · Create the `project-memory/` skeleton, then report old paths
 
-Skip entirely if `project-memory/` already exists in the target. Otherwise the target was
-synced before v2.0.0 and still keeps its memory inside `.claude/`. Migrate it BEFORE Step 4,
-or the copied `example-module` template lands beside un-migrated real modules.
+Two actions, in this order. The first is mandatory; the second never touches anything.
 
-**Move, never delete** — these are 🚫 project state and are deliberately absent from the
-manifest's 🗑️ deletion list.
+**a. Build the skeleton (always, before Step 4).** The ✅ copy needs a home, and a target
+synced before v2.0.0 has none:
 
 ```powershell
-New-Item -ItemType Directory -Force "$target\project-memory" | Out-Null
-git -C "$target" mv ".claude/modules"  "project-memory/modules"
-git -C "$target" mv ".claude/overview" "project-memory/overview"
-git -C "$target" mv ".claude/workspace-project-stack-architecture.md" "project-memory/stack-architecture.md"
+New-Item -ItemType Directory -Force "$target\project-memory\modules"  | Out-Null
+New-Item -ItemType Directory -Force "$target\project-memory\overview" | Out-Null
 ```
 
-If the target is not a git repo, use `Move-Item` instead — same three moves.
+Creating empty folders is safe and idempotent — skip silently if they already exist.
+Step 4 then lands `example-module/` inside `project-memory/modules/`.
 
-Then rewrite the old strings across the target's `CLAUDE.md`, `.claude/rules/`,
-`.claude/skills/`, and every living doc under `project-memory/`:
+**b. Report old-path memory — never move it.** If any of these still exist in the target,
+list them in the Step 6 summary and hand the user the manifest's 🚚 manual migration
+checklist:
 
-| Find | Replace |
-|---|---|
-| `.claude/modules` | `project-memory/modules` |
-| `.claude/overview` | `project-memory/overview` |
-| `.claude/workspace-project-stack-architecture.md` | `project-memory/stack-architecture.md` |
-| bare `workspace-project-stack-architecture.md` | `stack-architecture.md` |
+- `.claude/modules/` (name each real module folder found)
+- `.claude/overview/`
+- `.claude/workspace-project-stack-architecture.md`
 
-The `@import` line in the target's `CLAUDE.md` becomes `@project-memory/stack-architecture.md`.
-Historical `plans/` / `impl/` / `references/` files keep their old paths — that is history.
-Finally, if the target's `.gitignore` ignores `.claude/`, confirm `project-memory/` is NOT
-ignored; that folder is the whole reason for the move.
+**Hard rule: this skill never moves, renames, or deletes a target's real module folders,
+overview, or architecture doc.** Migration is the user's, by hand, one module at a time. Do
+not offer to run the `git mv` commands, and do not run them if the user's confirmation at
+Step 3 seems to cover them — it does not.
+
+Say this plainly in the report: from the moment Step 4 lands, the target's rules and skills
+point at `project-memory/modules/`, where only `example-module/` lives. Until the user moves
+the real modules across, Claude will not find them.
 
 ## Step 4 · Copy the whitelist paths
 
@@ -153,7 +153,8 @@ Copy-Item "$master\project-memory\modules\example-module" "$target\project-memor
 Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 ```
 
-If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first.
+If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
+`project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -214,6 +215,12 @@ pre-versioning project), files overwritten / added / deleted (manifest-listed) /
 skipped (project-own) / alignment fixes applied (Step 5b), and anything that needs the
 user's follow-up. Remind the user to start a fresh session (or continue) so newly imported
 rules take effect.
+
+**If Step 3.5b found memory still under `.claude/`, lead the report with it** — name each
+module folder found, state that sync left them untouched by design, and paste the manifest's
+🚚 manual migration checklist. Flag the consequence in one line: the freshly copied rules and
+skills now point at `project-memory/modules/`, so those modules are invisible to Claude until
+the user moves them.
 
 **Clean up:** if a temp master clone was created in Step 1, delete it now —
 `Remove-Item $master -Recurse -Force`. (Nothing to clean up for the local-path fallback.)
