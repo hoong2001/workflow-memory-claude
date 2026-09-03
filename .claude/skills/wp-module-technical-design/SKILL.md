@@ -63,6 +63,9 @@ Stop after the design is confirmed. Coding starts only on the user's go.
 
 Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.
 
+The SQL approach follows `wp-sql-query-design` — place logic on the correct side of the
+SQL/Service line here, or the build inherits the wrong cut.
+
 ### Frontend structure
 
 - View: ...

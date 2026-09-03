@@ -14,6 +14,10 @@ description: Repository Pattern implementation guide using Dapper.NET for C# 7.3
 - Always use `DynamicParameters` for all queries — exception: WHERE IN (see below)
 - All SQL must be parameterized — no string concatenation
 - Business logic in Service layer only — never in Repository
+- Explicit column lists — never `SELECT *`
+
+> This skill owns the C# around the query. What the query does, and how readable it is, belongs
+> to `wp-sql-query-design` — reach for it alongside this one when writing the SQL itself.
 - SQL Server only — `SqlConnection` is hardcoded; no multi-database abstraction
 
 ---
@@ -173,14 +177,18 @@ public class ProductRepository : BaseRepository
         var p = new DynamicParameters();
         p.Add("@ProductID", id, DbType.Int32);
 
-        var sql = "SELECT * FROM Products WHERE ProductID = @ProductID";
+        var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
+                    FROM Products
+                    WHERE ProductID = @ProductID";
         return _connection.QueryFirstOrDefault<ProductResult>(sql, p, _transaction);
     }
 
     // List
     public IEnumerable<ProductResult> GetAll()
     {
-        var sql = "SELECT * FROM Products WHERE IsActive = 1";
+        var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
+                    FROM Products
+                    WHERE IsActive = 1";
         return _connection.Query<ProductResult>(sql, transaction: _transaction);
     }
 
@@ -251,7 +259,8 @@ public IEnumerable<ProductResult> Search(ProductSearchResult criteria)
 {
     var p = new DynamicParameters();
 
-    var sql = @"SELECT * FROM Products
+    var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
+                FROM Products
                 WHERE 1=1
                 {KEYWORD}
                 {CATEGORY}
@@ -306,14 +315,18 @@ public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
     var p = new DynamicParameters();
     p.Add("@Ids", ids);  // Dapper expands to: IN (@Ids1, @Ids2, @Ids3...)
 
-    var sql = "SELECT * FROM Products WHERE ProductID IN @Ids";
+    var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
+                FROM Products
+                WHERE ProductID IN @Ids";
     return _connection.Query<ProductResult>(sql, p, _transaction);
 }
 
 // ✅ Using anonymous type — also valid
 public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
 {
-    var sql = "SELECT * FROM Products WHERE ProductID IN @Ids";
+    var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
+                FROM Products
+                WHERE ProductID IN @Ids";
     return _connection.Query<ProductResult>(sql, new { Ids = ids }, _transaction);
 }
 ```
@@ -336,24 +349,24 @@ public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
 
 ❌ **Never — SQL injection:**
 ```csharp
-var sql = "SELECT * FROM Products WHERE Name = '" + name + "'";
+var sql = "SELECT ProductID, ProductName FROM Products WHERE Name = '" + name + "'";
 ```
 
 ✅ **Always — DynamicParameters:**
 ```csharp
 var p = new DynamicParameters();
 p.Add("@Name", name, DbType.String);
-var sql = "SELECT * FROM Products WHERE Name = @Name";
+var sql = "SELECT ProductID, ProductName FROM Products WHERE Name = @Name";
 ```
 
 ❌ **Never — LIKE injection:**
 ```csharp
-var sql = "SELECT * FROM Products WHERE Name LIKE '%" + keyword + "%'";
+var sql = "SELECT ProductID, ProductName FROM Products WHERE Name LIKE '%" + keyword + "%'";
 ```
 
 ✅ **Correct LIKE:**
 ```csharp
 var p = new DynamicParameters();
 p.Add("@Keyword", keyword, DbType.String);
-var sql = "SELECT * FROM Products WHERE Name LIKE '%' + @Keyword + '%'";
+var sql = "SELECT ProductID, ProductName FROM Products WHERE Name LIKE '%' + @Keyword + '%'";
 ```

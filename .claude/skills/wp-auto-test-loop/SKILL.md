@@ -62,6 +62,8 @@ scripts/run-sql.ps1 -WebConfigPath <Web\Web.config> -ConnectionName <name> -Quer
   cleanup statements in order, separated by comment headers (`-- SEED`, `-- VERIFY`,
   `-- CLEANUP`) — so the same check is re-runnable next time instead of being rewritten.
   Reuse an existing script when re-testing the same plan; don't create duplicates.
+  These scripts land in the repo, so `wp-sql-query-design` applies to them like any other SQL —
+  a verification `SELECT` clears it in one pass.
 - UPDATE/DELETE without WHERE is rejected by the script; `-AllowNoWhere` exists but should
   effectively never be used against a shared dev database.
 - Rejected query (exit 3) = the query is out of scope for this skill — redesign the check,

@@ -10,7 +10,7 @@
 ## Trigger convention
 
 - **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`).
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `aspnet-mvc-frontend-standards`).
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `sql-query-design`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
 
@@ -26,8 +26,9 @@ requirement ──────────────┤                       
                                    ┌──────────────────────────┘
                                    ▼
    code → build → test  ◄── coding standards auto-apply here:
-   (build/test are MANUAL,     concrete-repository-pattern (DAL) · aspnet-mvc-frontend-standards (UI)
-    user runs them)            optional: /auto-test-loop (user-invoked build+test loop)
+   (build/test are MANUAL,     concrete-repository-pattern (DAL) · sql-query-design (any SQL)
+    user runs them)            aspnet-mvc-frontend-standards (UI)
+                               optional: /auto-test-loop (user-invoked build+test loop)
                                    │
                                    ▼
                           save-implementation  (wrap up: impl record + sync plan + refresh flow.md)
@@ -61,6 +62,7 @@ requirement ──────────────┤                       
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
 | `wp-concrete-repository-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no interfaces/async/DI/stored procs | Auto |
+| `wp-sql-query-design` | Writing/reviewing any SQL — Repository queries, `.sql` schema/seed scripts, persisted test scripts | The query standard: the row-count test draws the SQL↔C# line; keep the remaining SQL simple; `SELECT *` banned; readability-costing rewrites need a measured number | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 | `wp-auto-test-loop` | You explicitly ask to build + test a change | Compile via MSBuild, auto-fix compile errors, CRUD-only data checks, web-test the flow against a site YOU started | User-invoked only |
 
@@ -92,6 +94,7 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
 - **Plan done, need API/class/SQL detail** → `technical-design`.
+- **Should this calculation be in the query or the service?** → `sql-query-design` (the row-count test).
 - **Plan done, feature is large** → `slice-plan`, then build increments one at a time.
 - **Plan done, builds in one pass** → just code; skip 2 and 3.
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's); then `wp-obsidian-progress-log` to refresh the cross-project card.
