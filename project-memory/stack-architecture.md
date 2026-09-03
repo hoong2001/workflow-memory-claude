@@ -185,6 +185,8 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✔ Explicit transaction control via UnitOfWork
 - ✔ Concrete class dependencies — no interfaces on Repository or UnitOfWork
 - ✔ Dapper (micro-ORM) as the sole data-access library — raw, parameterized SQL only
+- ✔ Query design per the **`wp-sql-query-design`** skill — the row-count test decides what
+  belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
 - ✔ C# 7.3 syntax maximum
 
 **Forbidden:**

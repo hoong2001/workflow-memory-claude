@@ -1,8 +1,9 @@
 # SQL House Style — Schema & Seed Scripts
 
-Scope: `.sql` files — table/view definitions and seed/reference-data scripts. Runtime data
-access (Dapper queries, parameterization, transactions) is governed by the
-`wp-concrete-repository-pattern` skill, not this rule.
+Scope: `.sql` files — table/view definitions and seed/reference-data scripts. How a query is
+designed (what belongs in SQL vs the Service layer, readability, `SELECT *`) is governed by the
+`wp-sql-query-design` skill, and the C# around it by `wp-concrete-repository-pattern` — both
+auto-trigger when the work matches. This rule owns only what is special about `.sql` files.
 
 ## 1. Seed scripts are plain INSERTs
 
@@ -29,7 +30,9 @@ query, so a mismatch surfaces in one cheap confirmation instead of after impleme
 ## 3. A seed script is a delivered file, never prose
 
 If a module needs seed / reference data, ship it as a real `.sql` file under that module's
-`schema/` folder. Describing the inserts in a plan, an implementation record, or a chat
+`schema/` folder — the single home for every `.sql` the module owns, provided or generated
+(see that folder's `_README.md`). Name a generated script `<name>-<date>-<slug>.sql` to match
+its plan, so it is distinguishable from the files the user provided. Describing the inserts in a plan, an implementation record, or a chat
 reply does NOT count as delivering them.
 
 **Why:** a described script is indistinguishable from a finished one in a status report,

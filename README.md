@@ -25,7 +25,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── references/                    system-wide reference material you provide (docs/images/links)
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
-    ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
+    ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed and test scripts generated (test/)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
     ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file)
@@ -54,6 +54,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
     ├── wp-concrete-repository-pattern/  data-layer pattern (SSOT)
+    ├── wp-sql-query-design/  what belongs in SQL vs the Service layer, and keeping the SQL readable
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
     └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
@@ -125,7 +126,8 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
 with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementation`,
 `wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
-stack-bound `wp-concrete-repository-pattern` + `wp-aspnet-mvc-frontend-standards`),
+stack-bound `wp-concrete-repository-pattern` + `wp-sql-query-design` +
+`wp-aspnet-mvc-frontend-standards`),
 `wp-module-slice-plan`,
 `wp-system-spec-discuss`, `wp-module-code-trace-flow`, `wp-auto-test-loop`,
 and `wp-update-from-master`. No user-level (global) skill is required:
