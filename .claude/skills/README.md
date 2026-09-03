@@ -42,8 +42,8 @@ requirement ──────────────┤                       
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) | Spec doc in `.claude/overview/references/` |
-| 0b | `wp-system-overview-spec-generator` | A reasonably complete system spec/PRD exists and you want to bootstrap from it | Generate the overview (the WHAT) + scaffold the modules it implies, after ONE sign-off. Existing module folders are never re-scaffolded | `.claude/overview/system-overview-spec.md` + new module folders |
+| 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) | Spec doc in `project-memory/overview/references/` |
+| 0b | `wp-system-overview-spec-generator` | A reasonably complete system spec/PRD exists and you want to bootstrap from it | Generate the overview (the WHAT) + scaffold the modules it implies, after ONE sign-off. Existing module folders are never re-scaffolded | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
 
@@ -76,7 +76,7 @@ requirement ──────────────┤                       
 
 | Skill | When to use | Purpose / function |
 |-------|-------------|--------------------|
-| `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` |
+| `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
 
 ### Standing · Cross-project memory (Obsidian)
 

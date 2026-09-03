@@ -10,8 +10,8 @@ Take a confirmed plan and cut it into an ordered list of **vertical increments**
 ## Step 1: Locate and absorb the inputs
 
 1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/wp-module-plan-discuss`. If a `## Technical Design` section is present, slice against it; if not, that's fine — see the just-in-time note in Step 3.
-2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain the order.
-3. **Hard rules** — the layering and forbidden patterns in `.claude/workspace-project-stack-architecture.md` define what "a path through every layer" means for this stack; they are non-negotiable.
+2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain the order.
+3. **Hard rules** — the layering and forbidden patterns in `project-memory/stack-architecture.md` define what "a path through every layer" means for this stack; they are non-negotiable.
 
 ## Step 2: Vertical, not horizontal — the one rule everything turns on
 

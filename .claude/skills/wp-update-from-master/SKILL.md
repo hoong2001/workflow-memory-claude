@@ -1,6 +1,6 @@
 ---
 name: wp-update-from-master
-description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. By default git-clones the master fresh (URL/branch from SYNC-MANIFEST.md's Master source block); a local master path is the offline/test fallback. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ tree.
+description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. By default git-clones the master fresh (URL/branch from SYNC-MANIFEST.md's Master source block); a local master path is the offline/test fallback. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ or project-memory/ tree.
 ---
 
 # Update From Master — Template Sync (project side)
@@ -10,9 +10,9 @@ project. The master's `SYNC-MANIFEST.md` is the single source of truth for what 
 be copied; this skill is the executor, not the policy.
 
 **Hard safety rules (non-negotiable):**
-- NEVER copy the whole `.claude/` tree or repo root wholesale.
+- NEVER copy the whole `project-memory/` tree, the whole `.claude/` tree, or the repo root wholesale.
 - NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
-- NEVER touch real module folders under `.claude/modules/` (anything other than `example-module`) or `.claude/overview/`.
+- NEVER touch real module folders under `project-memory/modules/` (anything other than `example-module`) or `project-memory/overview/`.
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
 ## Step 1 · Get the master (git clone by default)
@@ -99,11 +99,47 @@ Before copying anything, show the user a dry-run summary:
 - 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
 - 🏠 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
+- 🚚 memory docs still sitting under `.claude/` (target predates v2.0.0) — list the three
+  moves Step 3.5 will make, and state plainly that they are moves, not deletions
 
 If nothing differs, report "already up to date" and stop.
 
-**Gate: present the report and WAIT for the user's go before executing Steps 4–5b.** The
-deletions in Step 4b rely on this confirmation — without it, nothing is copied or deleted.
+**Gate: present the report and WAIT for the user's go before executing Steps 3.5–5b.** The
+relocation in Step 3.5 and the deletions in Step 4b both rely on this confirmation — without
+it, nothing is moved, copied, or deleted.
+
+## Step 3.5 · Relocate memory docs out of `.claude/` (pre-v2.0.0 targets only)
+
+Skip entirely if `project-memory/` already exists in the target. Otherwise the target was
+synced before v2.0.0 and still keeps its memory inside `.claude/`. Migrate it BEFORE Step 4,
+or the copied `example-module` template lands beside un-migrated real modules.
+
+**Move, never delete** — these are 🚫 project state and are deliberately absent from the
+manifest's 🗑️ deletion list.
+
+```powershell
+New-Item -ItemType Directory -Force "$target\project-memory" | Out-Null
+git -C "$target" mv ".claude/modules"  "project-memory/modules"
+git -C "$target" mv ".claude/overview" "project-memory/overview"
+git -C "$target" mv ".claude/workspace-project-stack-architecture.md" "project-memory/stack-architecture.md"
+```
+
+If the target is not a git repo, use `Move-Item` instead — same three moves.
+
+Then rewrite the old strings across the target's `CLAUDE.md`, `.claude/rules/`,
+`.claude/skills/`, and every living doc under `project-memory/`:
+
+| Find | Replace |
+|---|---|
+| `.claude/modules` | `project-memory/modules` |
+| `.claude/overview` | `project-memory/overview` |
+| `.claude/workspace-project-stack-architecture.md` | `project-memory/stack-architecture.md` |
+| bare `workspace-project-stack-architecture.md` | `stack-architecture.md` |
+
+The `@import` line in the target's `CLAUDE.md` becomes `@project-memory/stack-architecture.md`.
+Historical `plans/` / `impl/` / `references/` files keep their old paths — that is history.
+Finally, if the target's `.gitignore` ignores `.claude/`, confirm `project-memory/` is NOT
+ignored; that folder is the whole reason for the move.
 
 ## Step 4 · Copy the whitelist paths
 
@@ -113,7 +149,7 @@ Copy each ✅ path from master → target with overwrite-but-never-delete semant
 ```powershell
 Copy-Item "$master\.claude\rules\*"  "$target\.claude\rules\"  -Force
 Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
-Copy-Item "$master\.claude\modules\example-module" "$target\.claude\modules\" -Recurse -Force
+Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
 Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 ```
 
@@ -137,7 +173,7 @@ is migrated by hand per the workflow routing rule (material → `references/`, `
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
 For each ⚠️ file (per the manifest — typically root `CLAUDE.md` and
-`.claude/workspace-project-stack-architecture.md`):
+`project-memory/stack-architecture.md`):
 
 1. Diff master vs. target.
 2. Identify **template-side** changes only — e.g. a new `@import` line for a newly added
@@ -161,8 +197,8 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
    Take each obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
    `specs/` folder), plus anything the manifest's grey-zone notes flag as renamed.
 2. Grep those terms across the target's LIVING docs only:
-   root `CLAUDE.md`, `.claude/overview/system-overview-spec.md`,
-   `.claude/modules/*/MODULE.md`, `.claude/modules/*/<name>-flow.md`.
+   root `CLAUDE.md`, `project-memory/overview/system-overview-spec.md`,
+   `project-memory/modules/*/MODULE.md`, `project-memory/modules/*/<name>-flow.md`.
    **Leave historical archives untouched**: `plans/`, `impl/`, `references/` describe what
    was true at the time — stale names there are correct history, not defects.
 3. For each hit, propose the fix (old → new, using the manifest mapping) and apply only

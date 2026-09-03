@@ -10,8 +10,8 @@ Take a confirmed plan and derive the technical design from it, decision by decis
 ## Step 1: Locate and absorb the inputs
 
 1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/wp-module-plan-discuss`.
-2. **Module memory** — read `.claude/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
-3. **Hard rules** — apply whatever layering, forbidden patterns, language-version limits, and naming conventions `.claude/workspace-project-stack-architecture.md` defines; it is non-negotiable.
+2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
+3. **Hard rules** — apply whatever layering, forbidden patterns, language-version limits, and naming conventions `project-memory/stack-architecture.md` defines; it is non-negotiable.
 4. **Project skills** — follow any stack-bound skills present in `.claude/skills/` (e.g. a data-layer pattern skill, a frontend-standards skill); the design must not contradict them.
 
 ## Step 2: Explore before inventing

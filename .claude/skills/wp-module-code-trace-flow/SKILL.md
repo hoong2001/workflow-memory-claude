@@ -78,7 +78,7 @@ Combine both directions into a single input → process → output chain, group 
 
 ## Output Templates (two deliverables)
 
-**Deliverable 1 — the module flow doc.** Persisted to `.claude/modules/<name>/<name>-flow.md`, using the module template's structure (same headings as `example-module-flow.md`). Keep only the stable "how it works" parts:
+**Deliverable 1 — the module flow doc.** Persisted to `project-memory/modules/<name>/<name>-flow.md`, using the module template's structure (same headings as `example-module-flow.md`). Keep only the stable "how it works" parts:
 
 ```markdown
 # [Module Name] — Flow (handover map)
@@ -128,7 +128,7 @@ If any cut point above is a shared symbol, list EVERY other caller that inherits
 
 ## Save Workflow
 
-1. **Module identified** (the normal case): persist Deliverable 1 to `.claude/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
+1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above — never into the flow doc.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 

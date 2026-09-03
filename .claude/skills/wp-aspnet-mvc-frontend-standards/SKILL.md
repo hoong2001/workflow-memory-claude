@@ -5,7 +5,7 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 
 # Frontend Skill — ASP.NET MVC JavaScript Standards
 
-> Single source of truth for **all frontend rules and how-to**. The project architecture doc (`workspace-project-stack-architecture.md`) owns only the stack versions and backend rules, and points here for everything frontend.
+> Single source of truth for **all frontend rules and how-to**. The project architecture doc (`stack-architecture.md`) owns only the stack versions and backend rules, and points here for everything frontend.
 
 > **Code patterns:** this SKILL.md carries the **rules**; every rule's concrete, copy-ready
 > code example lives in `references/frontend-code-patterns.md` (section headings match). **Read

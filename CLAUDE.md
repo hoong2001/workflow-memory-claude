@@ -11,7 +11,8 @@
 　  1. Auto-loaded every turn → keep it lean. Skimmable in one screen.
 　  2. Only four things belong here: ① what the system is ② module map ③ global hard rules ④ entry points.
 　  3. Point to details (path links); never paste them in.
-　  4. Once this file exceeds one screen, something should move to `.claude/` or the module layer.
+　  4. Once this file exceeds one screen, something should move to `project-memory/` (module
+　     memory, overview, architecture) or `.claude/` (rules, skills).
 ══════════════════════════════════════════════════════════════════
 -->
 
@@ -30,7 +31,7 @@
 -->
 | Module | One-line responsibility | Location | Deep docs (open BOTH) |
 |---|---|---|---|
-| Example module | Demo only, deletable | `.claude/modules/example-module/` | `MODULE.md` + `example-module-flow.md` |
+| Example module | Demo only, deletable | `project-memory/modules/example-module/` | `MODULE.md` + `example-module-flow.md` |
 
 <!--
 　Standard contents of each module folder (a module's whole brain lives in its own folder):
@@ -41,14 +42,14 @@
 
 ## Global Hard Rules
 <!-- Project-specific hard constraints. Auto-loaded from the single per-project file below,
-     so this section stays generic — only workspace-project-stack-architecture.md changes per project. -->
-@.claude/workspace-project-stack-architecture.md
+     so this section stays generic — only stack-architecture.md changes per project. -->
+@project-memory/stack-architecture.md
 
 ## Common Entry Points
-- Starting or resuming module work in a new conversation → open BOTH `.claude/modules/<name>/MODULE.md` (rules + gotchas) and `.claude/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `.claude/modules/` is auto-loaded.
+- Starting or resuming module work in a new conversation → open BOTH `project-memory/modules/<name>/MODULE.md` (rules + gotchas) and `project-memory/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `project-memory/modules/` is auto-loaded.
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
-- System overview & spec (functional WHAT) → `.claude/overview/system-overview-spec.md`
-- Stack / architecture (SSOT, technical HOW) → `.claude/workspace-project-stack-architecture.md`
+- System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
+- Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
 - Behavioral rules → `.claude/rules/` (auto-applied via @import below)
 - Memory-update flow → `.claude/rules/workspace-update-memory.md` (read on demand at task wrap-up — see workflow Step 3)
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
@@ -68,7 +69,7 @@
 @.claude/rules/workspace-template-sync.md
 
 ## About this memory system
-Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `.claude/modules/<name>/`
+Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `project-memory/modules/<name>/`
 (layer 2, read on demand — `MODULE.md` AND `<name>-flow.md`, always both) → governance layer per
 Common Entry Points above (+ `.claude/skills/` project-bound skills).
 

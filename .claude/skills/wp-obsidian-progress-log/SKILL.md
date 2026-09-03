@@ -17,7 +17,7 @@ opening every project or cramming everything into one flat note.
   deep record.
 
 Done work counts, not just to-dos. The deep record — how it was built and why — stays in the
-project's own `.claude/modules/*/impl/`, `plans/`, and `<name>-flow.md`
+project's own `project-memory/modules/*/impl/`, `plans/`, and `<name>-flow.md`
 (saved by `/wp-module-save-implementation`). These cards only link back to it.
 
 **Trigger is manual.** Never write to the vault on your own. At most, REMIND the user in one line
@@ -67,10 +67,10 @@ of duplicating them.
 ## Mode A · LOG (write / update the cards)
 
 1. **Gather** this project's real state — do not ask for what you can read:
-   - **Modules — from the source of truth, the actual `.claude/modules/*/` folders.** For each:
+   - **Modules — from the source of truth, the actual `project-memory/modules/*/` folders.** For each:
      infer its state from its own docs (`MODULE.md`, `<name>-flow.md`, whether `impl/` has records)
      → done / in-progress / planned, plus what it did recently and its next step. Record EVERY
-     module found. Absence from `.claude/overview/system-overview-spec.md` is NOT an error and must
+     module found. Absence from `project-memory/overview/system-overview-spec.md` is NOT an error and must
      never be "backfilled" on that basis — the overview is curated; some modules exist only for a
      bug fix and rightly never appear there.
    - Recent work per module — latest files under that module's `impl/` and `plans/`;
@@ -99,7 +99,7 @@ of duplicating them.
    <the one actionable thing for this module>
 
    ## Done recently
-   - <what was accomplished> · deep record: `.claude/modules/<module>/impl/<file>.md`
+   - <what was accomplished> · deep record: `project-memory/modules/<module>/impl/<file>.md`
 
    ## Blockers
    <blocker or "none">

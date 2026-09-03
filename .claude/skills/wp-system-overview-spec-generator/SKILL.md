@@ -1,6 +1,6 @@
 ---
 name: wp-system-overview-spec-generator
-description: Bootstrap a brand-new system from a reasonably complete spec/PRD/design doc — generate .claude/overview/system-overview-spec.md (the WHAT) and scaffold the modules derived from it, after ONE sign-off on the tech-reconciliation diff + module decomposition. Also handles the expansion re-run - existing module folders are never re-scaffolded or overwritten. Trigger on "fill in the spec template", "draft the system overview", "build the modules from this spec", "治理檔 / 總覽 spec". Do NOT use for a single module/component spec, or to edit the architecture (HOW) doc.
+description: Bootstrap a brand-new system from a reasonably complete spec/PRD/design doc — generate project-memory/overview/system-overview-spec.md (the WHAT) and scaffold the modules derived from it, after ONE sign-off on the tech-reconciliation diff + module decomposition. Also handles the expansion re-run - existing module folders are never re-scaffolded or overwritten. Trigger on "fill in the spec template", "draft the system overview", "build the modules from this spec", "治理檔 / 總覽 spec". Do NOT use for a single module/component spec, or to edit the architecture (HOW) doc.
 ---
 
 # System Overview & Spec Generator (System Bootstrap)
@@ -20,7 +20,7 @@ from that file so section order, headings, and the embedded governance comments 
 
 **WHAT, not HOW.** The overview answers what the system is and does. It must contain **zero**
 stack / framework / layer / implementation detail — that is the architecture doc's job
-(`.claude/workspace-project-stack-architecture.md`). A spec almost always carries tech; it does
+(`project-memory/stack-architecture.md`). A spec almost always carries tech; it does
 NOT get copied into the overview (see Step 4).
 
 **Whole, not part.** The overview is the WHOLE system. A module is a COMPONENT. Never nest the
@@ -61,7 +61,7 @@ Classify each section: **Confident** (stated or follows unambiguously) or **Gap*
 
 ### Step 4 — Tech reconciliation (keep HOW out of the overview)
 Specs usually carry a tech stack / framework. Extract it, but **do not write it into the overview.**
-Instead diff it against `.claude/workspace-project-stack-architecture.md` and prepare two lists:
+Instead diff it against `project-memory/stack-architecture.md` and prepare two lists:
 - **Overlaps** — spec tech that matches the architecture doc (consistent; just confirm).
 - **Inconsistencies** — spec tech that conflicts with, or is missing from, the architecture doc.
 
@@ -80,7 +80,7 @@ Present together:
 - **(a) Tech Reconciliation Report** — the Overlaps + Inconsistencies from Step 4, for the user to
   verify and decide (e.g. update the architecture doc, or accept as-is).
 - **(b) Module Decomposition Proposal** — each proposed module as `name → capabilities it owns →
-  key dependencies`, and **mark each one NEW or EXISTING** (check whether `.claude/modules/<name>/`
+  key dependencies`, and **mark each one NEW or EXISTING** (check whether `project-memory/modules/<name>/`
   already exists — EXISTING modules will only receive incremental updates, never a re-scaffold).
   Module boundaries are an architecture decision; the user may adjust them here.
 
@@ -89,11 +89,11 @@ Present together:
 **Idempotence hard rule: an EXISTING module folder is NEVER re-scaffolded or template-overwritten.**
 Its `MODULE.md`, `plans/`, `impl/`, `schema/`, `references/`, and flow doc are the project's
 accumulated memory — there is no undo on a synced drive. Before touching any module, check whether
-`.claude/modules/<name>/` already exists; that check decides the branch below.
+`project-memory/modules/<name>/` already exists; that check decides the branch below.
 
 For each agreed **NEW** module:
-1. **Scaffold** `.claude/modules/<name>/` by copying the example-module template
-   (`.claude/modules/example-module/`) and renaming per its header note.
+1. **Scaffold** `project-memory/modules/<name>/` by copying the example-module template
+   (`project-memory/modules/example-module/`) and renaming per its header note.
 2. **Seed** the module's `MODULE.md`: fill "What this module does" from the spec, and **bind the
    module-relevant tech into its "Local conventions"** (tech travels with the module; the overview
    stays HOW-free).
@@ -109,7 +109,7 @@ Also record the agreed decomposition into overview **§5 Module Composition** (h
 the index/paths).
 
 ### Step 8 — Self-check, then deliver
-Run the "Quality checklist". Save the overview as `.claude/overview/system-overview-spec.md` (or the
+Run the "Quality checklist". Save the overview as `project-memory/overview/system-overview-spec.md` (or the
 path the user specifies). Leave explicit `(TBD — <what is still needed>)` for anything unresolved
 rather than a confident guess.
 
@@ -125,7 +125,7 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
 4. **Capability Map** — Major **functional areas** (the WHAT). One bullet per capability. Strip any
    HOW. Verbs of *function* ("manages X", "reports Y"), not of *implementation*.
 5. **Module Composition** — Group §4 capabilities into modules and show how they fit. Each module
-   here becomes a `.claude/modules/<name>/` folder. Do NOT restate the module index (that's root
+   here becomes a `project-memory/modules/<name>/` folder. Do NOT restate the module index (that's root
    CLAUDE.md Module Map). This is what you get sign-off on in Step 6.
 6. **External Integrations** — External systems, APIs, file feeds the system talks to.
 7. **Domain Glossary** — Domain terms a new reader needs, each as `term — meaning`.

@@ -12,14 +12,14 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `1.2.0` |
+| Version | `2.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
 
 > **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
-> `.claude/skills/`, `.claude/modules/example-module/`, or this manifest). Semver:
+> `.claude/skills/`, `project-memory/modules/example-module/`, or this manifest). Semver:
 > **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
 > changes in a way that breaks a project already relying on the old one. **MINOR** — a new
 > rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
@@ -34,7 +34,7 @@ master; git is the default source.
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) |
-| `.claude/modules/example-module/` | Module scaffold template |
+| `project-memory/modules/example-module/` | Module scaffold template |
 | `SYNC-MANIFEST.md` | This manifest itself |
 
 ## 🏠 Master-only (never copied to projects)
@@ -45,12 +45,12 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 
 | Path | What it is |
 |---|---|
-| `.claude/modules/<any real module>/` | MODULE.md, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
-| `.claude/overview/system-overview-spec.md` | That system's functional spec |
-| `.claude/overview/references/` | That system's reference materials |
+| `project-memory/modules/<any real module>/` | MODULE.md, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
+| `project-memory/overview/system-overview-spec.md` | That system's functional spec |
+| `project-memory/overview/references/` | That system's reference materials |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |
 
-> **Master maintenance note** — the master's own `.claude/overview/system-overview-spec.md` is a
+> **Master maintenance note** — the master's own `project-memory/overview/system-overview-spec.md` is a
 > pristine copy of the generator's
 > `.claude/skills/wp-system-overview-spec-generator/assets/system-overview-spec.template.md`
 > (adoption seeds a project from it). Edit the **asset**, then re-copy it over the master's overview
@@ -61,7 +61,7 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 | Path | Template part | Project part |
 |---|---|---|
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
-| `.claude/workspace-project-stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
+| `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. a newly added `@import` line), keep all project-side
@@ -71,6 +71,31 @@ content untouched.
 > A target synced from an older master has rows naming only `MODULE.md` — take the new header
 > from master, then backfill each existing row with its own flow-doc filename. The rows remain
 > project content; only this column gains a second filename.
+
+## 🚚 Relocation: memory docs moved out of `.claude/` (v2.0.0 — MOVE, never delete)
+
+`.claude/` is tool wiring that many teams gitignore wholesale, which silently took every
+handover doc down with it. Three paths moved to a plain, always-committable root folder:
+
+| Old path (in a target synced before v2.0.0) | New path |
+|---|---|
+| `.claude/modules/` | `project-memory/modules/` |
+| `.claude/overview/` | `project-memory/overview/` |
+| `.claude/workspace-project-stack-architecture.md` | `project-memory/stack-architecture.md` |
+
+**These are 🚫 project state — `git mv` them, never delete.** The 🗑️ list below is a deletion
+authority and these paths are deliberately NOT on it. Sync migrates a target like this:
+
+1. `git mv .claude/modules project-memory/modules` (same for `overview/`).
+2. `git mv .claude/workspace-project-stack-architecture.md project-memory/stack-architecture.md`,
+   keeping the target's own stack content — only the filename changes.
+3. Rewrite the three old strings across the target's `CLAUDE.md`, `.claude/rules/`,
+   `.claude/skills/`, and every living doc under `project-memory/`. The `@import` line in
+   `CLAUDE.md` becomes `@project-memory/stack-architecture.md`.
+4. Leave historical `plans/` / `impl/` / `references/` files alone — stale paths there are
+   history, not defects.
+5. If the target gitignored `.claude/`, drop `project-memory/` from the ignore list — never
+   ignore it.
 
 ## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
 
@@ -89,7 +114,11 @@ content untouched.
 | `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
 | `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` (renamed to kebab-case, content unchanged — the target's `CLAUDE.md` `@import` line must be updated to match) |
-| `.claude/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+| `project-memory/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+
+> Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
+> under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
+> above resolves as written.
 
 ### `workspace-*` → `wp-*` skill prefix (all 13 skills, content unchanged)
 
@@ -97,7 +126,7 @@ Renamed so typing `/wp` filters to exactly this workflow's skills. **Rule files 
 `workspace-` prefix on purpose** — they are never typed as commands, so the two prefixes now
 signal which is which: `wp-*` = a slash command you invoke, `workspace-*` = an always-on rule
 file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
-`.claude/workspace-project-stack-architecture.md`.
+`project-memory/stack-architecture.md`.
 
 | Obsolete path (delete in target) | Replaced by |
 |---|---|
@@ -140,3 +169,7 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
    each module's `MODULE.md` + `<name>-flow.md`) for the 🗑️ obsolete names; fix hits
    with user confirmation. Historical `plans/` / `impl/` / `references/` stay untouched —
    stale names there are history, not defects.
+7. If the target still has `.claude/modules/`, `.claude/overview/`, or
+   `.claude/workspace-project-stack-architecture.md`, run the 🚚 relocation above BEFORE
+   step 1 — the ✅ copy would otherwise land `project-memory/modules/example-module/`
+   beside the target's un-migrated real modules.

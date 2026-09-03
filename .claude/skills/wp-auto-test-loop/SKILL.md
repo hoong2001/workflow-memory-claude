@@ -18,7 +18,7 @@ Invocation = authorization for THIS run; it expires when the loop ends.
 ## Step 0 · Scope the run
 
 1. Identify WHAT to verify: the current plan's Definition of Done
-   (`.claude/modules/<name>/plans/…`), or ask the user for the acceptance behavior in one line.
+   (`project-memory/modules/<name>/plans/…`), or ask the user for the acceptance behavior in one line.
 2. Locate the `.sln` (glob the repo root). Multiple solutions → ask which.
 3. If a web test is needed, confirm the site is running and get its base URL
    (offer the last-known URL as the default).
@@ -41,7 +41,7 @@ scripts/build-solution.ps1 -SolutionPath <path\to\Solution.sln>
 2. Common causes in this stack: C# syntax newer than 7.3 (no `switch` expressions, ranges,
    `??=`, target-typed `new`), async/await or DI creeping in (both forbidden), missing
    Result-class property, wrong Base-class inheritance.
-3. Fixes must respect the architecture doc (`.claude/workspace-project-stack-architecture.md`)
+3. Fixes must respect the architecture doc (`project-memory/stack-architecture.md`)
    — never "fix" an error by violating a hard rule (e.g. adding an interface or async).
 4. Rebuild after each round. **Stop conditions:** same error signature two rounds in a row,
    or 5 rounds reached → stop, summarize what was tried, hand back to the user.
@@ -57,7 +57,7 @@ scripts/run-sql.ps1 -WebConfigPath <Web\Web.config> -ConnectionName <name> -Quer
 - Seed → act → verify → clean up. Tag seeded rows with an obvious marker value
   (e.g. `'AUTOTEST-<date>'` in a text column) and delete ONLY tagged rows afterward.
 - **Persist every test SQL script** to the target module's `schema/test/` folder
-  (create it if missing): `.claude/modules/<name>/schema/test/<name>-<date>-<slug>.sql`,
+  (create it if missing): `project-memory/modules/<name>/schema/test/<name>-<date>-<slug>.sql`,
   same date+slug as the plan being verified. One file per run holding the seed / verify /
   cleanup statements in order, separated by comment headers (`-- SEED`, `-- VERIFY`,
   `-- CLEANUP`) — so the same check is re-runnable next time instead of being rewritten.
