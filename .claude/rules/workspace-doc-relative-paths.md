@@ -1,9 +1,9 @@
 # Documentation Path Rule — No Absolute Paths
 
 When writing file names or file paths into any document (specs, plans, impl records,
-MODULE.md, flow.md, CLAUDE.md, anything under `.claude/`), NEVER write absolute paths
+MODULE.md, flow.md, CLAUDE.md, anything under `project-memory/` or `.claude/`), NEVER write absolute paths
 (e.g. `G:\...`, `C:\Users\...`). Always use paths relative to the project root
-(e.g. `.claude/modules/example-module/MODULE.md`).
+(e.g. `project-memory/modules/example-module/MODULE.md`).
 
 **Why:** This project lives on a synced drive. Absolute paths break the moment the
 project is opened on another machine, drive letter, or user account, and they leak

@@ -14,7 +14,7 @@ frontend plugin), never guess signatures, option names, events, or CSS classes. 
    without stalling or erroring. If neither is available, say exactly what is unverified
    instead of inventing it.
 3. **Version-pin the lookup** — docs must match the version pinned in
-   `.claude/workspace-project-stack-architecture.md` §1. Latest-version docs routinely
+   `project-memory/stack-architecture.md` §1. Latest-version docs routinely
    describe APIs that don't exist in the pinned version; when the docs are newer,
    confirm the feature exists in the pinned release before using it.
 4. Highest-risk spots (always verify, never recall from memory): config option names,

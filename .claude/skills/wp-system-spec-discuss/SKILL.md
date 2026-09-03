@@ -1,6 +1,6 @@
 ---
 name: wp-system-spec-discuss
-description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /wp-system-overview-spec-generator for the brand-new-system bootstrap and is saved to .claude/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/wp-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
+description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /wp-system-overview-spec-generator for the brand-new-system bootstrap and is saved to project-memory/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/wp-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
 ---
 
 <what-to-do>
@@ -19,7 +19,7 @@ custom) and **interview conduct** (one question at a time; explore before asking
 
 ## Step 0a — Read the stack constraints FIRST
 
-Before the first question, read `.claude/workspace-project-stack-architecture.md` in full. It is the
+Before the first question, read `project-memory/stack-architecture.md` in full. It is the
 single source of truth for the stack, the layering, and the forbidden patterns. Every inference you
 offer and every option you present must already respect it — never propose a capability that quietly
 assumes tech the doc's forbidden-patterns section rules out (in some stacks that might be async
@@ -29,14 +29,14 @@ jobs, an ORM, or a SPA framework), and challenge me immediately if my own wordin
 undecided): say so explicitly, then continue — do NOT block, and do NOT silently pretend constraints
 exist. The technical pass (section 6) flips role: instead of checking against constraints, it
 *produces candidate stack decisions* (each with a one-line why). At wrap-up, recommend seeding
-`workspace-project-stack-architecture.md` from them — but never create or edit that file yourself;
+`stack-architecture.md` from them — but never create or edit that file yourself;
 the architecture doc is always the user's to write (same rule as the generator's tech
 reconciliation).
 
 ## Step 0b — Confirm the scope is the whole system
 
 This skill produces exactly one kind of output: a whole-system spec at
-`.claude/overview/references/spec-<date>-<slug>.md`, ready for the bootstrap.
+`project-memory/overview/references/spec-<date>-<slug>.md`, ready for the bootstrap.
 
 If what the user actually describes is a single module/feature requirement, STOP and route to
 `/wp-module-plan-discuss` — module-level requirements are talked straight into a work doc
@@ -46,7 +46,7 @@ in `plans/`, never into a spec.
 
 A spec rarely starts from nothing. Before questioning, read what already exists:
 
-- `.claude/overview/system-overview-spec.md` (if partially filled) and `.claude/overview/references/`.
+- `project-memory/overview/system-overview-spec.md` (if partially filled) and `project-memory/overview/references/`.
 - Any existing module docs (`MODULE.md`, `<name>-flow.md`) if parts of the system are already built.
 
 ## Step 2 — Discuss, section by section
@@ -74,7 +74,7 @@ The spec must be complete enough to pass the generator's own entry check: purpos
 
 ## Step 3 — Write and hand off
 
-Write the spec to `.claude/overview/references/spec-<date>-<slug>.md`, using project-root-relative paths in the content (see `workspace-doc-relative-paths.md`). Then hand off:
+Write the spec to `project-memory/overview/references/spec-<date>-<slug>.md`, using project-root-relative paths in the content (see `workspace-doc-relative-paths.md`). Then hand off:
 
 **Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
 

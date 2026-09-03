@@ -1,6 +1,6 @@
 # Document Writing Style (read on demand — NOT @imported)
 
-> Read this BEFORE writing or editing any document under `.claude/`, plus root
+> Read this BEFORE writing or editing any document under `project-memory/` or `.claude/`, plus root
 > `README.md` / `CLAUDE.md`. It does NOT govern chat replies — response tone and
 > language belong to the user's own `CLAUDE.md` persona.
 

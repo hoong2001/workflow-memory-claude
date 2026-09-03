@@ -24,7 +24,7 @@ custom) and **interview conduct** (one question at a time; explore before asking
 ## Step 0 — Preconditions
 
 - **Goal stated?** If the user has not provided a purpose / goal / requirement, ask for it and stop until it arrives.
-- **Hard rules loaded** — `.claude/workspace-project-stack-architecture.md` is non-negotiable; every inference and option must already respect it.
+- **Hard rules loaded** — `project-memory/stack-architecture.md` is non-negotiable; every inference and option must already respect it.
 - **Target module identified** — if ambiguous, resolve it first (Module Map in root `CLAUDE.md`).
 
 ## Step 1 — Evidence before questions
@@ -61,7 +61,7 @@ Mixed results are normal: two blanks + one conflict = two interview questions + 
 
 ## Step 4 — Write the plan and hand off
 
-Save to `.claude/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up).
+Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up).
 
 The plan must cover: the goal, the decisions made **+ why** (this framework has no ADR layer — a decision worth remembering, hard to reverse, or born of a real trade-off is recorded here as decision + why), where to cut (files/methods), and the definition of done. **Length scales with content** — a trivial fix yields a mini plan (one line per element + the cut point); a complex task grows naturally. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
 

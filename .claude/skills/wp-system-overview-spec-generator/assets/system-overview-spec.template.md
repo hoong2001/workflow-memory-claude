@@ -6,9 +6,9 @@
 　
 　This file answers WHAT the system is and does (the functional whole-picture).
 　It is NOT:
-　  - HOW it is built        → .claude/workspace-project-stack-architecture.md (stack, layers, patterns)
+　  - HOW it is built        → project-memory/stack-architecture.md (stack, layers, patterns)
 　  - the module index       → root CLAUDE.md "Module Map"
-　  - a single component's requirement → talked into a work doc in .claude/modules/<name>/plans/  (per-feature, many)
+　  - a single component's requirement → talked into a work doc in project-memory/modules/<name>/plans/  (per-feature, many)
 　
 　A module is a COMPONENT (a part). This file is the WHOLE. Never put the system
 　overview inside a module folder, and never put component-level detail here.
@@ -36,7 +36,7 @@
 ## 5. Module Composition
 <!-- How the capabilities above split into modules and fit together.
      §4 → §5 is the bridge that DRIVES module creation: each capability is grouped into a module,
-     each module here becomes a .claude/modules/<name>/ folder.
+     each module here becomes a project-memory/modules/<name>/ folder.
      Procedure: workflow Step 1 "Brand-new system" (decompose → get sign-off → scaffold each via Step 2 Branch C).
      For the module index (names + paths) see root CLAUDE.md "Module Map" — do not duplicate it here. -->
 - (TBD)

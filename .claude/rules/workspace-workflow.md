@@ -9,12 +9,12 @@ asks for the requirement and offers the on-ramps:
 
 It can arrive in any form:
 - **Full spec doc** → read it; confirm; then route by scope:
-  - *Whole-system* overview/spec (what the system is/does) → `.claude/overview/system-overview-spec.md` (one per system).
+  - *Whole-system* overview/spec (what the system is/does) → `project-memory/overview/system-overview-spec.md` (one per system).
   - *Single component/feature* requirement doc → raw material: drop into the target module's `references/` (and any `.sql` table schemas into `schema/`); then derive the work doc in `plans/` via `/wp-module-plan-discuss`.
 - **Stated directly** → take it; if you already know the target, name the module + files to skip discovery.
 - **Any module-level goal, clear or fuzzy** → `/wp-module-plan-discuss` (state the goal first; lands in `plans/`).
-- **A whole-system spec is needed but doesn't exist yet** → `/wp-system-spec-discuss` (system-level only: discuss the system spec into existence → `.claude/overview/references/`, then run the bootstrap). Module-level requirements never need a spec — talk them straight into a work doc in `plans/`.
-- **Supporting references** (docs, images, external links) → drop into the matching `references/` folder: system-wide → `.claude/overview/references/`; module-specific → that module's `references/`. Consulted on demand, never auto-loaded.
+- **A whole-system spec is needed but doesn't exist yet** → `/wp-system-spec-discuss` (system-level only: discuss the system spec into existence → `project-memory/overview/references/`, then run the bootstrap). Module-level requirements never need a spec — talk them straight into a work doc in `plans/`.
+- **Supporting references** (docs, images, external links) → drop into the matching `references/` folder: system-wide → `project-memory/overview/references/`; module-specific → that module's `references/`. Consulted on demand, never auto-loaded.
 
 > Routing rule of thumb: **material received → `references/` (+ `.sql` → `schema/`); work doc talked out → `plans/`; after the work is done, durable truth settles into `MODULE.md` / `<name>-flow.md`.** There is no module-level `specs/` folder.
 
@@ -36,7 +36,7 @@ Branch first, then act, saving as you go:
 |---|---|---|
 | **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then pick up |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
-| **C Brand-new module** | folder doesn't exist yet | scaffold `.claude/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
+| **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
 
 Plan landed but the technical cut still needs nailing down (API / classes / SQL / frontend)?
 → `/wp-module-technical-design` — appends a "Technical Design" section to the SAME plan file, then wait for the go.

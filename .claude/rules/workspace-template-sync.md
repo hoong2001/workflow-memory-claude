@@ -4,10 +4,10 @@ This workspace layout originates from a master template (`workflow-memory-claude
 that is copied into different projects. Template updates flow master → project.
 
 **Hard rule:** when applying a template update to a project already in use, NEVER
-copy the whole `.claude/` tree or the whole repo over the target. Follow the
-whitelist in `SYNC-MANIFEST.md` at the project root:
+copy the whole `project-memory/` tree, the whole `.claude/` tree, or the whole repo over
+the target. Follow the whitelist in `SYNC-MANIFEST.md` at the project root:
 
-- 🚫 Never overwrite: real module folders under `.claude/modules/`, `.claude/overview/` — the project's accumulated memory.
+- 🚫 Never overwrite: real module folders under `project-memory/modules/`, `project-memory/overview/` — the project's accumulated memory.
 - Everything else (✅ overwrite freely / ⚠️ manual merge / 🗑️ confirmed deletions) → per the `SYNC-MANIFEST.md` categories.
 
 **Why:** real module folders (`plans/`, `impl/`, `references/`, `schema/`, MODULE.md, flow docs) and

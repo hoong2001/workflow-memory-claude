@@ -12,11 +12,11 @@ Project-bound replacement for the generic `save-implementation` skill. Two diffe
 
 ## Preconditions
 
-Identify the target **module name** (`<name>`) from the conversation — the module whose code was changed this task. All paths below live under `.claude/modules/<name>/`. If the module is ambiguous, ask which module before proceeding.
+Identify the target **module name** (`<name>`) from the conversation — the module whose code was changed this task. All paths below live under `project-memory/modules/<name>/`. If the module is ambiguous, ask which module before proceeding.
 
 ## Step 1 · Save the implementation record
 
-Write to: `.claude/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
+Write to: `project-memory/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
 
 - Use today's date. `<slug>` is a short kebab-case tag for this change; keep it identical to the paired plan file in `plans/` so they pair up.
 - If a record for the **same** change already exists, update it — do not create a duplicate.
@@ -48,11 +48,11 @@ Every record MUST contain the four elements the project's memory rule requires:
 
 ## Step 2 · Sync the paired plan (if one exists)
 
-If `.claude/modules/<name>/plans/<name>-<date>-<slug>.md` exists, tick off its completed task checkboxes and set its status to `In Progress` / `Done` as appropriate.
+If `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` exists, tick off its completed task checkboxes and set its status to `In Progress` / `Done` as appropriate.
 
 ## Step 3 · Sync `<name>-flow.md` (lightweight, incremental)
 
-Open `.claude/modules/<name>/<name>-flow.md`. Remember what it is: a **handover map of how the module works NOW** — its main flow path and the files/methods it calls. It is **NOT a changelog** (history lives in `impl/`). So you patch the *current-state* description; you never append "on <date> I changed X".
+Open `project-memory/modules/<name>/<name>-flow.md`. Remember what it is: a **handover map of how the module works NOW** — its main flow path and the files/methods it calls. It is **NOT a changelog** (history lives in `impl/`). So you patch the *current-state* description; you never append "on <date> I changed X".
 
 Decide the scope of this task's change:
 
@@ -74,7 +74,7 @@ Keep flow.md to the stable "how it works" parts. A specific change's "where to c
 Report all paths touched and the flow.md outcome, e.g.:
 
 ```
-✅ Impl saved: .claude/modules/<name>/impl/<name>-2026-07-02-<slug>.md
+✅ Impl saved: project-memory/modules/<name>/impl/<name>-2026-07-02-<slug>.md
 ✅ Plan synced: plans/<name>-2026-07-02-<slug>.md  (status → Done)
 ✅ flow.md: updated 2 call-chain rows (added OrderService.Validate, fixed Repository role)
    — or — flow.md unchanged (internal-only change)

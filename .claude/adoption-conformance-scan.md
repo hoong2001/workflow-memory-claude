@@ -1,6 +1,6 @@
 # Conformance Scan (run ONCE when adopting this framework on an existing system)
 
-> Referenced from `.claude/workspace-project-stack-architecture.md` §0 Adoption Mode.
+> Referenced from `project-memory/stack-architecture.md` §0 Adoption Mode.
 > Read on demand at adoption time — never needed again after **Current mode** is set.
 
 Check each hard rule in the architecture doc against repo evidence:

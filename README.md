@@ -10,7 +10,7 @@ consistent development workflow.
 stays lean and points to detail that loads on demand. Memory is layered so the "always-on"
 part stays small and depth is read only when needed.
 
-Only one file is swapped per project: **`.claude/workspace-project-stack-architecture.md`** (the stack,
+Only one file is swapped per project: **`project-memory/stack-architecture.md`** (the stack,
 architecture, and hard constraints). `CLAUDE.md`'s system description and Module Map then grow as
 you work; everything else is reusable as-is.
 
@@ -18,11 +18,19 @@ you work; everything else is reusable as-is.
 
 ```
 CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
-.claude/
-├── workspace-project-stack-architecture.md      ← the ONE per-project file (stack / architecture SSOT)
+project-memory/                        the project's own memory — plain folder, always committable
+├── stack-architecture.md              ← the ONE per-project file (stack / architecture SSOT)
 ├── overview/
-│   ├── system-overview-spec.md         system-level functional WHAT (one per system; read on demand)
-│   └── references/                     system-wide reference material you provide (docs/images/links)
+│   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
+│   └── references/                    system-wide reference material you provide (docs/images/links)
+└── modules/<name>/                    one folder per module — its whole "brain"
+    ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
+    ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
+    ├── references/                    source material you provide (requirement docs/images/links; read on demand)
+    ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file)
+    └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
+.claude/                               tool wiring — safe to gitignore wholesale
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
@@ -34,34 +42,32 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
 │   ├── workspace-template-sync.md     never blind-overwrite project state on sync
 │   └── workspace-update-memory.md     Step 3: wrap-up memory update (read on demand, NOT @imported)
-├── skills/                            project-bound skills (travel WITH .claude/)
-│   ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
-│   ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
-│   ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
-│   ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
-│   ├── wp-module-technical-design/  append "Technical Design" to the SAME plan file
-│   ├── wp-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
-│   ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
-│   ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
-│   ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
-│   ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
-│   ├── wp-concrete-repository-pattern/  data-layer pattern (SSOT)
-│   ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
-│   ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
-│   └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
-└── modules/<name>/                    one folder per module — its whole "brain"
-    ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
-    ├── schema/                        .sql table schemas for CRUD (+ test/ — test scripts saved by auto-test-loop)
-    ├── references/                    source material you provide (requirement docs/images/links; read on demand)
-    ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file)
-    └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
+└── skills/                            project-bound skills (travel WITH .claude/)
+    ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
+    ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
+    ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
+    ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
+    ├── wp-module-technical-design/  append "Technical Design" to the SAME plan file
+    ├── wp-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
+    ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
+    ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
+    ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
+    ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
+    ├── wp-concrete-repository-pattern/  data-layer pattern (SSOT)
+    ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
+    ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
+    └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 ```
+
+**Why the split:** `.claude/` is tool wiring — many teams gitignore it wholesale, which used
+to take the handover docs down with it. `project-memory/` is an ordinary folder, so modules,
+flow maps, and the system overview are committed, reviewed, and visible to anyone who clones
+the repo, with or without Claude Code.
 
 ## Apply to a new project (3 steps)
 
-1. Copy the whole `.claude/` folder, `CLAUDE.md`, **and `SYNC-MANIFEST.md`** into the project.
-2. Replace `.claude/workspace-project-stack-architecture.md` with that project's stack / architecture / constraints,
+1. Copy `.claude/`, `project-memory/`, `CLAUDE.md`, **and `SYNC-MANIFEST.md`** into the project.
+2. Replace `project-memory/stack-architecture.md` with that project's stack / architecture / constraints,
    and set its **§0 Adoption Mode**. For an existing system, run the conformance scan defined
    there first — fully conformant keeps the file as-is (`brownfield-conformant`); any deviation
    is reported as a list for the user to rule on (amend the file vs. record as module debt).
@@ -70,6 +76,29 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 That's it for the framework files. The rules, the workflow, the module template, and all
 project-bound skills in `.claude/skills/` come along unchanged — the framework is fully
 self-contained (see **Skill dependencies** below).
+
+### Gitignoring `.claude/`
+
+A project that ignores `.claude/` wholesale still keeps every handover doc, because they all
+live in `project-memory/`. Ignore the machine-local files at minimum:
+
+```gitignore
+*.local.json
+```
+
+To ignore the whole tool folder, keep the skills whitelisted so a fresh clone can still run
+the workflow:
+
+```gitignore
+.claude/*
+!.claude/rules/
+!.claude/skills/
+!.claude/*.md
+*.local.json
+```
+
+Never add `project-memory/` to `.gitignore` — that folder IS the project's memory, and losing
+it is the failure this layout exists to prevent.
 
 ## Daily workflow (3 steps)
 
@@ -83,14 +112,14 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `rules/workspace-*.md`, `skills/*` (all project-bound skills, incl. the Obsidian memory skills), `modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
-| The one config | `.claude/workspace-project-stack-architecture.md` | swap each project |
-| Grows as you work | `CLAUDE.md` system description + module map, real module folders | filled per project |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| The one config | `project-memory/stack-architecture.md` | swap each project |
+| Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |
 
 ## Notes
 
 - Rules are `@import`ed from `CLAUDE.md`, so they apply every turn (token cost — keep them tight). Exception: `workspace-update-memory.md` is read on demand at task wrap-up, not imported.
-- `workspace-project-stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
+- `stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
 ## Skill dependencies (important when copying)
 
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel

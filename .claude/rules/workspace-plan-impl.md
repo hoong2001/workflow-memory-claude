@@ -1,7 +1,8 @@
 # Project Documentation Rules
 
 Paths and triggers live in `workspace-workflow.md` — Step 2 routes plans, Step 3 routes the
-wrap-up. This file owns only the principles that apply to EVERY document written under `.claude/`:
+wrap-up. This file owns only the principles that apply to EVERY document written under
+`project-memory/` (plans, impl records, MODULE.md, flow docs, the overview) or `.claude/`:
 
 - **One task, one document.** A task's plan is a single file; `/wp-module-technical-design`
   and `/wp-module-slice-plan` append their sections into it, never a sibling file — so the
