@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `2.0.0` |
+| Version | `2.1.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -72,7 +72,7 @@ content untouched.
 > from master, then backfill each existing row with its own flow-doc filename. The rows remain
 > project content; only this column gains a second filename.
 
-## 🚚 Relocation: memory docs moved out of `.claude/` (v2.0.0 — MOVE, never delete)
+## 🚚 Relocation: memory docs moved out of `.claude/` (v2.0.0 — USER MOVES, sync never does)
 
 `.claude/` is tool wiring that many teams gitignore wholesale, which silently took every
 handover doc down with it. Three paths moved to a plain, always-committable root folder:
@@ -83,19 +83,35 @@ handover doc down with it. Three paths moved to a plain, always-committable root
 | `.claude/overview/` | `project-memory/overview/` |
 | `.claude/workspace-project-stack-architecture.md` | `project-memory/stack-architecture.md` |
 
-**These are 🚫 project state — `git mv` them, never delete.** The 🗑️ list below is a deletion
-authority and these paths are deliberately NOT on it. Sync migrates a target like this:
+**Sync NEVER moves, renames, or deletes a target's real modules — the user migrates them by
+hand.** These paths hold a project's accumulated memory; they are 🚫, absent from the 🗑️
+deletion list, and out of reach of every automated step. What sync does instead:
 
-1. `git mv .claude/modules project-memory/modules` (same for `overview/`).
-2. `git mv .claude/workspace-project-stack-architecture.md project-memory/stack-architecture.md`,
+1. **Create the skeleton first.** `project-memory/modules/` and `project-memory/overview/`
+   must exist before anything else, so the ✅ copy has a home. Sync creates the two folders
+   and lands `example-module/` in the first — that is the full extent of its authority here.
+2. **Detect and report.** If `.claude/modules/`, `.claude/overview/`, or
+   `.claude/workspace-project-stack-architecture.md` still exist in the target, list them and
+   say plainly that the user must move them by hand. Then stop touching them.
+
+### Manual migration checklist (the user runs this, not sync)
+
+1. `git mv .claude/modules/<each real module> project-memory/modules/` — one at a time, so a
+   half-finished move is visible. `example-module/` is already there from the skeleton; if the
+   target has its own edited copy, keep whichever the user prefers.
+2. `git mv .claude/overview/* project-memory/overview/`.
+3. `git mv .claude/workspace-project-stack-architecture.md project-memory/stack-architecture.md`,
    keeping the target's own stack content — only the filename changes.
-3. Rewrite the three old strings across the target's `CLAUDE.md`, `.claude/rules/`,
+4. Rewrite the three old strings across the target's `CLAUDE.md`, `.claude/rules/`,
    `.claude/skills/`, and every living doc under `project-memory/`. The `@import` line in
    `CLAUDE.md` becomes `@project-memory/stack-architecture.md`.
-4. Leave historical `plans/` / `impl/` / `references/` files alone — stale paths there are
+5. Leave historical `plans/` / `impl/` / `references/` files alone — stale paths there are
    history, not defects.
-5. If the target gitignored `.claude/`, drop `project-memory/` from the ignore list — never
-   ignore it.
+6. If the target gitignored `.claude/`, confirm `project-memory/` is NOT ignored.
+
+> **Do this promptly after syncing.** From the moment the ✅ copy lands, the target's rules and
+> skills point at `project-memory/modules/`, where only `example-module/` lives. Until the real
+> modules are moved across, Claude will not find them.
 
 ## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
 
@@ -169,7 +185,7 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
    each module's `MODULE.md` + `<name>-flow.md`) for the 🗑️ obsolete names; fix hits
    with user confirmation. Historical `plans/` / `impl/` / `references/` stay untouched —
    stale names there are history, not defects.
-7. If the target still has `.claude/modules/`, `.claude/overview/`, or
-   `.claude/workspace-project-stack-architecture.md`, run the 🚚 relocation above BEFORE
-   step 1 — the ✅ copy would otherwise land `project-memory/modules/example-module/`
-   beside the target's un-migrated real modules.
+7. Report, never move: if the target still has `.claude/modules/`, `.claude/overview/`, or
+   `.claude/workspace-project-stack-architecture.md`, list them and hand the user the 🚚
+   manual migration checklist above. Sync's only 🚚 action is creating the
+   `project-memory/modules/` + `project-memory/overview/` skeleton in step 1.
