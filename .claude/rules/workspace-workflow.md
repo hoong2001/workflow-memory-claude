@@ -34,9 +34,21 @@ Branch first, then act, saving as you go:
 
 | Branch | Module state | First action |
 |---|---|---|
-| **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then pick up |
+| **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then check for unfinished work (below) before starting anything new |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
+
+**Branch A · check for unfinished work first.** Every plan carries a one-line status header, so
+one grep answers "is something already half-built here?" without opening a single plan:
+
+```bash
+grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/*.md
+```
+
+Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
+stopped at, and its `## Build Increments` table (if it has one) says which increment is next —
+and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every
+header says `Done` → this is new work, carry on below.
 
 Plan landed but the technical cut still needs nailing down (API / classes / SQL / frontend)?
 → `/wp-module-technical-design` — appends a "Technical Design" section to the SAME plan file, then wait for the go.
@@ -45,6 +57,11 @@ Plan describes a feature too big to build in one code→build→test pass?
 → `/wp-module-slice-plan` — appends a "Build Increments" section (ordered vertical slices, blockers-first) to the SAME plan file; then build them top-to-bottom, one at a time, each through the Act loop below. Skip for anything that builds in one pass.
 
 → Act: **code → build → test** → **save on every change**.
+   **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.
+   When an increment lands, tick its `✔` cell to `☑` and set the header to `Building N/M`
+   (`N` = `☑` rows, `M` = total rows; a plan with no increments table is just `Building`).
+   Do this as you go, not at the end: a session that stops mid-feature must leave the plan
+   saying where it stopped, because that line is all the next session gets for free.
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).
    Claude never auto-runs the build or the tests: after coding, remind the user in one line to
    build + test, wait for the results they report back, and fix from there.

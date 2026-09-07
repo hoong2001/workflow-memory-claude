@@ -28,7 +28,7 @@ project-memory/                        the project's own memory — plain folder
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed and test scripts generated (test/)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file). Each opens with a one-line status header — Planned / Designed / Sliced / Building N/M / Blocked / Done — so one grep finds unfinished work
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 .claude/                               tool wiring — safe to gitignore wholesale
 ├── rules/                             behavioral rules (@imported = always-on)
@@ -106,7 +106,7 @@ it is the failure this layout exists to prevent.
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
-2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md` / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change.
+2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `wp-obsidian-progress-log`.
 
 ## Portable vs per-project

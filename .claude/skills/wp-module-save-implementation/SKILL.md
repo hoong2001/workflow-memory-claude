@@ -1,6 +1,6 @@
 ---
 name: wp-module-save-implementation
-description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, syncs the paired plan document, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
+description: Project-bound version of save-implementation for workflow-memory-claude. Saves the implementation record to the module's impl/ folder using this project's fixed path convention, closes the paired plan by setting its status header to Done, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. It is a closing summary, not a mid-flight tracker - the Step 2 act loop maintains the plan's running status while building. Use this INSTEAD of the generic /save-implementation in this project. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
 ---
 
 # Module Save Implementation
@@ -48,7 +48,21 @@ Every record MUST contain the four elements the project's memory rule requires:
 
 ## Step 2 · Sync the paired plan (if one exists)
 
-If `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` exists, tick off its completed task checkboxes and set its status to `In Progress` / `Done` as appropriate.
+This skill closes a plan out; it does not track it mid-flight. The act loop already maintains
+the plan's status header and its `✔` marks as increments land (`workspace-workflow.md` Step 2),
+so there is one thing left to do here:
+
+**Close the plan's status header** — the `> **Status:** ...` line directly under the H1. Set it
+to match the `**Status**` line of the impl record you just wrote:
+
+```markdown
+> **Status:** Done · **Updated:** <today>
+```
+
+If the impl record says `TODO left` or `Blocked`, the plan header says the same thing rather than
+`Done` — a plan closed on paper while work remains is the one lie this header exists to prevent.
+Keep it on ONE line in that exact shape; Step 2 Branch A finds unfinished work by grepping it,
+and a reformatted header is work that goes invisible.
 
 ## Step 3 · Sync `<name>-flow.md` (lightweight, incremental)
 

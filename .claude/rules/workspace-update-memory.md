@@ -17,6 +17,12 @@ So the same trap isn't hit again.
 Use the same name as its impl file so they pair up. If `/wp-module-technical-design`
 was run, its "Technical Design" section lives inside this same plan file — never a separate file.
 
+**Its status header must reflect reality before you walk away** — `Done` when finished,
+`Building N/M` when increments remain, `Blocked: <why>` when it stopped on something external.
+The act loop maintains it as you build (Step 2) and `/wp-module-save-implementation` closes it
+out. The point of the header is that a plan left mid-flight announces itself to the next session
+instead of hiding: a stale `Planned` on half-built work is worse than no header at all.
+
 ## 4. Update the index
 - New module → add a row to the module map in root `CLAUDE.md` (**path + one-line description**).
 - Code changed → `<name>-flow.md` is already lightweight-synced by `/wp-module-save-implementation` (Step 1). Only rerun the full `/wp-module-code-trace-flow` if the change was a large structural rewrite the lightweight sync flagged as needing a full re-trace.

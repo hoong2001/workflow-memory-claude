@@ -53,15 +53,25 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 
 > Sliced: YYYY-MM-DD · derived from the plan above · worked top-to-bottom, one at a time
 
-| # | Increment (one demoable behavior) | Layers touched | Blocked by | Done when (verifiable) |
-|---|-----------------------------------|----------------|-----------|------------------------|
-| 1 | ... | e.g. SQL + Repository + Service + Controller + View | — | ... |
-| 2 | ... | ... | #1 | ... |
+| # | ✔ | Increment (one demoable behavior) | Layers touched | Blocked by | Done when (verifiable) |
+|---|---|-----------------------------------|----------------|-----------|------------------------|
+| 1 | ☐ | ... | e.g. SQL + Repository + Service + Controller + View | — | ... |
+| 2 | ☐ | ... | ... | #1 | ... |
 
 ### Notes
 - Prefactor / groundwork ordered first: ...
 - Wide-refactor increments (if any) follow expand → migrate → contract: ...
 ```
+
+**Set the plan's status header to `Sliced`** — the `> **Status:** ...` line directly under the H1:
+
+```markdown
+> **Status:** Sliced · **Updated:** <today>
+```
+
+Same rule every section-appending skill follows: you added a section, so the header says so.
+The `✔` column starts all `☐`; once code starts, the act loop turns the header into
+`Building N/M`, deriving `N` from the `☑` marks in this table.
 
 ## Guardrails
 
