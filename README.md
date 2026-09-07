@@ -28,7 +28,7 @@ project-memory/                        the project's own memory — plain folder
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed and test scripts generated (test/)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design + slice-plan append into the same file). Each opens with a one-line status header — Planned / Designed / Sliced / Building N/M / Blocked / Done — so one grep finds unfinished work
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Planned / Designed / Building N/M / Blocked / Done — so one grep finds unfinished work
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 .claude/                               tool wiring — safe to gitignore wholesale
 ├── rules/                             behavioral rules (@imported = always-on)
@@ -47,8 +47,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
     ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
     ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
-    ├── wp-module-technical-design/  append "Technical Design" to the SAME plan file
-    ├── wp-module-slice-plan/    append "Build Increments" (vertical slices) to the SAME plan file
+    ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices when needed) to the SAME plan file
     ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
     ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
     ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
@@ -128,7 +127,6 @@ with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementa
 `wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
 stack-bound `wp-concrete-repository-pattern` + `wp-sql-query-design` +
 `wp-aspnet-mvc-frontend-standards`),
-`wp-module-slice-plan`,
 `wp-system-spec-discuss`, `wp-module-code-trace-flow`, `wp-auto-test-loop`,
 and `wp-update-from-master`. No user-level (global) skill is required:
 copying the framework files (adoption step 1) brings everything along.

@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `2.3.0` |
+| Version | `3.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -131,6 +131,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
 | `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` (renamed to kebab-case, content unchanged — the target's `CLAUDE.md` `@import` line must be updated to match) |
 | `project-memory/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+| `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
 > under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
@@ -150,7 +151,7 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
 | `.claude/skills/workspace-system-overview-spec-generator/` | `.claude/skills/wp-system-overview-spec-generator/` |
 | `.claude/skills/workspace-module-plan-discuss/` | `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-module-technical-design/` | `.claude/skills/wp-module-technical-design/` |
-| `.claude/skills/workspace-module-slice-plan/` | `.claude/skills/wp-module-slice-plan/` |
+| `.claude/skills/workspace-module-slice-plan/` | `.claude/skills/wp-module-technical-design/` (renamed, then merged in v3.0.0 — delete in one step, do not create `wp-module-slice-plan/`) |
 | `.claude/skills/workspace-module-code-trace-flow/` | `.claude/skills/wp-module-code-trace-flow/` |
 | `.claude/skills/workspace-module-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
 | `.claude/skills/workspace-auto-test-loop/` | `.claude/skills/wp-auto-test-loop/` |

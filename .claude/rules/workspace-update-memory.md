@@ -14,8 +14,8 @@ Every entry must include four things:
 So the same trap isn't hit again.
 
 ## 3. Plan saved? → `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` (`/wp-module-plan-discuss`)
-Use the same name as its impl file so they pair up. If `/wp-module-technical-design`
-was run, its "Technical Design" section lives inside this same plan file — never a separate file.
+Use the same name as its impl file so they pair up. If `/wp-module-technical-design` was run,
+its "Technical Design" and "Tasks" sections live inside this same plan file — never separate files.
 
 **Its status header must reflect reality before you walk away** — `Done` when finished,
 `Building N/M` when increments remain, `Blocked: <why>` when it stopped on something external.
