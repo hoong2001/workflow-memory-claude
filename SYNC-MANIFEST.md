@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `2.2.0` |
+| Version | `2.3.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -136,7 +136,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 > under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
 > above resolves as written.
 
-### `workspace-*` → `wp-*` skill prefix (all 13 skills, content unchanged)
+### `workspace-*` → `wp-*` skill prefix (the 13 skills that existed at the time, content unchanged)
 
 Renamed so typing `/wp` filters to exactly this workflow's skills. **Rule files keep the
 `workspace-` prefix on purpose** — they are never typed as commands, so the two prefixes now

@@ -36,6 +36,17 @@ Batch related small decisions into one round; don't interrogate trivia the archi
 
 When the design has converged, append a `## Technical Design` section to the SAME plan document (`plans/<name>-<date>-<slug>.md`) — never a separate file, so the plan/impl pairing stays one-to-one. Use the output template below. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
 
+**Set the plan's status header to `Designed`** — the `> **Status:** ...` line directly under the H1:
+
+```markdown
+> **Status:** Designed · **Updated:** <today>
+```
+
+Appending this section is real progress and the header must say so, otherwise a plan that already
+carries a full technical design still reads `Planned` and the next session redesigns it from
+scratch. `Designed` is also precise about what did NOT happen: no code exists yet, so nobody goes
+hunting for half-written classes.
+
 Stop after the design is confirmed. Coding starts only on the user's go.
 
 </what-to-do>

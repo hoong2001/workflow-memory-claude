@@ -50,10 +50,10 @@ requirement ──────────────┤                       
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md` |
+| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` |
 | 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (chain + fan-in table) + cut recommendation + blast radius |
-| 2 | `wp-module-technical-design` | A plan exists and only the technical cut (API/classes/SQL/frontend) is missing | Derive the concrete design per the layering rules | `## Technical Design` appended to the SAME plan file |
-| 3 | `wp-module-slice-plan` | A plan describes a feature too big for one code→build→test pass | Slice into ordered vertical increments (tracer bullets), blockers-first | `## Build Increments` appended to the SAME plan file |
+| 2 | `wp-module-technical-design` | A plan exists and only the technical cut (API/classes/SQL/frontend) is missing | Derive the concrete design per the layering rules | `## Technical Design` appended to the SAME plan file · `Status: Designed` |
+| 3 | `wp-module-slice-plan` | A plan describes a feature too big for one code→build→test pass | Slice into ordered vertical increments (tracer bullets), blockers-first | `## Build Increments` appended to the SAME plan file · `Status: Sliced` |
 
 > Phases 2 and 3 are **optional** and both append to the one plan file — never a separate doc. Trivial fixes skip straight from Phase 1 to coding.
 
@@ -72,7 +72,7 @@ requirement ──────────────┤                       
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, files touched, gotchas), tick the paired plan, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + synced plan + flow.md |
+| `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
 
 ### Standing · Maintenance
 
