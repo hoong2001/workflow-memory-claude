@@ -44,6 +44,6 @@
 0. **New conversation → open two files, always:** this `MODULE.md` (the rules and gotchas) AND `<name>-flow.md` (how the module works now). Neither is auto-loaded — @-mention both, or just name the module and let Claude read them.
 1. Unfamiliar code → `/wp-module-code-trace-flow` → update `<name>-flow.md`, figure out where to cut.
 2. Before acting → `/wp-module-plan-discuss` (state the goal; gap detection scales the discussion depth) → save the plan to `plans/<name>-<date>-<slug>.md`.
-   Need the technical cut nailed down before coding? → `/wp-module-technical-design` (appends "Technical Design" to the same plan file).
+   Need the technical cut or the task breakdown before coding? → `/wp-module-technical-design` (appends "Technical Design" + "Tasks" to the same plan file; slices into vertical increments when the feature needs it).
 3. After done → remind the user to run `/wp-module-save-implementation` (never auto-run; their call) → it saves the record to `impl/<name>-<date>-<slug>.md` AND syncs `<name>-flow.md`.
 4. If new rules or gotchas emerged → backfill the lists above in this file.

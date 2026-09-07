@@ -19,10 +19,10 @@
 requirement ──────────────┤                                              ├──► plan in plans/
                           └─ (goal, clear or fuzzy) ──► plan-discuss ─────┘
                                                               │
-                        (need the technical cut?) ──► technical-design ──┐ append to
-                                                              │           │ SAME plan file
-                        (too big for one pass?)  ──► slice-plan ─────────┘
-                                                              │
+             (needs the cut + a task list?) ──► technical-design ──┐ appends Technical
+                                                              │        │ Design + Tasks to
+                                                              │        │ the SAME plan file
+                                                              │◄───────┘
                                    ┌──────────────────────────┘
                                    ▼
    code → build → test  ◄── coding standards auto-apply here:
@@ -52,10 +52,9 @@ requirement ──────────────┤                       
 |---|-------|-------------|--------------------|--------|
 | 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` |
 | 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (chain + fan-in table) + cut recommendation + blast radius |
-| 2 | `wp-module-technical-design` | A plan exists and only the technical cut (API/classes/SQL/frontend) is missing | Derive the concrete design per the layering rules | `## Technical Design` appended to the SAME plan file · `Status: Designed` |
-| 3 | `wp-module-slice-plan` | A plan describes a feature too big for one code→build→test pass | Slice into ordered vertical increments (tracer bullets), blockers-first | `## Build Increments` appended to the SAME plan file · `Status: Sliced` |
+| 2 | `wp-module-technical-design` | A plan exists and the technical cut and/or the build order still needs nailing down before coding | Derive the concrete design per the layering rules, then break it into an ordered task list — vertical increments (tracer bullets, blockers-first) when the feature is too big for one code→build→test pass, plain steps when it is not | `## Technical Design` + `## Tasks` appended to the SAME plan file · `Status: Designed` |
 
-> Phases 2 and 3 are **optional** and both append to the one plan file — never a separate doc. Trivial fixes skip straight from Phase 1 to coding.
+> `technical-design` (row 2) is **optional** and appends into the one plan file — never a separate doc. A trivial fix goes straight from the plan to coding. Design always precedes the task list inside it: you cannot name a path through every layer until you know which files sit on it.
 
 ### Phase 2 · Build (code → build → test)
 
@@ -93,10 +92,9 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
-- **Plan done, need API/class/SQL detail** → `technical-design`.
+- **Plan done, need API/class/SQL detail, or a task breakdown, or both** → `technical-design` (it does the cut and the task list in one pass).
 - **Should this calculation be in the query or the service?** → `sql-query-design` (the row-count test).
-- **Plan done, feature is large** → `slice-plan`, then build increments one at a time.
-- **Plan done, builds in one pass** → just code; skip 2 and 3.
+- **Plan done, builds in one pass** → just code; skip `technical-design`.
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's); then `wp-obsidian-progress-log` to refresh the cross-project card.
 - **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.

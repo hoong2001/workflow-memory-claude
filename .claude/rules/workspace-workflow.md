@@ -46,20 +46,17 @@ grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/*.md
 ```
 
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
-stopped at, and its `## Build Increments` table (if it has one) says which increment is next —
+stopped at, and its `## Tasks` table (if it has one) says which task is next —
 and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every
 header says `Done` → this is new work, carry on below.
 
-Plan landed but the technical cut still needs nailing down (API / classes / SQL / frontend)?
-→ `/wp-module-technical-design` — appends a "Technical Design" section to the SAME plan file, then wait for the go.
-
-Plan describes a feature too big to build in one code→build→test pass?
-→ `/wp-module-slice-plan` — appends a "Build Increments" section (ordered vertical slices, blockers-first) to the SAME plan file; then build them top-to-bottom, one at a time, each through the Act loop below. Skip for anything that builds in one pass.
+Plan landed, and it needs the technical cut and a task breakdown before coding?
+→ `/wp-module-technical-design` — appends BOTH a "Technical Design" section (API / classes / SQL / frontend, at cut level) and a "Tasks" section to the SAME plan file, then wait for the go. Every plan it touches gets a task table; a feature too big for one code→build→test pass gets vertical increments with blocking order, anything smaller gets plain steps. Work the rows top-to-bottom, one at a time, each through the Act loop below.
 
 → Act: **code → build → test** → **save on every change**.
    **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.
-   When an increment lands, tick its `✔` cell to `☑` and set the header to `Building N/M`
-   (`N` = `☑` rows, `M` = total rows; a plan with no increments table is just `Building`).
+   When a task lands, tick its `✔` cell to `☑` and set the header to `Building N/M`
+   (`N` = `☑` rows, `M` = total rows; a plan with no `## Tasks` table is just `Building`).
    Do this as you go, not at the end: a session that stops mid-feature must leave the plan
    saying where it stopped, because that line is all the next session gets for free.
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).

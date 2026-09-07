@@ -1,6 +1,6 @@
 ---
 name: wp-module-plan-discuss
-description: Talk a module-level requirement into a work-ready plan document - the ONLY on-ramp for module work docs. Adaptive depth via five-element gap detection (Goal, Background, Material, Boundary, Definition of Done) against module docs and real code. Entry requires the user to state a purpose/goal first. Lands plans/<name>-<date>-<slug>.md in the target module. Use whenever a module-level task needs a plan before coding. Do NOT use for a whole-system spec (/wp-system-spec-discuss), or when a plan exists and only the technical cut is missing (/wp-module-technical-design).
+description: Talk a module-level requirement into a work-ready plan document - the ONLY on-ramp for module work docs. Adaptive depth via five-element gap detection (Goal, Background, Material, Boundary, Definition of Done) against module docs and real code. Entry requires the user to state a purpose/goal first. Lands plans/<name>-<date>-<slug>.md in the target module. Use whenever a module-level task needs a plan before coding. Do NOT use for a whole-system spec (/wp-system-spec-discuss), or when a plan already exists and what is missing is the technical cut or the task breakdown (/wp-module-technical-design).
 ---
 
 <what-to-do>
@@ -76,20 +76,20 @@ Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same n
 | Value | Means | Set by |
 |---|---|---|
 | `Planned` | The plan exists; nothing else has happened | this skill |
-| `Designed` | A `## Technical Design` section has been appended | `/wp-module-technical-design` |
-| `Sliced` | A `## Build Increments` section has been appended | `/wp-module-slice-plan` |
+| `Designed` | `## Technical Design` + `## Tasks` sections have been appended | `/wp-module-technical-design` |
 | `Building` | Code has started on a plan with no increments table | the Step 2 act loop |
 | `Building N/M` | Code has started on a sliced plan — `N` = `☑` rows, `M` = total rows | the Step 2 act loop |
 | `Blocked: <one line>` | Stopped on something external | whoever hits the blocker |
 | `Done` | Finished | `/wp-module-save-implementation` |
 
 One rule, no exceptions: **whoever appends a section to the plan sets `Status` to their own
-value.** `Designed` and `Sliced` can land in either order — slicing before designing is a normal
-route (see `/wp-module-slice-plan`) — so the header simply carries whichever ran last.
+value.**
 
-The `N/M` counter appears if and only if the plan has a `## Build Increments` table, and it is
-always recomputable from that table's `☑` marks — so a stale count self-corrects on the next
-read instead of contradicting the table.
+The `N/M` counter appears if and only if the plan has a `## Tasks` table, and it is always
+recomputable from that table's `☑` marks — so a stale count self-corrects on the next read
+instead of contradicting the table. `/wp-module-technical-design` always writes that table, so a
+plan that went through it always carries a counter; a trivial fix taken straight from here to
+code has no table and is simply `Building`.
 
 `Updated` is the date this header last changed, not the date the plan was written.
 
@@ -97,10 +97,10 @@ The header exists so a new session finds unfinished work with one `grep` instead
 
 The plan must cover: the goal, the decisions made **+ why** (this framework has no ADR layer — a decision worth remembering, hard to reverse, or born of a real trade-off is recorded here as decision + why), where to cut (files/methods), and the definition of done. **Length scales with content** — a trivial fix yields a mini plan (one line per element + the cut point); a complex task grows naturally. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
 
-If the technical cut (API / classes / SQL / frontend) still needs nailing down, route to `/wp-module-technical-design` — it appends a "Technical Design" section to this SAME plan file.
+If the technical cut (API / classes / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
 
 **Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. When it clearly builds in one pass (a trivial fix, one field, one method), say nothing. When it's borderline or clearly too big, add ONE reminder line — never auto-run it, the trigger is the user's:
 
-> "This looks like more than one build pass — run `/wp-module-slice-plan` to break it into ordered vertical increments first?"
+> "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first?"
 
 </supporting-info>
