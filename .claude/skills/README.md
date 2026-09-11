@@ -9,7 +9,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`).
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`).
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `sql-query-design`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -78,6 +78,9 @@ requirement ──────────────┤                       
 | Skill | When to use | Purpose / function |
 |-------|-------------|--------------------|
 | `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
+| `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
+
+> Routine credential blocking needs no skill — `.claude/hooks/block-secrets.ps1` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
 
 ### Standing · Cross-project memory (Obsidian)
 
@@ -98,3 +101,4 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's); then `wp-obsidian-progress-log` to refresh the cross-project card.
 - **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
+- **Worried a password or API key made it into the docs** → `wp-secret-scan`.
