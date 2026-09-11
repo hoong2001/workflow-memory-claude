@@ -12,14 +12,14 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `3.0.0` |
+| Version | `3.1.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
 
 > **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
-> `.claude/skills/`, `project-memory/modules/example-module/`, or this manifest). Semver:
+> `.claude/skills/`, `.claude/hooks/`, `project-memory/modules/example-module/`, or this manifest). Semver:
 > **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
 > changes in a way that breaks a project already relying on the old one. **MINOR** — a new
 > rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
@@ -34,6 +34,7 @@ master; git is the default source.
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) |
+| `.claude/hooks/` | Hook scripts — currently `block-secrets.ps1`, the credential guard (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `SYNC-MANIFEST.md` | This manifest itself |
 
@@ -62,6 +63,14 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 |---|---|---|
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.ps1` hook entry | Every other hook, permission, and setting the project has added |
+
+> **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
+> so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
+> `Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell` and whose command runs
+> `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.ps1`, merging it into the existing
+> `hooks.PreToolUse` array. If the target has no `.claude/settings.json` at all, copying the
+> master's file wholesale is safe.
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. a newly added `@import` line), keep all project-side
