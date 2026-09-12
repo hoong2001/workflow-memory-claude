@@ -8,7 +8,7 @@ description: Sweep this project's memory and workflow files (project-memory/, .c
 The `PreToolUse` hook stops a credential on its way in. This skill deals with the ones already
 on disk: written before the hook existed, synced in from another machine, or pasted by hand.
 
-Detection patterns live in ONE place — `.claude/hooks/block-secrets.ps1`. This skill runs that
+Detection patterns live in ONE place — `.claude/hooks/block-secrets.mjs`. This skill runs that
 same script in audit mode rather than carrying its own copy, so the sweep and the live guard
 can never disagree.
 
@@ -16,10 +16,12 @@ can never disagree.
 
 ### 1 · Run the sweep
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .claude/hooks/block-secrets.ps1 `
-  -ScanRoot "project-memory" ".claude" "CLAUDE.md" "README.md"
+```bash
+node .claude/hooks/block-secrets.mjs project-memory .claude CLAUDE.md README.md
 ```
+
+Runs the same on Windows, WSL, macOS and Linux — the guard is Node, not PowerShell, so the
+sweep needs no per-platform variant.
 
 Output is one line per hit — `path:line: <key> = <masked value>` — and a count. The value is
 masked on purpose; read the file to see the real one only when triaging that specific hit.

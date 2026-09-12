@@ -26,10 +26,14 @@ secret's location precisely: `Web.config → connectionStrings/OpsDb`.
 
 ## The hook that enforces this
 
-`.claude/hooks/block-secrets.ps1` runs as a `PreToolUse` hook on `Write`, `Edit`, `MultiEdit`,
+`.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on `Write`, `Edit`, `MultiEdit`,
 `NotebookEdit`, `Bash`, and `PowerShell`, wired in `.claude/settings.json`. It scans only the
 INCOMING text of a call and answers `permissionDecision: "deny"` on a match, with the value
 masked in the reason so the secret never re-enters the conversation.
+
+It is a Node script, not a PowerShell one, so a single implementation behaves identically on
+Windows, WSL, macOS and Linux. Hooks are not PowerShell-bound: `shell` accepts `bash` or
+`powershell`, and the `args` exec form spawns any executable with no shell at all.
 
 Four things it deliberately does NOT do:
 
@@ -38,7 +42,7 @@ Four things it deliberately does NOT do:
 - **It does not scan `old_string`.** Redacting a secret already on disk stays possible.
 - **It exempts its own toolkit** — `.claude/hooks/`, `.claude/skills/wp-secret-scan/`, and this
   file — because they quote the patterns they hunt for.
-- **It fails open.** A script error, or a machine without `powershell`, allows the write and
+- **It fails open.** A script error, or a machine without Node on `PATH`, allows the write and
   prints a warning. The hook is a safety net under this rule, never a substitute for it.
 
 Blocked by it? Do not route around it with a different tool. Replace the value with a

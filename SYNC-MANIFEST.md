@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `3.1.0` |
+| Version | `4.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -34,7 +34,7 @@ master; git is the default source.
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) |
-| `.claude/hooks/` | Hook scripts — currently `block-secrets.ps1`, the credential guard (whole folder) |
+| `.claude/hooks/` | Hook scripts — currently `block-secrets.mjs`, the credential guard (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `SYNC-MANIFEST.md` | This manifest itself |
 
@@ -63,14 +63,17 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 |---|---|---|
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.ps1` hook entry | Every other hook, permission, and setting the project has added |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` hook entry | Every other hook, permission, and setting the project has added |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
 > so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
 > `Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell` and whose command runs
-> `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.ps1`, merging it into the existing
+> `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.mjs`, merging it into the existing
 > `hooks.PreToolUse` array. If the target has no `.claude/settings.json` at all, copying the
 > master's file wholesale is safe.
+>
+> A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
+> version deletes. Replace that entry - do not add a second one beside it.
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. a newly added `@import` line), keep all project-side
@@ -140,6 +143,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
 | `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` (renamed to kebab-case, content unchanged — the target's `CLAUDE.md` `@import` line must be updated to match) |
 | `project-memory/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
+| `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — the credential guard moved from PowerShell to Node so one implementation behaves identically on Windows, WSL, macOS and Linux. The target's `.claude/settings.json` hook entry must be repointed at the same time (see the grey-zone note above), or the guard silently stops running |
 | `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
