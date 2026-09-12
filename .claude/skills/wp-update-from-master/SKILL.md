@@ -149,12 +149,18 @@ Copy each ✅ path from master → target with overwrite-but-never-delete semant
 ```powershell
 Copy-Item "$master\.claude\rules\*"  "$target\.claude\rules\"  -Force
 Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
+Copy-Item "$master\.claude\hooks\*"  "$target\.claude\hooks\"  -Force
 Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
 Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 ```
 
 If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
-`project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a.
+`project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a, but
+`.claude/hooks/` is new in v4.0.0 and will be missing from any target synced before it.
+
+A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
+⚠️ grey-zone — Step 5 merges its hook entry. Flag this in the report: a target that copies
+`hooks/` but skips the Step 5 merge has the guard on disk and switched off.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -173,8 +179,8 @@ is migrated by hand per the workflow routing rule (material → `references/`, `
 
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
-For each ⚠️ file (per the manifest — typically root `CLAUDE.md` and
-`project-memory/stack-architecture.md`):
+For each ⚠️ file (per the manifest — typically root `CLAUDE.md`,
+`project-memory/stack-architecture.md`, and `.claude/settings.json`):
 
 1. Diff master vs. target.
 2. Identify **template-side** changes only — e.g. a new `@import` line for a newly added
@@ -187,6 +193,11 @@ line MUST be added to the target's `CLAUDE.md` — flag this explicitly. **Excep
 rule file whose own header says it is read-on-demand (e.g. `workspace-update-memory.md`,
 `workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
 make it always-on and defeat its purpose. Read the file's first lines before adding.
+
+Special case: `.claude/settings.json`. Merge ONLY the credential-guard `PreToolUse` entry into
+the target's existing `hooks.PreToolUse` array; never copy the file whole, or the project's own
+hooks and permissions are wiped. A target synced at 3.1.0 carries the old PowerShell entry —
+replace it rather than adding a second one beside it.
 
 ## Step 5b · Post-sync alignment scan (the target's OWN docs)
 

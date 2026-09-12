@@ -6,13 +6,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell",
+            "command": "node",
             "args": [
-              "-NoProfile",
-              "-ExecutionPolicy",
-              "Bypass",
-              "-File",
-              "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.ps1"
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.mjs"
             ],
             "timeout": 15,
             "statusMessage": "Scanning for credentials..."
