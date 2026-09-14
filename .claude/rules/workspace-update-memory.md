@@ -2,6 +2,11 @@
 
 Archive as soon as a task completes — don't wait until the session ends. Judge each item; touch files only as needed:
 
+> **First, a fork.** This file governs MODULE work (Step 2 Branches A–C). A one-off task that
+> changed no module — a report run once, a data patch, an ad-hoc investigation (Branch D) —
+> stops at `/wp-task-record`: one folder under `project-memory/tasks/`, and none of the items
+> below apply. Nothing to archive here, nothing to index.
+
 ## 1. Record this task (core) → `project-memory/modules/<name>/impl/<name>-<date>-<slug>.md` (`/wp-module-save-implementation` — REMIND the user it's ready; never auto-run, the trigger is theirs)
 > This skill also lightweight-syncs `<name>-flow.md` as part of saving (see Step 4) — that's why flow.md no longer drifts.
 Every entry must include four things:

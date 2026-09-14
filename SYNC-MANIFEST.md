@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `4.0.0` |
+| Version | `4.1.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -36,11 +36,13 @@ master; git is the default source.
 | `.claude/skills/` | Workflow skills (whole folder) |
 | `.claude/hooks/` | Hook scripts — currently `block-secrets.mjs`, the credential guard (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
+| `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
 | `SYNC-MANIFEST.md` | This manifest itself |
 
 ## 🏠 Master-only (never copied to projects)
 
-Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master repo itself.
+Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
+`.gitignore` is master-only as a FILE, but carries one template-side block — see the grey zone below.
 
 ## 🚫 Never overwrite (project state — overwriting loses progress permanently)
 
@@ -49,6 +51,7 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 | `project-memory/modules/<any real module>/` | MODULE.md, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
 | `project-memory/overview/system-overview-spec.md` | That system's functional spec |
 | `project-memory/overview/references/` | That system's reference materials |
+| `project-memory/tasks/<any task folder>/` | One-off task records — `TASK.md`, `schema/`, `references/`. Git-ignored in the target too, so a sync never sees them |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |
 
 > **Master maintenance note** — the master's own `project-memory/overview/system-overview-spec.md` is a
@@ -64,6 +67,7 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` hook entry | Every other hook, permission, and setting the project has added |
+| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
 > so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
@@ -74,6 +78,10 @@ Root `README.md`, `LICENSE`, `.gitignore` — they describe/govern the master re
 >
 > A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
 > version deletes. Replace that entry - do not add a second one beside it.
+
+> **`.gitignore` merge:** add only those two lines (plus their comment) to the target's existing
+> file. Without them a project commits its ad-hoc task records — report queries, customer data —
+> into its repo. A project with a private repo that WANTS them versioned simply skips this row.
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. a newly added `@import` line), keep all project-side

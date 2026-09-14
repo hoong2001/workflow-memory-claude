@@ -47,6 +47,7 @@
 
 ## Common Entry Points
 - Starting or resuming module work in a new conversation → open BOTH `project-memory/modules/<name>/MODULE.md` (rules + gotchas) and `project-memory/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `project-memory/modules/` is auto-loaded.
+- One-off work that changes no module (report run once, data patch, ad-hoc investigation) → `/wp-task-record`, landing in `project-memory/tasks/<date>-<slug>/`. Conventions: `project-memory/tasks/_README.md`
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
@@ -73,7 +74,9 @@
 ## About this memory system
 Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `project-memory/modules/<name>/`
 (layer 2, read on demand — `MODULE.md` AND `<name>-flow.md`, always both) → governance layer per
-Common Entry Points above (+ `.claude/skills/` project-bound skills).
+Common Entry Points above (+ `.claude/skills/` project-bound skills). Beside the layers, not inside
+them: `project-memory/tasks/` holds one-off work that belongs to no module — self-contained folders,
+never auto-loaded, not committed to git.
 
 <!--
 　Advanced: the @import syntax

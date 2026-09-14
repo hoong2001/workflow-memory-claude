@@ -9,7 +9,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `auto-test-loop`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`).
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `auto-test-loop`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`).
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `sql-query-design`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -73,6 +73,20 @@ requirement ──────────────┤                       
 |-------|-------------|--------------------|--------|
 | `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
 
+### Standing · One-off work (no module)
+
+Sits beside the main flow, not inside it. When the system keeps nothing after the work is done —
+a report run once, a data patch, an ad-hoc investigation — there is no module to plan against and
+no implementation to record, so the whole memory path is this one skill.
+
+| Skill | When to use | Purpose / function | Output |
+|-------|-------------|--------------------|--------|
+| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task holding the record, the `.sql` it used, and the material it was given — built around "if this comes back" | `project-memory/tasks/<date>-<slug>/TASK.md` (+ `schema/`, `references/`) |
+
+> The test is one question: **does the system keep anything afterwards?** Yes → module work, use
+> the main flow. No → `wp-task-record`, and Step 3 wrap-up is skipped entirely. Task folders are
+> git-ignored — they hold real business data.
+
 ### Standing · Maintenance
 
 | Skill | When to use | Purpose / function |
@@ -100,5 +114,6 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 - **Plan done, builds in one pass** → just code; skip `technical-design`.
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's); then `wp-obsidian-progress-log` to refresh the cross-project card.
 - **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.
+- **One-off report / data patch, nothing ships into the system** → `wp-task-record` (skip the module layer and Step 3 entirely).
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → `wp-secret-scan`.
