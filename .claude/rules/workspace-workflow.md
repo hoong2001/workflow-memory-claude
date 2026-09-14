@@ -18,6 +18,14 @@ It can arrive in any form:
 
 > Routing rule of thumb: **material received → `references/` (+ ANY `.sql` → `schema/`, whoever wrote it — provided tables/views/indexes and generated seed/test scripts alike); work doc talked out → `plans/`; after the work is done, durable truth settles into `MODULE.md` / `<name>-flow.md`.** There is no module-level `specs/` folder.
 
+### Not every requirement is module work
+Before picking a module, ask: **does the system keep anything after this is done?**
+Code, a view, a screen, a schema change shipping into the system → module work, carry on below.
+The output is a one-time artifact handed to a person — a report run once, a data patch, an
+ad-hoc investigation, a file conversion → it is a **one-off task**: no module, no plan, no
+impl record. Route it to Branch D in Step 2. A task that later becomes permanent (the one-off
+report gets its own screen) turns into module work at that moment.
+
 ### Brand-new system (from a system spec) — bootstrap before any module work
 When the requirement is a whole-system spec, run `wp-system-overview-spec-generator` —
 that skill owns the full bootstrap procedure: tech reconciliation (spec stack vs the architecture
@@ -37,6 +45,7 @@ Branch first, then act, saving as you go:
 | **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then check for unfinished work (below) before starting anything new |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
+| **D One-off task** | no module involved — the system keeps nothing afterwards | do the work, then `/wp-task-record` → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql` and material. Skip Step 3 entirely; that folder IS the record. Details: `project-memory/tasks/_README.md` |
 
 **Branch A · check for unfinished work first.** Every plan carries a one-line status header, so
 one grep answers "is something already half-built here?" without opening a single plan:
@@ -68,7 +77,10 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
    Never auto-trigger it; the site is still user-started.
 
 ## Step 3 · Wrap up: update memory
-After the task completes, run through `workspace-update-memory.md`:
+**Branch D skips this step.** `/wp-task-record` already wrote the entire record for a one-off
+task; there is no impl record, no flow, no Module Map row, and no overview to judge.
+
+For Branches A–C, after the task completes, run through `workspace-update-memory.md`:
 impl record → `/wp-module-save-implementation` (user-triggered) → backfill gotchas to the module →
 archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean →
 remind: `/wp-obsidian-progress-log` to refresh the central Obsidian progress card (user-triggered, never auto-run).

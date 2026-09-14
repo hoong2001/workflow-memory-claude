@@ -1,1 +1,7 @@
 *.local.json
+
+# Ad-hoc task records (project-memory/tasks/) hold real business data - report
+# queries, customer names, sample output - and this repo is a public template.
+# They sync with the drive instead. Only the convention file ships.
+project-memory/tasks/*
+!project-memory/tasks/_README.md
