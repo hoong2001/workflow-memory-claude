@@ -30,6 +30,49 @@ Borderline cases and how they resolve:
 If the answer is genuinely unclear, ask the user rather than guessing — the wrong folder
 buries the record where nobody looks for it.
 
+## Step 0.5 · Check for a prior task before starting
+
+Tasks have no module `plans/*.md` to grep, but the same idea from `workspace-workflow.md`
+Branch A applies: before creating a fresh folder, check whether this request already has a
+home under `project-memory/tasks/`.
+
+```bash
+grep -li "<keyword from the request>" project-memory/tasks/*/TASK.md
+```
+
+Also scan the folder-name slugs directly — a request phrased differently can still be the
+same recurring report a slug like `q2-sales-report` already covers.
+
+Found a candidate → open its `TASK.md` and route by its status line:
+
+| Match's Status | This request | Route |
+|---|---|---|
+| `Doing` / `Blocked: ...` | any | **Same unfinished task** — resume that folder, don't create a new one |
+| `Done` | wording says or implies "again" / "monthly" / "same as last time" | **Continuation** — new dated folder as usual, but pull the old `## If this comes back` notes forward as the starting point, and open the new `## Request` section with `Continues: project-memory/tasks/<old-folder>/TASK.md` |
+| `Done` | superficially similar but actually a different ask | **Genuinely new** — say so in one line ("looks different from `<old task>` because X — treating as new") so the user can correct you, then continue |
+
+Ambiguous which row applies → don't guess. Ask via `AskUserQuestion` (pattern in
+`.claude/skills/_shared-conventions.md`): infer the likely answer as the recommended option,
+e.g. "呢單嘢係咪延續 `<old task title>` (`<old date>`)?"
+
+No candidate found → this is new. Continue to Step 0.6.
+
+## Step 0.6 · Clarify the goal before starting
+
+A one-off request stated in one line often hides an ambiguous "why" — and the wrong "why"
+produces a technically-correct answer to the wrong question. Before touching any file, check:
+does the request's purpose (what + why) already read unambiguously from what the user said?
+
+- **Already clear** (e.g. "pull the list of active stockists for the audit team") → skip this
+  step silently. Not every task earns a question.
+- **Ambiguous or open to more than one reading** (e.g. a date range not stated, "the sales
+  report" when more than one could match, a patch whose intended scope could be narrow or
+  broad) → ask ONE question via `AskUserQuestion`, following the question pattern in
+  `.claude/skills/_shared-conventions.md` (infer a recommended reading + 3 real alternatives +
+  custom). Resolve it before Step 1 — don't let an assumed "why" ride silently into the SQL.
+
+The answer becomes the `## Request` section in Step 3 directly — no re-deriving it later.
+
 ## Step 1 · Create the task folder
 
 ```
