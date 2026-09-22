@@ -65,8 +65,9 @@ If the impl record says `TODO left` or `Blocked`, the plan header says the same 
 **Before writing `Done`, check the plan's `## Decisions & open items` table for leftover `☐` rows.**
 Each one is either a decision that was in fact made while building — write the answer + why into
 its `Decision + why` cell and flip it to `☑`, since this is the last moment anyone remembers the
-reasoning — or a question still genuinely open, in which case the header is `Blocked: <that item>`,
-not `Done`.
+reasoning — or a question still genuinely open. A leftover `🟢` row (open, but it never blocked the
+build) can close out as `Done` with that row still `☐`; say so in the impl record's `Status` line. A
+leftover `🔴` row cannot: the header is `Blocked: <that item>`, not `Done`.
 Keep it on ONE line in that exact shape; Step 2 Branch A finds unfinished work by grepping it,
 and a reformatted header is work that goes invisible.
 
