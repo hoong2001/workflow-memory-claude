@@ -6,6 +6,19 @@ Before touching this module, drop a plan here first, then act.
 - Naming: `<name>-<date>-<slug>.md` (module-name prefixed), e.g. `orders-2026-06-23-add-login.md`.
 - Pairs with the same-named file in `impl/`: left = "how I plan to do it", right = "how it was actually done".
 
+## Plan shape — tables, not prose
+
+`/wp-module-plan-discuss` writes every plan in one fixed shape (template in that skill's Step 4):
+`## Goal` → `## The five elements` → `## Touch points — what changes where` → `## Decisions & open
+items`. The point is a one-screen scan: what we're building, which files it hits, and what is still
+un-decided.
+
+The last table is the one that earns its keep. Every item raised during the discussion lands there
+as a row the moment it is raised — `☑ Resolved` with the decision + why, `☐ Open — waiting on
+<who/what>`, or `→ <the skill that owns it>`. **A `☐` that blocks the build means the status header
+reads `Blocked: <that item>`, never `Planned`** — an open question parked in prose is one the next
+session re-argues from zero.
+
 ## Status header — one line, always
 
 Every plan opens with this line directly under its H1:

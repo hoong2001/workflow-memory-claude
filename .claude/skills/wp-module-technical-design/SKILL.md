@@ -179,7 +179,7 @@ from the `☑` marks in this table.
 ## Guardrails
 
 - A design that violates the stack hard rules is dead on arrival — fix it before presenting, don't present-then-apologise.
-- If the plan is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution back into the plan's element sections, not just the design.
+- If the plan is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution as a row in the plan's `## Decisions & open items` table (decision + why, `☑ Resolved`), not just in the design. Rows the plan marked `→ /wp-module-technical-design` are this step's inbox — close every one of them, or the plan still carries an open `☐` after the design lands.
 - Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
 - When the rows are vertical increments, every one must be a **full vertical path** that can be manually built, tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 - Keep every row at the level of what gets done, not how — the HOW is the `## Technical Design` section above it, the code is the work loop.
