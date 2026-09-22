@@ -40,7 +40,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (incl. KISS / DRY)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions
-│   ├── workspace-plan-impl.md        document rules: one task one doc + style pointer
+│   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer
 │   ├── workspace-doc-writing-style.md  how documents are written (read on demand, NOT @imported)
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
 │   ├── workspace-template-sync.md     never blind-overwrite project state on sync
