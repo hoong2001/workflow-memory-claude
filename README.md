@@ -28,7 +28,7 @@ project-memory/                        the project's own memory — plain folder
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed and test scripts generated (test/)
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Planned / Designed / Building N/M / Blocked / Done — so one grep finds unfinished work
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Planned / Designed / Building N/M / Blocked / Done — so one grep finds unfinished work, then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 .claude/                               tool wiring — gitignore with care, see below
 ├── settings.json                      hook wiring (commit it — the credential guard lives here)

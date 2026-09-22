@@ -50,7 +50,7 @@ requirement ──────────────┤                       
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` |
+| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` — fixed shape: Goal · five elements · touch points · decisions & open items |
 | 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (chain + fan-in table) + cut recommendation + blast radius |
 | 2 | `wp-module-technical-design` | A plan exists and the technical cut and/or the build order still needs nailing down before coding | Derive the concrete design per the layering rules, then break it into an ordered task list — vertical increments (tracer bullets, blockers-first) when the feature is too big for one code→build→test pass, plain steps when it is not | `## Technical Design` + `## Tasks` appended to the SAME plan file · `Status: Designed` |
 
