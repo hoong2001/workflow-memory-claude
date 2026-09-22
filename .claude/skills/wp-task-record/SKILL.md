@@ -135,14 +135,13 @@ the date range), and anything that tripped you up. Write it for someone with no 
 today.
 ```
 
-Rules on the header line:
+The header line follows the **Status header** section of `.claude/skills/_shared-conventions.md`
+(same one-line shape and same grep as a module plan) — read it there rather than from here. Two
+things are specific to a task record: its values are only `Doing` / `Blocked: <why>` / `Done`, and
+it carries `**Date:**` (the day the work happened) where a plan carries `**Updated:**`.
 
-- Keep `> **Status:** ...` on ONE line in that exact shape — it is grep-able the same way
-  plan headers are:
-  `grep -H "^> \*\*Status:\*\*" project-memory/tasks/*/TASK.md`
-- `Status` is `Doing` while the work is live, `Done` when finished, `Blocked: <why>` when
-  it stopped on something external. Invoking this skill at the start of a task is fine —
-  write the Request section, set `Doing`, and fill the rest when you land.
+Invoking this skill at the START of a task is fine — write the Request section, set `Doing`, and
+fill the rest when you land.
 
 ## Step 4 · Report, then stop
 
