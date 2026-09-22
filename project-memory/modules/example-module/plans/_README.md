@@ -15,9 +15,10 @@ un-decided.
 
 The last table is the one that earns its keep. Every item raised during the discussion lands there
 as a row the moment it is raised — `☑ Resolved` with the decision + why, `☐ Open — waiting on
-<who/what>`, or `→ <the skill that owns it>`. **A `☐` that blocks the build means the status header
-reads `Blocked: <that item>`, never `Planned`** — an open question parked in prose is one the next
-session re-argues from zero.
+<who/what>`, or `→ <the skill that owns it>` — and every open row carries a `Blocks build` mark:
+`🔴` (coding waits for it) or `🟢` (build proceeds around it). **A `🔴` row open means the status
+header reads `Blocked: <that item>`, never `Planned`** — an open question parked in prose is one the
+next session re-argues from zero.
 
 ## Status header — one line, always
 

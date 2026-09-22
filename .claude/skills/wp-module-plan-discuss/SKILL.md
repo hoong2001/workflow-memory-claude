@@ -62,7 +62,8 @@ Mixed results are normal: two blanks + one conflict = two interview questions + 
 **Log every item the moment it is raised.** Each question asked, conflict challenged, implicit
 decision surfaced, or item parked becomes one row in the plan's `## Decisions & open items` table
 (Step 4) as it happens — not reconstructed at the end. A settled row carries the answer + why and
-a `☑`; an unsettled one carries what it waits on and a `☐`. An item that lived only in the chat is
+a `☑`; an unsettled one carries what it waits on, a `☐`, and a `🔴`/`🟢` saying whether the build
+can start without it — judge that at the moment you park it, not on build day. An item that lived only in the chat is
 gone when the session ends, and the next session re-argues it from zero.
 
 ## Step 4 — Write the plan and hand off
@@ -134,11 +135,12 @@ a blank heading. Use project-root-relative paths only (see `workspace-doc-relati
 
 ## Decisions & open items
 
-| # | Item | Decision + why | Status |
-|---|---|---|---|
-| 1 | <the question that was on the table> | <what we chose, and why that over the alternative> | ☑ Resolved |
-| 2 | <still on the table> | — | ☐ Open — waiting on <who / what> |
-| 3 | <belongs to the technical cut> | — | → `/wp-module-technical-design` |
+| # | Item | Decision + why | Status | Blocks build |
+|---|---|---|---|---|
+| 1 | <the question that was on the table> | <what we chose, and why that over the alternative> | ☑ Resolved | — |
+| 2 | <still on the table> | — | ☐ Open — waiting on <who / what> | 🔴 |
+| 3 | <a later-phase call, safe to build without> | — | ☐ Open | 🟢 |
+| 4 | <belongs to the technical cut> | — | → `/wp-module-technical-design` | 🟢 |
 ```
 
 Three rules make these tables worth their ink:
@@ -157,10 +159,14 @@ Three rules make these tables worth their ink:
   conversation that produced it ("what" is reconstructable later; "why this over that" is lost
   forever if unwritten).
 
-**No coding starts with an open ☐ that blocks it.** Either resolve the row first, or set the status
-header to `Blocked: <that item>` so the plan announces it instead of hiding it behind `Planned`.
-A ☐ that does not block the build (a cosmetic call, a later-phase question) stays open and the plan
-proceeds — say which in the row.
+**`Blocks build` is the column that gets read first**, so it carries a mark, not a sentence:
+`🔴` = coding cannot start until this row is `☑`; `🟢` = open, but the build proceeds without it;
+`—` = already resolved, nothing to weigh. Every `☐` row gets one of the two marks — an open item
+whose cost nobody judged is exactly the item that surfaces on build day.
+
+**No coding starts while a `🔴` row is open.** Either resolve it first, or set the status header to
+`Blocked: <that item>` so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
+stay open and the work proceeds around them.
 
 If the technical cut (API / classes / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
 
