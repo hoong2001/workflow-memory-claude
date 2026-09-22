@@ -109,13 +109,16 @@ Only the symbols reused across the chain (`Base*`, `ConstValues/`, `Results/`, o
 - Unverified links (could not be resolved in source): `...` — [reason]
 ```
 
-**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). Hand it to the change's plan (`plans/<name>-<date>-<slug>.md`, appended or created via `/wp-module-plan-discuss`), or present it in the conversation if no plan exists yet:
+**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision.
+
+Plan already exists → write the rows into its table (merge with what is there; a row you would duplicate is a row you update instead). No plan yet → present the same table in the conversation, so `/wp-module-plan-discuss` lands it directly:
 
 ```markdown
-## Where to Cut — [intended change, from Step 0]
+## Touch points — what changes where
 
-- [ ] `path/File.ext : Method()` — [what to add/change here]
-- [ ] ...
+| File / object | New or Modified | What changes |
+|---|---|---|
+| `path/File.ext : Method()` | Modified | [what to add/change here] |
 
 ## Blast Radius — other callers inheriting a shared-symbol edit
 
