@@ -78,29 +78,9 @@ Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same n
 > **Status:** Planned · **Updated:** YYYY-MM-DD
 ```
 
-`Status` names the last thing that actually happened to this plan:
-
-| Value | Means | Set by |
-|---|---|---|
-| `Planned` | The plan exists; nothing else has happened | this skill |
-| `Designed` | `## Technical Design` + `## Tasks` sections have been appended | `/wp-module-technical-design` |
-| `Building` | Code has started on a plan with no increments table | the Step 2 act loop |
-| `Building N/M` | Code has started on a sliced plan — `N` = `☑` rows, `M` = total rows | the Step 2 act loop |
-| `Blocked: <one line>` | Stopped on something external | whoever hits the blocker |
-| `Done` | Finished | `/wp-module-save-implementation` |
-
-One rule, no exceptions: **whoever appends a section to the plan sets `Status` to their own
-value.**
-
-The `N/M` counter appears if and only if the plan has a `## Tasks` table, and it is always
-recomputable from that table's `☑` marks — so a stale count self-corrects on the next read
-instead of contradicting the table. `/wp-module-technical-design` always writes that table, so a
-plan that went through it always carries a counter; a trivial fix taken straight from here to
-code has no table and is simply `Building`.
-
-`Updated` is the date this header last changed, not the date the plan was written.
-
-The header exists so a new session finds unfinished work with one `grep` instead of opening every plan (`workspace-workflow.md` Step 2 Branch A). Keep it on ONE line in this exact shape — a scan that has to parse variations is a scan that silently misses work.
+The full value set, who sets each one, and the `N/M` rule live in one place — the **Status header**
+section of `.claude/skills/_shared-conventions.md`. Follow it in full. What this skill owns is the
+value it writes: **`Planned`**, because nothing has happened to the plan yet beyond existing.
 
 ### Output template — the plan's fixed shape
 

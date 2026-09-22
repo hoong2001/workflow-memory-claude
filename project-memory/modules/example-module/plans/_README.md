@@ -29,25 +29,13 @@ Every plan opens with this line directly under its H1:
 ```
 
 `Status` names the last thing that actually happened, so a scan tells you which step the work
-stopped at — not merely that it stopped:
+stopped at — not merely that it stopped. One `grep` reads the whole folder:
 
-| Value | Means | Written by |
-|---|---|---|
-| `Planned` | The plan exists; nothing else has happened | `/wp-module-plan-discuss` |
-| `Designed` | `## Technical Design` + `## Tasks` sections have been appended | `/wp-module-technical-design` |
-| `Building` | Code has started; this plan has no increments table | the Step 2 act loop |
-| `Building N/M` | Code has started on a sliced plan | the Step 2 act loop |
-| `Blocked: <one line>` | Stopped on something external | whoever hits the blocker |
-| `Done` | Finished | `/wp-module-save-implementation` |
+```bash
+grep -H "^> \*\*Status:\*\*" plans/*.md
+```
 
-Whoever appends a section sets `Status` to their own value — no exceptions to remember.
-
-**The `N/M` counter appears only when the plan has a `## Tasks` table**, where `N` is
-the number of `☑` rows and `M` the total. A plan that builds in one pass has nothing to count, and
-`Building` alone is its complete progress. Because the count is derived from the table, a stale
-number self-corrects on the next read instead of contradicting it.
-
-The header exists so unfinished work is found by scanning headers, never by opening every plan —
-`grep -H "^> \*\*Status:\*\*" plans/*.md` lists the whole folder's state in one shot, then only
-the live plan gets read in full. The plan is the single source of truth for its own progress; no
-other file carries a copy, so there is nothing to drift.
+The value set (`Planned` → `Designed` → `Building N/M` → `Blocked:` → `Done`), who writes each one,
+and the `N/M` rule are defined once in the **Status header** section of
+`.claude/skills/_shared-conventions.md` — that file is the authority, this folder does not keep a
+second copy to drift from.

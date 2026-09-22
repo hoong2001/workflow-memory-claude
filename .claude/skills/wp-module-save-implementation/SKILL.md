@@ -68,8 +68,10 @@ its `Decision + why` cell and flip it to `☑`, since this is the last moment an
 reasoning — or a question still genuinely open. A leftover `🟢` row (open, but it never blocked the
 build) can close out as `Done` with that row still `☐`; say so in the impl record's `Status` line. A
 leftover `🔴` row cannot: the header is `Blocked: <that item>`, not `Done`.
-Keep it on ONE line in that exact shape; Step 2 Branch A finds unfinished work by grepping it,
-and a reformatted header is work that goes invisible.
+
+The header's exact shape, its full value set, and the grep it exists for are defined once in the
+**Status header** section of `.claude/skills/_shared-conventions.md` — follow it; a reformatted
+header is work that goes invisible to Step 2 Branch A.
 
 ## Step 3 · Sync `<name>-flow.md` (lightweight, incremental)
 
