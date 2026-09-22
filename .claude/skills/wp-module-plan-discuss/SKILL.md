@@ -59,6 +59,12 @@ Mixed results are normal: two blanks + one conflict = two interview questions + 
 
 **Implicit-decision sweep before writing.** The five elements reading CLEAR does not prove every call has been made — a downstream decision can still sit silently assumed. Before the final confirmation, sweep once: "what has this plan quietly decided without saying so?" (error handling, an edge case, a default value, a boundary the user never named). Surface each one with the question pattern until nothing important is left implicit. Then do a final confirmation of the assembled plan.
 
+**Log every item the moment it is raised.** Each question asked, conflict challenged, implicit
+decision surfaced, or item parked becomes one row in the plan's `## Decisions & open items` table
+(Step 4) as it happens — not reconstructed at the end. A settled row carries the answer + why and
+a `☑`; an unsettled one carries what it waits on and a `☐`. An item that lived only in the chat is
+gone when the session ends, and the next session re-argues it from zero.
+
 ## Step 4 — Write the plan and hand off
 
 Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up).
@@ -95,7 +101,66 @@ code has no table and is simply `Building`.
 
 The header exists so a new session finds unfinished work with one `grep` instead of opening every plan (`workspace-workflow.md` Step 2 Branch A). Keep it on ONE line in this exact shape — a scan that has to parse variations is a scan that silently misses work.
 
-The plan must cover: the goal, the decisions made **+ why** (this framework has no ADR layer — a decision worth remembering, hard to reverse, or born of a real trade-off is recorded here as decision + why), where to cut (files/methods), and the definition of done. **Length scales with content** — a trivial fix yields a mini plan (one line per element + the cut point); a complex task grows naturally. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
+### Output template — the plan's fixed shape
+
+Write the body in these sections, in this order. Tables over prose: a reader must see the goal,
+what gets touched, and what is still open within one screen, without parsing paragraphs. **Rows
+scale with content, sections do not** — a trivial fix has one row per table; a complex task has
+twenty. Drop a section only when it is genuinely empty, and say so in one line rather than leaving
+a blank heading. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
+
+```markdown
+# <module> — <short title>
+
+> **Status:** Planned · **Updated:** YYYY-MM-DD
+
+## Goal
+<what + why, in one or two lines — a reader who opens this cold knows what they are building>
+
+## The five elements
+
+| Element | Filled with |
+|---|---|
+| Background | the current behavior / trigger this changes |
+| Material | inputs: files, tables, views, references, schemas |
+| Boundary | what is explicitly OUT of scope |
+| Definition of Done | the verifiable criterion the USER checks after building |
+
+## Touch points — what changes where
+
+| File / object | New or Modified | What changes |
+|---|---|---|
+| `path/relative/to/root.cs` | Modified | one line, concrete |
+
+## Decisions & open items
+
+| # | Item | Decision + why | Status |
+|---|---|---|---|
+| 1 | <the question that was on the table> | <what we chose, and why that over the alternative> | ☑ Resolved |
+| 2 | <still on the table> | — | ☐ Open — waiting on <who / what> |
+| 3 | <belongs to the technical cut> | — | → `/wp-module-technical-design` |
+```
+
+Three rules make these tables worth their ink:
+
+- **`Goal` appears once, above the table** — the five-element table carries the other four, so
+  nothing is written twice.
+- **Touch points is the coarse cut, not the design.** File + one line of what changes, as far as
+  the evidence in Step 1 actually supports. The exact class/method map, the API surface and the SQL
+  belong to `/wp-module-technical-design`'s `## Class & file map`; this table is the honest
+  first-pass blast radius, including the shared-symbol callers found above, and that skill refines
+  it rather than repeating it. A caller you know is affected goes in a row — an unstated blast
+  radius is the plan's largest silent decision.
+- **Every ☐ is a landmine with a name.** `Status` is one of `☑ Resolved`, `☐ Open — waiting on
+  <who/what>`, or `→ <the skill/step that owns it>`. This framework has no ADR layer, so a
+  resolved row IS the decision record — the `Decision + why` cell must survive without the
+  conversation that produced it ("what" is reconstructable later; "why this over that" is lost
+  forever if unwritten).
+
+**No coding starts with an open ☐ that blocks it.** Either resolve the row first, or set the status
+header to `Blocked: <that item>` so the plan announces it instead of hiding it behind `Planned`.
+A ☐ that does not block the build (a cosmetic call, a later-phase question) stays open and the plan
+proceeds — say which in the row.
 
 If the technical cut (API / classes / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
 
