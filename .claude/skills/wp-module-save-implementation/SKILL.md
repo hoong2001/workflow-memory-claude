@@ -104,6 +104,15 @@ Report all paths touched and the flow.md outcome, e.g.:
    — or — flow.md left for full /wp-module-code-trace-flow (large structural rewrite)
 ```
 
+That block is the Done slot of the handoff (the **Handoff** section of
+`.claude/skills/_shared-conventions.md`); finish it with the other two lines:
+
+- **👉 You now** — the wrap-up judgments that are the user's (`.claude/rules/workspace-update-memory.md`):
+  whether the change is overview-worthy (item 5b — give your reasoning and a proposed line), or
+  `nothing` when it is a localized fix.
+- **⏭ Next** — `/wp-obsidian-progress-log` to refresh the cross-project card, or the next live
+  plan in this module if the grep of status headers finds one.
+
 ## Notes
 
 - **Files touched** is the most critical field for a future session — always fill it.

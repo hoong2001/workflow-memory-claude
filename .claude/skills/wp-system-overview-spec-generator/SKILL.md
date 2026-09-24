@@ -113,6 +113,11 @@ Run the "Quality checklist". Save the overview as `project-memory/overview/syste
 path the user specifies). Leave explicit `(TBD — <what is still needed>)` for anything unresolved
 rather than a confident guess.
 
+Close with the handoff — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
+Done = the overview path, the modules scaffolded (NEW) or updated (EXISTING), and the Module Map
+rows added; You now = review the overview's `TBD` markers; Next = pick the first module to build
+and run `/wp-module-plan-discuss` on it (name the module you recommend and why).
+
 ## Section extraction guide
 
 Map source material into the sections. `§4 → §5` is the spine: capabilities drive modules.

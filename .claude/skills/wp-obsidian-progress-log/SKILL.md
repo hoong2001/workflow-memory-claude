@@ -148,6 +148,9 @@ of duplicating them.
      columns `module`, `status`, `last_touched`, `next_step`. Two views: **"By project"** grouped
      by `project` (for opening standalone), and **"This project"** filtered `project == this.project`
      (for embedding in a project card).
+5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
+   Done = every card and Base written, by vault path; You now = open `Projects.base` and confirm the
+   cards render; Next = the project card's `next_step`.
 
 ## Mode B · RESUME (read back)
 

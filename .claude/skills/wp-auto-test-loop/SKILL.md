@@ -87,3 +87,7 @@ scripts/run-sql.ps1 -WebConfigPath <Web\Web.config> -ConnectionName <name> -Quer
 Summarize in one block: build rounds + what was fixed, SQL checks run and results, web-test
 pass/fail per acceptance point, anything left for the user. Then remind in one line that
 `/wp-module-save-implementation` is ready to run — never auto-run it.
+
+That block is the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`):
+the summary is Done, anything left for the user is You now, the save-implementation reminder is
+Next — or, when a check failed, Next is the fix and You now is the failure to look at.

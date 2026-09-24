@@ -78,6 +78,6 @@ Write the spec to `project-memory/overview/references/spec-<date>-<slug>.md`, us
 
 **Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
 
-Tell the user the spec is ready and recommend running `/wp-system-overview-spec-generator` on it to execute the bootstrap.
+Tell the user the spec is ready and recommend running `/wp-system-overview-spec-generator` on it to execute the bootstrap. Say it as the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): Done = the spec path; You now = read the spec once end to end; Next = `/wp-system-overview-spec-generator` on that file.
 
 </supporting-info>

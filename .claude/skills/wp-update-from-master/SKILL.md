@@ -225,7 +225,9 @@ Summarize in one short block: version pulled (`vX.Y.Z → vA.B.C`, or `none → 
 pre-versioning project), files overwritten / added / deleted (manifest-listed) / merged /
 skipped (project-own) / alignment fixes applied (Step 5b), and anything that needs the
 user's follow-up. Remind the user to start a fresh session (or continue) so newly imported
-rules take effect.
+rules take effect. That block is the handoff (the **Handoff** section of
+`.claude/skills/_shared-conventions.md`): the summary is Done, the follow-ups are You now, the
+fresh session is Next.
 
 **If Step 3.5b found memory still under `.claude/`, lead the report with it** — name each
 module folder found, state that sync left them untouched by design, and paste the manifest's

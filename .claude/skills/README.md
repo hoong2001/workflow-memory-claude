@@ -4,8 +4,9 @@
 > already states its detailed purpose and "do NOT use" cases — this file is the **map between
 > them**: what runs first, what's optional, and which skill answers "what do I reach for now?"
 
-> Rules that several skills share — the question pattern, interview conduct, the status header — live once in
+> Rules that several skills share — the question pattern, interview conduct, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
+> Every skill run closes with the handoff (✅ Done · 👉 You now · ⏭ Next), so the user always sees what changed and what comes after.
 
 ## Trigger convention
 

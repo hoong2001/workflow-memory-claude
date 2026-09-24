@@ -160,3 +160,8 @@ Then stop. Deliberately NOT part of this path:
 The one optional follow-on: if the task was substantial enough that a future you would
 wonder where the week went, remind the user in one line that `/wp-obsidian-progress-log`
 can note it on the cross-project card. Their trigger, never automatic.
+
+The ✅ block above is the Done slot of the handoff (the **Handoff** section of
+`.claude/skills/_shared-conventions.md`); finish with You now = hand the deliverable over, or clear
+the blocker when `Status: Blocked`; Next = the progress-log reminder above when it applies,
+otherwise `nothing — this task is closed`.

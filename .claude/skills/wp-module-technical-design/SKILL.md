@@ -103,6 +103,10 @@ hunting for half-written classes.
 Stop after the breakdown is confirmed. Coding starts only on the user's go, and each task runs
 through the normal Step 2 work loop (code → build → test → save).
 
+**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
+Done = the plan path, `Status: Designed`, and the task count; You now = review the `## Tasks` table
+and say go; Next = task 1 through the Step 2 act loop (name the task).
+
 </what-to-do>
 
 <supporting-info>

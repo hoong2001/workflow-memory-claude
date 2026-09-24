@@ -150,8 +150,12 @@ stay open and the work proceeds around them.
 
 If the technical cut (API / classes / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
 
-**Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. When it clearly builds in one pass (a trivial fix, one field, one method), say nothing. When it's borderline or clearly too big, add ONE reminder line — never auto-run it, the trigger is the user's:
+**Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. The verdict decides the handoff's **Next** line — never auto-run anything, the trigger is the user's:
 
-> "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first?"
+- Clearly one pass (a trivial fix, one field, one method) → "Step 2 act loop — say go and coding starts."
+- Borderline or clearly too big → "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first."
+- An open `🔴` row → Next is resolving that row; coding waits.
+
+**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the plan path + `Status: Planned` (or `Blocked`); You now = review the plan and answer any `🔴` row; Next = the verdict above.
 
 </supporting-info>

@@ -118,6 +118,8 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `wp-obsidian-progress-log`.
 
+Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for build + test, or work blocked — closes with a three-line handoff: **✅ Done** (what changed + files) · **👉 You now** (the user's one action) · **⏭ Next** (the next step or skill). Shape: `.claude/skills/_shared-conventions.md` → Handoff.
+
 ## Portable vs per-project
 
 | Layer | Files | Per project? |
