@@ -70,7 +70,8 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
    saying where it stopped, because that line is all the next session gets for free.
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).
    Claude never auto-runs the build or the tests: after coding, remind the user in one line to
-   build + test, wait for the results they report back, and fix from there.
+   build + test (that line is the handoff's **👉 You now**), wait for the results they report
+   back, and fix from there.
    **Sole exception:** the user explicitly invokes the project's auto-test skill (here
    `/wp-auto-test-loop`) — that invocation IS the authorization for Claude to build,
    auto-fix compile errors, run the skill's data checks, and web-test, for that run only.
@@ -84,3 +85,10 @@ For Branches A–C, after the task completes, run through `workspace-update-memo
 impl record → `/wp-module-save-implementation` (user-triggered) → backfill gotchas to the module →
 archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean →
 remind: `/wp-obsidian-progress-log` to refresh the central Obsidian progress card (user-triggered, never auto-run).
+
+## Every stop ends with a handoff
+Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it closes with
+the three-slot block — **✅ Done** (what changed + files) · **👉 You now** (the user's one action) ·
+**⏭ Next** (the one next step or skill). This applies in every branch and step above, including
+work that runs without a skill. Shape and rules: the **Handoff** section of
+`.claude/skills/_shared-conventions.md`.

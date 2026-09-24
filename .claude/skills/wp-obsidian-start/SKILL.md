@@ -48,7 +48,8 @@ one-line description), so they pick what to do with Obsidian this time. Then rou
 ## Step 4 · Hand off
 
 Invoke the chosen skill (via the Skill tool) and follow its guidance to completion. This
-dispatcher adds nothing on top except the routing decision.
+dispatcher adds nothing on top except the routing decision — the chosen skill's closing handoff
+closes this run too; do not add a second one.
 
 ## Step 5 · Never write silently
 
