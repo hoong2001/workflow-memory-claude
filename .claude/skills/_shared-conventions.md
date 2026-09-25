@@ -38,8 +38,8 @@ only when something is still pending, what is the user's to do and what comes af
 3. The paired plan, if there is one, is `Done`, and the status-header grep finds no other live plan
    the work belongs to.
 4. No `🔴` row is open.
-5. No workflow step the rules still require is pending — e.g. `/wp-module-save-implementation`
-   after a feature, or the `/wp-obsidian-progress-log` reminder at Step 3 wrap-up, not yet given.
+5. No workflow step the rules still require is pending — e.g. the `/wp-module-save-implementation`
+   reminder after a feature, not yet given.
 
 **Closed → two lines, and stop:**
 

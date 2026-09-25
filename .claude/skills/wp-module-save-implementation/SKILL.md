@@ -105,13 +105,14 @@ Report all paths touched and the flow.md outcome, e.g.:
 ```
 
 That block is the Done slot of the handoff (the **Handoff** section of
-`.claude/skills/_shared-conventions.md`); finish it with the other two lines:
+`.claude/skills/_shared-conventions.md`). Run the closed test, then finish:
 
-- **👉 You now** — the wrap-up judgments that are the user's (`.claude/rules/workspace-update-memory.md`):
-  whether the change is overview-worthy (item 5b — give your reasoning and a proposed line), or
-  `nothing` when it is a localized fix.
-- **⏭ Next** — `/wp-obsidian-progress-log` to refresh the cross-project card, or the next live
-  plan in this module if the grep of status headers finds one.
+- **Open** when something is still pending — **👉 You now** = the overview judgment that is the
+  user's (`.claude/rules/workspace-update-memory.md` item 5b — give your reasoning and a proposed
+  line), or `nothing`; **⏭ Next** = the next live plan in this module if the grep of status headers
+  finds one, otherwise "on your yes, add the proposed line to the overview".
+- **Closed** when neither applies — a localized fix with no other live plan ends with
+  `🏁 Closed — nothing pending.`
 
 ## Notes
 
