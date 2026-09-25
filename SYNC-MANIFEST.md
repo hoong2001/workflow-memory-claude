@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `4.8.0` |
+| Version | `4.9.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed

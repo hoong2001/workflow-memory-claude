@@ -27,9 +27,28 @@ never revert to a bare statement waiting for a nod.
 
 ## Handoff
 
-Every skill run ends with the same three-slot block, and so does every task that runs without a
-skill (`.claude/rules/workspace-workflow.md` applies it there). It answers the three questions a
-user otherwise has to ask: what just happened, what is mine to do, and what comes after.
+Every skill run ends with a handoff, and so does every task that runs without a skill
+(`.claude/rules/workspace-workflow.md` applies it there). It answers what just happened — and,
+only when something is still pending, what is the user's to do and what comes after.
+
+**First judge: is the work closed?** It is closed when ALL of these hold:
+
+1. What the user asked for this time is fully delivered.
+2. Nothing waits on the user — a build + test reminded but not yet reported back counts as waiting.
+3. The paired plan, if there is one, is `Done`, and the status-header grep finds no other live plan
+   the work belongs to.
+4. No `🔴` row is open.
+5. No workflow step the rules still require is pending — e.g. `/wp-module-save-implementation`
+   after a feature, or the `/wp-obsidian-progress-log` reminder at Step 3 wrap-up, not yet given.
+
+**Closed → two lines, and stop:**
+
+```
+✅ Done: <what changed, one line> · <every file written, project-root-relative>
+🏁 Closed — nothing pending.
+```
+
+**Any condition fails → the open block:**
 
 ```
 ✅ Done: <what changed, one line> · <every file written, project-root-relative>
@@ -37,11 +56,15 @@ user otherwise has to ask: what just happened, what is mine to do, and what come
 ⏭ Next: <the one next step or skill, and when it applies>
 ```
 
+- **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
+  project could sync this" — if it was not asked for and no rule requires it, it is not a Next.
+  A finished task ends with `🏁 Closed`, not with a suggestion.
 - **Done** lists the files actually written. Nothing written → `no files changed`. A skill with
   its own report block (e.g. `/wp-module-save-implementation`'s ✅ list) uses that block as the
-  Done slot and adds the two lines below it.
+  Done slot and adds the lines below it.
 - **You now** is an action only the user can take: build + test in Visual Studio, answer an open
-  item, review a file, say go. Nothing needed → `nothing — say go to continue`.
+  item, review a file, say go. When only Next is pending and it waits on nothing from the user
+  → `nothing`.
 - **Next** names ONE step: a skill (`/wp-...`) or a workflow step (e.g. "Step 2 act loop, task 1").
   At a fork, name the recommended branch and the condition for the other in the same line. It is
   a reminder, never an action: a user-invoked skill stays user-invoked.
@@ -52,7 +75,7 @@ user otherwise has to ask: what just happened, what is mine to do, and what come
 - **Auto-triggered coding standards add none of their own.** `wp-concrete-repository-pattern`,
   `wp-sql-query-design`, and `wp-aspnet-mvc-frontend-standards` apply inside a coding task; that
   task's handoff covers them. A dispatcher (`wp-obsidian-start`) defers to the skill it routes to.
-- **Language follows the conversation.** The three slots and their order do not change.
+- **Language follows the conversation.** The two shapes, their slots, and their order do not change.
 
 ## Status header
 
