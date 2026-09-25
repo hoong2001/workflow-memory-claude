@@ -1,6 +1,6 @@
 ---
 name: wp-obsidian-progress-log
-description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project", or opens a project after a gap. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
+description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project". Never suggest it unprompted — not everyone uses Obsidian. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
 ---
 
 # Obsidian Progress Log — cross-project state board
@@ -20,9 +20,8 @@ Done work counts, not just to-dos. The deep record — how it was built and why 
 project's own `project-memory/modules/*/impl/`, `plans/`, and `<name>-flow.md`
 (saved by `/wp-module-save-implementation`). These cards only link back to it.
 
-**Trigger is manual.** Never write to the vault on your own. At most, REMIND the user in one line
-when a moment fits (task wrapped up → "want me to log progress?"; opening a stale project → "this
-project has cards — read them back?"). The user decides.
+**Trigger is manual.** Never write to the vault on your own, and never prompt the user to log or
+read back — not everyone uses Obsidian, so this skill runs only when the user invokes it.
 
 **Vault path — read it from this skill's own config: `references/vault-path.local.json`**
 (machine-local, gitignored, never synced). Read its `vaultPath` value; never hardcode a path in
@@ -149,7 +148,7 @@ of duplicating them.
      by `project` (for opening standalone), and **"This project"** filtered `project == this.project`
      (for embedding in a project card).
 5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
-   Done = every card and Base written, by vault path. Logging is the last step of the wrap-up, so
+   Done = every card and Base written, by vault path. Logging leaves nothing behind it, so
    this run is closed (`🏁 Closed — nothing pending.`) — the project card's `next_step` belongs to
    the project, not to this run, and is not repeated as a Next. Only when a Base embed failed to
    render and needs the user's eye is it open (You now = check that card).

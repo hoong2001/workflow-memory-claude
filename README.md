@@ -116,7 +116,7 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change, the plan's status header included.
-3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index), then a reminder to refresh the cross-project snapshot via `wp-obsidian-progress-log`.
+3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 
 Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for build + test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
@@ -161,4 +161,5 @@ real path never syncs). For the richest path both prefer the `obsidian` CLI plus
 `wp-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
 unaffected. `wp-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a
-shallow snapshot vs. the deep in-project record) and is reminded at Step 3 wrap-up.
+shallow snapshot vs. the deep in-project record). No workflow step reminds anyone to run it — not
+everyone uses Obsidian, so the add-on waits to be invoked.

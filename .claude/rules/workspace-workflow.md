@@ -83,8 +83,7 @@ task; there is no impl record, no flow, no Module Map row, and no overview to ju
 
 For Branches A–C, after the task completes, run through `workspace-update-memory.md`:
 impl record → `/wp-module-save-implementation` (user-triggered) → backfill gotchas to the module →
-archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean →
-remind: `/wp-obsidian-progress-log` to refresh the central Obsidian progress card (user-triggered, never auto-run).
+archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean.
 
 ## Every stop ends with a handoff
 Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it first judges

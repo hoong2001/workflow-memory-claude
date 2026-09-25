@@ -45,7 +45,4 @@ entry — and let the USER decide whether to add it. Never edit the overview sil
 
 ## 6. Wrap-up check: is root `CLAUDE.md` still lean? If too long, move details to the module layer or `.claude/`, leaving only path links.
 
-## 7. Log the cross-project snapshot → `/wp-obsidian-progress-log` (REMIND the user; never auto-run, the trigger is theirs)
-Once the local memory above is updated, remind the user in one line that this project's central Obsidian progress card can be refreshed — modules + state, done work, status, next step — so a paused project can be resumed later from the cross-project dashboard without reopening everything. Shallow snapshot only; the deep record stays in `impl/` and `plans/`. Writing to the vault always needs the user's go — never silent.
-
-For each file changed, briefly say what changed and why. End with a one-line summary of what was archived this time. That report is the Done slot of the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): You now = the overview judgment from item 5b, or `nothing`; Next = the item 7 reminder.
+For each file changed, briefly say what changed and why. End with a one-line summary of what was archived this time. That report is the Done slot of the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): an overview judgment from item 5b waiting on the user → open, with that judgment as You now and "on your yes, add the proposed line to the overview" as Next; nothing waiting → closed.

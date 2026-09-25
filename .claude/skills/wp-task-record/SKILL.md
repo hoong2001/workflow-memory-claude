@@ -157,12 +157,7 @@ Then stop. Deliberately NOT part of this path:
 - No `flow.md`, no `MODULE.md` gotchas, no Module Map row in `CLAUDE.md`.
 - No overview judgment — a one-off report never changes the system's WHAT.
 
-The one optional follow-on: if the task was substantial enough that a future you would
-wonder where the week went, remind the user in one line that `/wp-obsidian-progress-log`
-can note it on the cross-project card. Their trigger, never automatic.
-
 The ✅ block above is the Done slot of the handoff (the **Handoff** section of
-`.claude/skills/_shared-conventions.md`). `Status: Done` with no progress-log reminder due → the
-closed shape (`🏁 Closed — nothing pending.`) and stop. Otherwise the open block: You now = clear
-the blocker when `Status: Blocked`, or `nothing`; Next = where work resumes, or the progress-log
-reminder above.
+`.claude/skills/_shared-conventions.md`). `Status: Done` → the closed shape
+(`🏁 Closed — nothing pending.`) and stop. `Status: Blocked` → the open block: You now = clear the
+blocker; Next = where work resumes.
