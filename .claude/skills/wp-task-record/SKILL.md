@@ -162,6 +162,7 @@ wonder where the week went, remind the user in one line that `/wp-obsidian-progr
 can note it on the cross-project card. Their trigger, never automatic.
 
 The ✅ block above is the Done slot of the handoff (the **Handoff** section of
-`.claude/skills/_shared-conventions.md`); finish with You now = hand the deliverable over, or clear
-the blocker when `Status: Blocked`; Next = the progress-log reminder above when it applies,
-otherwise `nothing — this task is closed`.
+`.claude/skills/_shared-conventions.md`). `Status: Done` with no progress-log reminder due → the
+closed shape (`🏁 Closed — nothing pending.`) and stop. Otherwise the open block: You now = clear
+the blocker when `Status: Blocked`, or `nothing`; Next = where work resumes, or the progress-log
+reminder above.

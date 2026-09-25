@@ -6,7 +6,7 @@
 
 > Rules that several skills share — the question pattern, interview conduct, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
-> Every skill run closes with the handoff (✅ Done · 👉 You now · ⏭ Next), so the user always sees what changed and what comes after.
+> Every skill run closes with the handoff: finished with nothing pending → ✅ Done · 🏁 Closed; still pending → ✅ Done · 👉 You now · ⏭ Next. The user always sees what changed, and sees a next step only when one exists.
 
 ## Trigger convention
 

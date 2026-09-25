@@ -87,8 +87,12 @@ archive the plan → update the index (module map, flow) → architecture change
 remind: `/wp-obsidian-progress-log` to refresh the central Obsidian progress card (user-triggered, never auto-run).
 
 ## Every stop ends with a handoff
-Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it closes with
-the three-slot block — **✅ Done** (what changed + files) · **👉 You now** (the user's one action) ·
-**⏭ Next** (the one next step or skill). This applies in every branch and step above, including
-work that runs without a skill. Shape and rules: the **Handoff** section of
-`.claude/skills/_shared-conventions.md`.
+Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it first judges
+whether the work is closed, then ends with one of two shapes:
+- **Closed** (delivered, nothing waiting on the user, no live plan or `🔴` row, no required workflow
+  step pending) → **✅ Done** (what changed + files) · **🏁 Closed — nothing pending.** Then stop.
+- **Open** → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the one next step or skill).
+
+Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This
+applies in every branch and step above, including work that runs without a skill. The closed test
+and the rules: the **Handoff** section of `.claude/skills/_shared-conventions.md`.
