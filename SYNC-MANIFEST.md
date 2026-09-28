@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `4.10.0` |
+| Version | `5.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -66,6 +66,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 |---|---|---|
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
+| `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
 | `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` hook entry | Every other hook, permission, and setting the project has added |
 | Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block | Every other ignore rule the project has |
 
@@ -153,6 +154,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `project-memory/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
 | `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — the credential guard moved from PowerShell to Node so one implementation behaves identically on Windows, WSL, macOS and Linux. The target's `.claude/settings.json` hook entry must be repointed at the same time (see the grey-zone note above), or the guard silently stops running |
 | `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
+| `.claude/skills/wp-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` — renamed because "concrete" named a rule (no interfaces) that `stack-architecture.next.md` relaxes; the new name says what the skill owns. Content otherwise unchanged. A leftover old folder keeps auto-triggering beside the new one, so delete it |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
 > under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
@@ -177,7 +179,7 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
 | `.claude/skills/workspace-module-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
 | `.claude/skills/workspace-auto-test-loop/` | `.claude/skills/wp-auto-test-loop/` |
 | `.claude/skills/workspace-aspnet-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
-| `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-concrete-repository-pattern/` |
+| `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` (renamed to `wp-concrete-repository-pattern/`, then again in v5.0.0 — delete in one step, do not create `wp-concrete-repository-pattern/`) |
 | `.claude/skills/workspace-update-from-master/` | `.claude/skills/wp-update-from-master/` |
 | `.claude/skills/workspace-obsidian-start/` | `.claude/skills/wp-obsidian-start/` |
 | `.claude/skills/workspace-obsidian-progress-log/` | `.claude/skills/wp-obsidian-progress-log/` |

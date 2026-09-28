@@ -20,6 +20,7 @@ you work; everything else is reusable as-is.
 CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 project-memory/                        the project's own memory — plain folder, always committable
 ├── stack-architecture.md              ← the ONE per-project file (stack / architecture SSOT)
+├── stack-architecture.next.md         staged, partly-unsealed draft of it — inert until you rename it in (switch by hand)
 ├── overview/
 │   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
 │   └── references/                    system-wide reference material you provide (docs/images/links)
@@ -56,8 +57,9 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
     ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
-    ├── wp-concrete-repository-pattern/  data-layer pattern (SSOT)
+    ├── wp-repository-unitofwork-pattern/  data-layer pattern (SSOT)
     ├── wp-sql-query-design/  what belongs in SQL vs the Service layer, and keeping the SQL readable
+    ├── wp-csharp-gof-design-patterns/  which GoF patterns fit this stack, and the pain each needs before it is used
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
@@ -118,7 +120,7 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 
-Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for build + test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
+Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for build + test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
 ## Portable vs per-project
 
@@ -138,8 +140,8 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
 with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementation`,
 `wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
-stack-bound `wp-concrete-repository-pattern` + `wp-sql-query-design` +
-`wp-aspnet-mvc-frontend-standards`),
+stack-bound `wp-repository-unitofwork-pattern` + `wp-sql-query-design` +
+`wp-csharp-gof-design-patterns` + `wp-aspnet-mvc-frontend-standards`),
 `wp-system-spec-discuss`, `wp-module-code-trace-flow`, `wp-auto-test-loop`,
 and `wp-update-from-master`. No user-level (global) skill is required:
 copying the framework files (adoption step 1) brings everything along.

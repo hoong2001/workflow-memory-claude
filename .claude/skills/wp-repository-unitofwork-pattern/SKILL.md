@@ -1,6 +1,6 @@
 ---
-name: wp-concrete-repository-pattern
-description: Repository Pattern implementation guide using Dapper.NET for C# 7.3 ASP.NET MVC 5 projects. Use this skill whenever writing, reviewing, or modifying Repository classes, BaseRepository, UnitOfWork, or any data access layer code. Also trigger when the user asks about Dapper queries, SQL parameterization, dynamic queries, transaction management, or DAL structure. Always use DynamicParameters for all queries. No interfaces, no async, no DI, no stored procedures.
+name: wp-repository-unitofwork-pattern
+description: Repository Pattern implementation guide using Dapper.NET for C# 7.3 ASP.NET MVC 5 projects. Use this skill whenever writing, reviewing, or modifying Repository classes, BaseRepository, UnitOfWork, or any data access layer code. Also trigger when the user asks about Dapper queries, SQL parameterization, dynamic queries, transaction management, or DAL structure. Always use DynamicParameters for all queries. No async, no DI, no stored procedures; interfaces only where project-memory/stack-architecture.md allows them.
 ---
 
 # Repository Pattern with Dapper.NET
@@ -8,7 +8,9 @@ description: Repository Pattern implementation guide using Dapper.NET for C# 7.3
 ## Core Rules (Non-Negotiable)
 - No async / await — synchronous only
 - No Dependency Injection — concrete class instantiation only
-- No interfaces for Repository or UnitOfWork
+- Interfaces on Repository or UnitOfWork: whatever `project-memory/stack-architecture.md` §4.1
+  says — it is the switch, this skill never overrides it. The samples below are the no-interface
+  form; the interface form is in **Repository interfaces** below.
 - No stored procedures — Raw SQL only (supports dynamic query)
 - No DTO or Entities — use `Results/` classes for all object mapping
 - Always use `DynamicParameters` for all queries — exception: WHERE IN (see below)
@@ -27,7 +29,7 @@ description: Repository Pattern implementation guide using Dapper.NET for C# 7.3
 ```
 [ProjectName].UnitOfWork
 ├── ConstValues/       ← Constants and enums
-├── Repositories/      ← Repository classes (concrete, no interfaces)
+├── Repositories/      ← Repository classes (+ I[Entity]Repository only where §4.1 allows)
 ├── Results/           ← Result classes for object mapping (output)
 └── UnitOfWork.cs      ← Transaction control, implements IDisposable
 ```
@@ -82,6 +84,29 @@ public class UnitOfWork : IDisposable
 ```
 
 **Adding a new Repository:** add a backing field + property pair. No other changes needed.
+
+### Repository interfaces (only where §4.1 permits them)
+
+Only the declared types change. UnitOfWork stays concrete and still news up the Repository,
+because the Repository runs on UnitOfWork's connection and transaction; the container-free
+`using (var uow = new UnitOfWork(...))` call sites below stay exactly as they are.
+
+```csharp
+public interface IProductRepository
+{
+    ProductResult GetById(int productId);
+    int Insert(ProductResult product);
+}
+
+public class ProductRepository : BaseRepository, IProductRepository { ... }
+
+// In UnitOfWork — field and property typed as the interface
+private IProductRepository _productRepo;
+public IProductRepository ProductRepo => _productRepo ?? (_productRepo = new ProductRepository(this));
+```
+
+Follow the module's `MODULE.md` Local conventions: a module gives every Repository an interface
+or none. Never mix the two forms inside one module.
 
 **Read-only (dirty read allowed):**
 ```csharp

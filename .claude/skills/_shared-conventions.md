@@ -7,7 +7,8 @@ nothing here overrides a skill's own explicit instruction.
 ## Question pattern
 
 Every question a discussion skill asks goes through the `AskUserQuestion` tool — never a
-plain-text statement waiting for a nod, and never gated behind a rejection first.
+plain-text statement waiting for a nod, and never gated behind a rejection first. The same holds
+for a decision left in a handoff's **You now** (see **Handoff** below).
 
 1. **Infer, then ask** — work out your recommended answer from the plan, the module docs,
    the code, or the stack constraints, and use it as the first option, marked "(Recommended)".
@@ -65,6 +66,12 @@ only when something is still pending, what is the user's to do and what comes af
 - **You now** is an action only the user can take: build + test in Visual Studio, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.
+- **A You now that is a choice gets asked, not typed.** When the user's action is to pick between
+  options — which name, which approach, one commit or two — print the block, then ask it through
+  `AskUserQuestion` in the same turn: recommended option first, marked "(Recommended)", then only
+  the real alternatives (2–4 options in all, never padded). Several independent choices go in one
+  call, up to 4 questions. An action that is not a choice — build + test, review a file — stays
+  a plain line. Without `AskUserQuestion`, list the options numbered.
 - **Next** names ONE step: a skill (`/wp-...`) or a workflow step (e.g. "Step 2 act loop, task 1").
   At a fork, name the recommended branch and the condition for the other in the same line. It is
   a reminder, never an action: a user-invoked skill stays user-invoked.
@@ -72,8 +79,8 @@ only when something is still pending, what is the user's to do and what comes af
   the blocker the user must clear, Next says where work resumes.
 - **Not at every question.** The block closes a run or a task; a skill mid-interview just asks
   its question.
-- **Auto-triggered coding standards add none of their own.** `wp-concrete-repository-pattern`,
-  `wp-sql-query-design`, and `wp-aspnet-mvc-frontend-standards` apply inside a coding task; that
+- **Auto-triggered coding standards add none of their own.** `wp-repository-unitofwork-pattern`,
+  `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, and `wp-aspnet-mvc-frontend-standards` apply inside a coding task; that
   task's handoff covers them. A dispatcher (`wp-obsidian-start`) defers to the skill it routes to.
 - **Language follows the conversation.** The two shapes, their slots, and their order do not change.
 
