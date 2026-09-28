@@ -148,7 +148,7 @@ whose cost nobody judged is exactly the item that surfaces on build day.
 `Blocked: <that item>` so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
 stay open and the work proceeds around them.
 
-If the technical cut (API / classes / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
+If the technical cut (API / classes / patterns / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
 
 **Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. The verdict decides the handoff's **Next** line — never auto-run anything, the trigger is the user's:
 

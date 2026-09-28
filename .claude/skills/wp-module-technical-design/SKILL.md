@@ -136,6 +136,9 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 | File | New/Modified | Layer | Responsibility |
 |------|--------------|-------|----------------|
 
+Any design pattern in this map follows `wp-csharp-gof-design-patterns` — it enters only with its
+named pain, written under **Decisions + why**. No pain named, no pattern: plain classes.
+
 ### Data access
 
 Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.

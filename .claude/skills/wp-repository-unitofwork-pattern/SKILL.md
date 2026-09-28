@@ -9,8 +9,10 @@ description: Repository Pattern implementation guide using Dapper.NET for C# 7.3
 - No async / await — synchronous only
 - No Dependency Injection — concrete class instantiation only
 - Interfaces on Repository or UnitOfWork: whatever `project-memory/stack-architecture.md` §4.1
-  says — it is the switch, this skill never overrides it. The samples below are the no-interface
-  form; the interface form is in **Repository interfaces** below.
+  says — it is the switch, this skill never overrides it. **If the architecture doc does not
+  explicitly permit them, there are none** — a project's own doc that never mentions interfaces
+  gets the concrete form this skill always had. The samples below are the no-interface form;
+  the interface form is in **Repository interfaces** below.
 - No stored procedures — Raw SQL only (supports dynamic query)
 - No DTO or Entities — use `Results/` classes for all object mapping
 - Always use `DynamicParameters` for all queries — exception: WHERE IN (see below)
@@ -106,7 +108,8 @@ public IProductRepository ProductRepo => _productRepo ?? (_productRepo = new Pro
 ```
 
 Follow the module's `MODULE.md` Local conventions: a module gives every Repository an interface
-or none. Never mix the two forms inside one module.
+or none. Never mix the two forms inside one module. A module with no such record has none — so an
+existing module keeps its concrete Repositories when the architecture doc is switched.
 
 **Read-only (dirty read allowed):**
 ```csharp
