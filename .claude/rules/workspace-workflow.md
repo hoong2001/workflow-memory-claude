@@ -60,7 +60,7 @@ and resume there rather than starting a fresh plan on top of it. Nothing unfinis
 header says `Done` → this is new work, carry on below.
 
 Plan landed, and it needs the technical cut and a task breakdown before coding?
-→ `/wp-module-technical-design` — appends BOTH a "Technical Design" section (API / classes / SQL / frontend, at cut level) and a "Tasks" section to the SAME plan file, then wait for the go. Every plan it touches gets a task table; a feature too big for one code→build→test pass gets vertical increments with blocking order, anything smaller gets plain steps. Work the rows top-to-bottom, one at a time, each through the Act loop below.
+→ `/wp-module-technical-design` — appends BOTH a "Technical Design" section (API / classes / patterns / SQL / frontend, at cut level) and a "Tasks" section to the SAME plan file, then wait for the go. Every plan it touches gets a task table; a feature too big for one code→build→test pass gets vertical increments with blocking order, anything smaller gets plain steps. Work the rows top-to-bottom, one at a time, each through the Act loop below.
 
 → Act: **code → build → test** → **save on every change**.
    **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.
