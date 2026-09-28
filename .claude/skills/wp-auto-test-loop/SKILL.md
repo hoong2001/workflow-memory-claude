@@ -42,7 +42,7 @@ scripts/build-solution.ps1 -SolutionPath <path\to\Solution.sln>
    `??=`, target-typed `new`), async/await or DI creeping in (both forbidden), missing
    Result-class property, wrong Base-class inheritance.
 3. Fixes must respect the architecture doc (`project-memory/stack-architecture.md`)
-   — never "fix" an error by violating a hard rule (e.g. adding an interface or async).
+   — never "fix" an error by violating a hard rule (e.g. adding async, DI, or an interface the architecture doc does not allow).
 4. Rebuild after each round. **Stop conditions:** same error signature two rounds in a row,
    or 5 rounds reached → stop, summarize what was tried, hand back to the user.
 

@@ -6,12 +6,12 @@
 
 > Rules that several skills share — the question pattern, interview conduct, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
-> Every skill run closes with the handoff: finished with nothing pending → ✅ Done · 🏁 Closed; still pending → ✅ Done · 👉 You now · ⏭ Next. The user always sees what changed, and sees a next step only when one exists.
+> Every skill run closes with the handoff: finished with nothing pending → ✅ Done · 🏁 Closed; still pending → ✅ Done · 👉 You now · ⏭ Next, and a You now that is a choice is asked with `AskUserQuestion`. The user always sees what changed, and sees a next step only when one exists.
 
 ## Trigger convention
 
 - **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `auto-test-loop`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`concrete-repository-pattern`, `sql-query-design`, `aspnet-mvc-frontend-standards`).
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
 
@@ -27,8 +27,9 @@ requirement ──────────────┤                       
                                    ┌──────────────────────────┘
                                    ▼
    code → build → test  ◄── coding standards auto-apply here:
-   (build/test are MANUAL,     concrete-repository-pattern (DAL) · sql-query-design (any SQL)
-    user runs them)            aspnet-mvc-frontend-standards (UI)
+   (build/test are MANUAL,     repository-unitofwork-pattern (DAL) · sql-query-design (any SQL)
+    user runs them)            csharp-gof-design-patterns (design / refactor)
+                               aspnet-mvc-frontend-standards (UI)
                                optional: /auto-test-loop (user-invoked build+test loop)
                                    │
                                    ▼
@@ -61,8 +62,9 @@ requirement ──────────────┤                       
 
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
-| `wp-concrete-repository-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no interfaces/async/DI/stored procs | Auto |
+| `wp-repository-unitofwork-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no async/DI/stored procs, interfaces only where `stack-architecture.md` allows | Auto |
 | `wp-sql-query-design` | Writing/reviewing any SQL — Repository queries, `.sql` schema/seed scripts, persisted test scripts | The query standard: the row-count test draws the SQL↔C# line; keep the remaining SQL simple; `SELECT *` banned; readability-costing rewrites need a measured number | Auto |
+| `wp-csharp-gof-design-patterns` | Designing or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 | `wp-auto-test-loop` | You explicitly ask to build + test a change | Compile via MSBuild, auto-fix compile errors, CRUD-only data checks, web-test the flow against a site YOU started | User-invoked only |
 
@@ -112,6 +114,7 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
 - **Plan done, need API/class/SQL detail, or a task breakdown, or both** → `technical-design` (it does the cut and the task list in one pass).
 - **Should this calculation be in the query or the service?** → `sql-query-design` (the row-count test).
+- **Should this be a Strategy / Factory / some pattern?** → `csharp-gof-design-patterns` (no named pain, no pattern).
 - **Plan done, builds in one pass** → just code; skip `technical-design`.
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's).
 - **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.

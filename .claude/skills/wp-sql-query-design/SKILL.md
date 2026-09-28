@@ -1,6 +1,6 @@
 ---
 name: wp-sql-query-design
-description: SQL query design standard for this stack — decides what belongs in SQL versus the C# Service layer via the row-count test, bans SELECT *, and keeps the SQL that remains simple, readable, and maintainable. Use whenever writing or reviewing any SQL: a query inside a Repository method, a .sql schema or seed script, a persisted test script. Also trigger when deciding where a calculation or rule should live, simplifying a query that has grown hard to follow, judging whether a performance rewrite is worth its readability cost, or on questions about GROUP BY vs LINQ, N+1 queries, paging, CASE expressions in SQL, window functions, CTE vs temp table, or "should this be in the query or in the service". Use alongside wp-concrete-repository-pattern (which owns the C# plumbing around the query — DynamicParameters, UnitOfWork, Dapper method choice) and the workspace-sql-house-style rule (which owns .sql-file conventions such as plain-INSERT seed scripts), never instead of them.
+description: SQL query design standard for this stack — decides what belongs in SQL versus the C# Service layer via the row-count test, bans SELECT *, and keeps the SQL that remains simple, readable, and maintainable. Use whenever writing or reviewing any SQL: a query inside a Repository method, a .sql schema or seed script, a persisted test script. Also trigger when deciding where a calculation or rule should live, simplifying a query that has grown hard to follow, judging whether a performance rewrite is worth its readability cost, or on questions about GROUP BY vs LINQ, N+1 queries, paging, CASE expressions in SQL, window functions, CTE vs temp table, or "should this be in the query or in the service". Use alongside wp-repository-unitofwork-pattern (which owns the C# plumbing around the query — DynamicParameters, UnitOfWork, Dapper method choice) and the workspace-sql-house-style rule (which owns .sql-file conventions such as plain-INSERT seed scripts), never instead of them.
 ---
 
 # SQL Query Design
@@ -19,7 +19,7 @@ and demands evidence before it does.
 | Concern | Owner |
 |---|---|
 | What the query should do, how simple it should be, where logic lives | **this skill** |
-| `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-concrete-repository-pattern` |
+| `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-repository-unitofwork-pattern` |
 | `.sql`-file conventions — plain-INSERT seeds, read the real definition first, ship it as a real file | `workspace-sql-house-style.md` rule |
 | Stack versions, layering, forbidden patterns | `project-memory/stack-architecture.md` |
 
@@ -121,7 +121,7 @@ var orders = rows.GroupBy(r => r.OrderId)
 ```
 
 For a parent list plus a child list that do not flatten cleanly, `QueryMultiple` returns both
-sets in one round trip — see `wp-concrete-repository-pattern` for the call itself.
+sets in one round trip — see `wp-repository-unitofwork-pattern` for the call itself.
 
 **Review trigger:** any `foreach` whose body reaches `_uow`. Check every one.
 
@@ -213,7 +213,7 @@ other table.
 ### Formatting inside C# verbatim strings
 
 C# 7.3 has no raw string literals, so SQL lives in `@"..."`. Align the continuation to the
-opening quote and keep one clause per line — the same shape as `wp-concrete-repository-pattern`.
+opening quote and keep one clause per line — the same shape as `wp-repository-unitofwork-pattern`.
 
 ```csharp
 var sql = @"SELECT o.OrderId,

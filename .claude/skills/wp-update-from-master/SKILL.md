@@ -180,7 +180,8 @@ is migrated by hand per the workflow routing rule (material → `references/`, `
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
 For each ⚠️ file (per the manifest — typically root `CLAUDE.md`,
-`project-memory/stack-architecture.md`, and `.claude/settings.json`):
+`project-memory/stack-architecture.md`, `project-memory/stack-architecture.next.md`, and
+`.claude/settings.json`):
 
 1. Diff master vs. target.
 2. Identify **template-side** changes only — e.g. a new `@import` line for a newly added
