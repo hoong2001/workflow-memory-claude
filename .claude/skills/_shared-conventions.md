@@ -66,12 +66,17 @@ only when something is still pending, what is the user's to do and what comes af
 - **You now** is an action only the user can take: build + test in Visual Studio, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.
-- **A You now that is a choice gets asked, not typed.** When the user's action is to pick between
-  options — which name, which approach, one commit or two — print the block, then ask it through
-  `AskUserQuestion` in the same turn: recommended option first, marked "(Recommended)", then only
-  the real alternatives (2–4 options in all, never padded). Several independent choices go in one
-  call, up to 4 questions. An action that is not a choice — build + test, review a file — stays
-  a plain line. Without `AskUserQuestion`, list the options numbered.
+- **Judge each You now: a choice gets asked, an action stays a line.** The test: does the user
+  pick between outcomes you can name?
+  - **Yes, a choice** — which name, which approach, one commit or two, supply a reference file or
+    go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn:
+    recommended option first, marked "(Recommended)", then only the real alternatives (2–4
+    options in all, never padded). Several independent choices go in one call, up to 4 questions.
+  - **No, an action only the user can do** — run a `.sql`, build + test in Visual Studio, drop a
+    file into `references/`, review a file. A plain line: name the action and what to report back.
+  - **Both in one stop** — the action stays the line, and the choice goes to the tool.
+
+  Without `AskUserQuestion`, list the options numbered.
 - **Next** names ONE step: a skill (`/wp-...`) or a workflow step (e.g. "Step 2 act loop, task 1").
   At a fork, name the recommended branch and the condition for the other in the same line. It is
   a reminder, never an action: a user-invoked skill stays user-invoked.

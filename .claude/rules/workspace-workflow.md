@@ -91,8 +91,9 @@ whether the work is closed, then ends with one of two shapes:
 - **Closed** (delivered, nothing waiting on the user, no live plan or `🔴` row, no required workflow
   step pending) → **✅ Done** (what changed + files) · **🏁 Closed — nothing pending.** Then stop.
 - **Open** → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the one next step or skill).
-  A You now that is a choice between options is asked through `AskUserQuestion` in the same turn,
-  never left for the user to type.
+  Judge each You now: a choice between options is asked through `AskUserQuestion` in the same
+  turn, never left for the user to type; a manual action (run a `.sql`, build + test, supply a
+  reference file) stays a plain line.
 
 Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This
 applies in every branch and step above, including work that runs without a skill. The closed test
