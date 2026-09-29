@@ -137,10 +137,17 @@ A one-off task has no design step and no slicing, so it carries three values onl
   by opening every file, and a scan that has to parse variations is a scan that silently misses
   work:
   ```bash
-  grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/*.md
+  grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
   grep -H "^> \*\*Status:\*\*" project-memory/tasks/*/TASK.md
   ```
+  `[!_]` skips `plans/_README.md`, whose example header would otherwise read as live work in
+  every module.
 - **`Updated` is the date this header last changed**, not the date the document was written.
   (A task record carries `**Date:**` — the day the work happened — instead.)
-- **The document is the single source of truth for its own progress.** No other file carries a
-  copy, so there is nothing to drift.
+- **The document is the single source of truth for its own progress.** No one writes a copy by
+  hand. The one derived view is `project-memory/project-memory-status.md` — every module plan not
+  `Done`, in one table (Done plans are left out, so it never grows with history), rebuilt by the
+  `PostToolUse` hook `.claude/hooks/project-memory-status.mjs` on each write to a plan. Read it for
+  the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
+  it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
+  not in it.

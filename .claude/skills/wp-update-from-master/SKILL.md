@@ -159,8 +159,8 @@ If a target folder doesn't exist yet (first-time bootstrap of an old project), c
 `.claude/hooks/` is new in v4.0.0 and will be missing from any target synced before it.
 
 A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
-⚠️ grey-zone — Step 5 merges its hook entry. Flag this in the report: a target that copies
-`hooks/` but skips the Step 5 merge has the guard on disk and switched off.
+⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies
+`hooks/` but skips the Step 5 merge has the guard and the status view on disk and switched off.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -195,10 +195,13 @@ rule file whose own header says it is read-on-demand (e.g. `workspace-update-mem
 `workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
 make it always-on and defeat its purpose. Read the file's first lines before adding.
 
-Special case: `.claude/settings.json`. Merge ONLY the credential-guard `PreToolUse` entry into
-the target's existing `hooks.PreToolUse` array; never copy the file whole, or the project's own
-hooks and permissions are wiped. A target synced at 3.1.0 carries the old PowerShell entry —
-replace it rather than adding a second one beside it.
+Special case: `.claude/settings.json`. Merge ONLY the two template hook entries — the
+credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view `PostToolUse`
+entry (`project-memory-status.mjs`) into `hooks.PostToolUse`; never copy the file whole, or the
+project's own hooks and permissions are wiped. After merging, run
+`node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
+`project-memory/project-memory-status.md` is built from its own plans. A target synced at 3.1.0
+carries the old PowerShell entry — replace it rather than adding a second one beside it.
 
 ## Step 5b · Post-sync alignment scan (the target's OWN docs)
 
