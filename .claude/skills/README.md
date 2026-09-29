@@ -98,6 +98,8 @@ no implementation to record, so the whole memory path is this one skill.
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
 
 > Routine credential blocking needs no skill — `.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
+>
+> The system-wide plan status also needs no skill — `.claude/hooks/project-memory-status.mjs` runs as a `PostToolUse` hook and rebuilds `project-memory/project-memory-status.md` whenever a module plan is written.
 
 ### Standing · Cross-project memory (Obsidian)
 

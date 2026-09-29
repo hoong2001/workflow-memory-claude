@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `5.1.1` |
+| Version | `5.2.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -34,7 +34,7 @@ master; git is the default source.
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) |
-| `.claude/hooks/` | Hook scripts — currently `block-secrets.mjs`, the credential guard (whole folder) |
+| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, and `project-memory-status.mjs`, the system-wide plan-status view (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
 | `SYNC-MANIFEST.md` | This manifest itself |
@@ -52,6 +52,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | `project-memory/overview/system-overview-spec.md` | That system's functional spec |
 | `project-memory/overview/references/` | That system's reference materials |
 | `project-memory/tasks/<any task folder>/` | One-off task records — `TASK.md`, `schema/`, `references/`. Git-ignored in the target too, so a sync never sees them |
+| `project-memory/project-memory-status.md` | Generated from the target's own plans by its own `project-memory-status.mjs` hook — copying the master's would show the master's modules. Rebuild it in the target with `node .claude/hooks/project-memory-status.mjs --regenerate` |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |
 
 > **Master maintenance note** — the master's own `project-memory/overview/system-overview-spec.md` is a
@@ -67,15 +68,18 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` hook entry | Every other hook, permission, and setting the project has added |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` hook entries | Every other hook, permission, and setting the project has added |
 | Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
 > so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
 > `Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell` and whose command runs
 > `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.mjs`, merging it into the existing
-> `hooks.PreToolUse` array. If the target has no `.claude/settings.json` at all, copying the
-> master's file wholesale is safe.
+> `hooks.PreToolUse` array. Likewise add the `PostToolUse` entry whose `matcher` is
+> `Write|Edit|MultiEdit|Bash|PowerShell` and whose command runs
+> `${CLAUDE_PROJECT_DIR}/.claude/hooks/project-memory-status.mjs` into `hooks.PostToolUse`, then
+> run it once with `--regenerate` so the status view exists before the first plan write. If the
+> target has no `.claude/settings.json` at all, copying the master's file wholesale is safe.
 >
 > A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
 > version deletes. Replace that entry - do not add a second one beside it.

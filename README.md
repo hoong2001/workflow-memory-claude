@@ -21,6 +21,7 @@ CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 project-memory/                        the project's own memory — plain folder, always committable
 ├── stack-architecture.md              ← the ONE per-project file (stack / architecture SSOT)
 ├── stack-architecture.next.md         staged, partly-unsealed draft of it — inert until you rename it in (switch by hand)
+├── project-memory-status.md           every module plan not Done, in one table — hook-generated, never edited
 ├── overview/
 │   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
 │   └── references/                    system-wide reference material you provide (docs/images/links)
@@ -32,9 +33,10 @@ project-memory/                        the project's own memory — plain folder
     ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Planned / Designed / Building N/M / Blocked / Done — so one grep finds unfinished work, then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 .claude/                               tool wiring — gitignore with care, see below
-├── settings.json                      hook wiring (commit it — the credential guard lives here)
+├── settings.json                      hook wiring (commit it — the credential guard and the status view live here)
 ├── hooks/
-│   └── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
+│   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
+│   └── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
@@ -87,17 +89,19 @@ self-contained (see **Skill dependencies** below).
 ### Gitignoring `.claude/`
 
 A project that ignores `.claude/` wholesale still keeps every handover doc, because they all
-live in `project-memory/` — but it loses the credential guard, which is wired in
-`.claude/settings.json` and implemented in `.claude/hooks/`. Ignore the machine-local files
-at minimum:
+live in `project-memory/` — but it loses both hooks, which are wired in
+`.claude/settings.json` and implemented in `.claude/hooks/`: the credential guard, and the
+rebuild of `project-memory/project-memory-status.md` (the file stays, frozen at its last state).
+Ignore the machine-local files at minimum:
 
 ```gitignore
 *.local.json
 ```
 
 To ignore the whole tool folder, whitelist everything the workflow needs so a fresh clone can
-still run it — **including `hooks/` and `settings.json`**, or the credential guard silently
-stops running and nobody notices until a password is already committed:
+still run it — **including `hooks/` and `settings.json`**, or both hooks silently stop running:
+nobody notices the credential guard is gone until a password is already committed, or that the
+status view is stale until it hides a half-built plan:
 
 ```gitignore
 .claude/*

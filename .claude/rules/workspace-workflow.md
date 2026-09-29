@@ -51,9 +51,12 @@ Branch first, then act, saving as you go:
 one grep answers "is something already half-built here?" without opening a single plan:
 
 ```bash
-grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/*.md
+grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
 ```
 
+Across every module at once → `project-memory/project-memory-status.md`, which lists every plan
+not `Done` and is rebuilt by a hook on each write to a plan (derived view, never edited; the
+plans win on any disagreement).
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, and its `## Tasks` table (if it has one) says which task is next —
 and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every

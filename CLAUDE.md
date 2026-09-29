@@ -47,6 +47,7 @@
 
 ## Common Entry Points
 - Starting or resuming module work in a new conversation → open BOTH `project-memory/modules/<name>/MODULE.md` (rules + gotchas) and `project-memory/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `project-memory/modules/` is auto-loaded.
+- What is live across all modules → `project-memory/project-memory-status.md` — every plan not `Done`, in one table (Done plans are left out), rebuilt by a hook (`.claude/hooks/project-memory-status.mjs`); never edit it, the plans are the source.
 - One-off work that changes no module (report run once, data patch, ad-hoc investigation) → `/wp-task-record`, landing in `project-memory/tasks/<date>-<slug>/`. Conventions: `project-memory/tasks/_README.md`
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`

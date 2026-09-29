@@ -32,8 +32,11 @@ Every plan opens with this line directly under its H1:
 stopped at — not merely that it stopped. One `grep` reads the whole folder:
 
 ```bash
-grep -H "^> \*\*Status:\*\*" plans/*.md
+grep -H "^> \*\*Status:\*\*" plans/[!_]*.md
 ```
+
+`[!_]` skips this `_README.md`, whose example header above would otherwise read as live work.
+Every module's plans not `Done`, in one table: `project-memory/project-memory-status.md` (hook-generated).
 
 The value set (`Planned` → `Designed` → `Building N/M` → `Blocked:` → `Done`), who writes each one,
 and the `N/M` rule are defined once in the **Status header** section of
