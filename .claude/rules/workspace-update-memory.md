@@ -23,7 +23,8 @@ Use the same name as its impl file so they pair up. If `/wp-module-technical-des
 its "Technical Design" and "Tasks" sections live inside this same plan file — never separate files.
 
 **Its status header must reflect reality before you walk away** — `Done` when finished,
-`Building N/M` when increments remain, `Blocked: <why>` when it stopped on something external.
+`Building` (`Detail: N/M`) when increments remain, `Blocked` (`Detail: <why>`) when it stopped on
+something external.
 The act loop maintains it as you build (Step 2) and `/wp-module-save-implementation` closes it
 out. The point of the header is that a plan left mid-flight announces itself to the next session
 instead of hiding: a stale `Planned` on half-built work is worse than no header at all.

@@ -38,6 +38,7 @@ const MODULES_DIR = join(ROOT, 'project-memory', 'modules');
 const OUTPUT = join(ROOT, 'project-memory', 'project-memory-status.md');
 
 const HEADER = /^> \*\*Status:\*\*\s*(.+?)\s*$/;
+const DETAIL = /\*\*Detail:\*\*\s*(.+?)\s*(?: · |$)/;
 const UPDATED = /\*\*Updated:\*\*\s*(\S+)/;
 
 function normalize(p) {
@@ -67,8 +68,9 @@ function readHeader(file) {
     if (!m) continue;
     const parts = m[1].split(' · ');
     const status = parts[0].trim();
+    const detail = DETAIL.exec(m[1]);
     const updated = UPDATED.exec(m[1]);
-    return { status, updated: updated ? updated[1] : '' };
+    return { status, detail: detail ? detail[1] : '', updated: updated ? updated[1] : '' };
   }
   return null;
 }
@@ -88,6 +90,7 @@ function collect() {
         file,
         link: `modules/${name}/plans/${file}`,
         status: header ? header.status : '⚠ no status header',
+        detail: header ? header.detail : '',
         updated: header ? header.updated : '',
         done: header ? header.status === 'Done' : false,
       });
@@ -117,9 +120,9 @@ function render(plans) {
     out.push('Nothing live. Every plan is `Done`, or no module has a plan yet.');
   } else {
     out.push('Oldest first — the most-forgotten plan floats to the top.', '');
-    out.push('| Module | Plan | Status | Updated |', '|---|---|---|---|');
+    out.push('| Module | Plan | Status | Detail | Updated |', '|---|---|---|---|---|');
     for (const p of live) {
-      out.push(`| ${cell(p.module)} | [${cell(p.file)}](${p.link}) | ${cell(p.status)} | ${p.updated} |`);
+      out.push(`| ${cell(p.module)} | [${cell(p.file)}](${p.link}) | ${cell(p.status)} | ${cell(p.detail)} | ${p.updated} |`);
     }
   }
 

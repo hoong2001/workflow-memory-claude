@@ -67,7 +67,7 @@ Each one is either a decision that was in fact made while building — write the
 its `Decision + why` cell and flip it to `☑`, since this is the last moment anyone remembers the
 reasoning — or a question still genuinely open. A leftover `🟢` row (open, but it never blocked the
 build) can close out as `Done` with that row still `☐`; say so in the impl record's `Status` line. A
-leftover `🔴` row cannot: the header is `Blocked: <that item>`, not `Done`.
+leftover `🔴` row cannot: the header is `Blocked · **Detail:** <that item>`, not `Done`.
 
 The header's exact shape, its full value set, and the grep it exists for are defined once in the
 **Status header** section of `.claude/skills/_shared-conventions.md` — follow it; a reformatted
