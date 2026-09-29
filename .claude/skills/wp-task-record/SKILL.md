@@ -47,7 +47,7 @@ Found a candidate → open its `TASK.md` and route by its status line:
 
 | Match's Status | This request | Route |
 |---|---|---|
-| `Doing` / `Blocked: ...` | any | **Same unfinished task** — resume that folder, don't create a new one |
+| `Doing` / `Blocked` | any | **Same unfinished task** — resume that folder, don't create a new one |
 | `Done` | wording says or implies "again" / "monthly" / "same as last time" | **Continuation** — new dated folder as usual, but pull the old `## If this comes back` notes forward as the starting point, and open the new `## Request` section with `Continues: project-memory/tasks/<old-folder>/TASK.md` |
 | `Done` | superficially similar but actually a different ask | **Genuinely new** — say so in one line ("looks different from `<old task>` because X — treating as new") so the user can correct you, then continue |
 
@@ -137,8 +137,9 @@ today.
 
 The header line follows the **Status header** section of `.claude/skills/_shared-conventions.md`
 (same one-line shape and same grep as a module plan) — read it there rather than from here. Two
-things are specific to a task record: its values are only `Doing` / `Blocked: <why>` / `Done`, and
-it carries `**Date:**` (the day the work happened) where a plan carries `**Updated:**`.
+things are specific to a task record: its values are only `Doing` / `Blocked` / `Done` (a `Blocked`
+record adds `**Detail:** <why>` after the status), and it carries `**Date:**` (the day the work
+happened) where a plan carries `**Updated:**`.
 
 Invoking this skill at the START of a task is fine — write the Request section, set `Doing`, and
 fill the rest when you land.

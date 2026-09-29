@@ -78,7 +78,7 @@ Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same n
 > **Status:** Planned · **Updated:** YYYY-MM-DD
 ```
 
-The full value set, who sets each one, and the `N/M` rule live in one place — the **Status header**
+The full value set, the `Detail` field, who sets each one, and the `N/M` rule live in one place — the **Status header**
 section of `.claude/skills/_shared-conventions.md`. Follow it in full. What this skill owns is the
 value it writes: **`Planned`**, because nothing has happened to the plan yet beyond existing.
 
@@ -145,7 +145,7 @@ Three rules make these tables worth their ink:
 whose cost nobody judged is exactly the item that surfaces on build day.
 
 **No coding starts while a `🔴` row is open.** Either resolve it first, or set the status header to
-`Blocked: <that item>` so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
+`Blocked · **Detail:** <that item>` so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
 stay open and the work proceeds around them.
 
 If the technical cut (API / classes / patterns / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.

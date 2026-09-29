@@ -97,43 +97,57 @@ record (`project-memory/tasks/<date>-<slug>/TASK.md`) opens with ONE line direct
 ```markdown
 # <title>
 
-> **Status:** Building 2/5 · **Updated:** 2026-09-07
+> **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
 ```
 
-`Status` names the last thing that actually happened to the document — which step the work stopped
-at, not merely that it stopped.
+The line holds up to three fields, always in this order:
+
+- **`Status`** — one bare word from the value set below, never decorated. It names the last thing
+  that actually happened to the document — which step the work stopped at, not merely that it
+  stopped.
+- **`Detail`** — what that status needs said about it: the `N/M` counter, or the reason for a block.
+  Present only where the tables below require it; every other status omits the field entirely.
+- **`Updated`** — the date this header last changed.
+
+```markdown
+> **Status:** Planned · **Updated:** 2026-09-07
+> **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
+> **Status:** Blocked · **Detail:** waiting on DBA for the view grant · **Updated:** 2026-09-07
+> **Status:** Done · **Updated:** 2026-09-07
+```
 
 ### Values — plans
 
-| Value | Means | Set by |
-|---|---|---|
-| `Planned` | The plan exists; nothing else has happened | `/wp-module-plan-discuss` |
-| `Designed` | `## Technical Design` + `## Tasks` sections have been appended | `/wp-module-technical-design` |
-| `Building` | Code has started; this plan has no `## Tasks` table | the Step 2 act loop |
-| `Building N/M` | Code has started on a sliced plan — `N` = `☑` rows, `M` = total rows | the Step 2 act loop |
-| `Blocked: <one line>` | Stopped on something external, or an open `🔴` row in `## Decisions & open items` | whoever hits the blocker |
-| `Done` | Finished | `/wp-module-save-implementation` |
+| Status | Detail | Means | Set by |
+|---|---|---|---|
+| `Planned` | — | The plan exists; nothing else has happened | `/wp-module-plan-discuss` |
+| `Designed` | — | `## Technical Design` + `## Tasks` sections have been appended | `/wp-module-technical-design` |
+| `Building` | `N/M` if the plan has a `## Tasks` table, else — | Code has started — `N` = `☑` rows, `M` = total rows | the Step 2 act loop |
+| `Blocked` | one line: the reason (required) | Stopped on something external, or an open `🔴` row in `## Decisions & open items` | whoever hits the blocker |
+| `Done` | — | Finished | `/wp-module-save-implementation` |
 
 The `N/M` counter appears **if and only if** the plan has a `## Tasks` table, and is always
 recomputable from that table's `☑` marks — so a stale count self-corrects on the next read instead
-of contradicting the table. A plan that builds in one pass has nothing to count and is simply
-`Building`.
+of contradicting the table. A plan that builds in one pass has nothing to count and carries no
+`Detail`. A `Blocked` plan carries the reason, not the count; the count is still recomputable from
+the table.
 
 ### Values — one-off task records
 
 A one-off task has no design step and no slicing, so it carries three values only:
 
-| Value | Means | Set by |
-|---|---|---|
-| `Doing` | The work is live; the Request section is written, the rest is not | `/wp-task-record` |
-| `Blocked: <one line>` | Stopped on something external | whoever hits the blocker |
-| `Done` | Finished | `/wp-task-record` |
+| Status | Detail | Means | Set by |
+|---|---|---|---|
+| `Doing` | — | The work is live; the Request section is written, the rest is not | `/wp-task-record` |
+| `Blocked` | one line: the reason (required) | Stopped on something external | whoever hits the blocker |
+| `Done` | — | Finished | `/wp-task-record` |
 
 ### Rules that hold for both
 
 - **Whoever appends a section to the document sets `Status` to their own value** — no exceptions
   to remember.
-- **Keep it on ONE line in that exact shape.** Unfinished work is found by scanning headers, never
+- **Keep it on ONE line in that exact shape** — fields in the order `Status · Detail · Updated`,
+  separated by ` · `. Unfinished work is found by scanning headers, never
   by opening every file, and a scan that has to parse variations is a scan that silently misses
   work:
   ```bash
@@ -143,7 +157,7 @@ A one-off task has no design step and no slicing, so it carries three values onl
   `[!_]` skips `plans/_README.md`, whose example header would otherwise read as live work in
   every module.
 - **`Updated` is the date this header last changed**, not the date the document was written.
-  (A task record carries `**Date:**` — the day the work happened — instead.)
+  (A task record carries `**Date:**` — the day the work happened — in its place, after `Detail`.)
 - **The document is the single source of truth for its own progress.** No one writes a copy by
   hand. The one derived view is `project-memory/project-memory-status.md` — every module plan not
   `Done`, in one table (Done plans are left out, so it never grows with history), rebuilt by the

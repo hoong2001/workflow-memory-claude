@@ -180,8 +180,8 @@ SQL/Service line here, or the build inherits the wrong cut.
 
 The `> Broken down:` line states which kind the rows are, so a reader knows whether each row is
 independently demoable or just the next step. The `✔` column starts all `☐`; as tasks land, the
-Step 2 act loop flips them to `☑` and turns the status header into `Building N/M`, deriving `N`
-from the `☑` marks in this table.
+Step 2 act loop flips them to `☑` and turns the status header into `Building · **Detail:** N/M`,
+deriving `N` from the `☑` marks in this table.
 
 ## Guardrails
 

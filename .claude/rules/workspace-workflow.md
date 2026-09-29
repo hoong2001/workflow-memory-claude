@@ -67,8 +67,8 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
 
 → Act: **code → build → test** → **save on every change**.
    **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.
-   When a task lands, tick its `✔` cell to `☑` and set the header to `Building N/M`
-   (`N` = `☑` rows, `M` = total rows; a plan with no `## Tasks` table is just `Building`).
+   When a task lands, tick its `✔` cell to `☑` and set the header to `Building · **Detail:** N/M`
+   (`N` = `☑` rows, `M` = total rows; a plan with no `## Tasks` table is just `Building`, no `Detail`).
    Do this as you go, not at the end: a session that stops mid-feature must leave the plan
    saying where it stopped, because that line is all the next session gets for free.
    **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).
