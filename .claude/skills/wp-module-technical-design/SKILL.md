@@ -68,9 +68,8 @@ that groundwork as the first increment(s).
 
 **Order by blocking.** Each increment declares **Blocked by:** the increments that must land first,
 and blockers are listed earlier in the sequence. This project is single-developer with **manual
-build/test** (`workspace-workflow.md` Step 2): rows are worked top-to-bottom, one at a time — build
-one, remind the user to build + test it, fix, then start the next. There is no parallel fleet; the
-blocking edges only fix the order.
+build/test** (`workspace-workflow.md` Step 2 sets how the rows are worked). There is no parallel
+fleet; the blocking edges only fix the order.
 
 **Don't manufacture increments.** A feature that genuinely builds in one pass gets plain steps, not
 five ceremonial slices. Say so and move on.
