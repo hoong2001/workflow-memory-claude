@@ -57,7 +57,7 @@ is what the rows are:
 A **horizontal** slice ships one layer — all the Repository methods, or all the views — and nothing
 works until every layer lands. A **vertical** slice ships one narrow path through *every* layer at
 once — one Controller action → one Service method → one Repository query → the SQL → the one view
-that shows it — so it can be built, manually built + tested, and demoed the moment it is done.
+that shows it — so it can be built, manually tested, and demoed the moment it is done.
 
 Slice by **behavior**, never by layer. "Show the customer list" is an increment; "write all the
 repositories" is not.
@@ -68,7 +68,7 @@ that groundwork as the first increment(s).
 
 **Order by blocking.** Each increment declares **Blocked by:** the increments that must land first,
 and blockers are listed earlier in the sequence. This project is single-developer with **manual
-build/test** (`workspace-workflow.md` Step 2 sets how the rows are worked). There is no parallel
+test** (`workspace-workflow.md` Step 2 sets how the rows are worked). There is no parallel
 fleet; the blocking edges only fix the order.
 
 **Don't manufacture increments.** A feature that genuinely builds in one pass gets plain steps, not
@@ -187,7 +187,7 @@ deriving `N` from the `☑` marks in this table.
 - A design that violates the stack hard rules is dead on arrival — fix it before presenting, don't present-then-apologise.
 - If the plan is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution as a row in the plan's `## Decisions & open items` table (decision + why, `☑ Resolved`), not just in the design. Rows the plan marked `→ /wp-module-technical-design` are this step's inbox — close every one of them, or the plan still carries an open `☐` after the design lands.
 - Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
-- When the rows are vertical increments, every one must be a **full vertical path** that can be manually built, tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
+- When the rows are vertical increments, every one must be a **full vertical path** that can be built, manually tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 - Keep every row at the level of what gets done, not how — the HOW is the `## Technical Design` section above it, the code is the work loop.
 - New gotchas or conventions discovered while exploring code → backfill the module's MODULE.md immediately (one line each).
 

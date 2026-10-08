@@ -71,14 +71,39 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
    (`N` = `☑` rows, `M` = total rows; a plan with no `## Tasks` table is just `Building`, no `Detail`).
    Do this as you go, not at the end: a session that stops mid-feature must leave the plan
    saying where it stopped, because that line is all the next session gets for free.
-   **Build and test are MANUAL — the user runs them** (e.g. in Visual Studio for .NET projects).
-   Claude never auto-runs the build or the tests: after coding, remind the user in one line to
-   build + test (that line is the handoff's **👉 You now**), wait for the results they report
-   back, and fix from there.
-   **Sole exception:** the user explicitly invokes the project's auto-test skill (here
-   `/wp-auto-test-loop`) — that invocation IS the authorization for Claude to build,
-   auto-fix compile errors, run the skill's data checks, and web-test, for that run only.
-   Never auto-trigger it; the site is still user-started.
+   **Build is Claude's; test is the user's.** After each coding chunk Claude runs
+   `node .claude/scripts/build-solution.mjs` (it finds the one `.sln` at the project root and
+   runs the `msbuild` on `PATH`; pass the `.sln` path when the root holds none or several). Exit `0`
+   = green, `1` = errors or a failed step, `2` = no `.sln` or no `msbuild` on `PATH`. Every build is
+   read, not just its exit code — no log file is kept, so the reply is the record.
+
+   **Whatever the build hits, Claude handles it when it can and stops when it can't.** The test:
+   the fix stays inside code this task touched, needs no decision from the user, and breaks no hard
+   rule in `project-memory/stack-architecture.md`. All three hold → handle it and rebuild. Any one
+   fails → stop and ask.
+
+   | Claude handles, then rebuilds | Claude stops — the user steps in |
+   |---|---|
+   | Compile errors in code this task wrote or changed — first errors first, later ones are often cascades | An error in code this task never touched — someone else's breakage, not this task's to rewrite |
+   | Warnings in new code (unused variable, unreachable code) | A fix that would need async, DI, an interface, or syntax past C# 7.3 |
+   | Missing NuGet packages, when `nuget.exe` is on `PATH` → `nuget restore <sln>` | Missing NuGet packages and no `nuget.exe` → restore once in Visual Studio |
+   | | A copy or file-lock error under `bin\` → Visual Studio or IIS Express holds the DLL; stop debugging |
+   | | A missing assembly reference, a `MSB3277` version conflict, or a `Web.config` / `.csproj` change the fix would need |
+   | | Exit `2` → put `msbuild` on `PATH` or name the `.sln`; never guess a path |
+   | | 5 rounds reached, or the same error survives two rounds |
+
+   **Report every build in the handoff's Done**, interpreted, only what needs attention:
+   - **Handled** — each error and warning dealt with: `file(line)` · `CSxxxx` · the cause in one plain
+     sentence · what was changed. Never just "fixed"; a restore or other step Claude ran counts too.
+   - **Needs you** (when stopped) — the item, why Claude stopped on it, and the exact action. That
+     item is the handoff's **👉 You now**; the test waits until the build is green.
+   - **Worth knowing** — warnings left alone and why (pre-existing noise in untouched code is skipped,
+     repeats are grouped), a skipped project, anything else odd in the output.
+   A green build with nothing to note is one line: "build green". Then hand over for test.
+
+   The build compiles C# only: Razor views (`.cshtml`) are not compiled unless the Web project sets
+   `MvcBuildViews`, so a green build still leaves view errors for the test to catch.
+   **Test is MANUAL — the user runs it.** Wait for the results they report back, and fix from there.
 
 ## Step 3 · Wrap up: update memory
 **Branch D skips this step.** `/wp-task-record` already wrote the entire record for a one-off
@@ -95,7 +120,7 @@ whether the work is closed, then ends with one of two shapes:
   step pending) → **✅ Done** (what changed + files) · **🏁 Closed — nothing pending.** Then stop.
 - **Open** → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the one next step or skill).
   Judge each You now: a choice between options is asked through `AskUserQuestion` in the same
-  turn, never left for the user to type; a manual action (run a `.sql`, build + test, supply a
+  turn, never left for the user to type; a manual action (run a `.sql`, test, supply a
   reference file) stays a plain line.
 
 Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This

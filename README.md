@@ -27,7 +27,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── references/                    system-wide reference material you provide (docs/images/links)
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
-    ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed and test scripts generated (test/)
+    ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed scripts generated
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
     ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Status (Planned / Designed / Building / Blocked / Done) · Detail (N/M counter or block reason, when needed) · Updated — so one grep finds unfinished work, then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
@@ -37,6 +37,8 @@ project-memory/                        the project's own memory — plain folder
 ├── hooks/
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
 │   └── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
+├── scripts/
+│   └── build-solution.mjs             Claude's build step: msbuild from PATH on the root .sln (Node; exit 2 = hand the build back)
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
@@ -57,7 +59,6 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices when needed) to the SAME plan file
     ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
     ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
-    ├── wp-auto-test-loop/     build → fix → CRUD-SQL verify → web-test (user-invoked; invocation = build/test authority)
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
     ├── wp-repository-unitofwork-pattern/  data-layer pattern (SSOT)
     ├── wp-sql-query-design/  what belongs in SQL vs the Service layer, and keeping the SQL readable
@@ -108,6 +109,7 @@ status view is stale until it hides a half-built plan:
 !.claude/rules/
 !.claude/skills/
 !.claude/hooks/
+!.claude/scripts/
 !.claude/settings.json
 !.claude/*.md
 *.local.json
@@ -121,16 +123,16 @@ it is the failure this layout exists to prevent.
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
-2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (build + test are run manually by the user; Claude reminds and fixes from reported results) → save on every change, the plan's status header included.
+2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 
-Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for build + test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
+Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
 ## Portable vs per-project
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/hooks/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
 | Framework, but merge by hand | `.claude/settings.json` — take the credential-guard hook entry, keep the project's own hooks and permissions | merge, never overwrite |
 | The one config | `project-memory/stack-architecture.md` | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |
@@ -146,7 +148,7 @@ with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementa
 `wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
 stack-bound `wp-repository-unitofwork-pattern` + `wp-sql-query-design` +
 `wp-csharp-gof-design-patterns` + `wp-aspnet-mvc-frontend-standards`),
-`wp-system-spec-discuss`, `wp-module-code-trace-flow`, `wp-auto-test-loop`,
+`wp-system-spec-discuss`, `wp-module-code-trace-flow`,
 and `wp-update-from-master`. No user-level (global) skill is required:
 copying the framework files (adoption step 1) brings everything along.
 
