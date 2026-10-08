@@ -267,7 +267,7 @@ private void RunDueJobs(DateTime now)
 - **Shared symbol → list its callers first**, from the fan-in table in `<name>-flow.md`, or by
   running `/wp-module-code-trace-flow`. Every caller must compile and behave the same afterwards.
 - **A refactor is its own Tasks row**, never mixed with a behavior change. Its done-criterion is
-  "same observable behavior before and after", and the user builds and tests it (manual, per
+  "same observable behavior before and after"; Claude builds it and the user tests it (per
   `workspace-workflow.md` Step 2).
 
 This skill applies inside a coding task and adds no handoff of its own; that task's handoff covers

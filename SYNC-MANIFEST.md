@@ -12,14 +12,14 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `5.3.1` |
+| Version | `6.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
 
 > **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
-> `.claude/skills/`, `.claude/hooks/`, `project-memory/modules/example-module/`, or this manifest). Semver:
+> `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `project-memory/modules/example-module/`, or this manifest). Semver:
 > **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
 > changes in a way that breaks a project already relying on the old one. **MINOR** — a new
 > rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
@@ -35,6 +35,7 @@ master; git is the default source.
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) |
 | `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, and `project-memory-status.mjs`, the system-wide plan-status view (whole folder) |
+| `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
 | `SYNC-MANIFEST.md` | This manifest itself |
@@ -159,6 +160,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — the credential guard moved from PowerShell to Node so one implementation behaves identically on Windows, WSL, macOS and Linux. The target's `.claude/settings.json` hook entry must be repointed at the same time (see the grey-zone note above), or the guard silently stops running |
 | `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
 | `.claude/skills/wp-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` — renamed because "concrete" named a rule (no interfaces) that `stack-architecture.next.md` relaxes; the new name says what the skill owns. Content otherwise unchanged. A leftover old folder keeps auto-triggering beside the new one, so delete it |
+| `.claude/skills/wp-auto-test-loop/` | removed in v6.0.0 — its build step became the default: Claude builds after every coding chunk with `.claude/scripts/build-solution.mjs` (`workspace-workflow.md` Step 2). Its CRUD-SQL checks and web test were dropped because they did not fit every environment; test is manual. A target's existing `schema/test/` scripts are project state and stay |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
 > under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
@@ -181,7 +183,7 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
 | `.claude/skills/workspace-module-slice-plan/` | `.claude/skills/wp-module-technical-design/` (renamed, then merged in v3.0.0 — delete in one step, do not create `wp-module-slice-plan/`) |
 | `.claude/skills/workspace-module-code-trace-flow/` | `.claude/skills/wp-module-code-trace-flow/` |
 | `.claude/skills/workspace-module-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
-| `.claude/skills/workspace-auto-test-loop/` | `.claude/skills/wp-auto-test-loop/` |
+| `.claude/skills/workspace-auto-test-loop/` | nothing — renamed to `wp-auto-test-loop/`, then removed in v6.0.0 (delete in one step) |
 | `.claude/skills/workspace-aspnet-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
 | `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` (renamed to `wp-concrete-repository-pattern/`, then again in v5.0.0 — delete in one step, do not create `wp-concrete-repository-pattern/`) |
 | `.claude/skills/workspace-update-from-master/` | `.claude/skills/wp-update-from-master/` |

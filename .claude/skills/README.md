@@ -10,7 +10,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `auto-test-loop`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -27,10 +27,9 @@ requirement ──────────────┤                       
                                    ┌──────────────────────────┘
                                    ▼
    code → build → test  ◄── coding standards auto-apply here:
-   (build/test are MANUAL,     repository-unitofwork-pattern (DAL) · sql-query-design (any SQL)
-    user runs them)            csharp-gof-design-patterns (design / refactor)
+   (Claude builds, fixes or    repository-unitofwork-pattern (DAL) · sql-query-design (any SQL)
+    stops to ask; user tests)  csharp-gof-design-patterns (design / refactor)
                                aspnet-mvc-frontend-standards (UI)
-                               optional: /auto-test-loop (user-invoked build+test loop)
                                    │
                                    ▼
                           save-implementation  (wrap up: impl record + sync plan + refresh flow.md)
@@ -66,9 +65,8 @@ requirement ──────────────┤                       
 | `wp-sql-query-design` | Writing/reviewing any SQL — Repository queries, `.sql` schema/seed scripts, persisted test scripts | The query standard: the row-count test draws the SQL↔C# line; keep the remaining SQL simple; `SELECT *` banned; readability-costing rewrites need a measured number | Auto |
 | `wp-csharp-gof-design-patterns` | Designing (the class & file map in `technical-design` points here) or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
-| `wp-auto-test-loop` | You explicitly ask to build + test a change | Compile via MSBuild, auto-fix compile errors, CRUD-only data checks, web-test the flow against a site YOU started | User-invoked only |
 
-> Build and test are **manual** by default (you run them in Visual Studio). `auto-test-loop` is the sole exception, and only when you invoke it.
+> The build needs no skill — after each coding chunk Claude runs `.claude/scripts/build-solution.mjs` handles what it can, stops for what needs you, and reports both (`workspace-workflow.md` Step 2). Test stays **manual**: you run it.
 
 ### Phase 3 · Wrap up
 

@@ -150,13 +150,15 @@ Copy each ✅ path from master → target with overwrite-but-never-delete semant
 Copy-Item "$master\.claude\rules\*"  "$target\.claude\rules\"  -Force
 Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
 Copy-Item "$master\.claude\hooks\*"  "$target\.claude\hooks\"  -Force
+Copy-Item "$master\.claude\scripts\*" "$target\.claude\scripts\" -Force
 Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
 Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 ```
 
 If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
 `project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a, but
-`.claude/hooks/` is new in v4.0.0 and will be missing from any target synced before it.
+`.claude/hooks/` is new in v4.0.0 and `.claude/scripts/` in v6.0.0 — each is missing from any
+target synced before its version.
 
 A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
 ⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies

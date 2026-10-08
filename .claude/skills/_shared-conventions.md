@@ -35,7 +35,7 @@ only when something is still pending, what is the user's to do and what comes af
 **First judge: is the work closed?** It is closed when ALL of these hold:
 
 1. What the user asked for this time is fully delivered.
-2. Nothing waits on the user — a build + test reminded but not yet reported back counts as waiting.
+2. Nothing waits on the user — a test handed over but not yet reported back counts as waiting.
 3. The paired plan, if there is one, is `Done`, and the status-header grep finds no other live plan
    the work belongs to.
 4. No `🔴` row is open.
@@ -63,7 +63,7 @@ only when something is still pending, what is the user's to do and what comes af
 - **Done** lists the files actually written. Nothing written → `no files changed`. A skill with
   its own report block (e.g. `/wp-module-save-implementation`'s ✅ list) uses that block as the
   Done slot and adds the lines below it.
-- **You now** is an action only the user can take: build + test in Visual Studio, answer an open
+- **You now** is an action only the user can take: test the change, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.
 - **Judge each You now: a choice gets asked, an action stays a line.** The test: does the user
@@ -72,7 +72,7 @@ only when something is still pending, what is the user's to do and what comes af
     go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn:
     recommended option first, marked "(Recommended)", then only the real alternatives (2–4
     options in all, never padded). Several independent choices go in one call, up to 4 questions.
-  - **No, an action only the user can do** — run a `.sql`, build + test in Visual Studio, drop a
+  - **No, an action only the user can do** — run a `.sql`, test the change, drop a
     file into `references/`, review a file. A plain line: name the action and what to report back.
   - **Both in one stop** — the action stays the line, and the choice goes to the tool.
 
