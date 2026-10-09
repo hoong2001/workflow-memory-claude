@@ -39,7 +39,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
-│   └── build-solution.mjs             Claude's build step: msbuild from PATH on the root .sln (Node; exit 2 = hand the build back)
+│   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style

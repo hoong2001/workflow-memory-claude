@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `6.1.1` |
+| Version | `6.2.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -35,7 +35,7 @@ master; git is the default source.
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills, plus the `wp-plan-status/` mod that shows live plans above the prompt (whole folder) |
 | `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view, and `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check (whole folder) |
-| `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step (whole folder) |
+| `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step — always `/t:Rebuild` (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
 | `SYNC-MANIFEST.md` | This manifest itself |

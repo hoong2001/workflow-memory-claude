@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build-solution.mjs — compile the project's .sln with the MSBuild found on PATH.
+ * build-solution.mjs — Rebuild (clean + build) the project's .sln with the MSBuild found on PATH.
  *
  * Claude runs this after each coding chunk (`.claude/rules/workspace-workflow.md` Step 2):
  *   node .claude/scripts/build-solution.mjs                  # the one .sln at the project root
@@ -43,7 +43,8 @@ const msbuildVersion = probe.stdout.trim().split(/\r?\n/).pop();
 // Console only, no log files: Claude reads this output and reports what needs attention.
 // minimal = errors + warnings + one line per built project; Summary = the counts at the end.
 console.log(`MSBuild : ${msbuildVersion} (from PATH)\nSolution: ${solution}\nConfig  : ${configuration}\n${'-'.repeat(40)}`);
-const run = spawnSync('msbuild', [solution, '/nologo', '/m', '/v:minimal', '/clp:Summary',
+// Always Rebuild (clean + build): an incremental build can pass on stale outputs under bin\/obj\.
+const run = spawnSync('msbuild', [solution, '/t:Rebuild', '/nologo', '/m', '/v:minimal', '/clp:Summary',
   `/p:Configuration=${configuration}`], { stdio: 'inherit' });
 if (run.error) envError(`could not start MSBuild: ${run.error.message}`);
 

@@ -76,7 +76,8 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
    saying where it stopped, because that line is all the next session gets for free.
    **Build is Claude's; test is the user's.** After each coding chunk Claude runs
    `node .claude/scripts/build-solution.mjs` (it finds the one `.sln` at the project root and
-   runs the `msbuild` on `PATH`; pass the `.sln` path when the root holds none or several). Exit `0`
+   runs the `msbuild` on `PATH` with `/t:Rebuild` — clean + build every time, so stale outputs
+   under `bin\`/`obj\` never hide an error; pass the `.sln` path when the root holds none or several). Exit `0`
    = green, `1` = errors or a failed step, `2` = no `.sln` or no `msbuild` on `PATH`. Every build is
    read, not just its exit code — no log file is kept, so the reply is the record.
 
