@@ -164,4 +164,6 @@ A one-off task has no design step and no slicing, so it carries three values onl
   `PostToolUse` hook `.claude/hooks/project-memory-status.mjs` on each write to a plan. Read it for
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
   it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
-  not in it.
+  not in it. The `plan-status` mod (`.claude/skills/wp-plan-status/`) reads its table to show the
+  live plans above the prompt — the table's shape is a versioned contract (`TABLE_FORMAT` in the
+  hook, the same marker in the mod's `hooks/parse.ts`); change one, change both.

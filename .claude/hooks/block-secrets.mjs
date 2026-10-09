@@ -8,6 +8,9 @@
  * Runtime: Node.js, chosen over PowerShell so one implementation behaves identically on
  * Windows, WSL, macOS and Linux. Hooks are not PowerShell-only - `shell` accepts bash or
  * powershell, and the `args` exec form spawns any executable with no shell at all.
+ * Node over Python too: Python's launcher name differs per machine (python / py / python3)
+ * while a hook names one command, and on Windows a bare `python` may hit the Microsoft Store
+ * alias stub instead of an interpreter. `node` is one name everywhere.
  *
  * Scope (deliberately narrow - see .claude/rules/workspace-no-secrets.md):
  *   - anything under project-memory/

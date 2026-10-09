@@ -36,7 +36,8 @@ project-memory/                        the project's own memory — plain folder
 ├── settings.json                      hook wiring (commit it — the credential guard and the status view live here)
 ├── hooks/
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
-│   └── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
+│   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
+│   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild from PATH on the root .sln (Node; exit 2 = hand the build back)
 ├── rules/                             behavioral rules (@imported = always-on)
@@ -66,7 +67,8 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
-    └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
+    ├── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
+    └── wp-plan-status/  a mod, not a skill: live plans from project-memory-status.md above the prompt, collapsible
 ```
 
 **Why the split:** `.claude/` is tool wiring — many teams gitignore it wholesale, which used
@@ -90,9 +92,10 @@ self-contained (see **Skill dependencies** below).
 ### Gitignoring `.claude/`
 
 A project that ignores `.claude/` wholesale still keeps every handover doc, because they all
-live in `project-memory/` — but it loses both hooks, which are wired in
-`.claude/settings.json` and implemented in `.claude/hooks/`: the credential guard, and the
-rebuild of `project-memory/project-memory-status.md` (the file stays, frozen at its last state).
+live in `project-memory/` — but it loses all three hooks, which are wired in
+`.claude/settings.json` and implemented in `.claude/hooks/`: the credential guard, the
+rebuild of `project-memory/project-memory-status.md` (the file stays, frozen at its last state),
+and the connection-string format check.
 Ignore the machine-local files at minimum:
 
 ```gitignore
@@ -100,7 +103,7 @@ Ignore the machine-local files at minimum:
 ```
 
 To ignore the whole tool folder, whitelist everything the workflow needs so a fresh clone can
-still run it — **including `hooks/` and `settings.json`**, or both hooks silently stop running:
+still run it — **including `hooks/` and `settings.json`**, or the hooks silently stop running:
 nobody notices the credential guard is gone until a password is already committed, or that the
 status view is stale until it hides a half-built plan:
 
@@ -108,6 +111,7 @@ status view is stale until it hides a half-built plan:
 .claude/*
 !.claude/rules/
 !.claude/skills/
+.claude/skills/*/.claude-plugin/types/
 !.claude/hooks/
 !.claude/scripts/
 !.claude/settings.json
@@ -132,8 +136,8 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
-| Framework, but merge by hand | `.claude/settings.json` — take the credential-guard hook entry, keep the project's own hooks and permissions | merge, never overwrite |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills, plus the `wp-plan-status` mod), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| Framework, but merge by hand | `.claude/settings.json` — take the template hook entries, keep the project's own hooks and permissions | merge, never overwrite |
 | The one config | `project-memory/stack-architecture.md` | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |
 
