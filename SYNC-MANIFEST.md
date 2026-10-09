@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `6.1.0` |
+| Version | `6.1.1` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -69,7 +69,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries | Every other hook, permission, and setting the project has added |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries, plus `extraKnownMarketplaces.workflow-memory-local` (`source: "directory"`, relative `path: "./.claude/skills/wp-plan-status"`) and `enabledPlugins["plan-status@workflow-memory-local"]: true` — the plan-status mod's loader; `claude plugin marketplace add` writes an absolute path, rewrite it relative | Every other hook, permission, and setting the project has added |
 | Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, and the `.claude/skills/*/.claude-plugin/types/` line (the engine-generated types of the plan-status mod) | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
