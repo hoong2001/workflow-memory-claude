@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `6.0.0` |
+| Version | `6.1.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -33,8 +33,8 @@ master; git is the default source.
 | Path | What it is |
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
-| `.claude/skills/` | Workflow skills (whole folder) |
-| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, and `project-memory-status.mjs`, the system-wide plan-status view (whole folder) |
+| `.claude/skills/` | Workflow skills, plus the `wp-plan-status/` mod that shows live plans above the prompt (whole folder) |
+| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view, and `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check (whole folder) |
 | `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
@@ -69,8 +69,8 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` hook entries | Every other hook, permission, and setting the project has added |
-| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block | Every other ignore rule the project has |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries | Every other hook, permission, and setting the project has added |
+| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, and the `.claude/skills/*/.claude-plugin/types/` line (the engine-generated types of the plan-status mod) | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
 > so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
@@ -79,13 +79,15 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 > `hooks.PreToolUse` array. Likewise add the `PostToolUse` entry whose `matcher` is
 > `Write|Edit|MultiEdit|Bash|PowerShell` and whose command runs
 > `${CLAUDE_PROJECT_DIR}/.claude/hooks/project-memory-status.mjs` into `hooks.PostToolUse`, then
-> run it once with `--regenerate` so the status view exists before the first plan write. If the
+> run it once with `--regenerate` so the status view exists before the first plan write. Add the
+> second `PostToolUse` entry too, `matcher` `Write|Edit|MultiEdit`, running
+> `${CLAUDE_PROJECT_DIR}/.claude/hooks/connstr-check.mjs`. If the
 > target has no `.claude/settings.json` at all, copying the master's file wholesale is safe.
 >
 > A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
 > version deletes. Replace that entry - do not add a second one beside it.
 
-> **`.gitignore` merge:** add only those two lines (plus their comment) to the target's existing
+> **`.gitignore` merge:** add only those lines (plus their comments) to the target's existing
 > file. Without them a project commits its ad-hoc task records — report queries, customer data —
 > into its repo. A project with a private repo that WANTS them versioned simply skips this row.
 

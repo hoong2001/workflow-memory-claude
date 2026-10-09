@@ -162,7 +162,8 @@ target synced before its version.
 
 A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
 ⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies
-`hooks/` but skips the Step 5 merge has the guard and the status view on disk and switched off.
+`hooks/` but skips the Step 5 merge has the credential guard, the status view and the
+connection-string check on disk and switched off.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -182,8 +183,8 @@ is migrated by hand per the workflow routing rule (material → `references/`, `
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
 For each ⚠️ file (per the manifest — typically root `CLAUDE.md`,
-`project-memory/stack-architecture.md`, `project-memory/stack-architecture.next.md`, and
-`.claude/settings.json`):
+`project-memory/stack-architecture.md`, `project-memory/stack-architecture.next.md`,
+`.claude/settings.json`, and root `.gitignore`):
 
 1. Diff master vs. target.
 2. Identify **template-side** changes only — e.g. a new `@import` line for a newly added
@@ -197,12 +198,15 @@ rule file whose own header says it is read-on-demand (e.g. `workspace-update-mem
 `workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
 make it always-on and defeat its purpose. Read the file's first lines before adding.
 
-Special case: `.claude/settings.json`. Merge ONLY the two template hook entries — the
-credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view `PostToolUse`
-entry (`project-memory-status.mjs`) into `hooks.PostToolUse`; never copy the file whole, or the
+Special case: `.claude/settings.json`. Merge ONLY the three template hook entries — the
+credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
+(`project-memory-status.mjs`) and connection-string (`connstr-check.mjs`) `PostToolUse` entries
+into `hooks.PostToolUse`; never copy the file whole, or the
 project's own hooks and permissions are wiped. After merging, run
 `node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
-`project-memory/project-memory-status.md` is built from its own plans. A target synced at 3.1.0
+`project-memory/project-memory-status.md` is built from its own plans — and carries the
+`TABLE_FORMAT` marker the `plan-status` mod (`.claude/skills/wp-plan-status/`) requires; without
+the rerun the mod shows a format warning until the next plan write. A target synced at 3.1.0
 carries the old PowerShell entry — replace it rather than adding a second one beside it.
 
 ## Step 5b · Post-sync alignment scan (the target's OWN docs)

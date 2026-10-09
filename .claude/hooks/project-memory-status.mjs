@@ -26,6 +26,13 @@
  * write that leaves every header as it was produces no git diff.
  *
  * Fails OPEN: any error exits 0. A broken status view must never block a write.
+ *
+ * The table is a contract: the plan-status mod (.claude/skills/wp-plan-status/hooks/parse.ts)
+ * reads it to show live plans above the prompt. Its shape is fixed by TABLE_FORMAT:
+ *   <!-- TABLE_FORMAT -->
+ *   | Module | Plan | Status | Detail | Updated |   (Plan as [file](link), `|` escaped as `\|`)
+ * Change a column, its order or its escaping → bump TABLE_FORMAT and update parse.ts in the
+ * same commit; the mod refuses a marker it does not know instead of misreading the rows.
  */
 
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -33,6 +40,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const BACKSLASH = String.fromCharCode(92);
+const TABLE_FORMAT = 'plan-status-table v1';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const MODULES_DIR = join(ROOT, 'project-memory', 'modules');
 const OUTPUT = join(ROOT, 'project-memory', 'project-memory-status.md');
@@ -113,6 +121,8 @@ function render(plans) {
     '> run `node .claude/hooks/project-memory-status.mjs --regenerate`.',
     '',
     `## Live work — ${live.length} plan(s) not Done`,
+    '',
+    `<!-- ${TABLE_FORMAT} -->`,
     '',
   ];
 

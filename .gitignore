@@ -1,5 +1,8 @@
 *.local.json
 
+# Type declarations Claude Code writes beside a mod each time it loads it - generated, ~14k lines.
+.claude/skills/*/.claude-plugin/types/
+
 # Ad-hoc task records (project-memory/tasks/) hold real business data - report
 # queries, customer names, sample output - and this repo is a public template.
 # They sync with the drive instead. Only the convention file ships.

@@ -97,7 +97,9 @@ no implementation to record, so the whole memory path is this one skill.
 
 > Routine credential blocking needs no skill — `.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
 >
-> The system-wide plan status also needs no skill — `.claude/hooks/project-memory-status.mjs` runs as a `PostToolUse` hook and rebuilds `project-memory/project-memory-status.md` whenever a module plan is written.
+> The system-wide plan status also needs no skill — `.claude/hooks/project-memory-status.mjs` runs as a `PostToolUse` hook and rebuilds `project-memory/project-memory-status.md` whenever a module plan is written. The `wp-plan-status/` folder beside the skills is a mod, not a skill: Claude Code loads it from this folder by itself, and it shows that file's live plans above the prompt from session start, with a Hide / Show toggle. It reads only the table format it knows (`TABLE_FORMAT`, the same marker in the hook and in its `hooks/parse.ts`) and shows a warning on any other.
+>
+> So does the connection-string format — `.claude/hooks/connstr-check.mjs` runs as a `PostToolUse` hook on every write to a `Web.config` / `App.config` (and their transforms) and rejects an MSSQL `connectionString` that departs from the house template, naming the corrected string. `node .claude/hooks/connstr-check.mjs --fix <root>` lists the fixes for existing files; add `--write` to apply them.
 
 ### Standing · Cross-project memory (Obsidian)
 
