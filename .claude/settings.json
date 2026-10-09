@@ -44,5 +44,16 @@
         ]
       }
     ]
+  },
+  "extraKnownMarketplaces": {
+    "workflow-memory-local": {
+      "source": {
+        "source": "directory",
+        "path": "./.claude/skills/wp-plan-status"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "plan-status@workflow-memory-local": true
   }
 }
