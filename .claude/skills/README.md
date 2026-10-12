@@ -130,3 +130,4 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → `wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → `wp-connstr-check`.
+- **Project is in TFVC, not git — check in, get latest, shelve, merge** → `wp-tfvc`.
