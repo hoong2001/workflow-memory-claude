@@ -12,14 +12,14 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `6.4.0` |
+| Version | `7.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
 
 > **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
-> `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `project-memory/modules/example-module/`, or this manifest). Semver:
+> `.claude/skills/`, `.claude/mods/`, `.claude/hooks/`, `.claude/scripts/`, `project-memory/modules/example-module/`, or this manifest). Semver:
 > **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
 > changes in a way that breaks a project already relying on the old one. **MINOR** — a new
 > rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
@@ -33,7 +33,8 @@ master; git is the default source.
 | Path | What it is |
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
-| `.claude/skills/` | Workflow skills, plus the `wp-plan-status/` mod that shows live plans above the prompt (whole folder) |
+| `.claude/skills/` | Workflow skills (whole folder) |
+| `.claude/mods/` | Mods — interface additions, not skills. Holds `plan-status/`, the live-plan band above the prompt, and `tfvc/`, which adds `/tf` and a `/noprompt` guard inside a TFVC workspace and stays dormant in a git one. `.claude-plugin/marketplace.json` at the folder root lists them both. It sits OUTSIDE `skills/` on purpose: Claude Code scans the skills folder, so a mod parked there is loaded twice and warns `name ... is already taken by an installed plugin` (whole folder) |
 | `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view (plus an opt-in mirror into a cross-project vault board when the machine has a vault path configured), and `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check (whole folder) |
 | `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step — always `/t:Rebuild` (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
@@ -69,8 +70,8 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries, plus `extraKnownMarketplaces.workflow-memory-local` (`source: "directory"`, relative `path: "./.claude/skills/wp-plan-status"`) and `enabledPlugins["plan-status@workflow-memory-local"]: true` — the plan-status mod's loader; `claude plugin marketplace add` writes an absolute path, rewrite it relative | Every other hook, permission, and setting the project has added |
-| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, and the `.claude/skills/*/.claude-plugin/types/` line (the engine-generated types of the plan-status mod) | Every other ignore rule the project has |
+| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries, plus `extraKnownMarketplaces.workflow-memory-local` (`source: "directory"`, relative `path: "./.claude/mods"`) and `enabledPlugins["plan-status@workflow-memory-local"]` / `["tfvc@workflow-memory-local"]: true` — the mod loader; `claude plugin marketplace add` writes an absolute path, rewrite it relative | Every other hook, permission, and setting the project has added |
+| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, and the `.claude/mods/*/.claude-plugin/types/` line (the engine-generated types of the plan-status mod) | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
 > so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
@@ -162,6 +163,7 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — the credential guard moved from PowerShell to Node so one implementation behaves identically on Windows, WSL, macOS and Linux. The target's `.claude/settings.json` hook entry must be repointed at the same time (see the grey-zone note above), or the guard silently stops running |
 | `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
 | `.claude/skills/wp-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` — renamed because "concrete" named a rule (no interfaces) that `stack-architecture.next.md` relaxes; the new name says what the skill owns. Content otherwise unchanged. A leftover old folder keeps auto-triggering beside the new one, so delete it |
+| `.claude/skills/wp-plan-status/` | `.claude/mods/plan-status/` — the mod moved out of the skills folder in v7.0.0. Claude Code scans `.claude/skills/`, so the same `plugin.json` was loaded twice (scan + the marketplace entry in `settings.json`) and every session opened with `name "plan-status" is already taken by an installed plugin`. Renaming it does not help; only the move does. Repoint `.claude/settings.json` → `extraKnownMarketplaces.workflow-memory-local.source.path` to `./.claude/mods` (the folder is now the marketplace root for every mod, so the per-mod `marketplace.json` inside `plan-status/` is gone) in the same pass, and update the `.gitignore` types line |
 | `.claude/skills/wp-auto-test-loop/` | removed in v6.0.0 — its build step became the default: Claude builds after every coding chunk with `.claude/scripts/build-solution.mjs` (`workspace-workflow.md` Step 2). Its CRUD-SQL checks and web test were dropped because they did not fit every environment; test is manual. A target's existing `schema/test/` scripts are project state and stay |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them

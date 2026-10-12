@@ -40,6 +40,10 @@ project-memory/                        the project's own memory — plain folder
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
+├── mods/                              mods, not skills — kept OUT of skills/ so Claude Code never loads them twice
+│   ├── .claude-plugin/marketplace.json  one directory marketplace listing both mods; settings.json points here
+│   ├── plan-status/                   live plans above the prompt, collapsible
+│   └── tfvc/                          TFVC workspaces only: /tf status + advice, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
@@ -68,8 +72,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-connstr-check/  sweep Web.config / App.config connectionStrings against the house template; apply on your go
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
-    ├── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
-    └── wp-plan-status/  a mod, not a skill: live plans from project-memory-status.md above the prompt, collapsible
+    └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 ```
 
 **Why the split:** `.claude/` is tool wiring — many teams gitignore it wholesale, which used
@@ -112,7 +115,8 @@ status view is stale until it hides a half-built plan:
 .claude/*
 !.claude/rules/
 !.claude/skills/
-.claude/skills/*/.claude-plugin/types/
+!.claude/mods/
+.claude/mods/*/.claude-plugin/types/
 !.claude/hooks/
 !.claude/scripts/
 !.claude/settings.json
@@ -137,7 +141,7 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills, plus the `wp-plan-status` mod), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/mods/*` (the `plan-status` and `tfvc` mods), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
 | Framework, but merge by hand | `.claude/settings.json` — take the template hook entries, keep the project's own hooks and permissions | merge, never overwrite |
 | The one config | `project-memory/stack-architecture.md` | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |

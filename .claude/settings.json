@@ -49,11 +49,12 @@
     "workflow-memory-local": {
       "source": {
         "source": "directory",
-        "path": "./.claude/skills/wp-plan-status"
+        "path": "./.claude/mods"
       }
     }
   },
   "enabledPlugins": {
-    "plan-status@workflow-memory-local": true
+    "plan-status@workflow-memory-local": true,
+    "tfvc@workflow-memory-local": true
   }
 }
