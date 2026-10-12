@@ -37,18 +37,23 @@ export const countStatus = (out: string) => {
 export const needsNoprompt = (cmd: string) =>
   /\btf(\.exe)?["']?\s+(checkin|merge|resolve|get|undo|shelve|unshelve)\b/i.test(cmd) && !/\/noprompt\b/i.test(cmd)
 
-const advice = ({ pending, detected }: { pending: number; detected: number }) =>
+// The /tf choice dialog: at most 4 options (the dialog's cap), decline always last.
+// `ask` = a prompt handed to Claude, which still shows the file list and waits for a go before any write.
+export const DECLINE = 'No thanks'
+export const GET = '⬇️ Get latest'
+export const choices = ({ pending, detected }: { pending: number; detected: number }) =>
   [
-    pending > 0
-      ? `📝 ${pending} 個待簽入變更：先看 \`tf status\` / \`tf diff\`，再請 Claude 指定路徑簽入（\`tf checkin <路徑> /comment:"…" /noprompt\`）。`
-      : '✅ 沒有待簽入變更。',
-    detected > 0 &&
-      `🔍 ${detected} 個新增/刪除只算 detected，不會被簽入；要簽入的先 \`tf add\` / \`tf delete\`。`,
-    '⬇️ 開工前執行 `/tf get` 取得最新版。',
-    '🔀 要合併分支：請 Claude 執行 `tf merge <來源> <目標> /recursive`，再 `tf resolve /auto:AutoMerge /noprompt`。',
-  ]
-    .filter(Boolean)
-    .join('\n')
+    pending > 0 && {
+      label: `📝 Check in ${pending} change(s)`,
+      ask: 'List the pending TFVC changes and suggest a comment; run tf checkin (explicit paths, /noprompt) only after I confirm the files and the comment.',
+    },
+    detected > 0 && {
+      label: `🔍 Handle ${detected} detected`,
+      ask: 'List the TFVC detected adds/deletes and suggest which need tf add / tf delete; run them only after I confirm.',
+    },
+    { label: GET },
+    { label: DECLINE },
+  ].filter((c): c is { label: string; ask?: string } => !!c)
 
 const RULES = `This session is inside a TFVC workspace (Azure DevOps). Use \`tf\` (on PATH), not git.
 - Write commands (checkin, merge, resolve, get, undo) must carry /noprompt or they open a GUI dialog.
@@ -74,7 +79,15 @@ async function loadWorkspaces($: Engine): Promise<Workspace[]> {
 const tf = ($: Engine, args: string[], cwd: string, timeoutMs: number) =>
   $.process.run(['tf', ...args], { cwd, timeoutMs }).catch(() => undefined)
 
-const NO_TF = '找不到 `tf`。請重開 Claude Code 讓新的 PATH 生效（見 local-environment.md）。'
+const NO_TF = '`tf` not found. Restart Claude Code so a newly added PATH entry takes effect.'
+
+async function getLatest($: Engine, cwd: string) {
+  const r = await tf($, ['get', '.', '/recursive', '/noprompt'], cwd, 600_000)
+  if (!r) return { text: NO_TF }
+  const body = (r.stdout + r.stderr).trim().split(/\r?\n/).slice(-15).join('\n')
+  const conflict = /conflict/i.test(body) ? '\n\n⚠️ Conflicts: ask Claude to run `tf resolve`, or resolve them in Visual Studio.' : ''
+  return { text: `⬇️ tf get (exit ${r.exitCode})\n${body || 'All files are up to date.'}${conflict}` }
+}
 
 export const register: Register = on => {
   let hit: Hit | undefined
@@ -85,14 +98,14 @@ export const register: Register = on => {
 
     await $.command.register({
       name: 'tf',
-      description: 'TFVC：狀態與建議（/tf）、取得最新版（/tf get）',
+      description: 'TFVC: status and next actions (/tf), get latest (/tf get)',
       argumentHint: '[status|get]',
     })
     $.ui.status(`TFVC · ${hit.name}`)
     void tf($, ['status', '.', '/recursive', '/format:brief'], e.cwd, 120_000).then(r => {
       if (!r) return
       const { pending, detected } = countStatus(r.stdout)
-      if (pending + detected > 0) $.ui.toast(`TFVC：${pending} 個待簽入、${detected} 個 detected，輸入 /tf 看建議`)
+      if (pending + detected > 0) $.ui.toast(`TFVC: ${pending} pending, ${detected} detected — type /tf for actions`)
     })
     return next(e)
   })
@@ -104,16 +117,19 @@ export const register: Register = on => {
 
   on('command.run', { command: 'tf' }, async ($, e) => {
     const cwd = await $.session.cwd()
-    if (e.args.trim() === 'get') {
-      const r = await tf($, ['get', '.', '/recursive', '/noprompt'], cwd, 600_000)
-      if (!r) return { text: NO_TF }
-      const body = (r.stdout + r.stderr).trim().split(/\r?\n/).slice(-15).join('\n')
-      const conflict = /conflict/i.test(body) ? '\n\n⚠️ 有衝突：請 Claude 用 `tf resolve` 處理，或在 VS2017 解決。' : ''
-      return { text: `⬇️ tf get（exit ${r.exitCode}）\n${body || 'All files are up to date.'}${conflict}` }
-    }
+    if (e.args.trim() === 'get') return getLatest($, cwd)
     const r = await tf($, ['status', '.', '/recursive', '/format:brief'], cwd, 120_000)
     if (!r) return { text: NO_TF }
-    return { text: `TFVC · ${hit?.name ?? '?'}（${cwd}）\n${advice(countStatus(r.stdout))}` }
+    const { pending, detected } = countStatus(r.stdout)
+    const head = `TFVC · ${hit?.name ?? '?'}: ${pending} pending, ${detected} detected`
+    const opts = choices({ pending, detected })
+    // Dismissed (Esc) counts as declined; "Other" free text (e.g. a merge request) goes to Claude as typed.
+    const pick = await $.ui.ask(`${head}. What next?`, { header: 'TFVC', options: opts.map(o => o.label) }).catch(() => DECLINE)
+    if (pick === DECLINE) return { text: `${head} — skipped.` }
+    if (pick === GET) return getLatest($, cwd)
+    const ask = opts.find(o => o.label === pick)?.ask
+    void $.prompt.submit({ text: ask ?? pick, asUser: true })
+    return { text: head }
   })
 
   const guard = (cmd: string) =>

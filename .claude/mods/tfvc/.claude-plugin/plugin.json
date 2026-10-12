@@ -1,5 +1,5 @@
 {
   "name": "tfvc",
-  "version": "0.1.0",
-  "description": "In a TFVC workspace: /tf status with suggested next actions, /tf get, tf rules for the model, and a /noprompt guard"
+  "version": "0.2.0",
+  "description": "In a TFVC workspace: /tf status with a pick-an-action dialog, /tf get, tf rules for the model, and a /noprompt guard"
 }

@@ -43,7 +43,7 @@ project-memory/                        the project's own memory — plain folder
 ├── mods/                              mods, not skills — kept OUT of skills/ so Claude Code never loads them twice
 │   ├── .claude-plugin/marketplace.json  one directory marketplace listing both mods; settings.json points here
 │   ├── plan-status/                   live plans above the prompt, collapsible
-│   └── tfvc/                          TFVC workspaces only: /tf status + advice, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
+│   └── tfvc/                          TFVC workspaces only: /tf status + pick-an-action dialog, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
