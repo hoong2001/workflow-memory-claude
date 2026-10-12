@@ -97,9 +97,9 @@ Keep flow.md to the stable "how it works" parts. A specific change's "where to c
 Report all paths touched and the flow.md outcome, e.g.:
 
 ```
-✅ Impl saved: project-memory/modules/<name>/impl/<name>-2026-07-02-<slug>.md
-✅ Plan synced: plans/<name>-2026-07-02-<slug>.md  (status → Done)
-✅ flow.md: updated 2 call-chain rows (added OrderService.Validate, fixed Repository role)
+✅ Impl saved: project-memory/modules/<name>/impl/<name>-2026-07-02-<slug>.md  (64 lines, new)
+✅ Plan synced: plans/<name>-2026-07-02-<slug>.md  (+1/−1, status → Done)
+✅ flow.md: <name>-flow.md  (+3/−1)
    — or — flow.md unchanged (internal-only change)
    — or — flow.md left for full /wp-module-code-trace-flow (large structural rewrite)
 ```
