@@ -45,15 +45,5 @@
       }
     ]
   },
-  "extraKnownMarketplaces": {
-    "workflow-memory-local": {
-      "source": {
-        "source": "github",
-        "repo": "hoong2001/workflow-memory-claude",
-        "ref": "main",
-        "path": ".claude/mods/.claude-plugin/marketplace.json"
-      },
-      "autoUpdate": true
-    }
-  }
+  "extraKnownMarketplaces": {}
 }

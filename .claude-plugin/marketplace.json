@@ -1,0 +1,8 @@
+{
+  "name": "workflow-memory-local",
+  "owner": { "name": "workflow-memory-claude" },
+  "plugins": [
+    { "name": "plan-status", "source": "./.claude/mods/plan-status" },
+    { "name": "tfvc", "source": "./.claude/mods/tfvc" }
+  ]
+}
