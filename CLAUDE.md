@@ -56,6 +56,7 @@
 - Memory-update flow → `.claude/rules/workspace-update-memory.md` (read on demand at task wrap-up — see workflow Step 3)
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
 - Credential hygiene (hook + `/wp-secret-scan`) → `.claude/rules/workspace-no-secrets.md`; the hook itself is `.claude/hooks/block-secrets.mjs`, wired in `.claude/settings.json`
+- `Web.config` / `App.config` connection-string format (hook + `/wp-connstr-check`) → the hook is `.claude/hooks/connstr-check.mjs`, wired in `.claude/settings.json`; the skill sweeps config files the hook never saw
 
 ## Behavioral Rules (auto-applied every turn)
 <!-- @import loads every turn → ongoing token cost. Only mount rules that must always be on;

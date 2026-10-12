@@ -36,7 +36,7 @@ project-memory/                        the project's own memory — plain folder
 ├── settings.json                      hook wiring (commit it — the credential guard and the status view live here)
 ├── hooks/
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
-│   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write
+│   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured)
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
@@ -66,6 +66,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-csharp-gof-design-patterns/  which GoF patterns fit this stack, and the pain each needs before it is used
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
+    ├── wp-connstr-check/  sweep Web.config / App.config connectionStrings against the house template; apply on your go
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
     ├── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
     └── wp-plan-status/  a mod, not a skill: live plans from project-memory-status.md above the prompt, collapsible
