@@ -23,6 +23,14 @@ project's own `project-memory/modules/*/impl/`, `plans/`, and `<name>-flow.md`
 **Trigger is manual.** Never write to the vault on your own, and never prompt the user to log or
 read back — not everyone uses Obsidian, so this skill runs only when the user invokes it.
 
+**Separate from this skill, an automatic mirror shares the same vault path.** On a machine with a
+vault configured (this skill's `references/vault-path.local.json`, else
+`~/.claude/progress-vault.json`), the `.claude/hooks/project-memory-status.mjs` hook writes each
+project's live plans to `Project Progress/<project>/_plans.md` and rebuilds
+`Project Progress/_Live plans.md` across all projects. Those two files are hook-generated: never
+edit them, never fold them into the cards. In RESUME, read `_Live plans.md` first — it is
+always current, while the cards are only as fresh as the last LOG.
+
 **Vault path — read it from this skill's own config: `references/vault-path.local.json`**
 (machine-local, gitignored, never synced). Read its `vaultPath` value; never hardcode a path in
 the skill body. **If that file is missing, do NOT guess or use a default** — tell the user in one

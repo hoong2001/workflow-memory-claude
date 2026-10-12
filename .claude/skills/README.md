@@ -10,7 +10,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `update-from-master`, `secret-scan`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -94,16 +94,19 @@ no implementation to record, so the whole memory path is this one skill.
 |-------|-------------|--------------------|
 | `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
+| `wp-connstr-check` | Adopting this template on an existing .NET project, or after config files were edited outside Claude (Visual Studio, a merge, a shell command) | Dry-run every `Web.config` / `App.config` and transform against the house MSSQL `connectionString` template, report the diff with passwords masked, apply on your go |
 
 > Routine credential blocking needs no skill — `.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
 >
 > The system-wide plan status also needs no skill — `.claude/hooks/project-memory-status.mjs` runs as a `PostToolUse` hook and rebuilds `project-memory/project-memory-status.md` whenever a module plan is written. The `wp-plan-status/` folder beside the skills is a mod, not a skill: Claude Code does NOT load it from this folder by itself (verified on 2.1.295: only `~/.claude/skills` entries are adopted as plugins). The folder doubles as a one-plugin directory marketplace (`.claude-plugin/marketplace.json`, `source: "./"`), declared in `.claude/settings.json` under `extraKnownMarketplaces.workflow-memory-local` with a relative `path` and enabled under `enabledPlugins` as `plan-status@workflow-memory-local`. Once loaded it shows that file's live plans above the prompt from session start, with a Hide / Show toggle. It reads only the table format it knows (`TABLE_FORMAT`, the same marker in the hook and in its `hooks/parse.ts`) and shows a warning on any other.
 >
-> So does the connection-string format — `.claude/hooks/connstr-check.mjs` runs as a `PostToolUse` hook on every write to a `Web.config` / `App.config` (and their transforms) and rejects an MSSQL `connectionString` that departs from the house template, naming the corrected string. `node .claude/hooks/connstr-check.mjs --fix <root>` lists the fixes for existing files; add `--write` to apply them.
+> So does the connection-string format — `.claude/hooks/connstr-check.mjs` runs as a `PostToolUse` hook on every write to a `Web.config` / `App.config` (and their transforms) and rejects an MSSQL `connectionString` that departs from the house template, naming the corrected string. `node .claude/hooks/connstr-check.mjs --fix <root>` lists the fixes for existing files; add `--write` to apply them. `wp-connstr-check` wraps that sweep for files the hook never saw — it only fires on Claude's Write / Edit / MultiEdit, not on Visual Studio or shell edits.
 
 ### Standing · Cross-project memory (Obsidian)
 
 Adjacent to the module flow — a lightweight record that lives in the user's central Obsidian vault, so a project paused for a while can be resumed and nothing built is lost from view. `wp-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (shallow snapshot vs. the deep in-project record). Optional: not everyone uses Obsidian, so no workflow step reminds you to run these — invoke them when you want them.
+
+The always-current half needs no skill: on a machine with a vault path configured (`wp-obsidian-progress-log/references/vault-path.local.json`, else `~/.claude/progress-vault.json`, both `{ "vaultPath": "..." }`), the `project-memory-status.mjs` hook mirrors each project's live plans into `Project Progress/<project>/_plans.md` and rebuilds `Project Progress/_Live plans.md` — every project's unfinished plans in one table, oldest first. Plain Markdown, so any editor reads it. No config → the hook skips it silently.
 
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
@@ -123,3 +126,4 @@ Adjacent to the module flow — a lightweight record that lives in the user's ce
 - **One-off report / data patch, nothing ships into the system** → `wp-task-record` (skip the module layer and Step 3 entirely).
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → `wp-secret-scan`.
+- **Config files edited outside Claude, or connection strings all over the place** → `wp-connstr-check`.

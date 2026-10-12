@@ -8,7 +8,7 @@
 // {project} = name of the nearest .csproj/.vbproj above the config file.
 //
 //   node connstr-check.mjs                      hook mode: reads PostToolUse JSON on stdin, exit 2 on violation
-//   node connstr-check.mjs --fix ROOT           dry run: list what would change under ROOT
+//   node connstr-check.mjs --fix ROOT           dry run: list what would change under ROOT (used by /wp-connstr-check)
 //   node connstr-check.mjs --fix ROOT --write   apply
 //   node connstr-check.mjs --selftest
 import fs from "node:fs";
