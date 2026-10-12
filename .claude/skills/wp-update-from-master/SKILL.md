@@ -158,8 +158,8 @@ Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
 `project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a, but
 `.claude/hooks/` is new in v4.0.0 and `.claude/scripts/` in v6.0.0 — each
-is missing from any target synced before its version. `.claude/mods/` is never copied (master-only
-since v8.0.0); a target that still has one deletes it per the 🗑️ table.
+is missing from any target synced before its version. `.claude/mods/` no longer exists (v10.0.0); a target that still has one deletes it per
+the 🗑️ table.
 
 A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
 ⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies
@@ -202,12 +202,8 @@ make it always-on and defeat its purpose. Read the file's first lines before add
 Special case: `.claude/settings.json`. Merge ONLY the three template hook entries — the
 credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
 (`project-memory-status.mjs`) and connection-string (`connstr-check.mjs`) `PostToolUse` entries
-into `hooks.PostToolUse` — plus the mod loader: replace `extraKnownMarketplaces.workflow-memory-local`
-with the master's (the `github` source) and delete every `enabledPlugins` key ending
-`@workflow-memory-local` (mods are installed at user scope, once per machine — remind the user of
-`claude plugin marketplace add hoong2001/workflow-memory-claude`, then
-`claude plugin install tfvc@workflow-memory-local --scope user` if `claude plugin list` lacks it; `plan-status` needs no install, it
-travels in `.claude/skills/`); never copy the file whole, or the
+into `hooks.PostToolUse` — and delete any leftover `extraKnownMarketplaces.workflow-memory-local` entry and
+`enabledPlugins` key ending `@workflow-memory-local` (v6.1.0–v9.0.0 mod loader); never copy the file whole, or the
 project's own hooks and permissions are wiped. After merging, run
 `node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
 `project-memory/project-memory-status.md` is built from its own plans — and carries the
