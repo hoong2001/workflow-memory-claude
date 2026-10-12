@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { countStatus, findWorkspace, needsNoprompt, parseWorkspaces } from './register'
+import { choices, countStatus, DECLINE, findWorkspace, GET, needsNoprompt, parseWorkspaces } from './register'
 
 const XML = `<WorkspaceInfo name="WS-1" isLocalWorkspace="true"><MappedPaths>
 <MappedPath path="C:\\Src\\Workspace\\MyApp" />
@@ -27,4 +27,12 @@ test('flags tf write commands without /noprompt', () => {
   expect(needsNoprompt('tf checkin SSO /comment:"x" /noprompt')).toBe(false)
   expect(needsNoprompt('tf status /recursive')).toBe(false)
   expect(needsNoprompt('git get-tf')).toBe(false)
+})
+
+test('/tf offers only the actions the status calls for, decline last', () => {
+  const labels = (p: number, d: number) => choices({ pending: p, detected: d }).map(c => c.label)
+  expect(labels(0, 0)).toEqual([GET, DECLINE])
+  expect(labels(3, 2).length).toBe(4)
+  expect(labels(3, 2)[3]).toBe(DECLINE)
+  expect(choices({ pending: 3, detected: 0 })[0].ask?.includes('tf checkin')).toBe(true)
 })
