@@ -40,8 +40,6 @@ project-memory/                        the project's own memory — plain folder
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
-├── mods/                              MASTER ONLY (listed by the root .claude-plugin/marketplace.json) — loads from this repo on GitHub, installed once per machine (see Mods)
-│   └── tfvc/                          TFVC workspaces only: /tf status + pick-an-action dialog, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
 ├── rules/                             behavioral rules (@imported = always-on)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
@@ -69,6 +67,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-connstr-check/  sweep Web.config / App.config connectionStrings against the house template; apply on your go
+    ├── wp-tfvc/           use tf.exe in a TFVC workspace the way git is used in a git repo
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
     └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 ```
@@ -135,22 +134,9 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 ## Mods
 
-Two mods, loaded two ways:
-
-- `plan-status` travels with the project in `.claude/skills/plan-status/`. Claude Code loads a plugin
-  from the skills folder automatically (origin `@skills-dir`) — no install. Never list it in a marketplace
-  too: a skills-dir plugin whose name matches an installed one is not loaded.
-- `tfvc` is never copied into a project. Every project's `.claude/settings.json` declares this repo as
-  the `workflow-memory-local` marketplace (`github` source, `autoUpdate: true`; the marketplace file is
-  the repo-root `.claude-plugin/marketplace.json`), so each machine registers it and installs it once:
-
-```
-claude plugin marketplace add hoong2001/workflow-memory-claude
-claude plugin install tfvc@workflow-memory-local --scope user
-```
-
-A push to `main` reaches everyone on their next session; `claude plugin marketplace update workflow-memory-local`
-forces it. To test an unpushed change, start `claude --plugin-dir .claude/mods/tfvc` in this repo.
+One mod: `plan-status`, in `.claude/skills/plan-status/`. Claude Code loads a plugin from the skills
+folder automatically (origin `@skills-dir`), so it travels with the project and needs no install. Never
+list it in a marketplace too: a skills-dir plugin whose name matches an installed one is not loaded.
 
 ## Portable vs per-project
 

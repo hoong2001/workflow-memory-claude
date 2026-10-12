@@ -1,4 +1,0 @@
-{
-  "name": "tfvc",
-  "description": "In a TFVC workspace: /tf status with a pick-an-action dialog, /tf get, tf rules for the model, and a /noprompt guard"
-}
