@@ -36,7 +36,7 @@
  *
  * Fails OPEN: any error exits 0. A broken status view must never block a write.
  *
- * The table is a contract: the plan-status mod (.claude/skills/wp-plan-status/hooks/parse.ts)
+ * The table is a contract: the plan-status mod (.claude/mods/plan-status/hooks/parse.ts)
  * reads it to show live plans above the prompt. Its shape is fixed by TABLE_FORMAT:
  *   <!-- TABLE_FORMAT -->
  *   | Module | Plan | Status | Detail | Updated |   (Plan as [file](link), `|` escaped as `\|`)
