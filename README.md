@@ -40,8 +40,8 @@ project-memory/                        the project's own memory — plain folder
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
-├── mods/                              mods, not skills — kept OUT of skills/ so Claude Code never loads them twice
-│   ├── .claude-plugin/marketplace.json  one directory marketplace listing both mods; settings.json points here
+├── mods/                              MASTER ONLY — mods load from this repo on GitHub, installed once per machine (see Mods)
+│   ├── .claude-plugin/marketplace.json  the marketplace every project's settings.json points at
 │   ├── plan-status/                   live plans above the prompt, collapsible
 │   └── tfvc/                          TFVC workspaces only: /tf status + pick-an-action dialog, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
 ├── rules/                             behavioral rules (@imported = always-on)
@@ -115,8 +115,6 @@ status view is stale until it hides a half-built plan:
 .claude/*
 !.claude/rules/
 !.claude/skills/
-!.claude/mods/
-.claude/mods/*/.claude-plugin/types/
 !.claude/hooks/
 !.claude/scripts/
 !.claude/settings.json
@@ -137,11 +135,25 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
+## Mods
+
+Mods (`plan-status`, `tfvc`) are never copied into a project. Every project's `.claude/settings.json`
+declares this repo as the `workflow-memory-local` marketplace (`github` source, `autoUpdate: true`),
+so each machine installs them once and every project shares them:
+
+```
+claude plugin install plan-status@workflow-memory-local --scope user
+claude plugin install tfvc@workflow-memory-local --scope user
+```
+
+A push to `main` reaches everyone on their next session; `claude plugin marketplace update workflow-memory-local`
+forces it. To test an unpushed change, start `claude --plugin-dir .claude/mods/<name>` in this repo.
+
 ## Portable vs per-project
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/mods/*` (the `plan-status` and `tfvc` mods), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
 | Framework, but merge by hand | `.claude/settings.json` — take the template hook entries, keep the project's own hooks and permissions | merge, never overwrite |
 | The one config | `project-memory/stack-architecture.md` | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |

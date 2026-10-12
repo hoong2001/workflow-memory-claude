@@ -56,10 +56,10 @@ grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
 
 Across every module at once → `project-memory/project-memory-status.md`, which lists every plan
 not `Done` and is rebuilt by a hook on each write to a plan (derived view, never edited; the
-plans win on any disagreement). The `plan-status` mod (`.claude/mods/plan-status/`) shows the
-same rows above the prompt from session start, collapsible — once installed as a project-scope
-plugin (`.claude/settings.json` → `extraKnownMarketplaces.workflow-memory-local` + `enabledPlugins`);
-it sits outside `.claude/skills/` so the skills scan never loads it a second time.
+plans win on any disagreement). The `plan-status` mod shows the
+same rows above the prompt from session start, collapsible — once installed at user scope from
+the `workflow-memory-local` marketplace (the master repo on GitHub, declared in
+`.claude/settings.json` → `extraKnownMarketplaces`); mods live only in the master, never in a project.
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, and its `## Tasks` table (if it has one) says which task is next —
 and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every
