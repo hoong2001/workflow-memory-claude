@@ -149,7 +149,6 @@ Copy each ✅ path from master → target with overwrite-but-never-delete semant
 ```powershell
 Copy-Item "$master\.claude\rules\*"  "$target\.claude\rules\"  -Force
 Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
-Copy-Item "$master\.claude\mods\*"   "$target\.claude\mods\"   -Recurse -Force
 Copy-Item "$master\.claude\hooks\*"  "$target\.claude\hooks\"  -Force
 Copy-Item "$master\.claude\scripts\*" "$target\.claude\scripts\" -Force
 Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
@@ -158,8 +157,9 @@ Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 
 If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
 `project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a, but
-`.claude/hooks/` is new in v4.0.0, `.claude/scripts/` in v6.0.0 and `.claude/mods/` in v7.0.0 — each
-is missing from any target synced before its version.
+`.claude/hooks/` is new in v4.0.0 and `.claude/scripts/` in v6.0.0 — each
+is missing from any target synced before its version. `.claude/mods/` is never copied (master-only
+since v8.0.0); a target that still has one deletes it per the 🗑️ table.
 
 A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
 ⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies
@@ -202,11 +202,14 @@ make it always-on and defeat its purpose. Read the file's first lines before add
 Special case: `.claude/settings.json`. Merge ONLY the three template hook entries — the
 credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
 (`project-memory-status.mjs`) and connection-string (`connstr-check.mjs`) `PostToolUse` entries
-into `hooks.PostToolUse`; never copy the file whole, or the
+into `hooks.PostToolUse` — plus the mod loader: replace `extraKnownMarketplaces.workflow-memory-local`
+with the master's (the `github` source) and delete every `enabledPlugins` key ending
+`@workflow-memory-local` (mods are installed at user scope, once per machine — remind the user of
+`claude plugin install plan-status@workflow-memory-local --scope user` and `claude plugin install tfvc@workflow-memory-local --scope user` if `claude plugin list` lacks them); never copy the file whole, or the
 project's own hooks and permissions are wiped. After merging, run
 `node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
 `project-memory/project-memory-status.md` is built from its own plans — and carries the
-`TABLE_FORMAT` marker the `plan-status` mod (`.claude/mods/plan-status/`) requires; without
+`TABLE_FORMAT` marker the `plan-status` mod requires; without
 the rerun the mod shows a format warning until the next plan write. A target synced at 3.1.0
 carries the old PowerShell entry — replace it rather than adding a second one beside it.
 

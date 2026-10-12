@@ -48,13 +48,12 @@
   "extraKnownMarketplaces": {
     "workflow-memory-local": {
       "source": {
-        "source": "directory",
-        "path": "./.claude/mods"
-      }
+        "source": "github",
+        "repo": "hoong2001/workflow-memory-claude",
+        "ref": "main",
+        "path": ".claude/mods/.claude-plugin/marketplace.json"
+      },
+      "autoUpdate": true
     }
-  },
-  "enabledPlugins": {
-    "plan-status@workflow-memory-local": true,
-    "tfvc@workflow-memory-local": true
   }
 }
