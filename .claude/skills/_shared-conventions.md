@@ -63,6 +63,12 @@ only when something is still pending, what is the user's to do and what comes af
 - **Done** lists the files actually written. Nothing written → `no files changed`. A skill with
   its own report block (e.g. `/wp-module-save-implementation`'s ✅ list) uses that block as the
   Done slot and adds the lines below it.
+- **Name the file, never replay it.** A document written under `project-memory/` or `.claude/`
+  (plan, impl, MODULE.md, flow, TASK.md) is reported as its path plus size — `(+N/−M)` from
+  `git diff --numstat`, or `(N lines, new)` when git does not track it. Its content stays in the
+  file for the user to open; the reply carries no summary of what was written.
+- **Highlight only what needs a human.** A manual step, a risk, a surprise, or a decision gets its
+  own `⚠️` line directly above You now. Everything else stays silent.
 - **You now** is an action only the user can take: test the change, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.

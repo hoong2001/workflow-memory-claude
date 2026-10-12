@@ -147,8 +147,8 @@ fill the rest when you land.
 ## Step 4 · Report, then stop
 
 ```
-✅ Task recorded: project-memory/tasks/2026-09-14-q3-sales-report/TASK.md
-✅ Query saved:   .../schema/2026-09-14-q3-sales-report.sql
+✅ Task recorded: project-memory/tasks/2026-09-14-q3-sales-report/TASK.md  (48 lines, new)
+✅ Query saved:   .../schema/2026-09-14-q3-sales-report.sql  (22 lines, new)
    Status: Done · Likely to repeat: Monthly
 ```
 
