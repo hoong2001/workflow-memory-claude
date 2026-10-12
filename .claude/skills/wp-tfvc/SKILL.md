@@ -15,8 +15,8 @@ version-control step in a TFVC workspace, as git would be used in a git repo. Ve
 tf workfold .
 ```
 
-Prints the workspace name and its server ↔ local mappings → TFVC. An error saying the folder is
-not mapped → not a TFVC workspace; stop using this skill. `tf` not found → tell the user to put
+Prints the workspace name and its server ↔ local mappings → TFVC. Prints `Unable to determine the
+source control server.` → not a TFVC workspace; stop using this skill. `tf` not found → tell the user to put
 Team Explorer's folder on `PATH` (`...\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer`).
 
 ## Four rules that prevent real damage
