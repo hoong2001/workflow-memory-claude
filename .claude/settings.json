@@ -45,5 +45,13 @@
       }
     ]
   },
-  "extraKnownMarketplaces": {}
+  "extraKnownMarketplaces": {
+    "workflow-memory-local": {
+      "source": {
+        "source": "github",
+        "repo": "hoong2001/workflow-memory-claude"
+      },
+      "autoUpdate": true
+    }
+  }
 }

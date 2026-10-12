@@ -40,8 +40,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
-├── mods/                              MASTER ONLY — mods load from this repo on GitHub, installed once per machine (see Mods)
-│   ├── .claude-plugin/marketplace.json  the marketplace every project's settings.json points at
+├── mods/                              MASTER ONLY (listed by the root .claude-plugin/marketplace.json) — mods load from this repo on GitHub, installed once per machine (see Mods)
 │   ├── plan-status/                   live plans above the prompt, collapsible
 │   └── tfvc/                          TFVC workspaces only: /tf status + pick-an-action dialog, /tf get, tf rules, and a /noprompt guard. Dormant everywhere else
 ├── rules/                             behavioral rules (@imported = always-on)
@@ -139,9 +138,11 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 Mods (`plan-status`, `tfvc`) are never copied into a project. Every project's `.claude/settings.json`
 declares this repo as the `workflow-memory-local` marketplace (`github` source, `autoUpdate: true`),
-so each machine installs them once and every project shares them:
+so each machine registers it and installs them once, and every project shares them (the marketplace
+file is the repo-root `.claude-plugin/marketplace.json`):
 
 ```
+claude plugin marketplace add hoong2001/workflow-memory-claude
 claude plugin install plan-status@workflow-memory-local --scope user
 claude plugin install tfvc@workflow-memory-local --scope user
 ```

@@ -205,6 +205,7 @@ credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
 into `hooks.PostToolUse` — plus the mod loader: replace `extraKnownMarketplaces.workflow-memory-local`
 with the master's (the `github` source) and delete every `enabledPlugins` key ending
 `@workflow-memory-local` (mods are installed at user scope, once per machine — remind the user of
+`claude plugin marketplace add hoong2001/workflow-memory-claude`, then
 `claude plugin install plan-status@workflow-memory-local --scope user` and `claude plugin install tfvc@workflow-memory-local --scope user` if `claude plugin list` lacks them); never copy the file whole, or the
 project's own hooks and permissions are wiped. After merging, run
 `node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
