@@ -20,6 +20,13 @@ export const register: Register = on => {
     return next(e)
   })
 
+  // /resume and /clear switch to a new session id in the same process: its state starts empty and
+  // session.start does not fire again, but the classic SessionStart hook does.
+  on('classic.SessionStart', async ($, e, next) => {
+    if (e.source === 'resume' || e.source === 'clear') await refresh($)
+    return next(e)
+  }).catch(($, e, next) => (next.called ? undefined : next(e)))
+
   // A plan written during the turn has already regenerated the file by the time the turn ends.
   on('turn.complete', async ($, e, next) => {
     await refresh($)
