@@ -23,6 +23,22 @@ Team Explorer's folder on `PATH` (`...\Common7\IDE\CommonExtensions\Microsoft\Te
 `C:/Program Files/Git/candidate`), so `tf` misreads them — e.g. `Exactly two items (source and
 target) are required.` Run `tf` from PowerShell, or prefix `MSYS_NO_PATHCONV=1` in Bash.
 
+**`TF30063: You are not authorized to access ...` = the sign-in is missing or expired.** It cannot
+be fixed inside Claude's shell, nor through `!` in the prompt: neither is interactive, and
+`/noprompt` suppresses the sign-in dialog. Stop, and give the user this command (or run it on their
+go) — it opens a separate, interactive window where the dialog can appear. `<collection>` is the
+`Collection:` line of `tf workfold .`:
+
+```
+PowerShell:  Start-Process powershell -ArgumentList '-NoExit','-Command','tf workspaces /collection:<collection>'
+Bash:        cmd //c start "" powershell -NoExit -Command "tf workspaces /collection:<collection>"
+```
+
+The user signs in there and says so; then rerun the command that failed. Never put a password or
+token in `/login:` — it lands in the shell history and the transcript. A local workspace runs
+`tf status` and `tf diff` without the server, so those passing proves nothing; `tf branches` in the
+orienting step below is the first call that reaches the server and surfaces TF30063 early.
+
 ## Orient before every request
 
 Before running what the user asked for, find out where this folder sits and say it in one line:
