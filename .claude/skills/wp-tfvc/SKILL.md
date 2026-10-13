@@ -19,6 +19,37 @@ Prints the workspace name and its server ↔ local mappings → TFVC. Prints `Un
 source control server.` → not a TFVC workspace; stop using this skill. `tf` not found → tell the user to put
 Team Explorer's folder on `PATH` (`...\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer`).
 
+**Git Bash rewrites `/switch` arguments into Windows paths** (`/candidate` becomes
+`C:/Program Files/Git/candidate`), so `tf` misreads them — e.g. `Exactly two items (source and
+target) are required.` Run `tf` from PowerShell, or prefix `MSYS_NO_PATHCONV=1` in Bash.
+
+## Orient before every request
+
+Before running what the user asked for, find out where this folder sits and say it in one line:
+
+1. **Which branch.** `tf workfold .` prints the workspace, the collection and the mapping
+   `$/server/path: C:\local\path` — take the mapping that contains the current folder.
+2. **Its family.** `tf branches <server path>` prints the branch tree:
+
+   ```
+   $/SYNC/Main/Src
+   	$/SYNC/Development/SYNC.Server-v1.24.0	Branched from version 1722
+   >> 	$/SYNC/Development/SYNC.Server-v1.25.xx	Branched from version 1722 <<
+   ```
+
+   `>> ... <<` marks this folder's branch; the nearest line above it with one less indent is its
+   parent (the merge target going up); lines indented under it are its children.
+3. **What is waiting to merge** — only when the request is a merge, or the user asks what is
+   pending. `tf merge /candidate /recursive <source> <target>` changes nothing; it lists the
+   changesets not yet merged, or prints `There are no changes to merge.` Run it both ways:
+   this branch → parent (merge up) and parent → this branch (merge down).
+
+Then offer the choices through `AskUserQuestion`, each option naming source → target and the
+candidate count, with "Do nothing" as the last option — e.g. "Merge up: `…/SYNC.Server-v1.25.xx` →
+`$/SYNC/Main/Src` (2 changesets)". A direction with no candidates is not offered; say so instead. A
+merge between siblings has no merge history (`/baseless`) — never offer it unasked. For a request
+that is not a merge (status, get, check-in), the one orienting line is enough; no choice needed.
+
 ## Four rules that prevent real damage
 
 1. **Every command that accepts `/noprompt` gets it** — `checkin`, `get`, `undo`, `shelve`,
@@ -51,6 +82,7 @@ Team Explorer's folder on `PATH` (`...\Common7\IDE\CommonExtensions\Microsoft\Te
 | `git stash pop` | `tf unshelve "<name>" /noprompt` | |
 | `git log <path>` | `tf history <path> /recursive /stopafter:20 /format:brief /noprompt` | |
 | `git show <sha>` | `tf changeset <number> /noprompt` | |
+| `git log target..source` | `tf merge /candidate /recursive <source> <target>` | Read-only: changesets not yet merged |
 | `git merge` | `tf merge <source> <target> /recursive /noprompt` | Then `tf resolve /auto:AutoMerge /noprompt` and `tf status`; check in the merge as its own changeset |
 | conflict status | `tf resolve /preview /recursive <path>` | Lists what is still in conflict without changing anything |
 
@@ -66,6 +98,6 @@ go, `tf checkin <paths> /comment:"..." /noprompt` → report the changeset numbe
 **Start of work.** `tf get . /recursive /noprompt`. If it reports conflicts, `tf resolve /auto:AutoMerge
 /noprompt`, then hand anything left to the user.
 
-**Merge a branch.** Confirm source and target server paths with the user → `tf merge <source> <target>
-/recursive /noprompt` → `tf resolve /auto:AutoMerge /noprompt` → `tf status` → show the list → check
+**Merge a branch.** Orient (above) and let the user pick source → target from the choices →
+`tf merge <source> <target> /recursive /noprompt` → `tf resolve /auto:AutoMerge /noprompt` → `tf status` → show the list → check
 in on their go with a comment naming the source branch.
