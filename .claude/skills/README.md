@@ -96,6 +96,7 @@ no implementation to record, so the whole memory path is this one skill.
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
 | `wp-connstr-check` | Adopting this template on an existing .NET project, or after config files were edited outside Claude (Visual Studio, a merge, a shell command) | Dry-run every `Web.config` / `App.config` and transform against the house MSSQL `connectionString` template, report the diff with passwords masked, apply on your go |
 | `wp-tfvc` | The project is a TFVC workspace (Azure DevOps / TFS), not git | Use `tf.exe` the way git is used: status, diff, get latest, add/delete, check-in by explicit path after your go, shelve, history, merge, resolve — always with `/noprompt` |
+| `wp-packageref-to-packages-config` | A legacy (non-SDK) .NET Framework `.csproj` / `.vbproj` uses NuGet `PackageReference` and must go back to `packages.config` | Dry run, then on your go write `packages.config` + `Reference`/`HintPath` and the package build imports, clear stale `obj` NuGet files, `nuget restore`, build, and check `bin` for lost DLLs. Needs Python on `PATH` |
 
 > Routine credential blocking needs no skill — `.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
 >
@@ -131,3 +132,4 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Worried a password or API key made it into the docs** → `wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → `wp-connstr-check`.
 - **Project is in TFVC, not git — check in, get latest, shelve, merge** → `wp-tfvc`.
+- **A .NET Framework project uses `PackageReference` and must switch to `packages.config`** → `wp-packageref-to-packages-config`.

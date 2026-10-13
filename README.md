@@ -68,6 +68,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-connstr-check/  sweep Web.config / App.config connectionStrings against the house template; apply on your go
     ├── wp-tfvc/           use tf.exe in a TFVC workspace the way git is used in a git repo
+    ├── wp-packageref-to-packages-config/  convert a .NET Framework project from PackageReference back to packages.config
     ├── wp-task-record/  one-off task (report run once, data patch) → its own folder under project-memory/tasks/
     ├── plan-status/       a mod, not a skill: live plans above the prompt, loaded from here with no install
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
