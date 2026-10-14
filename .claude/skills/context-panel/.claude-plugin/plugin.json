@@ -1,0 +1,6 @@
+{
+  "name": "context-panel",
+  "version": "0.3.0",
+  "description": "Everything /context shows, live in a pane; /context-panel [show|hide]",
+  "types": "./types/index.d.ts"
+}
