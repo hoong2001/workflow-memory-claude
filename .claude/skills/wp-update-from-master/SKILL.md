@@ -230,6 +230,12 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
 4. If a real module still has a `specs/` folder, don't touch it — remind the user of the
    routing rule (material → `references/`, `.sql` → `schema/`, work docs → `plans/`) and
    offer to migrate its content as a separate, per-file confirmed task.
+5. Live plans in an old shape: list every plan whose status header is not `Done` and whose
+   `## Tasks` table has no `Manager summary` column
+   (`grep -l "^## Tasks" project-memory/modules/*/plans/[!_]*.md 2>/dev/null | xargs -r grep -L "Manager summary"`,
+   then drop the `Done` ones). Offer to backfill them; on the user's go, add the column and write
+   each row's summary from the plan itself (rules: `/wp-module-technical-design` Guardrails).
+   `Done` plans are history — leave them alone.
 
 ## Step 6 · Report
 

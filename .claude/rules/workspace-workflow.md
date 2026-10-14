@@ -61,7 +61,9 @@ same rows in a pane, hidden at session start until shown (`/plan-status show`) �
 project's skills folder as a plugin, so it travels with the project and needs no install.
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, and its `## Tasks` table (if it has one) says which task is next —
-and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every
+and resume there rather than starting a fresh plan on top of it. A `## Tasks` table with no
+`Manager summary` column predates that column — add it and fill every row (rules:
+`/wp-module-technical-design` Guardrails) before resuming. Nothing unfinished, or every
 header says `Done` → this is new work, carry on below.
 
 Plan landed, and it needs the technical cut and a task breakdown before coding?
