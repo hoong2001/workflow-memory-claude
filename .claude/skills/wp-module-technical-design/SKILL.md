@@ -167,10 +167,10 @@ SQL/Service line here, or the build inherits the wrong cut.
 
 > Broken down: YYYY-MM-DD · vertical increments | plain steps · worked top-to-bottom, one at a time
 
-| # | ✔ | Task | Layers touched | Blocked by | Done when (verifiable) |
-|---|---|------|----------------|-----------|------------------------|
-| 1 | ☐ | ... | SQL + Repository + Service + Controller + View | — | ... |
-| 2 | ☐ | ... | ... | #1 | ... |
+| # | ✔ | Task | Manager summary | Layers touched | Blocked by | Done when (verifiable) |
+|---|---|------|-----------------|----------------|-----------|------------------------|
+| 1 | ☐ | ... | Users can now see the customer list on one screen | SQL + Repository + Service + Controller + View | — | ... |
+| 2 | ☐ | ... | ... | ... | #1 | ... |
 
 ### Notes
 - Prefactor / groundwork ordered first: ...
@@ -189,6 +189,7 @@ deriving `N` from the `☑` marks in this table.
 - Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
 - When the rows are vertical increments, every one must be a **full vertical path** that can be built, manually tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 - Keep every row at the level of what gets done, not how — the HOW is the `## Technical Design` section above it, the code is the work loop.
+- The **Manager summary** cell is for a reader who never opens the code: what the task delivers or changes for the business, in plain words, under 50 words. No file, class, method, table or layer names — those stay in `Task` and `Layers touched`.
 - New gotchas or conventions discovered while exploring code → backfill the module's MODULE.md immediately (one line each).
 
 </supporting-info>
