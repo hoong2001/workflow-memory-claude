@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `10.4.0` |
+| Version | `11.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -33,7 +33,7 @@ master; git is the default source.
 | Path | What it is |
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
-| `.claude/skills/` | Workflow skills (whole folder) — includes `plan-status/`, the live-plan band above the prompt: a mod, not a skill, loaded by Claude Code as a plugin from the skills folder (origin `@skills-dir`) with no install. Never also list it in a marketplace — a same-named installed plugin stops the skills-dir copy loading |
+| `.claude/skills/` | Workflow skills (whole folder) — includes `plan-status/`, the live-plan pane (hidden at session start, `/plan-status show|hide`): a mod, not a skill, loaded by Claude Code as a plugin from the skills folder (origin `@skills-dir`) with no install. Never also list it in a marketplace — a same-named installed plugin stops the skills-dir copy loading |
 | `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view (plus an opt-in mirror into a cross-project vault board when the machine has a vault path configured), and `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check (whole folder) |
 | `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step — always `/t:Rebuild` (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |

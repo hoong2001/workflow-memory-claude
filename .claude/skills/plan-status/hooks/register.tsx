@@ -3,8 +3,9 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import { parseLivePlans } from './parse'
 
+const PANE = 'plan-status'
 const plans = atom({ plugin: 'plan-status', key: 'plans' } as const, 'missing')
-const isShown = atom({ plugin: 'plan-status', key: 'isShown' } as const, true) // shown on every session start / resume until Hide
+const isShown = atom({ plugin: 'plan-status', key: 'isShown' } as const, false) // hidden at session start until /plan-status show
 
 // The file is rebuilt by the project's own PostToolUse hook (.claude/hooks/project-memory-status.mjs);
 // this mod only reads it, and only in the table format parse.ts knows.
@@ -14,27 +15,44 @@ async function refresh($: EngineInterface) {
   await update($, plans, () => (typeof text === 'string' ? parseLivePlans(text) : 'missing'))
 }
 
+// A pane, not the band above the prompt: the band holds one plugin's tree, so two mods there hide each other.
+// Docked as a sidebar in the fullscreen layout; inline above the prompt otherwise.
+async function setShown($: EngineInterface, shown: boolean) {
+  await update($, isShown, () => shown)
+  if (!shown) return $.ui.close({ id: PANE })
+  await refresh($)
+  if ((await read($, plans)) !== 'missing') await $.ui.open({ id: PANE, title: 'Plans' })
+}
+
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'plan-status',
-      description: 'Show or hide the live plans band',
+      description: 'Show or hide the live plans pane',
+      argumentHint: '[show|hide]',
     })
-    await refresh($)
+    if (await read($, isShown)) void setShown($, true)
     return next(e)
   })
 
-  on('command.run', { command: 'plan-status' }, async $ => {
-    const shown = await read($, isShown)
-    await update($, isShown, () => !shown)
-    if (!shown) await refresh($)
-    return { text: shown ? 'Plan status hidden.' : 'Plan status shown.' }
+  // `show` / `hide` for the mod-panel buttons; no argument toggles
+  on('command.run', { command: 'plan-status' }, async ($, e) => {
+    const arg = e.args.trim()
+    const shown = arg === 'show' ? true : arg === 'hide' ? false : !(await read($, isShown))
+    await setShown($, shown)
+    return { text: shown ? 'Plan status shown.' : 'Plan status hidden.' }
   })
+
+  // the person's close mark counts as Hide, so the next session start keeps it closed
+  on('ui.close', async ($, e, next) => {
+    if (e.id === PANE && e.origin.kind === 'person') await update($, isShown, () => false)
+    return next(e)
+  }).catch(($, e, next) => (next.called ? undefined : next(e))) // a failed hook never keeps the pane open
 
   // /resume and /clear switch to a new session id in the same process: its state starts empty and
   // session.start does not fire again, but the classic SessionStart hook does.
   on('classic.SessionStart', async ($, e, next) => {
-    if (e.source === 'resume' || e.source === 'clear') await refresh($)
+    if (e.source === 'resume' || e.source === 'clear') await setShown($, await read($, isShown))
     return next(e)
   }).catch(($, e, next) => (next.called ? undefined : next(e)))
 
@@ -44,54 +62,34 @@ export const register: Register = on => {
     return next(e)
   })
 
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+  on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
+    const { Box, Text } = $.ui.resolve(e)
     const list = await read($, plans)
-    if (e.props.hasSurvey || list === 'missing') return next(e)
 
-    const { Box, Button, Text } = $.ui.resolve(e)
+    if (list === 'missing') return <Text dimColor>No project-memory/project-memory-status.md here.</Text>
     if (list === 'unknown-format') {
       return (
-        <Box>
-          <Text color="warning">
-            📋 project-memory-status.md table format not recognised — update the plan-status mod or
-            run node .claude/hooks/project-memory-status.mjs --regenerate
-          </Text>
-        </Box>
+        <Text color="warning">
+          project-memory-status.md table format not recognised — update the plan-status mod or run node
+          .claude/hooks/project-memory-status.mjs --regenerate
+        </Text>
       )
     }
-    if (!(await read($, isShown))) {
-      return (
-        <Box>
-          <Text>📋 </Text>
-          <Button key="toggle" label={`plans ${list.length}`} plain dimColor onPress={() => update($, isShown, () => true)} />
-        </Box>
-      )
-    }
-    const hide = () => update($, isShown, () => false)
+    if (list.length === 0) return <Text dimColor>No live plans</Text>
 
-    if (list.length === 0) {
-      return (
-        <Box>
-          <Text dimColor>📋 No live plans</Text>
-        </Box>
-      )
-    }
-
-    const room = Math.max(1, e.props.maxRows - 2)
     return (
       <Box flexDirection="column">
-        <Box>
-          <Text bold>📋 {list.length} live plan(s) — oldest first </Text>
-          <Button key="toggle" label="Hide" plain dimColor onPress={hide} />
-        </Box>
-        {list.slice(0, room).map(p => (
-          <Text>
-            {'  '}
-            {p.module} · {p.plan} · <Text color="warning">{p.status}</Text>
-            {p.detail ? ` · ${p.detail}` : ''} <Text dimColor>{p.updated}</Text>
-          </Text>
+        <Text bold>{list.length} live plan(s) — oldest first</Text>
+        {list.map(p => (
+          <Box flexDirection="column" marginTop={1}>
+            <Text>{p.module}</Text>
+            <Text dimColor>{p.plan}</Text>
+            <Text>
+              <Text color="warning">{p.status}</Text>
+              {p.detail ? ` · ${p.detail}` : ''} <Text dimColor>{p.updated}</Text>
+            </Text>
+          </Box>
         ))}
-        {list.length > room && <Text dimColor>  … {list.length - room} more</Text>}
       </Box>
     )
   })

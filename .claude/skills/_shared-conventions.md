@@ -6,7 +6,7 @@ nothing here overrides a skill's own explicit instruction.
 
 ## Question pattern
 
-Every question a discussion skill asks goes through the `AskUserQuestion` tool — never a
+Every question Claude asks — in a discussion skill or anywhere else — goes through the `AskUserQuestion` tool — never a
 plain-text statement waiting for a nod, and never gated behind a rejection first. The same holds
 for a decision left in a handoff's **You now** (see **Handoff** below).
 
@@ -26,9 +26,6 @@ for a decision left in a handoff's **You now** (see **Handoff** below).
   the pick as the steer.
 - A second `Re-infer` on the same question means inference is not the bottleneck: name the
   fact you are missing in one line and ask for it, instead of guessing a third set.
-
-Leave `Re-infer` out only when the options already cover every outcome (apply or don't, one
-commit or two) — a fresh guess cannot add a branch that does not exist.
 
 If `AskUserQuestion` is unavailable in the current environment, fall back to listing the
 same options, `Re-infer` included, as numbered plain text and asking the user to pick one or
@@ -91,7 +88,7 @@ only when something is still pending, what is the user's to do and what comes af
   - **Yes, a choice** — which name, which approach, one commit or two, supply a reference file or
     go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn:
     recommended option first, marked "(Recommended)", then only the real alternatives, then
-    `Re-infer` unless the options already cover every outcome (see **Question pattern**) — 2–4
+    `Re-infer` (see **Question pattern**) — 3–4
     options in all, never padded. Several independent choices go in one call, up to 4 questions.
   - **No, an action only the user can do** — run a `.sql`, test the change, drop a
     file into `references/`, review a file. A plain line: name the action and what to report back.

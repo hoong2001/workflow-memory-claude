@@ -57,7 +57,7 @@ grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
 Across every module at once → `project-memory/project-memory-status.md`, which lists every plan
 not `Done` and is rebuilt by a hook on each write to a plan (derived view, never edited; the
 plans win on any disagreement). The `plan-status` mod (`.claude/skills/plan-status/`) shows the
-same rows above the prompt from session start, collapsible — Claude Code loads it from the
+same rows in a pane, hidden at session start until shown (`/plan-status show`) — Claude Code loads it from the
 project's skills folder as a plugin, so it travels with the project and needs no install.
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, and its `## Tasks` table (if it has one) says which task is next —
@@ -125,6 +125,10 @@ whether the work is closed, then ends with one of two shapes:
   Judge each You now: a choice between options is asked through `AskUserQuestion` in the same
   turn, never left for the user to type; a manual action (run a `.sql`, test, supply a
   reference file) stays a plain line.
+  **Every `AskUserQuestion`, anywhere, ends with a `Re-infer` option** — recommended + 2
+  alternatives + `Re-infer` (the tool caps a question at 4). Picking it re-asks only that
+  question with fresh options; every other answer in the same call stays final. Full rule:
+  **Question pattern** in `.claude/skills/_shared-conventions.md`.
 
 Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This
 applies in every branch and step above, including work that runs without a skill. The closed test
