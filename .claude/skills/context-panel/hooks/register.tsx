@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { ContextBreakdownDetail, EngineInterface, Register } from 'claude-code'
+import type { ContextBreakdownDetail, EngineInterface, Register, RenderNode } from 'claude-code'
 
 import type { Breakdown, Snapshot } from '../types'
 
@@ -15,6 +15,18 @@ export const fmt = (n: number) =>
 export const pct = (n: number, of: number) => {
   const p = of > 0 ? (n / of) * 100 : 0
   return p >= 10 ? `${Math.round(p)}%` : p >= 0.1 ? `${+p.toFixed(1)}%` : '<0.1%'
+}
+
+// /context's grid: `cols`-wide body, one glyph + one space per cell, rows enough for ~100 cells (≈1% each)
+export function gridRows(b: Pick<Breakdown, 'categories' | 'rawMaxTokens'>, cols: number) {
+  const perRow = Math.max(5, Math.floor((cols + 1) / 2))
+  const bar = barCells(b, perRow * Math.ceil(100 / perRow))
+  const cells: { glyph: string; color?: string }[] = [
+    ...bar.used.flatMap(x => Array.from({ length: x.n }, () => ({ glyph: '█', color: x.c.color }))),
+    ...Array.from({ length: bar.free }, () => ({ glyph: '░' })),
+    ...Array.from({ length: bar.buffer?.n ?? 0 }, () => ({ glyph: '█' })),
+  ]
+  return Array.from({ length: Math.ceil(cells.length / perRow) }, (_, i) => cells.slice(i * perRow, (i + 1) * perRow))
 }
 
 // Cells of a `width`-wide bar per category: every used one gets at least one, free space takes the rest.
@@ -95,20 +107,20 @@ export const register: Register = on => {
     const open = await read($, sections)
 
     const header = (
-      <Box justifyContent="space-between">
-        <Text>
-          <Text color="claude">◆ </Text>
-          <Text bold>context</Text>
-        </Text>
-        <Box>
-          {b && (
-            <Text dimColor>
-              {fmt(b.totalTokens)} of {fmt(b.rawMaxTokens)}
-              {b.isAutoCompactEnabled && b.autoCompactThreshold ? ` · compacts at ${fmt(b.autoCompactThreshold)}` : ''}{' '}
-            </Text>
-          )}
+      <Box flexDirection="column">
+        <Box columnGap={1}>
+          <Text>
+            <Text color="claude">◆ </Text>
+            <Text bold>context</Text>
+          </Text>
           <Button key="refresh" label="↻" plain dimColor onPress={() => refresh($, 'full')} />
         </Box>
+        {b && (
+          <Text dimColor>
+            {fmt(b.totalTokens)} of {fmt(b.rawMaxTokens)} ({pct(b.totalTokens, b.rawMaxTokens)})
+            {b.isAutoCompactEnabled && b.autoCompactThreshold ? ` · compacts at ${fmt(b.autoCompactThreshold)}` : ''}
+          </Text>
+        )}
       </Box>
     )
 
@@ -122,7 +134,9 @@ export const register: Register = on => {
     }
 
     const max = b.rawMaxTokens
-    const bar = barCells(b, Math.max(10, e.props.bodyColumns))
+    const bar = barCells(b, 1) // only the category order and buffer split; the grid sizes itself
+    // █ ░ are one cell wide on every terminal (the ⛁ family was not), so the grid takes the whole body
+    const grid = gridRows(b, e.props.bodyColumns)
     const free = b.categories.find(c => c.kind === 'free')
 
     const lists: { id: string; title: string; rows: [string, number][] }[] = [
@@ -138,56 +152,75 @@ export const register: Register = on => {
     const toggle = (id: string) =>
       update($, sections, list => (list.includes(id) ? list.filter(x => x !== id) : [...list, id]))
 
+    // one aligned table row: label fills and truncates, tokens and percent sit in fixed right-aligned columns
+    const row = (label: RenderNode, tokens: number, dim = false) => (
+      <Box>
+        <Box flexGrow={1} flexShrink={1}>
+          <Text wrap="truncate-end" dimColor={dim}>
+            {label}
+          </Text>
+        </Box>
+        <Box width={8} flexShrink={0} justifyContent="flex-end">
+          <Text bold={!dim} dimColor={dim}>
+            {fmt(tokens)}
+          </Text>
+        </Box>
+        <Box width={7} flexShrink={0} justifyContent="flex-end">
+          <Text dimColor>{pct(tokens, max)}</Text>
+        </Box>
+      </Box>
+    )
+
     return (
       <Box flexDirection="column">
         {header}
-        <Text>
-          {bar.used.map(x => (
-            <Text color={x.c.color}>{'█'.repeat(x.n)}</Text>
-          ))}
-          <Text dimColor>{'░'.repeat(bar.free)}</Text>
-          {bar.buffer && <Text color="inactive">{'█'.repeat(bar.buffer.n)}</Text>}
-        </Text>
-        <Box flexWrap="wrap" columnGap={3}>
-          {bar.used.map(({ c }) => (
-            <Text>
-              <Text color={c.color}>■</Text> {c.name.toLowerCase()} <Text bold>{fmt(c.tokens)}</Text>{' '}
-              <Text dimColor>{pct(c.tokens, max)}</Text>
-            </Text>
-          ))}
-        </Box>
-        <Box flexWrap="wrap" columnGap={3}>
-          {free && (
-            <Text dimColor>
-              — {free.name.toLowerCase()} <Text bold>{fmt(free.tokens)}</Text>
-            </Text>
-          )}
-          {bar.buffer && (
-            <Text>
-              <Text color="inactive">█</Text> <Text dimColor>{bar.buffer.c.name.toLowerCase()}</Text>{' '}
-              <Text bold>{fmt(bar.buffer.c.tokens)}</Text>
-            </Text>
-          )}
-          {lists.map(l => (
-            <Button key={`sec-${l.id}`} plain dimColor onPress={() => toggle(l.id)}>
-              {open.includes(l.id) ? '▾' : '▸'} {l.title}
-            </Button>
-          ))}
-        </Box>
-        {lists
-          .filter(l => open.includes(l.id))
-          .map(l => (
-            <Box flexDirection="column" marginTop={1}>
-              <Text bold>{l.title}</Text>
-              <Box flexWrap="wrap" columnGap={3}>
-                {l.rows.map(([name, tokens]) => (
-                  <Text>
-                    {name} <Text dimColor>{fmt(tokens)}</Text>
-                  </Text>
-                ))}
-              </Box>
+        <Box flexDirection="column" marginTop={1}>
+          {grid.map(cells => (
+            <Box justifyContent="center">
+              <Text>
+                {cells.map((x, i) => {
+                  const cell = i < cells.length - 1 ? `${x.glyph} ` : x.glyph // no trailing space: a row is 2n-1 wide
+                  return x.color ? <Text color={x.color}>{cell}</Text> : <Text dimColor>{cell}</Text>
+                })}
+              </Text>
             </Box>
           ))}
+        </Box>
+        <Box flexDirection="column" marginTop={1}>
+          {bar.used.map(({ c }) =>
+            row(
+              <Text>
+                <Text color={c.color}>█</Text> {c.name.toLowerCase()}
+              </Text>,
+              c.tokens,
+            ),
+          )}
+          {free && row(`░ ${free.name.toLowerCase()}`, free.tokens, true)}
+          {bar.buffer &&
+            row(
+              <Text dimColor>
+                █ {bar.buffer.c.name.toLowerCase()}
+              </Text>,
+              bar.buffer.c.tokens,
+              true,
+            )}
+        </Box>
+        {lists.length > 0 && (
+          <Box flexDirection="column" marginTop={1}>
+            {lists.map(l => (
+              <Box flexDirection="column">
+                <Button key={`sec-${l.id}`} plain dimColor onPress={() => toggle(l.id)}>
+                  {open.includes(l.id) ? '▾' : '▸'} {l.title}
+                </Button>
+                {open.includes(l.id) && (
+                  <Box flexDirection="column" paddingLeft={2}>
+                    {l.rows.map(([name, tokens]) => row(name, tokens, true))}
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </Box>
+        )}
       </Box>
     )
   })

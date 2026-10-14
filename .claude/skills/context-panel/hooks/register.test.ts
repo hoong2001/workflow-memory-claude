@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { barCells, fmt, pct } from './register'
+import { barCells, fmt, gridRows, pct } from './register'
 
 test('fmt and pct match /context', () => {
   expect(fmt(595)).toBe('595')
@@ -29,6 +29,52 @@ test('barCells fills the width, tiny categories still show, buffer last', () => 
   expect(bar.used.map(x => x.n)).toEqual([1, 8])
   expect(bar.buffer?.n).toBe(2)
   expect(bar.free).toBe(9)
+})
+
+test('gridRows fills the given width in █ ░ cells, buffer last', () => {
+  const cat = (name: string, tokens: number, kind: string) => ({ name, tokens, kind, color: 'text', isDeferred: false })
+  const rows = gridRows(
+    { rawMaxTokens: 1000, categories: [cat('System', 1, 'used'), cat('Messages', 300, 'used'), cat('Autocompact buffer', 50, 'buffer'), cat('Free space', 649, 'free')] },
+    39,
+  )
+  expect(rows.map(r => r.length)).toEqual([20, 20, 20, 20, 20])
+  const glyphs = rows.flat().map(x => x.glyph).join('')
+  expect(glyphs.startsWith('██')).toBe(true)
+  expect(glyphs.endsWith('░█████')).toBe(true)
+  expect(rows[0][0].color).toBe('text') // used cells carry their color; free and buffer are drawn dim
+})
+
+test('the pane draws each category as an aligned row, and an opened section lists its rows', async ($, on) => {
+  const cat = (name: string, tokens: number, kind: string) => ({ name, tokens, kind, color: 'text', isDeferred: false })
+  const breakdown = {
+    categories: [cat('Messages', 40000, 'used'), cat('Autocompact buffer', 33000, 'buffer'), cat('Free space', 127000, 'free')],
+    totalTokens: 40000,
+    rawMaxTokens: 200000,
+    percentage: 20,
+    gridRows: [],
+    model: 'm',
+    memoryFiles: [{ path: 'CLAUDE.md', type: 'Project', tokens: 1200 }],
+    mcpTools: [],
+    agents: [],
+    isAutoCompactEnabled: false,
+  }
+  on('session.usage', () => ({ value: { startedAt: 0, context: { window: 200000, breakdown }, rateLimits: [] } }))
+  on('ui.open', () => ({ value: { isPlaced: true } }))
+  await $.command.run({ command: 'context-panel', args: 'show' })
+
+  const pane = await $.ui.mount({
+    plugin: 'context-panel',
+    surface: 'terminal',
+    component: 'Pane',
+    requestId: 'context-panel',
+    props: { title: 'Context', isFocused: false, bodyColumns: 40, placement: 'dock', scroll: { offset: 0, bodyRows: 30 }, view: {} },
+  })
+  expect(await pane.find({ type: 'Text', text: '40k' })).toBeDefined()
+  expect(await pane.find({ type: 'Text', text: '20%' })).toBeDefined()
+  expect(await pane.find({ type: 'Text', text: /free space/ })).toBeDefined()
+  expect(await pane.find({ type: 'Text', text: 'CLAUDE.md' })).toBeUndefined()
+  await pane.press({ key: 'sec-memory' })
+  expect(await pane.find({ type: 'Text', text: 'CLAUDE.md' })).toBeDefined()
 })
 
 for (const surface of ['terminal', 'desktop'] as const) {
