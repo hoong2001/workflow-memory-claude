@@ -12,13 +12,27 @@ for a decision left in a handoff's **You now** (see **Handoff** below).
 
 1. **Infer, then ask** — work out your recommended answer from the plan, the module docs,
    the code, or the stack constraints, and use it as the first option, marked "(Recommended)".
-2. **3 more real alternatives + 1 custom** — the other 3 options must each be a genuine,
-   distinct direction with a one-line trade-off, never filler to pad the count.
-   `AskUserQuestion`'s built-in "Other" serves as the free-form custom choice.
+2. **2 more real alternatives** — each a genuine, distinct direction with a one-line
+   trade-off, never filler to pad the count.
+3. **`Re-infer` last** — the fourth option is labelled `Re-infer`, described as "None of these
+   fit — infer again from a different angle". `AskUserQuestion`'s built-in "Other" stays the
+   free-form custom choice.
+
+**When `Re-infer` is picked:**
+
+- Every other question answered in the same call is final — record it and never re-ask it.
+- Re-ask only the re-inferred question, in a new call, with options that repeat none of the
+  rejected ones. Change the angle, not the wording, and treat any note the user attached to
+  the pick as the steer.
+- A second `Re-infer` on the same question means inference is not the bottleneck: name the
+  fact you are missing in one line and ask for it, instead of guessing a third set.
+
+Leave `Re-infer` out only when the options already cover every outcome (apply or don't, one
+commit or two) — a fresh guess cannot add a branch that does not exist.
 
 If `AskUserQuestion` is unavailable in the current environment, fall back to listing the
-same 4 options as plain text and asking the user to pick one or state a custom answer —
-never revert to a bare statement waiting for a nod.
+same options, `Re-infer` included, as numbered plain text and asking the user to pick one or
+state a custom answer — never revert to a bare statement waiting for a nod.
 
 ## Interview conduct
 
@@ -76,8 +90,9 @@ only when something is still pending, what is the user's to do and what comes af
   pick between outcomes you can name?
   - **Yes, a choice** — which name, which approach, one commit or two, supply a reference file or
     go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn:
-    recommended option first, marked "(Recommended)", then only the real alternatives (2–4
-    options in all, never padded). Several independent choices go in one call, up to 4 questions.
+    recommended option first, marked "(Recommended)", then only the real alternatives, then
+    `Re-infer` unless the options already cover every outcome (see **Question pattern**) — 2–4
+    options in all, never padded. Several independent choices go in one call, up to 4 questions.
   - **No, an action only the user can do** — run a `.sql`, test the change, drop a
     file into `references/`, review a file. A plain line: name the action and what to report back.
   - **Both in one stop** — the action stays the line, and the choice goes to the tool.
