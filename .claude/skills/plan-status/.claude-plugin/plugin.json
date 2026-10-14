@@ -1,5 +1,6 @@
 {
   "name": "plan-status",
-  "description": "Shows the unfinished plans from project-memory/project-memory-status.md above the prompt, collapsible",
+  "version": "0.1.0",
+  "description": "Shows the unfinished plans from project-memory/project-memory-status.md above the prompt, with a Show/Hide button and /plan-status",
   "types": "./types/index.d.ts"
 }
