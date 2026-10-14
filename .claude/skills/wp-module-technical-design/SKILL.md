@@ -27,7 +27,7 @@ Before proposing anything new, search the real codebase for existing patterns to
 ## Step 3: Design the cut, one decision at a time
 
 Walk the layers top-down. For each design decision follow the **question pattern** (always via
-`AskUserQuestion`: recommended answer + 3 alternatives + 1 custom) in `.claude/skills/_shared-conventions.md`.
+`AskUserQuestion`: recommended answer + 2 alternatives + Re-infer + 1 custom) in `.claude/skills/_shared-conventions.md`.
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
@@ -77,7 +77,7 @@ five ceremonial slices. Say so and move on.
 ### Quiz the user before writing
 
 Walk the proposed breakdown with them using the **question pattern** (always via `AskUserQuestion`:
-recommended answer + 3 alternatives + 1 custom) in `.claude/skills/_shared-conventions.md`. Confirm
+recommended answer + 2 alternatives + Re-infer + 1 custom) in `.claude/skills/_shared-conventions.md`. Confirm
 granularity, the blocking edges, and anything to merge or split. Don't publish the table until it is
 agreed.
 
