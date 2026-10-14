@@ -11,7 +11,7 @@ declare module 'claude-code' {
     'plan-status': {
       // 'missing' = no project-memory/project-memory-status.md here: draw nothing
       plans: LivePlan[] | 'missing' | 'unknown-format'
-      isCollapsed: boolean
+      isShown: boolean
     }
   }
 }
