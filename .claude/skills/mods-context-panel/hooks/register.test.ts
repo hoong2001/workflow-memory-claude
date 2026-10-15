@@ -60,13 +60,13 @@ test('the pane draws each category as an aligned row, and an opened section list
   }
   on('session.usage', () => ({ value: { startedAt: 0, context: { window: 200000, breakdown }, rateLimits: [] } }))
   on('ui.open', () => ({ value: { isPlaced: true } }))
-  await $.command.run({ command: 'context-panel', args: 'show' })
+  await $.command.run({ command: 'mods-context-panel', args: 'show' })
 
   const pane = await $.ui.mount({
-    plugin: 'context-panel',
+    plugin: 'mods-context-panel',
     surface: 'terminal',
     component: 'Pane',
-    requestId: 'context-panel',
+    requestId: 'mods-context-panel',
     props: { title: 'Context', isFocused: false, bodyColumns: 40, placement: 'dock', scroll: { offset: 0, bodyRows: 30 }, view: {} },
   })
   expect(await pane.find({ type: 'Text', text: '40k' })).toBeDefined()
@@ -78,7 +78,7 @@ test('the pane draws each category as an aligned row, and an opened section list
 })
 
 for (const surface of ['terminal', 'desktop'] as const) {
-  test(`/context-panel show|hide opens and closes the pane, which draws the header on ${surface}`, async ($, on) => {
+  test(`/mods-context-panel show|hide opens and closes the pane, which draws the header on ${surface}`, async ($, on) => {
     const open = new Set<string>()
     on('session.usage', () => ({ value: { startedAt: 0, context: { window: 1e6 }, rateLimits: [] } }))
     on('ui.open', ($, e) => {
@@ -89,19 +89,19 @@ for (const surface of ['terminal', 'desktop'] as const) {
       open.delete(e.id)
       return { value: undefined }
     })
-    await $.command.run({ command: 'context-panel', args: 'show' })
-    expect(open.has('context-panel')).toBe(true)
+    await $.command.run({ command: 'mods-context-panel', args: 'show' })
+    expect(open.has('mods-context-panel')).toBe(true)
 
     const pane = await $.ui.mount({
-      plugin: 'context-panel',
+      plugin: 'mods-context-panel',
       surface,
       component: 'Pane',
-      requestId: 'context-panel',
+      requestId: 'mods-context-panel',
       props: { title: 'Context', isFocused: false, bodyColumns: 40, placement: 'dock', scroll: { offset: 0, bodyRows: 20 }, view: {} },
     })
     expect(await pane.find({ key: 'refresh' })).toBeDefined()
 
-    await $.command.run({ command: 'context-panel', args: 'hide' })
-    expect(open.has('context-panel')).toBe(false)
+    await $.command.run({ command: 'mods-context-panel', args: 'hide' })
+    expect(open.has('mods-context-panel')).toBe(false)
   })
 }

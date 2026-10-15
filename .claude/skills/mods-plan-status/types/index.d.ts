@@ -9,7 +9,7 @@ export type LivePlan = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'plan-status': {
+    'mods-plan-status': {
       // 'missing' = no project-memory/project-memory-status.md here: draw nothing
       plans: LivePlan[] | 'missing' | 'unknown-format'
       isShown: boolean

@@ -1,0 +1,6 @@
+{
+  "name": "mods-toggle-band",
+  "version": "0.2.0",
+  "description": "A band of toggle buttons above the prompt that show / hide the other mods' panes; /mods-toggle-band toggles the band",
+  "types": "./types/index.d.ts"
+}

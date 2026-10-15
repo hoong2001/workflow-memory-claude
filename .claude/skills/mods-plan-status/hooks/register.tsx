@@ -3,9 +3,9 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import { parseLivePlans } from './parse'
 
-const PANE = 'plan-status'
-const plans = atom({ plugin: 'plan-status', key: 'plans' } as const, 'missing')
-const isShown = atom({ plugin: 'plan-status', key: 'isShown' } as const, false) // hidden at session start until /plan-status show
+const PANE = 'mods-plan-status'
+const plans = atom({ plugin: 'mods-plan-status', key: 'plans' } as const, 'missing')
+const isShown = atom({ plugin: 'mods-plan-status', key: 'isShown' } as const, false) // hidden at session start until /mods-plan-status show
 
 // The file is rebuilt by the project's own PostToolUse hook (.claude/hooks/project-memory-status.mjs);
 // this mod only reads it, and only in the table format parse.ts knows.
@@ -27,7 +27,7 @@ async function setShown($: EngineInterface, shown: boolean) {
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
-      name: 'plan-status',
+      name: 'mods-plan-status',
       description: 'Show or hide the live plans pane',
       argumentHint: '[show|hide]',
     })
@@ -35,8 +35,8 @@ export const register: Register = on => {
     return next(e)
   })
 
-  // `show` / `hide` for the mod-panel buttons; no argument toggles
-  on('command.run', { command: 'plan-status' }, async ($, e) => {
+  // `show` / `hide` for the mods-toggle-band buttons; no argument toggles
+  on('command.run', { command: 'mods-plan-status' }, async ($, e) => {
     const arg = e.args.trim()
     const shown = arg === 'show' ? true : arg === 'hide' ? false : !(await read($, isShown))
     await setShown($, shown)
@@ -70,7 +70,7 @@ export const register: Register = on => {
     if (list === 'unknown-format') {
       return (
         <Text color="warning">
-          project-memory-status.md table format not recognised — update the plan-status mod or run node
+          project-memory-status.md table format not recognised — update the mods-plan-status mod or run node
           .claude/hooks/project-memory-status.mjs --regenerate
         </Text>
       )

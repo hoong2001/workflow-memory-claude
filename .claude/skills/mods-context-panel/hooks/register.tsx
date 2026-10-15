@@ -3,10 +3,10 @@ import type { ContextBreakdownDetail, EngineInterface, Register, RenderNode } fr
 
 import type { Breakdown, Snapshot } from '../types'
 
-const PANE = 'context-panel'
-const snap = atom({ plugin: 'context-panel', key: 'snap' } as const, null)
-const isShown = atom({ plugin: 'context-panel', key: 'isShown' } as const, false) // hidden at session start; the mod-panel toggle or /context-panel shows it
-const sections = atom({ plugin: 'context-panel', key: 'sections' } as const, [])
+const PANE = 'mods-context-panel'
+const snap = atom({ plugin: 'mods-context-panel', key: 'snap' } as const, null)
+const isShown = atom({ plugin: 'mods-context-panel', key: 'isShown' } as const, false) // hidden at session start; the mods-toggle-band toggle or /mods-context-panel shows it
+const sections = atom({ plugin: 'mods-context-panel', key: 'sections' } as const, [])
 
 export const fmt = (n: number) =>
   n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1000 ? `${+(n / 1000).toFixed(1)}k` : `${n}`
@@ -68,7 +68,7 @@ async function hide($: EngineInterface) {
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
-      name: 'context-panel',
+      name: 'mods-context-panel',
       description: 'Show or hide the live /context panel',
       argumentHint: '[show|hide]',
     })
@@ -77,8 +77,8 @@ export const register: Register = on => {
     return next(e)
   })
 
-  // `show` / `hide` for the mod-panel buttons; no argument toggles
-  on('command.run', { command: 'context-panel' }, async ($, e) => {
+  // `show` / `hide` for the mods-toggle-band buttons; no argument toggles
+  on('command.run', { command: 'mods-context-panel' }, async ($, e) => {
     const arg = e.args.trim()
     const shown = arg === 'show' ? true : arg === 'hide' ? false : !(await read($, isShown))
     if (!shown) {

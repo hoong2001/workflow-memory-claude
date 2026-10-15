@@ -56,8 +56,8 @@ grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
 
 Across every module at once → `project-memory/project-memory-status.md`, which lists every plan
 not `Done` and is rebuilt by a hook on each write to a plan (derived view, never edited; the
-plans win on any disagreement). The `plan-status` mod (`.claude/skills/plan-status/`) shows the
-same rows in a pane, hidden at session start until shown (`/plan-status show`) — Claude Code loads it from the
+plans win on any disagreement). The `mods-plan-status` mod (`.claude/skills/mods-plan-status/`) shows the
+same rows in a pane, hidden at session start until shown (`/mods-plan-status show`) — Claude Code loads it from the
 project's skills folder as a plugin, so it travels with the project and needs no install.
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, its `> **Resume:**` line (if any) says what was waiting on the user and what comes
