@@ -61,6 +61,8 @@ to match the `**Status**` line of the impl record you just wrote:
 
 If the impl record says `TODO left` or `Blocked`, the plan header says the same thing rather than
 `Done` — a plan closed on paper while work remains is the one lie this header exists to prevent.
+Setting `Done` also deletes the `> **Resume:**` line under it; any other status rewrites that line
+with this run's You now and Next.
 
 **Before writing `Done`, check the plan's `## Decisions & open items` table for leftover `☐` rows.**
 Each one is either a decision that was in fact made while building — write the answer + why into

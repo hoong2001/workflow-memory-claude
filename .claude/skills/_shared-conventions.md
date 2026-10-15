@@ -100,6 +100,8 @@ only when something is still pending, what is the user's to do and what comes af
   a reminder, never an action: a user-invoked skill stays user-invoked.
 - **Stopping blocked or mid-flight** still gets the block: Done says what landed, You now names
   the blocker the user must clear, Next says where work resumes.
+- **A plan is live → its `> **Resume:**` line takes You now and Next** in the same turn (see
+  **Status header → Resume line**). The reply scrolls away; the plan is what the next session reads.
 - **Not at every question.** The block closes a run or a task; a skill mid-interview just asks
   its question.
 - **Auto-triggered coding standards add none of their own.** `wp-repository-unitofwork-pattern`,
@@ -133,6 +135,24 @@ The line holds up to three fields, always in this order:
 > **Status:** Blocked · **Detail:** waiting on DBA for the view grant · **Updated:** 2026-09-07
 > **Status:** Done · **Updated:** 2026-09-07
 ```
+
+### Resume line — plans only
+
+A live plan carries a second line directly under the status line — the handoff's You now and
+Next, so a session that opens the plan weeks later knows what was waiting and what comes after:
+
+```markdown
+> **Status:** Building · **Detail:** 3/5 · **Updated:** 2026-10-15
+> **Resume:** You now — test task 3 on the order screen · Next — task 4, export to Excel
+```
+
+- **Written at every open handoff that touches a plan**, overwritten in the same edit as the status
+  line — never appended. Copy the handoff's You now and Next, shortened to one line; You now
+  `nothing` is written as `You now — nothing`.
+- **No Done slot.** What landed is already the `Detail` counter and the `☑` rows; a copy would drift.
+- **Deleted when the plan turns `Done`** — a closed plan has nothing to resume.
+- The hook copies the text after `Next —` into the Next column of
+  `project-memory/project-memory-status.md`, so keep `Next —` last on the line.
 
 ### Values — plans
 
@@ -183,5 +203,5 @@ A one-off task has no design step and no slicing, so it carries three values onl
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
   it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
   not in it. The `plan-status` mod (`.claude/skills/plan-status/`) reads its table to show the
-  live plans above the prompt — the table's shape is a versioned contract (`TABLE_FORMAT` in the
+  live plans in a pane — the table's shape is a versioned contract (`TABLE_FORMAT` in the
   hook, the same marker in the mod's `hooks/parse.ts`); change one, change both.

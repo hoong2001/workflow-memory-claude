@@ -60,7 +60,8 @@ plans win on any disagreement). The `plan-status` mod (`.claude/skills/plan-stat
 same rows in a pane, hidden at session start until shown (`/plan-status show`) — Claude Code loads it from the
 project's skills folder as a plugin, so it travels with the project and needs no install.
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
-stopped at, and its `## Tasks` table (if it has one) says which task is next —
+stopped at, its `> **Resume:**` line (if any) says what was waiting on the user and what comes
+next, and its `## Tasks` table (if it has one) says which task is next —
 and resume there rather than starting a fresh plan on top of it. A `## Tasks` table with no
 `Manager summary` column predates that column — add it and fill every row (rules:
 `/wp-module-technical-design` Guardrails) before resuming. Nothing unfinished, or every
@@ -131,6 +132,9 @@ whether the work is closed, then ends with one of two shapes:
   alternatives + `Re-infer` (the tool caps a question at 4). Picking it re-asks only that
   question with fresh options; every other answer in the same call stays final. Full rule:
   **Question pattern** in `.claude/skills/_shared-conventions.md`.
+  **An open handoff on a live plan also lands in the plan**: overwrite its `> **Resume:** You now — …
+  · Next — …` line under the status line (Done is already the `Detail` counter). Delete the line
+  when the plan turns `Done`. Rule: **Status header → Resume line** in `.claude/skills/_shared-conventions.md`.
 
 Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This
 applies in every branch and step above, including work that runs without a skill. The closed test

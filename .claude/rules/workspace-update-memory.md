@@ -24,7 +24,8 @@ its "Technical Design" and "Tasks" sections live inside this same plan file — 
 
 **Its status header must reflect reality before you walk away** — `Done` when finished,
 `Building` (`Detail: N/M`) when increments remain, `Blocked` (`Detail: <why>`) when it stopped on
-something external.
+something external. A plan still live keeps its `> **Resume:**` line (You now · Next) current; a
+`Done` plan has none.
 The act loop maintains it as you build (Step 2) and `/wp-module-save-implementation` closes it
 out. The point of the header is that a plan left mid-flight announces itself to the next session
 instead of hiding: a stale `Planned` on half-built work is worse than no header at all.

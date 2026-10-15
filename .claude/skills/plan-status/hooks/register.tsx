@@ -88,6 +88,7 @@ export const register: Register = on => {
               <Text color="warning">{p.status}</Text>
               {p.detail ? ` · ${p.detail}` : ''} <Text dimColor>{p.updated}</Text>
             </Text>
+            {p.next ? <Text>Next: {p.next}</Text> : null}
           </Box>
         ))}
       </Box>

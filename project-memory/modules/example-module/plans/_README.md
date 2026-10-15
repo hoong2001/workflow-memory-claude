@@ -36,6 +36,10 @@ stopped at — not merely that it stopped. One `grep` reads the whole folder:
 grep -H "^> \*\*Status:\*\*" plans/[!_]*.md
 ```
 
+While a plan is live, a `> **Resume:** You now — … · Next — …` line sits directly under the status
+line, rewritten at every handoff and deleted at `Done` (rule: `.claude/skills/_shared-conventions.md`
+→ Status header → Resume line).
+
 `[!_]` skips this `_README.md`, whose example header above would otherwise read as live work.
 Every module's plans not `Done`, in one table: `project-memory/project-memory-status.md` (hook-generated).
 
