@@ -57,6 +57,7 @@
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
 - Credential hygiene (hook + `/wp-secret-scan`) → `.claude/rules/workspace-no-secrets.md`; the hook itself is `.claude/hooks/block-secrets.mjs`, wired in `.claude/settings.json`
 - `Web.config` / `App.config` connection-string format (hook + `/wp-connstr-check`) → the hook is `.claude/hooks/connstr-check.mjs`, wired in `.claude/settings.json`; the skill sweeps config files the hook never saw
+- Template update reminder → `.claude/hooks/template-update-check.mjs`, a `SessionStart` hook wired in `.claude/settings.json`: compares this project's `SYNC-MANIFEST.md` version with the master's on GitHub and, when the master is newer, says so and names `/wp-update-from-master`
 
 ## Behavioral Rules (auto-applied every turn)
 <!-- @import loads every turn → ongoing token cost. Only mount rules that must always be on;

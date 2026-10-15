@@ -199,7 +199,8 @@ rule file whose own header says it is read-on-demand (e.g. `workspace-update-mem
 `workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
 make it always-on and defeat its purpose. Read the file's first lines before adding.
 
-Special case: `.claude/settings.json`. Merge ONLY the three template hook entries — the
+Special case: `.claude/settings.json`. Merge ONLY the four template hook entries — the
+update-check `SessionStart` entry (`template-update-check.mjs`) into `hooks.SessionStart`, the
 credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
 (`project-memory-status.mjs`) and connection-string (`connstr-check.mjs`) `PostToolUse` entries
 into `hooks.PostToolUse` — and delete any leftover `extraKnownMarketplaces.workflow-memory-local` entry and

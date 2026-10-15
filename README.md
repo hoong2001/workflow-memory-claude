@@ -37,7 +37,8 @@ project-memory/                        the project's own memory — plain folder
 ├── hooks/
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
 │   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured)
-│   └── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
+│   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
+│   └── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
 ├── rules/                             behavioral rules (@imported = always-on)
