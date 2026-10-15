@@ -37,7 +37,7 @@
  *
  * Fails OPEN: any error exits 0. A broken status view must never block a write.
  *
- * The table is a contract: the plan-status mod (.claude/skills/plan-status/hooks/parse.ts)
+ * The table is a contract: the mods-plan-status mod (.claude/skills/mods-plan-status/hooks/parse.ts)
  * reads it to show live plans in a pane. Its shape is fixed by TABLE_FORMAT:
  *   <!-- TABLE_FORMAT -->
  *   | Module | Plan | Status | Detail | Next | Updated |   (Plan as [file](link), `|` escaped as `\|`)

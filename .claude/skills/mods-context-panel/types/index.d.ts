@@ -30,6 +30,6 @@ export type Snapshot = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'context-panel': { snap: Snapshot | null; isShown: boolean; sections: string[] }
+    'mods-context-panel': { snap: Snapshot | null; isShown: boolean; sections: string[] }
   }
 }

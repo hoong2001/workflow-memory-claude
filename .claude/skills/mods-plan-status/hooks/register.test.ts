@@ -13,7 +13,7 @@ const md = [
 ].join('\n')
 
 for (const surface of ['terminal', 'desktop'] as const) {
-  test(`pane starts hidden, and /plan-status show|hide opens it with the plans and closes it on ${surface}`, async ($, on) => {
+  test(`pane starts hidden, and /mods-plan-status show|hide opens it with the plans and closes it on ${surface}`, async ($, on) => {
     const open = new Set<string>()
     on('session.root', () => ({ value: '/proj' }))
     on('fs.read', () => ({ value: md }))
@@ -27,15 +27,15 @@ for (const surface of ['terminal', 'desktop'] as const) {
     })
     on('classic.SessionStart', () => ({}))
     await $.classic.SessionStart({ source: 'clear' }) // runs setShown, as /clear does in a session
-    expect(open.has('plan-status')).toBe(false)
-    await $.command.run({ command: 'plan-status', args: 'show' })
-    expect(open.has('plan-status')).toBe(true)
+    expect(open.has('mods-plan-status')).toBe(false)
+    await $.command.run({ command: 'mods-plan-status', args: 'show' })
+    expect(open.has('mods-plan-status')).toBe(true)
 
     const pane = await $.ui.mount({
-      plugin: 'plan-status',
+      plugin: 'mods-plan-status',
       surface,
       component: 'Pane',
-      requestId: 'plan-status',
+      requestId: 'mods-plan-status',
       props: {
         title: 'Plans',
         isFocused: false,
@@ -49,9 +49,9 @@ for (const surface of ['terminal', 'desktop'] as const) {
     expect(await pane.find({ text: 'orders-export.md' })).toBeDefined()
     expect(await pane.find({ text: /Next: task 3/ })).toBeDefined()
 
-    await $.command.run({ command: 'plan-status', args: 'hide' })
-    expect(open.has('plan-status')).toBe(false)
-    await $.command.run({ command: 'plan-status', args: 'show' })
-    expect(open.has('plan-status')).toBe(true)
+    await $.command.run({ command: 'mods-plan-status', args: 'hide' })
+    expect(open.has('mods-plan-status')).toBe(false)
+    await $.command.run({ command: 'mods-plan-status', args: 'show' })
+    expect(open.has('mods-plan-status')).toBe(true)
   })
 }

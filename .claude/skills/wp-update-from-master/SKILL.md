@@ -208,7 +208,7 @@ into `hooks.PostToolUse` — and delete any leftover `extraKnownMarketplaces.wor
 project's own hooks and permissions are wiped. After merging, run
 `node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
 `project-memory/project-memory-status.md` is built from its own plans — and carries the
-`TABLE_FORMAT` marker the `plan-status` mod requires; without
+`TABLE_FORMAT` marker the `mods-plan-status` mod requires; without
 the rerun the mod shows a format warning until the next plan write. A target synced at 3.1.0
 carries the old PowerShell entry — replace it rather than adding a second one beside it.
 
