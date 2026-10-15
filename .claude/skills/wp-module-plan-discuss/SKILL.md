@@ -5,14 +5,14 @@ description: Talk a module-level requirement into a work-ready plan document - t
 
 <what-to-do>
 
-Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → AskUserQuestion (recommended + 2 alternatives + Re-infer + 1 custom) → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
+Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → AskUserQuestion (recommended + 2 alternatives + Re-infer, then the tool's own Other) → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
 
 **Entry requirement — no goal, no session.** The user must state a purpose / goal / requirement before this skill does anything. If it is missing, ask for it in one line and wait. Do not guess a goal on the user's behalf.
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Question pattern** (always via `AskUserQuestion`: recommended answer + 2 alternatives + Re-infer + 1
-custom) and **interview conduct** (one question at a time; explore before asking): follow
+**Question pattern** (always via `AskUserQuestion`: recommended answer + 2 alternatives + Re-infer, then the
+tool's own Other) and **interview conduct** (one question at a time; explore before asking): follow
 `.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.

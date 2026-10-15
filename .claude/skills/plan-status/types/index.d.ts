@@ -3,6 +3,7 @@ export type LivePlan = {
   plan: string
   status: string
   detail: string
+  next: string
   updated: string
 }
 

@@ -83,8 +83,9 @@ of duplicating them.
    - Recent work per module — latest files under that module's `impl/` and `plans/`;
      `git log` / `git status` for what changed this session.
    - **A module's blocker and next step are usually already written down**: the live plan's status
-     header (`Blocked` + its `Detail` reason, `Building` + its `N/M` — every module's at once in
-     `project-memory/project-memory-status.md`) and the `☐` rows in its `## Decisions & open items`
+     header (`Blocked` + its `Detail` reason, `Building` + its `N/M`), its `> **Resume:**` line
+     (`You now — …` · `Next — …`, the last handoff — every module's Next at once in
+     `project-memory/project-memory-status.md`), and the `☐` rows in its `## Decisions & open items`
      table. Read them before inferring anything — an open `☐` IS a pending item, stated by the
      person who parked it.
 2. **Auto-draft both levels and show them for a yes** before writing anything:

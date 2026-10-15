@@ -30,7 +30,7 @@ project-memory/                        the project's own memory — plain folder
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed scripts generated
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
     ├── <name>-flow.md                 handover map: flow + called files/methods (not change history)
-    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Status (Planned / Designed / Building / Blocked / Done) · Detail (N/M counter or block reason, when needed) · Updated — so one grep finds unfinished work, then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
+    ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Status (Planned / Designed / Building / Blocked / Done) · Detail (N/M counter or block reason, when needed) · Updated — so one grep finds unfinished work; while live, a second line `Resume` carries the last handoff's You now · Next; then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
 .claude/                               tool wiring — gitignore with care, see below
 ├── settings.json                      hook wiring (commit it — the credential guard and the status view live here)
@@ -70,7 +70,9 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-tfvc/           use tf.exe in a TFVC workspace the way git is used in a git repo
     ├── wp-packageref-to-packages-config/  convert a .NET Framework project from PackageReference back to packages.config
     ├── wp-task-record/  one-off task (report run once, data patch) → its own folder under project-memory/tasks/
-    ├── plan-status/       a mod, not a skill: live plans above the prompt, loaded from here with no install
+    ├── plan-status/       a mod, not a skill: live plans in a pane (/plan-status show|hide), loaded from here with no install
+    ├── context-panel/     a mod: everything /context shows, live in a pane (/context-panel show|hide)
+    ├── mod-panel/         a mod: a band of toggle buttons above the prompt that show / hide the other mods' panes
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
     └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 ```
@@ -133,13 +135,16 @@ Defined in `.claude/rules/workspace-workflow.md` (always-on):
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 
-Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
+Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — closes with a handoff. Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (what changed + files) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **⏭ Next** (the next step or skill). When a plan is live, You now and Next are also written into its `> **Resume:**` line, so the next session reads them from the plan. No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
 ## Mods
 
-One mod: `plan-status`, in `.claude/skills/plan-status/`. Claude Code loads a plugin from the skills
-folder automatically (origin `@skills-dir`), so it travels with the project and needs no install. Never
-list it in a marketplace too: a skills-dir plugin whose name matches an installed one is not loaded.
+Three mods, each in `.claude/skills/`: `plan-status/` (live plans in a pane, hidden at session start
+until `/plan-status show`), `context-panel/` (everything `/context` shows, live in a pane), and
+`mod-panel/` (a band of toggle buttons above the prompt that shows / hides the other two panes).
+Claude Code loads a plugin from the skills folder automatically (origin `@skills-dir`), so they travel
+with the project and need no install. Never list one in a marketplace too: a skills-dir plugin whose
+name matches an installed one is not loaded.
 
 ## Portable vs per-project
 
