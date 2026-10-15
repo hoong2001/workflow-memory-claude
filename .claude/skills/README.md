@@ -106,6 +106,8 @@ no implementation to record, so the whole memory path is this one skill.
 > TFVC needs no mod either. `wp-tfvc` teaches Claude to drive `tf.exe` in a TFVC workspace the way it drives git in a git repo — orienting on the branch tree before every request, the git → tf command map, and the traps that cause real damage: `/noprompt` on every command that accepts it (without it `tf` opens a GUI dialog and the shell hangs), check-in by explicit path only, detected adds/deletes that must be pended, and conflicts never resolved by picking a side blindly.
 >
 > So does the connection-string format — `.claude/hooks/connstr-check.mjs` runs as a `PostToolUse` hook on every write to a `Web.config` / `App.config` (and their transforms) and rejects an MSSQL `connectionString` that departs from the house template, naming the corrected string. `node .claude/hooks/connstr-check.mjs --fix <root>` lists the fixes for existing files; add `--write` to apply them. `wp-connstr-check` wraps that sweep for files the hook never saw — it only fires on Claude's Write / Edit / MultiEdit, not on Visual Studio or shell edits.
+>
+> Template updates need no skill to be noticed — `.claude/hooks/template-update-check.mjs` runs as a `SessionStart` hook, compares the project's `SYNC-MANIFEST.md` version with the master's on GitHub, and says `Workflow template update available: X → Y` when the master is newer. Applying the update is still `wp-update-from-master`, on the user's go.
 
 ### Standing · Cross-project memory (Obsidian)
 

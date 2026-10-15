@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `11.3.0` |
+| Version | `11.4.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -34,7 +34,7 @@ master; git is the default source.
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
 | `.claude/skills/` | Workflow skills (whole folder) — includes three mods, not skills, loaded by Claude Code as plugins from the skills folder (origin `@skills-dir`) with no install: `plan-status/` (live-plan pane), `context-panel/` (live `/context` pane) — both hidden at session start, `/<name> show|hide` — and `mod-panel/` (the toggle row above the prompt for those two). Never also list one in a marketplace — a same-named installed plugin stops the skills-dir copy loading |
-| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view (plus an opt-in mirror into a cross-project vault board when the machine has a vault path configured), and `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check (whole folder) |
+| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view (plus an opt-in mirror into a cross-project vault board when the machine has a vault path configured), `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check, and `template-update-check.mjs`, the session-start reminder when the master has a newer version (whole folder) |
 | `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step — always `/t:Rebuild` (whole folder) |
 | `project-memory/modules/example-module/` | Module scaffold template |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
@@ -70,7 +70,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries. Delete any `extraKnownMarketplaces.workflow-memory-local` entry and any `enabledPlugins` key ending `@workflow-memory-local` left by v6.1.0–v9.0.0 | Every other hook, permission, and setting the project has added |
+| `.claude/settings.json` | The `SessionStart` → `template-update-check.mjs`, `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries. Delete any `extraKnownMarketplaces.workflow-memory-local` entry and any `enabledPlugins` key ending `@workflow-memory-local` left by v6.1.0–v9.0.0 | Every other hook, permission, and setting the project has added |
 | Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, and the `.claude/skills/*/.claude-plugin/types/` line (the engine-generated types of the plan-status mod) | Every other ignore rule the project has |
 
 > **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
@@ -82,7 +82,9 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 > `${CLAUDE_PROJECT_DIR}/.claude/hooks/project-memory-status.mjs` into `hooks.PostToolUse`, then
 > run it once with `--regenerate` so the status view exists before the first plan write. Add the
 > second `PostToolUse` entry too, `matcher` `Write|Edit|MultiEdit`, running
-> `${CLAUDE_PROJECT_DIR}/.claude/hooks/connstr-check.mjs`. If the
+> `${CLAUDE_PROJECT_DIR}/.claude/hooks/connstr-check.mjs`. Add the `SessionStart` entry, `matcher`
+> `startup`, running `${CLAUDE_PROJECT_DIR}/.claude/hooks/template-update-check.mjs`, into
+> `hooks.SessionStart`. If the
 > target has no `.claude/settings.json` at all, copying the master's file wholesale is safe.
 >
 > A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
