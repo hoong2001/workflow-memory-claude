@@ -114,7 +114,7 @@ That block is the Done slot of the handoff (the **Handoff** section of
   line), or `nothing`; **⏭ Next** = the next live plan in this module if the grep of status headers
   finds one, otherwise "on your yes, add the proposed line to the overview".
 - **Closed** when neither applies — a localized fix with no other live plan ends with
-  `🏁 Closed — nothing pending.`
+  `| 🏁 Closed | nothing pending |`
 
 ## Notes
 

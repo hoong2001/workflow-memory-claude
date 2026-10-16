@@ -66,7 +66,7 @@ Re-run the dry run from step 1. Only `MANUAL` / `SKIP` / `bin\`-`obj\` lines may
 
 The masked diff report is Done. `MANUAL` entries left → open: the You now is fixing those entries
 by hand, the Next is re-running this skill. Everything applied or already clean →
-`🏁 Closed — nothing pending.`
+`| 🏁 Closed | nothing pending |`
 
 ## Boundaries
 
