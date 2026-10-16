@@ -25,6 +25,7 @@ project-memory/                        the project's own memory — plain folder
 ├── overview/
 │   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
 │   └── references/                    system-wide reference material you provide (docs/images/links)
+├── docs/                              shared files several modules lean on but none owns (read on demand)
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed scripts generated

@@ -9,6 +9,8 @@ exported PDFs, sample files, API dumps, external links, etc. (`.sql` table schem
   (may be large or binary, so never `@import` them).
 - Drop files straight in, images included. Keep original filenames.
 - System-wide references (not tied to one module) go in `project-memory/overview/references/` instead.
+- Files several modules share but none owns go in `project-memory/docs/`; list the ones this module
+  leans on under External links below (relative path), never a copy.
 
 ## External links
 A file can't be a URL — paste external links here:
