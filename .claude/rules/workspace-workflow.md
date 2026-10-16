@@ -14,7 +14,7 @@ It can arrive in any form:
 - **Stated directly** → take it; if you already know the target, name the module + files to skip discovery.
 - **Any module-level goal, clear or fuzzy** → `/wp-module-plan-discuss` (state the goal first; lands in `plans/`).
 - **A whole-system spec is needed but doesn't exist yet** → `/wp-system-spec-discuss` (system-level only: discuss the system spec into existence → `project-memory/overview/references/`, then run the bootstrap). Module-level requirements never need a spec — talk them straight into a work doc in `plans/`.
-- **Supporting references** (docs, images, external links) → drop into the matching `references/` folder: system-wide → `project-memory/overview/references/`; module-specific → that module's `references/`. Consulted on demand, never auto-loaded.
+- **Supporting references** (docs, images, external links) → drop into the matching `references/` folder: system-wide → `project-memory/overview/references/`; shared by several modules but owned by none → `project-memory/docs/`; module-specific → that module's `references/`. Consulted on demand, never auto-loaded.
 
 > Routing rule of thumb: **material received → `references/` (+ ANY `.sql` → `schema/`, whoever wrote it — provided tables/views/indexes and generated seed/test scripts alike); work doc talked out → `plans/`; after the work is done, durable truth settles into `MODULE.md` / `<name>-flow.md`.** There is no module-level `specs/` folder.
 

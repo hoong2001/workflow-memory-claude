@@ -12,7 +12,7 @@ be copied; this skill is the executor, not the policy.
 **Hard safety rules (non-negotiable):**
 - NEVER copy the whole `project-memory/` tree, the whole `.claude/` tree, or the repo root wholesale.
 - NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
-- NEVER touch real module folders under `project-memory/modules/` (anything other than `example-module`) or `project-memory/overview/`.
+- NEVER touch real module folders under `project-memory/modules/` (anything other than `example-module`), `project-memory/overview/`, or any file in `project-memory/docs/` other than its `_README.md`.
 - NEVER move or rename a target's real modules, overview, or architecture doc — including migrating them out of a pre-v2.0.0 `.claude/`. Sync creates the empty `project-memory/` skeleton and REPORTS what is left behind; the user migrates by hand (manifest 🚚 section).
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
@@ -152,6 +152,8 @@ Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
 Copy-Item "$master\.claude\hooks\*"  "$target\.claude\hooks\"  -Force
 Copy-Item "$master\.claude\scripts\*" "$target\.claude\scripts\" -Force
 Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
+New-Item -ItemType Directory -Force "$target\project-memory\docs" | Out-Null
+Copy-Item "$master\project-memory\docs\_README.md" "$target\project-memory\docs\" -Force
 Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
 ```
 

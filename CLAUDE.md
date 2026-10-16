@@ -79,7 +79,8 @@ Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `p
 (layer 2, read on demand — `MODULE.md` AND `<name>-flow.md`, always both) → governance layer per
 Common Entry Points above (+ `.claude/skills/` project-bound skills). Beside the layers, not inside
 them: `project-memory/tasks/` holds one-off work that belongs to no module — self-contained folders,
-never auto-loaded, not committed to git.
+never auto-loaded, not committed to git. `project-memory/docs/` holds files several modules lean on
+but none owns — committed, read on demand.
 
 <!--
 　Advanced: the @import syntax

@@ -7,7 +7,7 @@ that is copied into different projects. Template updates flow master → project
 copy the whole `project-memory/` tree, the whole `.claude/` tree, or the whole repo over
 the target. Follow the whitelist in `SYNC-MANIFEST.md` at the project root:
 
-- 🚫 Never overwrite: real module folders under `project-memory/modules/`, `project-memory/overview/` — the project's accumulated memory.
+- 🚫 Never overwrite: real module folders under `project-memory/modules/`, `project-memory/overview/`, the files in `project-memory/docs/` (its `_README.md` aside) — the project's accumulated memory.
 - Everything else (✅ overwrite freely / ⚠️ manual merge / 🗑️ confirmed deletions) → per the `SYNC-MANIFEST.md` categories.
 
 **Why:** real module folders (`plans/`, `impl/`, `references/`, `schema/`, MODULE.md, flow docs) and

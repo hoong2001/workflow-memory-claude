@@ -8,6 +8,7 @@ architecture diagrams, domain docs, external standards, vendor specs, whole-syst
   auto-loaded (may be large or binary, so never `@import` them).
 - Drop files straight in, images included. Keep original filenames.
 - Module-specific references go in that module's `project-memory/modules/<name>/references/` instead.
+- Files several modules share but none owns go in `project-memory/docs/`.
 
 ## External links
 A file can't be a URL — paste external links here:
