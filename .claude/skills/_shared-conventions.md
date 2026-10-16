@@ -54,21 +54,31 @@ only when something is still pending, what is the user's to do and what comes af
    reminder after a feature, not yet given.
 6. Nothing started this turn is still running — a background agent, workflow, build or command.
 
-**Closed → two lines, and stop:**
+**The block is a two-column table** — the slot label on the left, its content on the right, one row
+per slot, rows in the order below. The `✅ Done` row is the table's header row: Markdown requires
+one, and Done is always present, so no empty header is drawn. A cell holds one line: join several
+items with ` · `, never a line break (a table cell cannot hold one). A slot with nothing to say is no row.
 
-```
-✅ Done: <what changed, one line> · <every file written, project-root-relative>
-🏁 Closed — nothing pending.
+**Closed → two rows, and stop:**
+
+```markdown
+| ✅ Done | <what changed, one line> · <every file written, project-root-relative> |
+|---|---|
+| 🏁 Closed | nothing pending |
 ```
 
 **Any condition fails → the open block:**
 
+```markdown
+| ✅ Done | <what changed, one line> · <every file written, project-root-relative> |
+|---|---|
+| ⏳ In progress | <what is still running> · <the signal that it finished> |
+| ⚠️ | <what needs a human: a manual step, a risk, a surprise, a decision> |
+| 👉 You now | <the one action that belongs to the user> |
+| ⏭ Next | <the one next step or skill, and when it applies> |
 ```
-✅ Done: <what changed, one line> · <every file written, project-root-relative>
-⏳ In progress: <what is still running> · <the signal that it finished>   ← only while something runs
-👉 You now: <the one action that belongs to the user>
-⏭ Next: <the one next step or skill, and when it applies>
-```
+
+`⏳ In progress` and `⚠️` rows appear only when they apply (rules below).
 
 - **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
   project could sync this" — if it was not asked for and no rule requires it, it is not a Next.
@@ -81,10 +91,10 @@ only when something is still pending, what is the user's to do and what comes af
   `git diff --numstat`, or `(N lines, new)` when git does not track it. Its content stays in the
   file for the user to open; the reply carries no summary of what was written.
 - **Highlight only what needs a human.** A manual step, a risk, a surprise, or a decision gets its
-  own `⚠️` line directly above You now. Everything else stays silent.
+  own `⚠️` row directly above You now (several → one row each). Everything else stays silent.
 - **In progress** appears only while work started this turn is still running after the reply.
   Name it and the signal that ends it (a task notification, an exit code). Nothing running → omit
-  the line; never write `In progress: nothing`.
+  the row; never write `In progress: nothing`.
 - **You now** is an action only the user can take: test the change, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.

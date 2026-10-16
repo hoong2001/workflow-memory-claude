@@ -160,5 +160,5 @@ Then stop. Deliberately NOT part of this path:
 
 The ✅ block above is the Done slot of the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`). `Status: Done` → the closed shape
-(`🏁 Closed — nothing pending.`) and stop. `Status: Blocked` → the open block: You now = clear the
+(`| 🏁 Closed | nothing pending |`) and stop. `Status: Blocked` → the open block: You now = clear the
 blocker; Next = where work resumes.

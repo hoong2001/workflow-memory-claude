@@ -69,7 +69,7 @@ One short table: file:line, verdict, action taken, and — separately and promin
 that needs rotating. End with the re-run command so the user can confirm the sweep is clean.
 In handoff terms (the **Handoff** section of `.claude/skills/_shared-conventions.md`): the table
 is Done, rotating the listed credentials is You now, the re-run is Next. A clean sweep — no hits,
-or every hit redacted with nothing in git history to rotate — is closed: `🏁 Closed — nothing pending.`
+or every hit redacted with nothing in git history to rotate — is closed: `| 🏁 Closed | nothing pending |`
 
 ## Boundaries
 
