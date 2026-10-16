@@ -7,6 +7,6 @@
 
 ## Live work — 0 plan(s) not Done
 
-<!-- plan-status-table v2 -->
+<!-- plan-status-table v3 -->
 
 Nothing live. Every plan is `Done`, or no module has a plan yet.
