@@ -77,20 +77,35 @@ export const register: Register = on => {
     }
     if (list.length === 0) return <Text dimColor>No live plans</Text>
 
+    // One tree per plan: the plan file is the root, status / You now / Next its leaves. Oldest first.
+    const branch = (isLast: boolean) => (isLast ? '└─ ' : '├─ ')
+    // The guide sits in its own column, so a wrapped line stays aligned under its own text.
+    const row = (guide: string, content: unknown) => (
+      <Box flexDirection="row">
+        <Text dimColor>{guide}</Text>
+        <Box flexShrink={1}>{content}</Box>
+      </Box>
+    )
+
     return (
       <Box flexDirection="column">
         <Text bold>{list.length} live plan(s) — oldest first</Text>
-        {list.map(p => (
-          <Box flexDirection="column" marginTop={1}>
-            <Text>{p.module}</Text>
-            <Text dimColor>{p.plan}</Text>
+        {list.map(p => {
+          const leaves = [
             <Text>
               <Text color="warning">{p.status}</Text>
               {p.detail ? ` · ${p.detail}` : ''} <Text dimColor>{p.updated}</Text>
-            </Text>
-            {p.next ? <Text>Next: {p.next}</Text> : null}
-          </Box>
-        ))}
+            </Text>,
+            p.youNow ? <Text>You now: {p.youNow}</Text> : null,
+            p.next ? <Text>Next: {p.next}</Text> : null,
+          ].filter(leaf => leaf !== null)
+          return (
+            <Box flexDirection="column" marginTop={1}>
+              <Text bold>{p.plan}</Text>
+              {leaves.map((leaf, li) => row(branch(li === leaves.length - 1), leaf))}
+            </Box>
+          )
+        })}
       </Box>
     )
   })

@@ -7,9 +7,9 @@ const md = [
   '',
   TABLE_FORMAT,
   '',
-  '| Module | Plan | Status | Detail | Next | Updated |',
-  '|---|---|---|---|---|---|',
-  '| orders | [orders-export.md](x) | Building | 2/5 | task 3 | 2026-10-01 |',
+  '| Module | Plan | Status | Detail | You now | Next | Updated |',
+  '|---|---|---|---|---|---|---|',
+  '| sales-module | [orders-export.md](x) | Building | 2/5 | test task 2 | task 3 | 2026-10-01 |',
 ].join('\n')
 
 for (const surface of ['terminal', 'desktop'] as const) {
@@ -47,6 +47,9 @@ for (const surface of ['terminal', 'desktop'] as const) {
     })
     expect(await pane.find({ text: /1 live plan/ })).toBeDefined()
     expect(await pane.find({ text: 'orders-export.md' })).toBeDefined()
+    expect(await pane.find({ text: 'sales-module' })).toBeUndefined() // no module level: the plan file is the root
+    expect(await pane.find({ text: '└─ ' })).toBeDefined()
+    expect(await pane.find({ text: /You now: test task 2/ })).toBeDefined()
     expect(await pane.find({ text: /Next: task 3/ })).toBeDefined()
 
     await $.command.run({ command: 'mods-plan-status', args: 'hide' })

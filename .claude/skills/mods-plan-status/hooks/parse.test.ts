@@ -11,19 +11,19 @@ const generated = (rows: string[]) =>
     '',
     'Oldest first — the most-forgotten plan floats to the top.',
     '',
-    '| Module | Plan | Status | Detail | Next | Updated |',
-    '|---|---|---|---|---|---|',
+    '| Module | Plan | Status | Detail | You now | Next | Updated |',
+    '|---|---|---|---|---|---|---|',
     ...rows,
   ].join('\n')
 
 test('reads the live-plan rows the generator writes', async () => {
   const md = generated([
-    '| orders | [orders-2026-10-01-export.md](modules/orders/plans/orders-2026-10-01-export.md) | Building | 2/5 | task 3, export to Excel | 2026-10-01 |',
-    '| stock | [stock-a\\|b.md](x) | Blocked | waits on DBA |  |  |',
+    '| orders | [orders-2026-10-01-export.md](modules/orders/plans/orders-2026-10-01-export.md) | Building | 2/5 | test task 2 | task 3, export to Excel | 2026-10-01 |',
+    '| stock | [stock-a\\|b.md](x) | Blocked | waits on DBA |  |  |  |',
   ])
   expect(parseLivePlans(md)).toEqual([
-    { module: 'orders', plan: 'orders-2026-10-01-export.md', status: 'Building', detail: '2/5', next: 'task 3, export to Excel', updated: '2026-10-01' },
-    { module: 'stock', plan: 'stock-a|b.md', status: 'Blocked', detail: 'waits on DBA', next: '', updated: '' },
+    { module: 'orders', plan: 'orders-2026-10-01-export.md', status: 'Building', detail: '2/5', youNow: 'test task 2', next: 'task 3, export to Excel', updated: '2026-10-01' },
+    { module: 'stock', plan: 'stock-a|b.md', status: 'Blocked', detail: 'waits on DBA', youNow: '', next: '', updated: '' },
   ])
 })
 
@@ -33,6 +33,6 @@ test('no live plans is an empty list', async () => {
 
 test('refuses a file without the marker or with a changed row shape', async () => {
   expect(parseLivePlans('| Module | Plan |\n| a | b | c | d | e |')).toBe('unknown-format')
-  expect(parseLivePlans(generated(['| a | b | c | d | e |']))).toBe('unknown-format')
-  expect(parseLivePlans(generated(['| a | b | c | d | e | f | g |']))).toBe('unknown-format')
+  expect(parseLivePlans(generated(['| a | b | c | d | e | f |']))).toBe('unknown-format')
+  expect(parseLivePlans(generated(['| a | b | c | d | e | f | g | h |']))).toBe('unknown-format')
 })
