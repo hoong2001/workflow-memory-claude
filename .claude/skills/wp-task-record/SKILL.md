@@ -146,10 +146,11 @@ fill the rest when you land.
 
 ## Step 4 · Report, then stop
 
-```
-✅ Task recorded: project-memory/tasks/2026-09-14-q3-sales-report/TASK.md  (48 lines, new)
-✅ Query saved:   .../schema/2026-09-14-q3-sales-report.sql  (22 lines, new)
-   Status: Done · Likely to repeat: Monthly
+```text
+├─ ✅ Done
+│  ├─ project-memory/tasks/2026-09-14-q3-sales-report/TASK.md (48 lines, new) — Status: Done · Likely to repeat: Monthly
+│  └─ .../schema/2026-09-14-q3-sales-report.sql (22 lines, new) — query saved
+└─ 🏁 Closed  nothing pending
 ```
 
 Then stop. Deliberately NOT part of this path:
@@ -158,7 +159,7 @@ Then stop. Deliberately NOT part of this path:
 - No `flow.md`, no `MODULE.md` gotchas, no Module Map row in `CLAUDE.md`.
 - No overview judgment — a one-off report never changes the system's WHAT.
 
-The ✅ block above is the Done slot of the handoff (the **Handoff** section of
+The ✅ leaves above are the Done slot of the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`). `Status: Done` → the closed shape
-(`| 🏁 Closed | nothing pending |`) and stop. `Status: Blocked` → the open block: You now = clear the
+(`└─ 🏁 Closed  nothing pending`) and stop. `Status: Blocked` → the open block: You now = clear the
 blocker; Next = where work resumes.

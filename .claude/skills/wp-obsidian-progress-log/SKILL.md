@@ -159,7 +159,7 @@ of duplicating them.
      (for embedding in a project card).
 5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
    Done = every card and Base written, by vault path. Logging leaves nothing behind it, so
-   this run is closed (`| 🏁 Closed | nothing pending |`) — the project card's `next_step` belongs to
+   this run is closed (`└─ 🏁 Closed  nothing pending`) — the project card's `next_step` belongs to
    the project, not to this run, and is not repeated as a Next. Only when a Base embed failed to
    render and needs the user's eye is it open (You now = check that card).
 
