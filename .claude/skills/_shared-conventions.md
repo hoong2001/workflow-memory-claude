@@ -52,6 +52,7 @@ only when something is still pending, what is the user's to do and what comes af
 4. No `🔴` row is open.
 5. No workflow step the rules still require is pending — e.g. the `/wp-module-save-implementation`
    reminder after a feature, not yet given.
+6. Nothing started this turn is still running — a background agent, workflow, build or command.
 
 **Closed → two lines, and stop:**
 
@@ -64,6 +65,7 @@ only when something is still pending, what is the user's to do and what comes af
 
 ```
 ✅ Done: <what changed, one line> · <every file written, project-root-relative>
+⏳ In progress: <what is still running> · <the signal that it finished>   ← only while something runs
 👉 You now: <the one action that belongs to the user>
 ⏭ Next: <the one next step or skill, and when it applies>
 ```
@@ -80,6 +82,9 @@ only when something is still pending, what is the user's to do and what comes af
   file for the user to open; the reply carries no summary of what was written.
 - **Highlight only what needs a human.** A manual step, a risk, a surprise, or a decision gets its
   own `⚠️` line directly above You now. Everything else stays silent.
+- **In progress** appears only while work started this turn is still running after the reply.
+  Name it and the signal that ends it (a task notification, an exit code). Nothing running → omit
+  the line; never write `In progress: nothing`.
 - **You now** is an action only the user can take: test the change, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.

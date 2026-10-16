@@ -123,8 +123,8 @@ archive the plan → update the index (module map, flow) → architecture change
 Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it first judges
 whether the work is closed, then ends with one of two shapes:
 - **Closed** (delivered, nothing waiting on the user, no live plan or `🔴` row, no required workflow
-  step pending) → **✅ Done** (what changed + files) · **🏁 Closed — nothing pending.** Then stop.
-- **Open** → **✅ Done** · **👉 You now** (the user's one action) · **⏭ Next** (the one next step or skill).
+  step pending, nothing still running) → **✅ Done** (what changed + files) · **🏁 Closed — nothing pending.** Then stop.
+- **Open** → **✅ Done** · **⏳ In progress** (only while background work still runs) · **👉 You now** (the user's one action) · **⏭ Next** (the one next step or skill).
   Judge each You now: a choice between options is asked through `AskUserQuestion` in the same
   turn, never left for the user to type; a manual action (run a `.sql`, test, supply a
   reference file) stays a plain line.
