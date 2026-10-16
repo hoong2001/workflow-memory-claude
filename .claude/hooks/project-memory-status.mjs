@@ -20,8 +20,8 @@
  *
  * Scan: project-memory/modules/<m>/plans/*.md, skipping names that start with "_" (the
  * folder's _README.md quotes an example header). Only the first 10 lines of a plan are read,
- * because the header sits directly under the H1. The Next column comes from the optional
- * `> **Resume:** You now — … · Next — …` line under the status line (the text after `Next —`).
+ * because the header sits directly under the H1. The You now and Next columns come from the
+ * optional `> **Resume:** You now — … · Next — …` line under the status line.
  *
  * The file is rewritten only when its content changes, and it carries no timestamp, so a
  * write that leaves every header as it was produces no git diff.
@@ -40,7 +40,7 @@
  * The table is a contract: the mods-plan-status mod (.claude/skills/mods-plan-status/hooks/parse.ts)
  * reads it to show live plans in a pane. Its shape is fixed by TABLE_FORMAT:
  *   <!-- TABLE_FORMAT -->
- *   | Module | Plan | Status | Detail | Next | Updated |   (Plan as [file](link), `|` escaped as `\|`)
+ *   | Module | Plan | Status | Detail | You now | Next | Updated |   (Plan as [file](link), `|` escaped as `\|`)
  * Change a column, its order or its escaping → bump TABLE_FORMAT and update parse.ts in the
  * same commit; the mod refuses a marker it does not know instead of misreading the rows.
  */
@@ -51,7 +51,7 @@ import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const BACKSLASH = String.fromCharCode(92);
-const TABLE_FORMAT = 'plan-status-table v2';
+const TABLE_FORMAT = 'plan-status-table v3';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const MODULES_DIR = join(ROOT, 'project-memory', 'modules');
 const OUTPUT = join(ROOT, 'project-memory', 'project-memory-status.md');
@@ -60,6 +60,7 @@ const HEADER = /^> \*\*Status:\*\*\s*(.+?)\s*$/;
 const DETAIL = /\*\*Detail:\*\*\s*(.+?)\s*(?: · |$)/;
 const UPDATED = /\*\*Updated:\*\*\s*(\S+)/;
 const RESUME_NEXT = /^> \*\*Resume:\*\*.*?\bNext\s*—\s*(.+?)\s*$/;
+const RESUME_YOU_NOW = /^> \*\*Resume:\*\*\s*You now\s*—\s*(.+?)\s*(?:·\s*Next\s*—.*)?$/;
 
 function normalize(p) {
   return p.split(BACKSLASH).join('/');
@@ -84,9 +85,12 @@ function listPlans(dir) {
 function readHeader(file) {
   const lines = readFileSync(file, 'utf8').split(/\r?\n/).slice(0, 10);
   let next = '';
+  let youNow = '';
   for (const line of lines) {
     const r = RESUME_NEXT.exec(line);
     if (r) next = r[1];
+    const y = RESUME_YOU_NOW.exec(line);
+    if (y) youNow = y[1];
   }
   for (const line of lines) {
     const m = HEADER.exec(line);
@@ -95,7 +99,7 @@ function readHeader(file) {
     const status = parts[0].trim();
     const detail = DETAIL.exec(m[1]);
     const updated = UPDATED.exec(m[1]);
-    return { status, detail: detail ? detail[1] : '', next, updated: updated ? updated[1] : '' };
+    return { status, detail: detail ? detail[1] : '', youNow, next, updated: updated ? updated[1] : '' };
   }
   return null;
 }
@@ -116,6 +120,7 @@ function collect() {
         link: `modules/${name}/plans/${file}`,
         status: header ? header.status : '⚠ no status header',
         detail: header ? header.detail : '',
+        youNow: header ? header.youNow : '',
         next: header ? header.next : '',
         updated: header ? header.updated : '',
         done: header ? header.status === 'Done' : false,
@@ -153,9 +158,9 @@ function render(plans, linkBase = '') {
     out.push('Nothing live. Every plan is `Done`, or no module has a plan yet.');
   } else {
     out.push('Oldest first — the most-forgotten plan floats to the top.', '');
-    out.push('| Module | Plan | Status | Detail | Next | Updated |', '|---|---|---|---|---|---|');
+    out.push('| Module | Plan | Status | Detail | You now | Next | Updated |', '|---|---|---|---|---|---|---|');
     for (const p of live) {
-      out.push(`| ${cell(p.module)} | [${cell(p.file)}](${linkBase}${p.link}) | ${cell(p.status)} | ${cell(p.detail)} | ${cell(p.next)} | ${p.updated} |`);
+      out.push(`| ${cell(p.module)} | [${cell(p.file)}](${linkBase}${p.link}) | ${cell(p.status)} | ${cell(p.detail)} | ${cell(p.youNow)} | ${cell(p.next)} | ${p.updated} |`);
     }
   }
 

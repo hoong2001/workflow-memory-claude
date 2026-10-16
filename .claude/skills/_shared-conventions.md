@@ -181,8 +181,9 @@ Next, so a session that opens the plan weeks later knows what was waiting and wh
   `nothing` is written as `You now — nothing`.
 - **No Done slot.** What landed is already the `Detail` counter and the `☑` rows; a copy would drift.
 - **Deleted when the plan turns `Done`** — a closed plan has nothing to resume.
-- The hook copies the text after `Next —` into the Next column of
-  `project-memory/project-memory-status.md`, so keep `Next —` last on the line.
+- The hook copies the text after `You now —` (up to ` · Next —`) into the You now column and the
+  text after `Next —` into the Next column of `project-memory/project-memory-status.md` (and its
+  vault mirror), so keep the order `You now — … · Next — …` with `Next —` last on the line.
 
 ### Values — plans
 

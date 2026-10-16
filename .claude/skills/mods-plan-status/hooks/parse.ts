@@ -2,9 +2,9 @@ import type { LivePlan } from '../types'
 
 // The one table format this parser knows. The generator, .claude/hooks/project-memory-status.mjs,
 // writes the same marker (its TABLE_FORMAT) above the table; change both together.
-export const TABLE_FORMAT = '<!-- plan-status-table v2 -->'
+export const TABLE_FORMAT = '<!-- plan-status-table v3 -->'
 
-// Rows read as | Module | Plan | Status | Detail | Next | Updated |, Plan as [file](link), `|` escaped as `\|`.
+// Rows read as | Module | Plan | Status | Detail | You now | Next | Updated |, Plan as [file](link), `|` escaped as `\|`.
 // Returns 'unknown-format' when the marker is missing or names another version, so a changed
 // generator shows a warning instead of misread rows.
 export function parseLivePlans(markdown: string): LivePlan[] | 'unknown-format' {
@@ -19,9 +19,9 @@ export function parseLivePlans(markdown: string): LivePlan[] | 'unknown-format' 
       .slice(1, body.endsWith('|') ? -1 : undefined)
       .split(/(?<!\\)\|/)
       .map(cell => cell.trim().replace(/\\\|/g, '|'))
-    if (cells.length !== 6) return 'unknown-format'
-    const [module, plan, status, detail, next, updated] = cells
-    plans.push({ module, plan: plan.replace(/^\[(.*)\]\(.*\)$/, '$1'), status, detail, next, updated })
+    if (cells.length !== 7) return 'unknown-format'
+    const [module, plan, status, detail, youNow, next, updated] = cells
+    plans.push({ module, plan: plan.replace(/^\[(.*)\]\(.*\)$/, '$1'), status, detail, youNow, next, updated })
   }
   return plans
 }
