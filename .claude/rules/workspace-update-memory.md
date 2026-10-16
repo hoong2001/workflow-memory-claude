@@ -47,4 +47,4 @@ entry — and let the USER decide whether to add it. Never edit the overview sil
 
 ## 6. Wrap-up check: is root `CLAUDE.md` still lean? If too long, move details to the module layer or `.claude/`, leaving only path links.
 
-List each file changed by path and size only (`+N/−M`) — never replay its content; the user opens the file. End with a one-line summary of what was archived this time. That report is the Done slot of the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): an overview judgment from item 5b waiting on the user → open, with that judgment as You now and "on your yes, add the proposed line to the overview" as Next; nothing waiting → closed.
+List each file changed as its own Done leaf: path, size (`+N/−M`) and one clause of what changed — never replay its content; the user opens the file. Those leaves are the Done slot of the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): an overview judgment from item 5b waiting on the user → open, with that judgment as You now and "on your yes, add the proposed line to the overview" as Next; nothing waiting → closed.

@@ -96,17 +96,20 @@ Keep flow.md to the stable "how it works" parts. A specific change's "where to c
 
 ## Step 4 · Report
 
-Report all paths touched and the flow.md outcome, e.g.:
+Report all paths touched and the flow.md outcome as the handoff's Done leaves, e.g.:
 
-```
-✅ Impl saved: project-memory/modules/<name>/impl/<name>-2026-07-02-<slug>.md  (64 lines, new)
-✅ Plan synced: plans/<name>-2026-07-02-<slug>.md  (+1/−1, status → Done)
-✅ flow.md: <name>-flow.md  (+3/−1)
-   — or — flow.md unchanged (internal-only change)
-   — or — flow.md left for full /wp-module-code-trace-flow (large structural rewrite)
+```text
+├─ ✅ Done
+│  ├─ project-memory/modules/<name>/impl/<name>-2026-07-02-<slug>.md (64 lines, new) — impl record
+│  ├─ plans/<name>-2026-07-02-<slug>.md (+1/−1) — status → Done
+│  └─ <name>-flow.md (+3/−1) — <what changed in the map>
 ```
 
-That block is the Done slot of the handoff (the **Handoff** section of
+The flow.md leaf says instead `unchanged — internal-only change`, or `left for full
+/wp-module-code-trace-flow — large structural rewrite`. Any other file this step touched
+(MODULE.md gotchas, Module Map row) is a leaf of its own.
+
+These leaves are the Done slot of the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`). Run the closed test, then finish:
 
 - **Open** when something is still pending — **👉 You now** = the overview judgment that is the
@@ -114,7 +117,7 @@ That block is the Done slot of the handoff (the **Handoff** section of
   line), or `nothing`; **⏭ Next** = the next live plan in this module if the grep of status headers
   finds one, otherwise "on your yes, add the proposed line to the overview".
 - **Closed** when neither applies — a localized fix with no other live plan ends with
-  `| 🏁 Closed | nothing pending |`
+  `└─ 🏁 Closed  nothing pending`
 
 ## Notes
 

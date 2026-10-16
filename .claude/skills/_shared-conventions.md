@@ -54,47 +54,59 @@ only when something is still pending, what is the user's to do and what comes af
    reminder after a feature, not yet given.
 6. Nothing started this turn is still running — a background agent, workflow, build or command.
 
-**The block is a two-column table** — the slot label on the left, its content on the right, one row
-per slot, rows in the order below. The `✅ Done` row is the table's header row: Markdown requires
-one, and Done is always present, so no empty header is drawn. A cell holds one line: join several
-items with ` · `, never a line break (a table cell cannot hold one). A slot with nothing to say is no row.
+**The block is a tree inside a ` ```text ` fence** (the fence keeps the branch characters aligned).
+Each slot is a branch, in the order below; each item under a slot is a leaf. One leaf is one line;
+a long item is cut short, never wrapped. A slot with nothing to say is no branch.
 
-**Closed → two rows, and stop:**
+**The tree is the only place that says what was done.** Text above it carries only what a leaf
+cannot: a judgment and its reason the user needs (why something was left out, what a check found).
+It never restates a Done leaf. Nothing of that kind → no text above the tree.
 
-```markdown
-| ✅ Done | <what changed, one line> · <every file written, project-root-relative> |
-|---|---|
-| 🏁 Closed | nothing pending |
+**Closed → Done branch + Closed, and stop:**
+
+```text
+├─ ✅ Done
+│  ├─ <path> (<size>) — <what changed in it, one clause>
+│  └─ <path> (<size>) — <what changed in it, one clause>
+└─ 🏁 Closed  nothing pending
 ```
 
 **Any condition fails → the open block:**
 
-```markdown
-| ✅ Done | <what changed, one line> · <every file written, project-root-relative> |
-|---|---|
-| ⏳ In progress | <what is still running> · <the signal that it finished> |
-| ⚠️ | <what needs a human: a manual step, a risk, a surprise, a decision> |
-| 👉 You now | <the one action that belongs to the user> |
-| ⏭ Next | <the one next step or skill, and when it applies> |
+```text
+├─ ✅ Done
+│  ├─ <path> (<size>) — <what changed in it, one clause>
+│  └─ <path> (<size>) — <what changed in it, one clause>
+├─ ⏳ In progress
+│  └─ <what is still running> · <the signal that it finished>
+├─ ⚠️
+│  └─ <what needs a human: a manual step, a risk, a surprise, a decision>
+├─ 👉 You now
+│  └─ <the one action that belongs to the user>
+└─ ⏭ Next
+   └─ <the one next step or skill, and when it applies>
 ```
 
-`⏳ In progress` and `⚠️` rows appear only when they apply (rules below).
+`⏳ In progress` and `⚠️` branches appear only when they apply (rules below). The last branch uses
+`└─` and its leaves hang under three spaces instead of `│`.
 
 - **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
   project could sync this" — if it was not asked for and no rule requires it, it is not a Next.
   A finished task ends with `🏁 Closed`, not with a suggestion.
-- **Done** lists the files actually written. Nothing written → `no files changed`. A skill with
-  its own report block (e.g. `/wp-module-save-implementation`'s ✅ list) uses that block as the
-  Done slot and adds the lines below it.
+- **Done** has one leaf per file actually written; a step that wrote no file (a build, a check-in,
+  a query run) is a leaf of its own. Nothing written and nothing run → one leaf, `no files changed`.
+  A skill that defines its own report lines (e.g. `/wp-module-save-implementation` Step 4) writes
+  them as Done leaves, never as a separate block above the tree.
 - **Name the file, never replay it.** A document written under `project-memory/` or `.claude/`
   (plan, impl, MODULE.md, flow, TASK.md) is reported as its path plus size — `(+N/−M)` from
-  `git diff --numstat`, or `(N lines, new)` when git does not track it. Its content stays in the
-  file for the user to open; the reply carries no summary of what was written.
+  `git diff --numstat`, or `(N lines, new)` when git does not track it — and one clause of what
+  changed in it ("status → Done", "placeholder → full map"). Its content stays in the file for the
+  user to open; the reply carries no summary of what was written.
 - **Highlight only what needs a human.** A manual step, a risk, a surprise, or a decision gets its
-  own `⚠️` row directly above You now (several → one row each). Everything else stays silent.
+  own leaf under the `⚠️` branch, directly above You now (several → one leaf each). Everything else stays silent.
 - **In progress** appears only while work started this turn is still running after the reply.
   Name it and the signal that ends it (a task notification, an exit code). Nothing running → omit
-  the row; never write `In progress: nothing`.
+  the branch; never write `In progress: nothing`.
 - **You now** is an action only the user can take: test the change, answer an open
   item, review a file, say go. When only Next is pending and it waits on nothing from the user
   → `nothing`.
