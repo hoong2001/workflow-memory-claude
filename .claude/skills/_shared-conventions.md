@@ -79,16 +79,19 @@ It never restates a Done leaf. Nothing of that kind → no text above the tree.
 │  └─ <path> (<size>) — <what changed in it, one clause>
 ├─ ⏳ In progress
 │  └─ <what is still running> · <the signal that it finished>
-├─ ⚠️
+├─ ⚠️ Attention
 │  └─ <what needs a human: a manual step, a risk, a surprise, a decision>
 ├─ 👉 You now
 │  └─ <the one action that belongs to the user>
-└─ ⏭ Next
+└─ ⏭  Next
    └─ <the one next step or skill, and when it applies>
 ```
 
-`⏳ In progress` and `⚠️` branches appear only when they apply (rules below). The last branch uses
-`└─` and its leaves hang under three spaces instead of `│`.
+`⏳ In progress` and `⚠️ Attention` branches appear only when they apply (rules below). The last branch uses
+`└─` and its leaves hang under three spaces instead of `│`. Every branch is emoji + one space + label,
+except `⏭`, which takes **two**: terminals count it one column wide but draw it two wide, so a single
+space disappears and `Next` touches the emoji. (`⚠️` carries the emoji variation selector, is counted
+two wide, and keeps one space.)
 
 - **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
   project could sync this" — if it was not asked for and no rule requires it, it is not a Next.
@@ -103,7 +106,7 @@ It never restates a Done leaf. Nothing of that kind → no text above the tree.
   changed in it ("status → Done", "placeholder → full map"). Its content stays in the file for the
   user to open; the reply carries no summary of what was written.
 - **Highlight only what needs a human.** A manual step, a risk, a surprise, or a decision gets its
-  own leaf under the `⚠️` branch, directly above You now (several → one leaf each). Everything else stays silent.
+  own leaf under the `⚠️ Attention` branch, directly above You now (several → one leaf each). Everything else stays silent.
 - **In progress** appears only while work started this turn is still running after the reply.
   Name it and the signal that ends it (a task notification, an exit code). Nothing running → omit
   the branch; never write `In progress: nothing`.
