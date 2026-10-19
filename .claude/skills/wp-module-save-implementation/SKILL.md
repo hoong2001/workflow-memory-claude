@@ -121,7 +121,7 @@ These leaves are the Done slot of the handoff (the **Handoff** section of
 
 - **Open** when something is still pending — **👉 You now** = the overview judgment that is the
   user's (`.claude/rules/workspace-update-memory.md` item 5b — give your reasoning and a proposed
-  line), or `nothing`; **⏭ Next** = the next live plan in this module if the grep of status headers
+  line), or `nothing`; **🔜 Next** = the next live plan in this module if the grep of status headers
   finds one, otherwise "on your yes, add the proposed line to the overview".
 - **Closed** when neither applies — a localized fix with no other live plan ends with
   `└─ 🏁 Closed  nothing pending`

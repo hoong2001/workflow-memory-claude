@@ -83,14 +83,17 @@ It never restates a Done leaf. Nothing of that kind → no text above the tree.
 │  └─ <what needs a human: a manual step, a risk, a surprise, a decision>
 ├─ 👉 You now
 │  └─ <the one action that belongs to the user>
-└─ ⏭  Next
+└─ 🔜 Next
    └─ <the one next step or skill, and when it applies>
 ```
 
 `⏳ In progress` and `⚠️ Attention` branches appear only when they apply (rules below). The last branch uses
 `└─` and its leaves hang under three spaces instead of `│`. Every branch is emoji + one space + label,
-except `⏭`, which takes **two**: terminals count it one column wide but draw it two wide, so a single
-space disappears and `Next` touches the emoji. (`⚠️` carries the emoji variation selector, is counted
+no exceptions. Every slot emoji is one terminals count two columns wide, so one space always shows.
+Never swap in a text-default emoji such as `⏭` (U+23ED): terminals count it one wide but draw it two
+wide, so the space disappears and the label touches the emoji. Symbols in the old U+2xxx blocks risk
+the same miscount on terminals with stale width tables, so a new slot emoji comes from U+1F000 and
+up — that is why Next uses `🔜` (U+1F51C). (`⚠️` carries the emoji variation selector, is counted
 two wide, and keeps one space.)
 
 - **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
