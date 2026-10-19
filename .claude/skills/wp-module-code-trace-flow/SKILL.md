@@ -18,7 +18,7 @@ The main path (**depth**) is the readable spine: input → process → output, o
 So every run recovers **both**:
 
 - **Depth** — the main path, one numbered chain (the spine, kept readable).
-- **Breadth** — for every *shared* symbol on that chain, ALL its callers, enumerated by a full reference sweep (`rg`), never pruned to just the one already on the main path.
+- **Breadth** — for every *shared* symbol on that chain, ALL its callers, enumerated by a full reference sweep (LSP `findReferences`, `rg` as fallback), never pruned to just the one already on the main path.
 
 A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`, **or** grep shows more than one caller. Shared symbols are exactly where "I changed this and it broke something else" is born — e.g. a `BaseRepository` shared column list or a dynamic-`Add`-column builder edited to add one field for one table silently adds that column to **every other table** that reuses the builder. Catching that fan-out before the edit is the whole point of the breadth dimension.
 
@@ -57,7 +57,13 @@ From the entry symbol, follow callees downward through the process layers until 
 
 ### Step 3.5: Sweep every shared symbol for ALL its callers (breadth)
 
-The main path gives you one caller per symbol; this step finds the rest. For **every** symbol on the chain that is shared (defined in `Base*`, `ConstValues/`, `Results/`, or a grep shows more than one caller), do a full reference sweep — `rg -n "SymbolName"` across the whole solution — and enumerate **every** call site as `file:method`, not just the one already on the main path.
+The main path gives you one caller per symbol; this step finds the rest. For **every** symbol on the chain that is shared (defined in `Base*`, `ConstValues/`, `Results/`, or a grep shows more than one caller), do a full reference sweep across the whole solution and enumerate **every** call site as `file:method`, not just the one already on the main path.
+
+How to sweep — **LSP first, `rg` as the fallback:**
+
+- **LSP `findReferences`** on the symbol's definition (position on the name itself, not its doc comment or modifiers — read the line first). It resolves by type, so a common name like `Insert` or `Save` returns only this symbol's callers. Measured on a .NET 4.7.2 solution: `rg "\bInsert\s*\("` returned 7 hits for one repository method, of which 2 were real callers and 4 were `List.Insert` or comments.
+- **Fall back to `rg -n "SymbolName"`** when the LSP tool is absent, errors, or returns nothing. An empty LSP answer is never taken as "no callers": check the position, then sweep with `rg` and filter the hits by hand. LSP needs the C# language server `csharp-ls` on `PATH` (`dotnet tool install --global csharp-ls`, used by the `csharp-lsp` Claude Code plugin) and answers only for the solution in the session's working directory.
+- Say which method backed each caller list (`LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
 
 - Tag each caller by entry point (Web / ServBackend) so the blast radius is legible.
 - Many callers (say > 15)? List them but cap with a stated count ("28 callers; the 12 in `[Name].Services` shown, rest are views") — never silently truncate.
@@ -74,7 +80,7 @@ Combine both directions into a single input → process → output chain, group 
 - It must come from a file the skill actually opened or grepped during this run.
 - If a call target cannot be resolved in source (dynamic dispatch, reflection, config-driven wiring, generated code), mark it `unverified` with a one-line reason — never paper over it with a plausible guess.
 - Substituting recalled framework knowledge for an actual read is the primary failure mode this skill exists to prevent.
-- **Completeness for shared symbols (Step 3.5).** No shared symbol may be reported without a full reference sweep. State the grep count backing its caller list (e.g. "`rg` found 6 callers, all listed"); if capped, say the cap and where the rest live. An unswept shared symbol is as dangerous as a guessed link — it is precisely how a shared-method edit silently breaks another consumer.
+- **Completeness for shared symbols (Step 3.5).** No shared symbol may be reported without a full reference sweep. State the method and count backing its caller list (e.g. "LSP found 6 callers, all listed" or "`rg` found 9 hits, 6 callers after filtering"); if capped, say the cap and where the rest live. An unswept shared symbol is as dangerous as a guessed link — it is precisely how a shared-method edit silently breaks another consumer.
 
 ## Output Templates (two deliverables)
 

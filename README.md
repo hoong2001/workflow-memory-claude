@@ -178,6 +178,19 @@ copying the framework files (adoption step 1) brings everything along.
 > it saves impl records to the module's `impl/` folder using this project's path convention **and** lightweight-syncs
 > `<name>-flow.md`. Use it instead of `/save-implementation` here.
 
+### Machine tools
+
+Skills travel with the folder; these tools do not. Install them on each developer machine.
+
+| Tool | Needed by | Without it | Install |
+|---|---|---|---|
+| Node.js on `PATH` | every hook in `.claude/hooks/`, `.claude/scripts/build-solution.mjs` | hooks fail open (no secret guard, no plan-status view); no build | nodejs.org installer |
+| `msbuild` on `PATH` | the build step of the act loop | build exits `2` | Visual Studio / Build Tools |
+| `csharp-ls` on `PATH` + the `csharp-lsp` Claude Code plugin | `/wp-module-code-trace-flow` Step 3.5 (callers of a shared symbol) | falls back to `rg` — more false hits to filter by hand | `dotnet tool install --global csharp-ls` (needs .NET SDK 6+), then `/plugin install csharp-lsp@claude-plugins-official` |
+| `nuget.exe` on `PATH` | restoring missing packages during the build | restore once in Visual Studio | nuget.org download |
+| `tf.exe` on `PATH` | `wp-tfvc` | TFVC commands unavailable | Visual Studio Team Explorer |
+| Python on `PATH` | `wp-packageref-to-packages-config` | that skill cannot run | python.org installer |
+
 ### Obsidian memory skills (optional add-on)
 
 `wp-obsidian-start` and `wp-obsidian-progress-log` are project-bound like the rest and travel with
