@@ -77,7 +77,7 @@ export const register: Register = on => {
     }
     if (list.length === 0) return <Text dimColor>No live plans</Text>
 
-    // An ordered list, oldest first: the plan's slug, then • module, • status, • You now, • Next.
+    // An ordered list, oldest first: [ @ ] and the full plan name, then • status, • You now, • Next.
     // The marker sits in its own column, so a wrapped line stays aligned under its own text.
     const row = (marker: string, content: RenderChildren) => (
       <Box flexDirection="row">
@@ -87,17 +87,14 @@ export const register: Register = on => {
     )
     const width = String(list.length).length
     const bullet = ' '.repeat(width + 2) + '• '
-    // <module>-<yyyy-mm-dd>-<slug>.md -> <slug>: the full name wraps in a docked pane; the click still inserts the full path
-    const slug = (plan: string) => plan.replace(/^.*?-\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '')
 
     return (
       <Box flexDirection="column">
         <Text bold>{list.length} live plan(s) — oldest first</Text>
         <Box flexDirection="column" marginTop={1}>
           {list.map((p, i) => {
-            const title = <Text bold>{slug(p.plan)}</Text>
+            const title = <Text bold>{p.plan}</Text>
             const leaves = [
-              <Text dimColor>{p.module}</Text>,
               <Text>
                 <Text color="warning">{p.status}</Text>
                 {p.detail ? ` · ${p.detail}` : ''}
@@ -111,16 +108,17 @@ export const register: Register = on => {
                 {row(
                   `${String(i + 1).padStart(width)}. `,
                   p.path ? (
+                    // [ @ ] first, at a fixed width, so a long name wraps under itself instead of pushing the button around;
+                    // a press puts `@<path> ` in the prompt box at the cursor
                     <Box flexDirection="row">
-                      <Box flexShrink={1}>{title}</Box>
-                      <Text> </Text>
-                      {/* a framed [ @ ] reads as a button without hovering; a press puts `@<path> ` in the prompt box at the cursor */}
                       <Button
                         key={p.path}
                         label="@"
                         variant="primary"
                         onPress={() => void $.prompt.fill({ text: `@${p.path} `, mode: 'insert' })}
                       />
+                      <Text> </Text>
+                      <Box flexShrink={1}>{title}</Box>
                     </Box>
                   ) : (
                     title
