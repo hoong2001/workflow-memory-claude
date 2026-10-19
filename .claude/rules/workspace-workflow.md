@@ -105,7 +105,17 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
      item is the handoff's **👉 You now**; the test waits until the build is green.
    - **Worth knowing** — warnings left alone and why (pre-existing noise in untouched code is skipped,
      repeats are grouped), a skipped project, anything else odd in the output.
-   A green build with nothing to note is one line: "build green". Then hand over for test.
+   A green build with nothing to note is one line: "build green". Then check decisions, then hand over for test.
+
+   **Decision check — before every test handoff.** A green build proves the code compiles, not that
+   it keeps what the module already decided. For each file this chunk changed:
+   `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md`, then read only the
+   `Decisions + why` and `Ruled out` sections of the records it finds, plus the module's
+   `MODULE.md` Local conventions and Known gotchas. A change that reverses a recorded decision or
+   brings back a ruled-out option → stop and quote the record (file, date, the line), and ask through
+   `AskUserQuestion`: keep the old decision, or override it. An override is recorded in the next impl
+   record as "Overrides impl/<file>.md — <why>". Report the outcome in the handoff's Done as one leaf:
+   `decision check: no conflict (N records read)`, or the conflict and how it was settled.
 
    The build compiles C# only: Razor views (`.cshtml`) are not compiled unless the Web project sets
    `MvcBuildViews`, so a green build still leaves view errors for the test to catch.

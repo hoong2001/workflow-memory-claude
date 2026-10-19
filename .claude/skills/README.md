@@ -66,13 +66,13 @@ requirement ──────────────┤                       
 | `wp-csharp-gof-design-patterns` | Designing (the class & file map in `technical-design` points here) or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 
-> The build needs no skill — after each coding chunk Claude runs `.claude/scripts/build-solution.mjs` handles what it can, stops for what needs you, and reports both (`workspace-workflow.md` Step 2). Test stays **manual**: you run it.
+> The build needs no skill — after each coding chunk Claude runs `.claude/scripts/build-solution.mjs` handles what it can, stops for what needs you, and reports both (`workspace-workflow.md` Step 2). Before handing over for test, Claude checks the changed files against the module's recorded decisions and ruled-out options, and stops on a conflict (same step, **Decision check**). Test stays **manual**: you run it.
 
 ### Phase 3 · Wrap up
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
+| `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, ruled out, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
 
 ### Standing · One-off work (no module)
 

@@ -9,9 +9,10 @@ Archive as soon as a task completes — don't wait until the session ends. Judge
 
 ## 1. Record this task (core) → `project-memory/modules/<name>/impl/<name>-<date>-<slug>.md` (`/wp-module-save-implementation` — REMIND the user it's ready; never auto-run, the trigger is theirs)
 > This skill also lightweight-syncs `<name>-flow.md` as part of saving (see Step 4) — that's why flow.md no longer drifts.
-Every entry must include four things:
+Every entry must include five things:
 - **Date + one line**: when, and what was done.
 - **Decision + why**: tie each technical/design choice to its reasoning ("what" is easy to reconstruct later; "why this choice" is lost forever if forgotten).
+- **Ruled out**: each option considered or tried and dropped, with why — so no later session proposes it again. "None" when nothing was.
 - **Status**: done? or any TODO left?
 - **File links**: the key files / functions touched this time.
 

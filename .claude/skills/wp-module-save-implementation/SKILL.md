@@ -21,7 +21,7 @@ Write to: `project-memory/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
 - Use today's date. `<slug>` is a short kebab-case tag for this change; keep it identical to the paired plan file in `plans/` so they pair up.
 - If a record for the **same** change already exists, update it — do not create a duplicate.
 
-Every record MUST contain the four elements the project's memory rule requires:
+Every record MUST contain the elements the project's memory rule requires (`.claude/rules/workspace-update-memory.md` item 1):
 
 ```markdown
 # Impl: <what was done, one line>
@@ -35,7 +35,14 @@ Every record MUST contain the four elements the project's memory rule requires:
 
 ## Decisions + why
 (Each technical/design choice tied to its reasoning. "What" is easy to reconstruct later;
-"why this choice, not the alternative" is lost forever if not written now.)
+"why this choice, not the alternative" is lost forever if not written now.
+A decision that reverses an earlier record names it: "Overrides impl/<file>.md — <why>".)
+
+## Ruled out
+(Each option that was considered or tried and dropped, with why — so a later session does not
+propose it again. Sources: the plan's rejected options and every approach that failed while
+building. Write "None" when nothing was ruled out.)
+- **<option>** — <why it was dropped>
 
 ## Files touched
 | File | Method / area | What changed |
