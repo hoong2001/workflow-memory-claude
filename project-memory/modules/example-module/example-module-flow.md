@@ -13,6 +13,19 @@
 ## Flow
 (The main path, end to end — how a request / operation travels through this module.)
 
+## Diagram
+(The Flow above as a Mermaid `sequenceDiagram` — drawn by `/wp-module-code-trace-flow`, kept in
+step with Flow by `/wp-module-save-implementation`. An optional interactive archify diagram is
+linked here as one line: `Diagram: diagrams/<folder>/<file>.html — <type>, <date>`.)
+
+```mermaid
+sequenceDiagram
+    participant C as (e.g.) order controller
+    participant R as (e.g.) order repository
+    C->>R: getById(id)
+    R-->>C: order
+```
+
 ## Called files & methods
 | File | Method | Role (short) |
 |---|---|---|

@@ -102,6 +102,11 @@ hunting for half-written classes.
 Stop after the breakdown is confirmed. Coding starts only on the user's go, and each task runs
 through the normal Step 2 work loop (code → build → test → save).
 
+**Offer a diagram** — the **Optional diagram (archify)** section of `.claude/skills/_shared-conventions.md`.
+Options: "No diagram" (recommended) · "Class diagram of the Class & file map" · "Architecture of the
+layers touched" (source for both: the `### Class & file map` just written). Link line goes at the end
+of that `### Class & file map` section.
+
 **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
 Done = the plan path, `Status: Designed`, and the task count; You now = review the `## Tasks` table
 and say go; Next = task 1 through the Step 2 act loop (name the task).

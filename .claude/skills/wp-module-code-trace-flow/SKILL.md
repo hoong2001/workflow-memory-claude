@@ -71,7 +71,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation **plus its blast-radius list** for the Step 0 change. Then persist per the Save Workflow: **the stable flow (chain + shared-symbol fan-in) goes into the module's `<name>-flow.md`; the where-to-cut and its blast radius go into the change's plan (`plans/`), never into the flow doc.**
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation **plus its blast-radius list** for the Step 0 change. Then persist per the Save Workflow: **the stable flow (chain + shared-symbol fan-in) goes into the module's `<name>-flow.md`; the where-to-cut and its blast radius go into the change's plan (`plans/`), never into the flow doc.**
 
 ## Verification Rule
 
@@ -94,6 +94,24 @@ Combine both directions into a single input → process → output chain, group 
 [The main path end to end, input → process → output. One numbered chain:]
 1. `path/File.ext : Method()` — [one-line role]
 2. ...
+
+## Diagram
+
+[The same chain as a Mermaid sequence diagram — one participant per class/file on the chain,
+one arrow per numbered step, a dashed return where a value comes back. Draw only what the
+numbered chain above holds; never add a call it does not list. VS Code, Obsidian and GitHub
+render it; Claude reads it as text.]
+
+```mermaid
+sequenceDiagram
+    participant C as OrderController
+    participant S as OrderService
+    participant R as OrderRepository
+    C->>S: GetOrder(id)
+    S->>R: GetById(id)
+    R-->>S: OrderResult
+    S-->>C: OrderResult
+```
 
 ## Called files & methods
 
@@ -140,7 +158,11 @@ If any cut point above is a shared symbol, list EVERY other caller that inherits
 1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above — never into the flow doc.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
-4. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the flow doc path + where the where-to-cut landed; You now = review the cut and its blast radius; Next = `/wp-module-plan-discuss` when no plan exists for the change yet, otherwise `/wp-module-technical-design` or the Step 2 act loop per the plan's size.
+4. **Offer a diagram** — the **Optional diagram (archify)** section of `.claude/skills/_shared-conventions.md`.
+   Options: "No diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
+   "Architecture of the shared-symbol fan-in" (source: the fan-in table). Link line goes under the flow doc's
+   `## Diagram` heading.
+5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the flow doc path + where the where-to-cut landed; You now = review the cut and its blast radius; Next = `/wp-module-plan-discuss` when no plan exists for the change yet, otherwise `/wp-module-technical-design` or the Step 2 act loop per the plan's size.
 
 ## Conduct Rules
 
