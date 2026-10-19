@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register } from 'claude-code'
+import type { EngineInterface, Register, RenderChildren } from 'claude-code'
 
 import { parseLivePlans } from './parse'
 
@@ -77,42 +77,60 @@ export const register: Register = on => {
     }
     if (list.length === 0) return <Text dimColor>No live plans</Text>
 
-    // One tree per plan: the plan file is the root, status / You now / Next its leaves. Oldest first.
-    const branch = (isLast: boolean) => (isLast ? '└─ ' : '├─ ')
-    // The guide sits in its own column, so a wrapped line stays aligned under its own text.
-    const row = (guide: string, content: unknown) => (
+    // An ordered list, oldest first: the plan's slug, then • module, • status, • You now, • Next.
+    // The marker sits in its own column, so a wrapped line stays aligned under its own text.
+    const row = (marker: string, content: RenderChildren) => (
       <Box flexDirection="row">
-        <Text dimColor>{guide}</Text>
+        <Text dimColor>{marker}</Text>
         <Box flexShrink={1}>{content}</Box>
       </Box>
     )
+    const width = String(list.length).length
+    const bullet = ' '.repeat(width + 2) + '• '
+    // <module>-<yyyy-mm-dd>-<slug>.md -> <slug>: the full name wraps in a docked pane; the click still inserts the full path
+    const slug = (plan: string) => plan.replace(/^.*?-\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '')
 
     return (
       <Box flexDirection="column">
         <Text bold>{list.length} live plan(s) — oldest first</Text>
-        {list.map(p => {
-          const leaves = [
-            <Text>
-              <Text color="warning">{p.status}</Text>
-              {p.detail ? ` · ${p.detail}` : ''} <Text dimColor>{p.updated}</Text>
-            </Text>,
-            p.youNow ? <Text>You now: {p.youNow}</Text> : null,
-            p.next ? <Text>Next: {p.next}</Text> : null,
-          ].filter(leaf => leaf !== null)
-          return (
-            <Box flexDirection="column" marginTop={1}>
-              {p.path ? (
-                // a click puts `@<path> ` in the prompt box at the cursor, so the plan rides along as a file mention
-                <Button key={p.path} plain onPress={() => void $.prompt.fill({ text: `@${p.path} `, mode: 'insert' })}>
-                  <Text bold>{p.plan}</Text>
-                </Button>
-              ) : (
-                <Text bold>{p.plan}</Text>
-              )}
-              {leaves.map((leaf, li) => row(branch(li === leaves.length - 1), leaf))}
-            </Box>
-          )
-        })}
+        <Box flexDirection="column" marginTop={1}>
+          {list.map((p, i) => {
+            const title = <Text bold>{slug(p.plan)}</Text>
+            const leaves = [
+              <Text dimColor>{p.module}</Text>,
+              <Text>
+                <Text color="warning">{p.status}</Text>
+                {p.detail ? ` · ${p.detail}` : ''}
+                <Text dimColor>{p.updated ? ` · ${p.updated}` : ''}</Text>
+              </Text>,
+              p.youNow ? <Text>You now: {p.youNow}</Text> : null,
+              p.next ? <Text>Next: {p.next}</Text> : null,
+            ].filter(leaf => leaf !== null)
+            return (
+              <Box flexDirection="column">
+                {row(
+                  `${String(i + 1).padStart(width)}. `,
+                  p.path ? (
+                    <Box flexDirection="row">
+                      <Box flexShrink={1}>{title}</Box>
+                      <Text> </Text>
+                      {/* a framed [ @ ] reads as a button without hovering; a press puts `@<path> ` in the prompt box at the cursor */}
+                      <Button
+                        key={p.path}
+                        label="@"
+                        variant="primary"
+                        onPress={() => void $.prompt.fill({ text: `@${p.path} `, mode: 'insert' })}
+                      />
+                    </Box>
+                  ) : (
+                    title
+                  ),
+                )}
+                {leaves.map(leaf => row(bullet, leaf))}
+              </Box>
+            )
+          })}
+        </Box>
       </Box>
     )
   })
