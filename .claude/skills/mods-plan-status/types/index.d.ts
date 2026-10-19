@@ -1,6 +1,7 @@
 export type LivePlan = {
   module: string
   plan: string
+  path: string // project-root-relative, '' when the Plan cell has no link
   status: string
   detail: string
   youNow: string

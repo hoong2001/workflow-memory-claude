@@ -22,8 +22,8 @@ test('reads the live-plan rows the generator writes', async () => {
     '| stock | [stock-a\\|b.md](x) | Blocked | waits on DBA |  |  |  |',
   ])
   expect(parseLivePlans(md)).toEqual([
-    { module: 'orders', plan: 'orders-2026-10-01-export.md', status: 'Building', detail: '2/5', youNow: 'test task 2', next: 'task 3, export to Excel', updated: '2026-10-01' },
-    { module: 'stock', plan: 'stock-a|b.md', status: 'Blocked', detail: 'waits on DBA', youNow: '', next: '', updated: '' },
+    { module: 'orders', plan: 'orders-2026-10-01-export.md', path: 'project-memory/modules/orders/plans/orders-2026-10-01-export.md', status: 'Building', detail: '2/5', youNow: 'test task 2', next: 'task 3, export to Excel', updated: '2026-10-01' },
+    { module: 'stock', plan: 'stock-a|b.md', path: 'project-memory/x', status: 'Blocked', detail: 'waits on DBA', youNow: '', next: '', updated: '' },
   ])
 })
 

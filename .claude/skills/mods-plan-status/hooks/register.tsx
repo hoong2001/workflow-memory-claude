@@ -63,7 +63,7 @@ export const register: Register = on => {
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box, Text, Button } = $.ui.resolve(e)
     const list = await read($, plans)
 
     if (list === 'missing') return <Text dimColor>No project-memory/project-memory-status.md here.</Text>
@@ -101,7 +101,14 @@ export const register: Register = on => {
           ].filter(leaf => leaf !== null)
           return (
             <Box flexDirection="column" marginTop={1}>
-              <Text bold>{p.plan}</Text>
+              {p.path ? (
+                // a click puts `@<path> ` in the prompt box at the cursor, so the plan rides along as a file mention
+                <Button key={p.path} plain onPress={() => void $.prompt.fill({ text: `@${p.path} `, mode: 'insert' })}>
+                  <Text bold>{p.plan}</Text>
+                </Button>
+              ) : (
+                <Text bold>{p.plan}</Text>
+              )}
               {leaves.map((leaf, li) => row(branch(li === leaves.length - 1), leaf))}
             </Box>
           )

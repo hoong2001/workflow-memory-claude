@@ -21,7 +21,10 @@ export function parseLivePlans(markdown: string): LivePlan[] | 'unknown-format' 
       .map(cell => cell.trim().replace(/\\\|/g, '|'))
     if (cells.length !== 7) return 'unknown-format'
     const [module, plan, status, detail, youNow, next, updated] = cells
-    plans.push({ module, plan: plan.replace(/^\[(.*)\]\(.*\)$/, '$1'), status, detail, youNow, next, updated })
+    const link = plan.match(/^\[(.*)\]\((.*)\)$/)
+    // links are relative to project-memory/, where the status file lives
+    const path = link ? `project-memory/${link[2]}` : ''
+    plans.push({ module, plan: link ? link[1] : plan, path, status, detail, youNow, next, updated })
   }
   return plans
 }

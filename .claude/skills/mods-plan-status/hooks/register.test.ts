@@ -26,6 +26,11 @@ for (const surface of ['terminal', 'desktop'] as const) {
       return { value: undefined }
     })
     on('classic.SessionStart', () => ({}))
+    const filled: string[] = []
+    on('prompt.fill', ($, e) => {
+      filled.push(e.text)
+      return { isFilled: true, text: e.text, cursor: e.text.length }
+    })
     await $.classic.SessionStart({ source: 'clear' }) // runs setShown, as /clear does in a session
     expect(open.has('mods-plan-status')).toBe(false)
     await $.command.run({ command: 'mods-plan-status', args: 'show' })
@@ -51,6 +56,10 @@ for (const surface of ['terminal', 'desktop'] as const) {
     expect(await pane.find({ text: '└─ ' })).toBeDefined()
     expect(await pane.find({ text: /You now: test task 2/ })).toBeDefined()
     expect(await pane.find({ text: /Next: task 3/ })).toBeDefined()
+
+    // pressing the plan name puts its path, @-prefixed, in the prompt box
+    await pane.press({ key: 'project-memory/x' })
+    expect(filled).toEqual(['@project-memory/x '])
 
     await $.command.run({ command: 'mods-plan-status', args: 'hide' })
     expect(open.has('mods-plan-status')).toBe(false)
