@@ -63,6 +63,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices when needed) to the SAME plan file
     ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
     ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
+    ├── wp-retro/  session hit friction? trace it, then fix the environment (check · pointer · rule) — you pick
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
     ├── wp-repository-unitofwork-pattern/  data-layer pattern (SSOT)
     ├── wp-sql-query-design/  what belongs in SQL vs the Service layer, and keeping the SQL readable

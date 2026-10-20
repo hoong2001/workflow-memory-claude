@@ -10,7 +10,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
+- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `retro`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`).
 
 ## The main flow (module work)
@@ -33,6 +33,9 @@ requirement ──────────────┤                       
                                    │
                                    ▼
                           save-implementation  (wrap up: impl record + sync plan + refresh flow.md)
+                                   │
+                                   ▼  only when the wrap-up names a friction signal
+                          retro  (fix the environment: pointer · check · rule — you pick)
 ```
 
 **Brand-new whole system** runs once, upstream of all of the above:
@@ -73,6 +76,7 @@ requirement ──────────────┤                       
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
 | `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, ruled out, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
+| `wp-retro` | The session hit friction — the wrap-up reminder names the signal (`workspace-update-memory.md` item 7), or you just felt it was harder than it should be | Trace each struggle to a moment in the session, classify it, route it: mechanical → a check, judgement → a standard skill or `MODULE.md`, always-on lines that changed nothing → delete; template changes go to the master | Ranked candidates (max 5); only the ones you pick are applied |
 
 ### Standing · One-off work (no module)
 
@@ -128,6 +132,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Should this be a Strategy / Factory / some pattern?** → `csharp-gof-design-patterns` (no named pain, no pattern).
 - **Plan done, builds in one pass** → just code; skip `technical-design`.
 - **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's).
+- **The session fought you — rebuilds, repeated corrections, a long hunt for one fact** → `wp-retro` (fixes the workflow so it does not recur; the code is not its job).
 - **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.
 - **One-off report / data patch, nothing ships into the system** → `wp-task-record` (skip the module layer and Step 3 entirely).
 - **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.

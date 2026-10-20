@@ -163,3 +163,7 @@ The ✅ leaves above are the Done slot of the handoff (the **Handoff** section o
 `.claude/skills/_shared-conventions.md`). `Status: Done` → the closed shape
 (`└─ 🏁 Closed  nothing pending`) and stop. `Status: Blocked` → the open block: You now = clear the
 blocker; Next = where work resumes.
+
+One wrap-up item still applies to a task: if the session hit a friction signal from
+`.claude/rules/workspace-update-memory.md` item 7, remind `/wp-retro` once, the same way — the stop
+is then open, with `/wp-retro` as Next.

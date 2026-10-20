@@ -122,11 +122,12 @@ Plan landed, and it needs the technical cut and a task breakdown before coding?
 
 ## Step 3 · Wrap up: update memory
 **Branch D skips this step.** `/wp-task-record` already wrote the entire record for a one-off
-task; there is no impl record, no flow, no Module Map row, and no overview to judge.
+task; there is no impl record, no flow, no Module Map row, and no overview to judge. Its one
+wrap-up item, the `/wp-retro` reminder, comes from `/wp-task-record` Step 4.
 
 For Branches A–C, after the task completes, run through `workspace-update-memory.md`:
 impl record → `/wp-module-save-implementation` (user-triggered) → backfill gotchas to the module →
-archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean.
+archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean → friction seen? remind `/wp-retro`.
 
 ## Every stop ends with a handoff
 Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it first judges
