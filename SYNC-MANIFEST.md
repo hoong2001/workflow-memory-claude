@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `13.0.0` |
+| Version | `13.0.1` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -175,8 +175,8 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/skills/context-panel/` | `.claude/skills/mods-context-panel/` — same v12.0.0 rename; `/context-panel` is now `/mods-context-panel` |
 | `.claude/skills/mod-panel/` | `.claude/skills/mods-toggle-band/` — same v12.0.0 rename, named for what it draws; `/mod-panel` is now `/mods-toggle-band` |
 | `.claude/skills/mods-plan-status/` | the optional `mods-plan-status` plugin in the `hoong2001/workflow-memory-mods` marketplace — v13.0.0 takes every mod out of the template, so a teammate who does not want a pane installs nothing and loses no workflow step. Delete the folder FIRST, then install on each machine that wants it: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods`. While both exist they share one name and the installed plugin stops the skills-dir copy loading. The `project-memory-status.mjs` hook stays in the template and keeps writing the table the plugin reads |
-| `.claude/skills/mods-context-panel/` | the optional `mods-context-panel` plugin, same marketplace and same v13.0.0 move — delete the folder first, then `/plugin install mods-context-panel --marketplace hoong2001/workflow-memory-mods` where wanted |
-| `.claude/skills/mods-toggle-band/` | the optional `mods-toggle-band` plugin, same marketplace and same v13.0.0 move — delete the folder first, then `/plugin install mods-toggle-band --marketplace hoong2001/workflow-memory-mods` where wanted. A button for a mod that is not installed draws off and shows a toast when pressed |
+| `.claude/skills/mods-context-panel/` | nothing — v13.0.0 took it out of the template; since v13.0.1 it is a personal mod, not published in any marketplace. Delete the folder |
+| `.claude/skills/mods-toggle-band/` | nothing — same as `mods-context-panel` (v13.0.0 out of the template, v13.0.1 personal, unpublished). Delete the folder |
 
 > Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
 > under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path

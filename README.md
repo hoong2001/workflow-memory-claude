@@ -139,11 +139,9 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 ## Mods
 
-The mods live outside this template, in the [`hoong2001/workflow-memory-mods`](https://github.com/hoong2001/workflow-memory-mods)
-marketplace, and each installs on its own: `mods-plan-status` (live plans in a pane),
-`mods-context-panel` (everything `/context` shows, live), `mods-toggle-band` (a row of toggle buttons
-above the prompt) and `mods-agent-watch` (this session's subagents as a call tree). The workflow never
-depends on them: a teammate without them loses a view, not a step.
+One optional mod lives outside this template, in the [`hoong2001/workflow-memory-mods`](https://github.com/hoong2001/workflow-memory-mods)
+marketplace: `mods-plan-status` (live plans in a pane). The workflow never depends on it: a teammate
+without it loses a view, not a step.
 
 ```
 /plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods
