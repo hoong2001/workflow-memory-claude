@@ -6,6 +6,12 @@
 
 **Language: English** — the document, and the code and comments it quotes.
 
+**Two readerships, two depths.** Steering files — `.claude/rules/`, `.claude/skills/`, root
+`CLAUDE.md` — are read by the agent alone and also follow `wp-writing-for-agents`: every line must
+change behaviour, so explanation the model already knows is cut. Documents under `project-memory/`
+are read by people too: they keep the explanation and the reasons a reader with no prior context
+needs. The rules below apply to both.
+
 ## Rules
 
 - **Open with the fact.** No "Here's the thing", "It turns out", "It's worth noting".

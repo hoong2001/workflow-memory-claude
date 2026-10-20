@@ -11,7 +11,7 @@
 ## Trigger convention
 
 - **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `retro`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. Only the coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`).
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)
 
@@ -76,7 +76,7 @@ requirement ──────────────┤                       
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
 | `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, ruled out, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
-| `wp-retro` | The session hit friction — the wrap-up reminder names the signal (`workspace-update-memory.md` item 7), or you just felt it was harder than it should be | Trace each struggle to a moment in the session, classify it, route it: mechanical → a check, judgement → a standard skill or `MODULE.md`, always-on lines that changed nothing → delete; template changes go to the master | Ranked candidates (max 5); only the ones you pick are applied |
+| `wp-retro` | The session hit friction — the wrap-up reminder names the signal (`workspace-update-memory.md` item 7), or you just felt it was harder than it should be | Trace each struggle to a moment in the session, classify it, route it: mechanical → a check, judgement → a standard skill or `MODULE.md`, always-on lines that changed nothing → delete; template changes go to the master. Adapted from `retro` in `mattpocock/skills` | Ranked candidates (max 5); only the ones you pick are applied |
 
 ### Standing · One-off work (no module)
 
@@ -96,6 +96,7 @@ no implementation to record, so the whole memory path is this one skill.
 
 | Skill | When to use | Purpose / function |
 |-------|-------------|--------------------|
+| `wp-writing-for-agents` | Auto — creating or editing a skill or rule under `.claude/`, or `CLAUDE.md`; `wp-retro` loads it first | The steering-file writing standard: context pointers, the two loads, information hierarchy, completion criteria, leading words, the no-op test. `project-memory/` is out of its scope (people read those too — `workspace-doc-writing-style.md`). Fork of `writing-for-agents` from `mattpocock/skills` v1.3.1, MIT (`LICENSE-mattpocock`); local changes: name, description, the scope paragraph |
 | `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
 | `wp-connstr-check` | Adopting this template on an existing .NET project, or after config files were edited outside Claude (Visual Studio, a merge, a shell command) | Dry-run every `Web.config` / `App.config` and transform against the house MSSQL `connectionString` template, report the diff with passwords masked, apply on your go |

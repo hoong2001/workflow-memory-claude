@@ -1,17 +1,11 @@
 ---
 name: wp-retro
-description: Look back over one coding session and propose changes to the workflow environment — rules, skills, hooks, the build script, module memory — so the friction it hit does not recur. Every candidate is traced to a moment in the session's own record, mechanical mistakes become checks rather than prose, and nothing changes until the user picks. Use when the user says "retro", "retrospective", "回顧", "檢討今次 session", "點樣下次唔再中", or after the wrap-up reminder named a friction signal. Do NOT use to review the code itself (use a code review), to record what was built (/wp-module-save-implementation, /wp-task-record), and never auto-run it - the trigger belongs to the user.
+description: Retrospective on one session's friction — traces each struggle to a moment in the record and proposes the check, pointer, or rule in the workflow (rules, skills, hooks, build script, module memory) that stops it recurring; the user picks what lands. Use when the user says "retro", "回顧", "檢討今次 session", or after the wrap-up reminder names a friction signal. Code review and recording what was built belong to other skills.
 ---
 
-# Retro — fix the environment, not the code
+# Retro — fix the environment the friction came from
 
-The code the session produced is already handled: the build checked it, the user tested it, the
-impl record or `TASK.md` saved it. This skill asks a different question — **what in the workflow
-let the friction happen** — and proposes the pointer, check, or rule that prevents it next time.
-
-Adapted from Matt Pocock's `retro` (`mattpocock/skills`), re-pointed at this workflow's own
-destinations: there is no `CODING_STANDARDS.md` or `AGENTS.md` here, and the coding standards are
-the auto-triggered `wp-*` skills.
+Load `wp-writing-for-agents` first: every steering change proposed here is written to it.
 
 ## Step 1 · Pick the session
 
@@ -22,21 +16,13 @@ paired impl record or `TASK.md`, and any `Known gotchas` line it added to a `MOD
 A session that has scrolled out of context → ask the user to start a fresh session and point
 `/wp-retro` at the old log, rather than reconstructing it from memory.
 
-## Step 2 · Collect friction moments, with evidence
+## Step 2 · Collect friction, with evidence
 
-List every moment the session struggled. Each one carries its evidence — the tool call, the error
-text, or the user's own words, quoted. **No evidence, no candidate.** Generic advice that fits any
-session ("add more tests", "document better") is discarded here, before it reaches the user.
+Start from the friction signals in `.claude/rules/workspace-update-memory.md` item 7, then any
+other moment the session struggled. Each moment carries its evidence — the tool call, the error
+text, or the user's own words, quoted. **No evidence, no candidate.**
 
-Typical moments:
-
-- a build that needed 3+ rounds, or stopped on the 5-round / same-error limit
-- the user corrected a convention a rule, skill, or hook should already have enforced
-- a hook fired — or fired on good work and had to be routed around
-- one fact took 10+ search calls to find, or could not be found at all
-- a decision-check conflict, or a new `Known gotchas` line
-
-A smooth session yields no moments. That is a valid result: say so in one line and close.
+No friction found → say so in one line and close.
 
 ## Step 3 · Classify each moment and pick its destination
 
@@ -58,55 +44,34 @@ is only for judgement calls. `block-secrets.mjs` and `connstr-check.mjs` are the
 change what the agent does? No → propose deleting it. A hook that fired on good work this session
 is a candidate for narrowing or removal, with that firing as its evidence.
 
-## Step 4 · Route each candidate: template or project
-
-`SYNC-MANIFEST.md` decides. A change to a ✅ path (`.claude/rules/`, `.claude/skills/`,
-`.claude/hooks/`, `.claude/scripts/`, `example-module/`) belongs in the **master** repo: edited in a
-project, the next `/wp-update-from-master` overwrites it. Everything else — module folders,
-`project-memory/stack-architecture.md`, the project half of `CLAUDE.md` — is the project's own and
-is edited here.
-
-The current repo is the master when its root holds the master-only `README.md` and `LICENSE`
-(`SYNC-MANIFEST.md` → Master-only). There, template changes are edited directly and the
-manifest's version is bumped per its Version policy.
-
-## Step 5 · Present, then let the user pick
+## Step 4 · Present, then let the user pick
 
 Rank by cost × chance of recurrence, at most 5. One row each:
 
 | # | Moment (evidence) | Category | Proposed change | Destination | Owner |
 |---|---|---|---|---|---|
 
-The severity order is a first draft — a quiet, expensive mistake can deserve a higher rank than a
-loud, cheap one, so say when you weighed it that way.
+The rank is a first draft — say when a quiet, expensive mistake was ranked above a loud, cheap one.
+Ask which to apply through `AskUserQuestion` with `multiSelect: true`.
 
-Then ask which to apply through `AskUserQuestion` with `multiSelect: true`: the top candidates as
-options, the recommended ones marked "(Recommended)", and `Re-infer` last (the **Question pattern**
-in `.claude/skills/_shared-conventions.md`).
+## Step 5 · Route and apply only what was picked
 
-## Step 6 · Apply only what was picked
+`SYNC-MANIFEST.md` decides the owner:
 
-- **Project-owned** → edit now, following `.claude/rules/workspace-plan-impl.md` (sweep every doc
-  that restates a changed convention).
-- **Template-owned, in a project** → do not edit the ✅ path. List the exact change (file, before →
-  after) so it can be made in the master.
-- **Template-owned, in the master** → edit, bump the version in `SYNC-MANIFEST.md`, sweep.
-- A new check is code like any other: run it against the repo once and report what it flags before
-  it is left to block anything.
+- **Project-owned** (module folders, `project-memory/stack-architecture.md`, the project half of
+  `CLAUDE.md`) → edit here.
+- **Template-owned** (a ✅ path: `.claude/rules/`, `.claude/skills/`, `.claude/hooks/`,
+  `.claude/scripts/`, `example-module/`) in a project → list the exact change (file, before →
+  after) for the master; a project edit is overwritten by the next `/wp-update-from-master`.
+- **Template-owned, in the master** (its root holds the master-only `README.md` and `LICENSE`) →
+  edit, and bump the manifest's version per its Version policy.
 
-## Step 7 · Handoff
+A new check runs once against the repo, and its hits are reported, before it is left to block anything.
 
-Per the **Handoff** section of `.claude/skills/_shared-conventions.md`. Each applied change is a Done
-leaf. A template change waiting for the master → open: You now = make it in the master (or say go to
-have Claude do it there), Next = `/wp-update-from-master` in each project. Nothing picked, or no
-friction found → `└─ 🏁 Closed  nothing pending`.
+## Step 6 · Handoff
 
-## Boundaries
+Each applied change is a Done leaf. A template change waiting for the master → open: You now = make
+it in the master (or say go to have Claude do it there), Next = `/wp-update-from-master` in each
+project. Nothing picked → closed.
 
-- One session per run. The skill does not audit checks added in earlier sessions; prune those by
-  hand when they fire on good work.
-- It never edits application code and never writes an impl record — those belong to the act loop
-  and `/wp-module-save-implementation`.
-- It is not a memory system: it records nothing about what happened, only changes what will.
-- Trigger is the user's. The wrap-up may remind (`.claude/rules/workspace-update-memory.md` item 7);
-  it never runs it.
+One session per run: checks added in earlier sessions are pruned by hand when they fire on good work.
