@@ -1,6 +1,0 @@
-{
-  "name": "mods-plan-status",
-  "version": "0.1.0",
-  "description": "Shows the unfinished plans from project-memory/project-memory-status.md in a pane; /mods-plan-status [show|hide]",
-  "types": "./types/index.d.ts"
-}

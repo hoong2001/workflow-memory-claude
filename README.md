@@ -73,9 +73,6 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-tfvc/           use tf.exe in a TFVC workspace the way git is used in a git repo
     ├── wp-packageref-to-packages-config/  convert a .NET Framework project from PackageReference back to packages.config
     ├── wp-task-record/  one-off task (report run once, data patch) → its own folder under project-memory/tasks/
-    ├── mods-plan-status/    a mod, not a skill: live plans in a pane (/mods-plan-status show|hide), loaded from here with no install
-    ├── mods-context-panel/  a mod: everything /context shows, live in a pane (/mods-context-panel show|hide)
-    ├── mods-toggle-band/    a mod: a band of toggle buttons above the prompt that show / hide the other mods' panes
     ├── wp-obsidian-start/  Obsidian entry-point dispatcher — routes to the right obsidian skill
     └── wp-obsidian-progress-log/  cross-project progress card in the central Obsidian vault (dual-track write)
 ```
@@ -142,14 +139,19 @@ Every stop in all three steps — a task done, a skill run finished, a coding ch
 
 ## Mods
 
-Three mods, each in `.claude/skills/`: `mods-plan-status/` (live plans in a pane, hidden at session start
-until `/mods-plan-status show`), `mods-context-panel/` (everything `/context` shows, live in a pane), and
-`mods-toggle-band/` (a band of toggle buttons above the prompt that shows / hides the other two panes).
-Every mod is named `mods-<name>` — folder, plugin name, slash command, pane id and state key alike —
-so `/mods` lists them and they never collide with a `wp-*` skill.
-Claude Code loads a plugin from the skills folder automatically (origin `@skills-dir`), so they travel
-with the project and need no install. Never list one in a marketplace too: a skills-dir plugin whose
-name matches an installed one is not loaded.
+The mods live outside this template, in the [`hoong2001/workflow-memory-mods`](https://github.com/hoong2001/workflow-memory-mods)
+marketplace, and each installs on its own: `mods-plan-status` (live plans in a pane),
+`mods-context-panel` (everything `/context` shows, live), `mods-toggle-band` (a row of toggle buttons
+above the prompt) and `mods-agent-watch` (this session's subagents as a call tree). The workflow never
+depends on them: a teammate without them loses a view, not a step.
+
+```
+/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods
+```
+
+Every mod is named `mods-<name>` — plugin name, slash command, pane id and state key alike — so `/mods`
+lists them and they never collide with a `wp-*` skill. Never put one back in `.claude/skills/`: a
+skills-dir plugin whose name matches an installed one is not loaded.
 
 ## Portable vs per-project
 

@@ -1,6 +1,0 @@
-{
-  "name": "mods-context-panel",
-  "version": "0.4.3",
-  "description": "Everything /context shows, live in a pane; /mods-context-panel [show|hide]",
-  "types": "./types/index.d.ts"
-}

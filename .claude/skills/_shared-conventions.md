@@ -255,6 +255,8 @@ A one-off task has no design step and no slicing, so it carries three values onl
   `PostToolUse` hook `.claude/hooks/project-memory-status.mjs` on each write to a plan. Read it for
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
   it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
-  not in it. The `mods-plan-status` mod (`.claude/skills/mods-plan-status/`) reads its table to show the
-  live plans in a pane — the table's shape is a versioned contract (`TABLE_FORMAT` in the
-  hook, the same marker in the mod's `hooks/parse.ts`); change one, change both.
+  not in it. The optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) reads its
+  table to show the live plans in a pane — the table's shape is a versioned contract (`TABLE_FORMAT`
+  in the hook, the same marker in the plugin's `hooks/parse.ts`). The two live in different repos:
+  bump the hook's marker → release a `mods-plan-status` version that reads it; until then the pane
+  shows a format warning instead of misread rows.

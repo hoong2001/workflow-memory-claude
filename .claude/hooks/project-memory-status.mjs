@@ -37,12 +37,12 @@
  *
  * Fails OPEN: any error exits 0. A broken status view must never block a write.
  *
- * The table is a contract: the mods-plan-status mod (.claude/skills/mods-plan-status/hooks/parse.ts)
- * reads it to show live plans in a pane. Its shape is fixed by TABLE_FORMAT:
+ * The table is a contract: the optional mods-plan-status plugin (hoong2001/workflow-memory-mods,
+ * plugins/mods-plan-status/hooks/parse.ts) reads it to show live plans in a pane. Its shape is fixed by TABLE_FORMAT:
  *   <!-- TABLE_FORMAT -->
  *   | Module | Plan | Status | Detail | You now | Next | Updated |   (Plan as [file](link), `|` escaped as `\|`)
- * Change a column, its order or its escaping → bump TABLE_FORMAT and update parse.ts in the
- * same commit; the mod refuses a marker it does not know instead of misreading the rows.
+ * Change a column, its order or its escaping → bump TABLE_FORMAT here and release a plugin version
+ * whose parse.ts reads it; the plugin refuses a marker it does not know instead of misreading the rows.
  */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
