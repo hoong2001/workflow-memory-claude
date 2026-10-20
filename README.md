@@ -60,7 +60,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
     ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
     ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
-    ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices when needed) to the SAME plan file
+    ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices and parallel waves when needed) to the SAME plan file
     ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
     ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
     ├── wp-retro/  session hit friction? trace it, then fix the environment (check · pointer · rule) — you pick

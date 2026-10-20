@@ -67,7 +67,16 @@ and resume there rather than starting a fresh plan on top of it. A `## Tasks` ta
 header says `Done` → this is new work, carry on below.
 
 Plan landed, and it needs the technical cut and a task breakdown before coding?
-→ `/wp-module-technical-design` — appends BOTH a "Technical Design" section (API / classes / patterns / SQL / frontend, at cut level) and a "Tasks" section to the SAME plan file, then wait for the go. Every plan it touches gets a task table; a feature too big for one code→build→test pass gets vertical increments with blocking order, anything smaller gets plain steps. Work the rows top-to-bottom, one at a time, each through the Act loop below.
+→ `/wp-module-technical-design` — appends BOTH a "Technical Design" section (API / classes / patterns / SQL / frontend, at cut level) and a "Tasks" section to the SAME plan file, then wait for the go. Every plan it touches gets a task table; a feature too big for one code→build→test pass gets vertical increments with blocking order, anything smaller gets plain steps. Work the rows top-to-bottom, one at a time, each through the Act loop below — or wave by wave when the `Wave` column carries numbers.
+
+**Parallel waves** — on the user's go per wave. Row #1, the skeleton, runs alone and builds green
+first. Each later wave: dispatch one background `Agent` per layer the wave touches (Data / Service /
+Web, ownership per `/wp-module-technical-design` → Parallel waves), all in the same working folder —
+no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned
+files. It writes code and skips the build; a file outside its ownership or a skeleton signature it
+needs changed → it stops and reports, the orchestrator decides. Once every agent has returned: one
+build, the handling table below, the decision check, then the user tests each row of the wave. A
+table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
 
 → Act: **code → build → test** → **save on every change**.
    **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.

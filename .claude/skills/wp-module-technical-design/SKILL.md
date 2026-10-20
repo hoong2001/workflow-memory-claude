@@ -1,6 +1,6 @@
 ---
 name: wp-module-technical-design
-description: Turn a confirmed plan (from /wp-module-plan-discuss) into a build-ready breakdown — the technical cut (API surface, class/file map per the project's layering, data access, frontend) AND the ordered task list that says in what verifiable chunks it gets built, vertically sliced when the feature needs it. Both append to the SAME plan document in the module's plans/ folder. Use when a plan exists and the work needs nailing down before coding, or the user says "generate technical design", "design the API/classes", "slice this", "break this into increments", "brief to design", "切片". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
+description: Turn a confirmed plan (from /wp-module-plan-discuss) into a build-ready breakdown — the technical cut (API surface, class/file map per the project's layering, data access, frontend) AND the ordered task list that says in what verifiable chunks it gets built, vertically sliced and grouped into parallel waves when the feature needs it. Both append to the SAME plan document in the module's plans/ folder. Use when a plan exists and the work needs nailing down before coding, or the user says "generate technical design", "design the API/classes", "slice this", "break this into increments", "brief to design", "切片". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
 ---
 
 <what-to-do>
@@ -49,8 +49,8 @@ is what the rows are:
 
 | The plan | Rows are | Extra columns carry |
 |---|---|---|
-| One demoable behavior, builds in one code→build→test pass | The plain steps to do it | `—` for Layers / Blocked by |
-| Multiple behaviors, a full flow end-to-end, or a wide refactor | **Vertical increments** (tracer bullets) | Real layers and blocking edges |
+| One demoable behavior, builds in one code→build→test pass | The plain steps to do it | `—` for Layers / Blocked by / Wave |
+| Multiple behaviors, a full flow end-to-end, or a wide refactor | **Vertical increments** (tracer bullets) | Real layers, blocking edges, and waves |
 
 ### When the rows are vertical increments
 
@@ -67,18 +67,37 @@ shared Result class, a menu/permission slot, a schema tweak) makes the later sli
 that groundwork as the first increment(s).
 
 **Order by blocking.** Each increment declares **Blocked by:** the increments that must land first,
-and blockers are listed earlier in the sequence. This project is single-developer with **manual
-test** (`workspace-workflow.md` Step 2 sets how the rows are worked). There is no parallel
-fleet; the blocking edges only fix the order.
+and blockers are listed earlier in the sequence.
 
 **Don't manufacture increments.** A feature that genuinely builds in one pass gets plain steps, not
 five ceremonial slices. Say so and move on.
+
+### Parallel waves
+
+Increments that span several layers get a **wave** each, so subagents can write them at once
+(`workspace-workflow.md` Step 2 → **Parallel waves** runs them). Plain steps stay sequential:
+`Wave` = `—`.
+
+1. **Skeleton first** — row #1, alone in Wave 1, done when the build is green:
+   - every NEW file in the Class & file map, as a stub class registered in its `.csproj`;
+   - every new method in the map, as its final signature with a body that throws
+     `NotImplementedException`;
+   - all wiring — routes, bundles, menu/permission seed, `Web.config`.
+
+   The skeleton freezes the contract between layers and holds every shared-file edit, so later
+   waves only fill method bodies.
+2. **Wave number** = 1 + the highest wave among the row's `Blocked by` rows. Every non-skeleton
+   row is blocked by #1 at minimum.
+3. **Layer ownership** — a wave runs as one subagent per layer it touches: **Data** (SQL,
+   Repository, Result), **Service**, **Web** (Controller, View, JS). Each file in the Class & file
+   map belongs to exactly one of them. A file two layers would both edit → move that edit into the
+   skeleton, or add a `Blocked by` edge so the two rows land in different waves.
 
 ### Quiz the user before writing
 
 Walk the proposed breakdown with them using the **question pattern** (always via `AskUserQuestion`:
 recommended answer + 2 alternatives + Re-infer, then the tool's own Other) in `.claude/skills/_shared-conventions.md`. Confirm
-granularity, the blocking edges, and anything to merge or split. Don't publish the table until it is
+granularity, the blocking edges, the waves and the skeleton's contents, and anything to merge or split. Don't publish the table until it is
 agreed.
 
 ## Step 5: Append both sections and set the status
@@ -170,12 +189,14 @@ SQL/Service line here, or the build inherits the wrong cut.
 
 ## Tasks
 
-> Broken down: YYYY-MM-DD · vertical increments | plain steps · worked top-to-bottom, one at a time
+> Broken down: YYYY-MM-DD · vertical increments | plain steps · parallel waves | one at a time
 
-| # | ✔ | Task | Manager summary | Layers touched | Blocked by | Done when (verifiable) |
-|---|---|------|-----------------|----------------|-----------|------------------------|
-| 1 | ☐ | ... | Users can now see the customer list on one screen | SQL + Repository + Service + Controller + View | — | ... |
-| 2 | ☐ | ... | ... | ... | #1 | ... |
+| # | ✔ | Task | Manager summary | Layers touched | Blocked by | Wave | Done when (verifiable) |
+|---|---|------|-----------------|----------------|-----------|------|------------------------|
+| 1 | ☐ | Skeleton: stubs, signatures, wiring | Groundwork only — nothing visible changes yet | SQL + Repository + Service + Controller + View | — | 1 | Build green |
+| 2 | ☐ | ... | Users can now see the customer list on one screen | SQL + Repository + Service + Controller + View | #1 | 2 | ... |
+| 3 | ☐ | ... | ... | ... | #1 | 2 | ... |
+| 4 | ☐ | ... | ... | ... | #2 | 3 | ... |
 
 ### Notes
 - Prefactor / groundwork ordered first: ...
@@ -192,7 +213,7 @@ deriving `N` from the `☑` marks in this table.
 - A design that violates the stack hard rules is dead on arrival — fix it before presenting, don't present-then-apologise.
 - If the plan is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution as a row in the plan's `## Decisions & open items` table (decision + why, `☑ Resolved`), not just in the design. Rows the plan marked `→ /wp-module-technical-design` are this step's inbox — close every one of them, or the plan still carries an open `☐` after the design lands.
 - Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
-- When the rows are vertical increments, every one must be a **full vertical path** that can be built, manually tested, and demoed on its own. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
+- When the rows are vertical increments, every one must be a **full vertical path** that can be built, manually tested, and demoed on its own — the skeleton and other prefactor rows excepted, done on a green build. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 - Keep every row at the level of what gets done, not how — the HOW is the `## Technical Design` section above it, the code is the work loop.
 - The **Manager summary** cell is for a reader who never opens the code: what the task delivers or changes for the business, in plain words, under 50 words. No file, class, method, table or layer names — those stay in `Task` and `Layers touched`.
 - New gotchas or conventions discovered while exploring code → backfill the module's MODULE.md immediately (one line each).
