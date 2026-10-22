@@ -1,6 +1,6 @@
 ---
 name: wp-module-save-implementation
-description: Saves the implementation record to the module's impl/ folder, closes the paired plan by setting its status header to Done, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. It is a closing summary, not a mid-flight tracker - the Step 2 act loop maintains the plan's running status while building. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line, and run only on their go.
+description: Saves the implementation record to the module's impl/ folder, closes the paired plan by setting its status header to Done, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. It is a closing summary, not a mid-flight tracker - the Step 2 act loop maintains the plan's running status while building. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line to type `/wp-module-save-implementation`, and run only on their go.
 ---
 
 # Module Save Implementation
@@ -16,9 +16,8 @@ Identify the target **module name** (`<name>`) from the conversation — the mod
 Write to: `project-memory/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
 
 - Use today's date. `<slug>` is a short kebab-case tag for this change; keep it identical to the paired plan file in `plans/` so they pair up.
-- If a record for the **same** change already exists, update it — do not create a duplicate.
 
-Every record MUST contain the elements the project's memory rule requires (`.claude/rules/workspace-update-memory.md` item 1):
+Every record holds the sections below. **Files touched** has one row per file the change touched — every one: the Step 2 decision check finds this record by `grep -l "<FileName>"` (`.claude/rules/workspace-workflow.md`).
 
 ```markdown
 # Impl: <what was done, one line>
@@ -52,27 +51,17 @@ building. Write "None" when nothing was ruled out.)
 
 ## Step 2 · Sync the paired plan (if one exists)
 
-This skill closes a plan out; it does not track it mid-flight. The act loop already maintains
-the plan's status header and its `✔` marks as increments land (`workspace-workflow.md` Step 2),
-so there is one thing left to do here:
+Run in this order; the header is written last.
 
-**Close the plan's status header** — the line directly under the H1 — to match the `**Status**`
-line of the impl record you just wrote (shape, values and the Resume line: the **Status header**
-section of `.claude/skills/_shared-conventions.md`):
-
-```markdown
-> **Status:** Done · **Updated:** <today>
-```
-
-Impl record `TODO left` → `Building`; `Blocked` → `Blocked · **Detail:** <the blocker>`. Never
-`Done` while work remains.
-
-**Before writing `Done`, check the plan's `## Decisions & open items` table for leftover `☐` rows.**
-Each one is either a decision that was in fact made while building — write the answer + why into
-its `Decision + why` cell and flip it to `☑`, since this is the last moment anyone remembers the
-reasoning — or a question still genuinely open. A leftover `🟢` row (open, but it never blocked the
-build) can close out as `Done` with that row still `☐`; say so in the impl record's `Status` line. A
-leftover `🔴` row cannot: the header is `Blocked · **Detail:** <that item>`, not `Done`.
+1. **Leftover rows.** A `☐` row in `## Tasks` is work remaining → the impl record's Status is
+   `TODO left`. A `☐` row in `## Decisions & open items` is either a decision made while building —
+   write its answer + why into `Decision + why` and flip it to `☑`; this is the last moment the
+   reasoning is remembered — or still open: a `🟢` row may stay `☐` (say so in the impl Status line),
+   a `🔴` row makes the impl `Blocked`.
+2. **Header.** Match the impl record's `**Status**`: `Done` → `> **Status:** Done · **Updated:** <today>`
+   and delete the `> **Resume:**` line; `TODO left` → `Building`; `Blocked` →
+   `Blocked · **Detail:** <the blocker>`. Shape and values: **Status header** in
+   `.claude/skills/_shared-conventions.md`.
 
 ## Step 3 · Sync `<name>-flow.md` (lightweight, incremental)
 
@@ -116,9 +105,5 @@ These leaves are the Done slot of the handoff (the **Handoff** section of
   otherwise "on your yes, add the proposed line to the overview".
 - **Closed** when neither applies — a localized fix with no live plan the work belongs to ends with
   `└─ 🏁 Closed  nothing pending`
-- A friction signal this session → the `/wp-retro` reminder of
-  `.claude/rules/workspace-update-memory.md` item 7; the stop is then open.
-
-## Notes
-
-- **Files touched** is the most critical field for a future session — always fill it.
+- A friction signal this session (`.claude/rules/workspace-update-memory.md` item 7) → remind the
+  user to type `/wp-retro`; the stop is then open.

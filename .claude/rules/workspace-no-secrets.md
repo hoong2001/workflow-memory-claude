@@ -24,17 +24,9 @@ Describing a credential in prose is always fine — the ban is on the value, not
 "The report API needs a bearer token, held in the ops vault" passes. So does naming a
 secret's location precisely: `Web.config → connectionStrings/OpsDb`.
 
-## The hook that enforces this
+## When the hook blocks
 
-`.claude/hooks/block-secrets.mjs` denies a call whose incoming text carries a credential; its
-header owns the matcher, the guarded and exempt paths, and fail-open. It never scans `old_string`,
-so an edit that redacts a secret already on disk goes through.
-
-Blocked by it → replace the value with a placeholder and rewrite; the same value never goes
-through another tool.
-
-## Backfilling what predates the guard
-
-`/wp-secret-scan` sweeps every file the hook guards for credentials written before the hook
-existed. A hit that is already committed needs more than an edit — rotate the credential,
-because git history still holds the old value.
+`.claude/hooks/block-secrets.mjs` denies a call whose new text carries a credential (an edit that
+redacts one passes). Blocked → rewrite with a placeholder; the same value never goes through
+another tool. A credential already committed → rotate it, since git history keeps it; for older
+ones, tell the user to run `/wp-secret-scan`.

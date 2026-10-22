@@ -13,8 +13,8 @@ Default to the current session. If the user names another, read its log under
 `~/.claude/projects/<project-slug>/<session-id>.jsonl`. Also read what that session wrote: the
 paired impl record or `TASK.md`, and any `Known gotchas` line it added to a `MODULE.md`.
 
-A session that has scrolled out of context → ask the user to start a fresh session and point
-`/wp-retro` at the old log, rather than reconstructing it from memory.
+A session that has scrolled out of context → ask the user to start a fresh session and type
+`/wp-retro` there, naming the old log, rather than reconstructing it from memory.
 
 ## Step 2 · Collect friction, with evidence
 
@@ -70,7 +70,7 @@ A new check runs once against the repo, and its hits are reported, before it is 
 ## Step 6 · Handoff
 
 Each applied change is a Done leaf. A template change waiting for the master → open: You now = make
-it in the master (or say go to have Claude do it there), Next = `/wp-update-from-master` in each
-project. Nothing picked → closed.
+it in the master (or say go to have Claude do it there), Next = tell the user to run
+`/wp-update-from-master` in each project. Nothing picked → closed.
 
 One session per run: checks added in earlier sessions are pruned by hand when they fire on good work.

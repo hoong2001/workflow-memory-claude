@@ -1,6 +1,6 @@
 ---
 name: wp-task-record
-description: Record a one-off task that belongs to no module - a report run once, a data patch, an ad-hoc investigation, a file conversion - into its own isolated folder under project-memory/tasks/, together with the .sql it used and the material it was given. Use when the work produces a one-time artifact for a person and leaves no code, view, or schema behind in the system, or when the user says "record this task", "記低呢單嘢", "呢個唔關 module 事". Do NOT use when the system keeps something afterwards (that is module work - /wp-module-plan-discuss then /wp-module-save-implementation), and never auto-run it - the trigger belongs to the user.
+description: Record a one-off task that belongs to no module - a report run once, a data patch, an ad-hoc investigation, a file conversion - into its own isolated folder under project-memory/tasks/, together with the .sql it used and the material it was given. Use when the work produces a one-time artifact for a person and leaves no code, view, or schema behind in the system, or when the user says "record this task", "記低呢單嘢", "呢個唔關 module 事". Do NOT use when the system keeps something afterwards (that is module work - /wp-module-plan-discuss then /wp-module-save-implementation). Never auto-run it: when such work finishes or stops on a blocker, REMIND the user in one line to type `/wp-task-record`.
 ---
 
 # Task Record
@@ -47,7 +47,7 @@ Found a candidate → open its `TASK.md` and route by its status line:
 
 | Match's Status | This request | Route |
 |---|---|---|
-| `Doing` / `Blocked` | any | **Same unfinished task** — resume that folder, don't create a new one |
+| `Blocked` | any | **Same unfinished task** — resume that folder, don't create a new one |
 | `Done` | wording says or implies "again" / "monthly" / "same as last time" | **Continuation** — new dated folder as usual, but pull the old `## If this comes back` notes forward as the starting point, and open the new `## Request` section with `Continues: project-memory/tasks/<old-folder>/TASK.md` |
 | `Done` | superficially similar but actually a different ask | **Genuinely new** — say so in one line ("looks different from `<old task>` because X — treating as new") so the user can correct you, then continue |
 
@@ -81,8 +81,7 @@ project-memory/tasks/<YYYY-MM-DD>-<slug>/
 
 - Today's date, `<slug>` short kebab-case naming the request: `2026-09-14-q3-sales-report`.
 - Create `schema/` and `references/` inside it **only when there is something to put in
-  them**. Never scaffold empty folders.
-- If a folder for this same request already exists, update it — do not create a second one.
+  them**.
 
 ## Step 2 · Land every file the task touched
 
@@ -94,11 +93,8 @@ Conventions match the module layer, so nothing new to learn:
 | Material received — spec, email text, screenshot, sample file | `references/` | Consulted on demand, never auto-loaded. |
 | The output itself (the Excel, the PDF sent to the requester) | usually NOT stored | Say in `TASK.md` where it went ("emailed to <role> on <date>"). Store it only if it is small and genuinely needed for comparison next time. |
 
-Two standing rules apply unchanged and are easiest to break here:
+One standing rule is easiest to break here:
 
-- **Credentials** — an ad-hoc `.sql` is the classic place a live connection string gets
-  pasted. Placeholder only; name where the real value lives
-  (`.claude/rules/workspace-no-secrets.md`).
 - **SQL design** — the `wp-sql-query-design` standard governs this query too. One-off is
   not a licence for `SELECT *` or a query nobody can read six months later.
 
@@ -136,9 +132,9 @@ today.
 ```
 
 The header line is the one allowed variant of the **Status header** — `Status · Date · Likely to
-repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. This skill writes
-`Done` when the task has landed. Invoked at the START of a task, it writes the Request section and
-`Doing`, and fills the rest when you land.
+repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. The user runs this
+skill once the work stops: `Done` when the task has landed; `Blocked · **Detail:** <reason>` when it
+stopped on something external, with `## What was done` ending where the work stopped.
 
 ## Step 4 · Report, then stop
 
@@ -149,17 +145,12 @@ repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there.
 └─ 🏁 Closed  nothing pending
 ```
 
-Then stop. Deliberately NOT part of this path:
-
-- No implementation record — `impl/` is the module layer's, and no module changed.
-- No `flow.md`, no `MODULE.md` gotchas, no Module Map row in `CLAUDE.md`.
-- No overview judgment — a one-off report never changes the system's WHAT.
-
 The ✅ leaves above are the Done slot of the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`). `Status: Done` → the closed shape
 (`└─ 🏁 Closed  nothing pending`) and stop. `Status: Blocked` → the open block: You now = clear the
-blocker; Next = where work resumes.
+blocker; Next = resume this folder (Step 0.5 finds it), then type `/wp-task-record` again to set it
+`Done`.
 
-One wrap-up item still applies to a task: if the session hit a friction signal from
-`.claude/rules/workspace-update-memory.md` item 7, remind `/wp-retro` once, the same way — the stop
+If the session hit one of the friction signals in `.claude/rules/workspace-update-memory.md` item 7
+(path-scoped — read it), add the line `friction: <signal> → type /wp-retro to run a retro`; the stop
 is then open, with `/wp-retro` as Next.

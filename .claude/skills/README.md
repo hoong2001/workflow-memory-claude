@@ -4,12 +4,13 @@
 > already states its detailed purpose and "do NOT use" cases — this file is the **map between
 > them**: what runs first, what's optional, and which skill answers "what do I reach for now?"
 
-> Rules that several skills share — the question pattern, interview conduct, the handoff block, the status header — live once in
+> Rules that several skills share — the question pattern, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
 
 ## Trigger convention
 
-- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`; the agent may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `retro`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
+- **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it. `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
+- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`; the agent may *remind* you, naming the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). Everything in the build chain plus `save-implementation`, `retro`, `task-record`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)
@@ -112,7 +113,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
 | `wp-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Expandable cards in the vault — a project card + one card per module, aggregated by two Bases (projects oldest-first, and modules grouped by project); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-triggered |
-| `wp-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `wp-obsidian-progress-log`); reinvents nothing | User-triggered |
+| `wp-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `wp-obsidian-progress-log`); reinvents nothing | User-invoked |
 
 ## Quick "what do I reach for?" forks
 
@@ -122,12 +123,13 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Should this calculation be in the query or the service?** → `sql-query-design` (the row-count test).
 - **Should this be a Strategy / Factory / some pattern?** → `csharp-gof-design-patterns` (no named pain, no pattern).
 - **Plan done, builds in one pass** → just code; skip `technical-design`.
-- **Done coding a milestone** → remember `save-implementation` (your trigger, not the agent's).
-- **The session fought you — rebuilds, repeated corrections, a long hunt for one fact** → `wp-retro` (fixes the workflow so it does not recur; the code is not its job).
-- **Resuming a project after a gap / "where was I?"** → `wp-obsidian-progress-log` (RESUME), or `wp-obsidian-start` if unsure which Obsidian skill you need.
-- **One-off report / data patch, nothing ships into the system** → `wp-task-record` (skip the module layer and Step 3 entirely).
-- **Brand-new system** → `system-spec-discuss` (if needed) → `system-overview-spec-generator`, then per-module main flow.
-- **Worried a password or API key made it into the docs** → `wp-secret-scan`.
-- **Config files edited outside Claude, or connection strings all over the place** → `wp-connstr-check`.
+- **Done coding a milestone** → type `/wp-module-save-implementation` (your trigger, not the agent's).
+- **The session fought you — rebuilds, repeated corrections, a long hunt for one fact** → type `/wp-retro` (fixes the workflow so it does not recur; the code is not its job).
+- **Resuming this project after a gap / "where was I?"** → `project-memory/project-memory-status.md`, then the live plan's `> **Resume:**` line.
+- **Where do all my projects stand?** → `wp-obsidian-progress-log` (RESUME), or type `/wp-obsidian-start` if unsure which Obsidian skill you need.
+- **One-off report / data patch, nothing ships into the system** → type `/wp-task-record` when the work stops (skip the module layer and Step 3 entirely).
+- **Brand-new system** → type `/wp-system-spec-discuss` (if needed) → `/wp-system-overview-spec-generator`, then per-module main flow.
+- **Worried a password or API key made it into the docs** → type `/wp-secret-scan`.
+- **Config files edited outside Claude, or connection strings all over the place** → type `/wp-connstr-check`.
 - **Project is in TFVC, not git — check in, get latest, shelve, merge (which branch → which)** → `wp-tfvc`.
 - **A .NET Framework project uses `PackageReference` and must switch to `packages.config`** → `wp-packageref-to-packages-config`.

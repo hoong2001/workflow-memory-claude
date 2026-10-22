@@ -1,68 +1,35 @@
-# workspace-reduce-coding-mistake.md
+# Reduce Coding Mistakes
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+Bias toward caution over speed; on trivial tasks, use judgment.
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## 1. Think before coding
 
-## 1. Think Before Coding
+State your assumptions. Several readings → present them; a simpler approach → say so and push
+back; anything unclear → name it and ask.
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+## 2. Simplicity — KISS, YAGNI
 
-Before implementing:
+The minimum code that solves the problem: only the features asked for, no single-use abstraction,
+no unrequested configurability, error handling only for cases that can happen. DRY on the second
+occurrence, never the first — an abstraction built for one caller fits the second badly. Would a
+senior engineer call it overcomplicated? Rewrite it shorter.
 
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+## 3. Surgical changes
 
-## 2. Simplicity First (KISS + DRY)
+Every changed line traces to the user's request. Match the existing style; leave adjacent code,
+comments, and formatting as they are; mention unrelated dead code instead of deleting it; remove
+only the orphans your own change created. A change spanning two skills or modules → keep them
+decoupled and state the coupling trade-off for the user to decide.
 
-**Minimum code that solves the problem. Nothing speculative.**
+## 4. Goal-driven execution
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- **DRY** — extract shared logic on the second occurrence, never on the first. An abstraction
-  built for one caller usually fits the second one badly.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-When a change spans two skills or modules:
-
-- Keep them decoupled. State the coupling tradeoff for the user to decide, instead of
-  wiring them together on your own initiative.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria before coding, not after.**
-
-Turn a vague task into an observable done-criterion:
+Before coding, turn the task into an observable done-criterion:
 
 - "Add validation" → "Submitting an empty required field shows the error and blocks the POST"
 - "Fix the bug" → "The exact input that failed now produces <expected output>"
 - "Refactor X" → "Same observable behavior before and after; every listed call site still compiles"
 
-For multi-step tasks, state a brief plan:
+Multi-step → a brief plan:
 
 ```
 1. [Step] → verify: [check]
@@ -71,7 +38,3 @@ For multi-step tasks, state a brief plan:
 ```
 
 Write each criterion as something the user can observe and report back — the test is theirs (`.claude/rules/workspace-workflow.md` Step 2).
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

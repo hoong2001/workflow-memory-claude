@@ -1,6 +1,7 @@
 ---
 name: wp-packageref-to-packages-config
-description: Convert a legacy (non-SDK, .NET Framework) .csproj/.vbproj from NuGet PackageReference to packages.config - writes packages.config with the resolved versions and transitive package deps, replaces PackageReference with Reference+HintPath, adds package build .props/.targets imports, clears stale obj NuGet files, then restores, builds and checks bin output for lost DLLs. Use when asked to convert / switch / revert a project from PackageReference to packages.config (PackageReference 轉 packages.config、改回 packages.config、轉換 NuGet 管理方式). Requires the project name; ask for it if not given.
+description: Convert a legacy .NET Framework project from PackageReference to packages.config, then restore, build, and check bin.
+disable-model-invocation: true
 argument-hint: <project name or path>
 ---
 
@@ -32,8 +33,8 @@ If the script reports the name as ambiguous (same file name in several folders, 
    - Versions are the resolved ones (e.g. NLog 4.6.6 even when NLog.Config asks for 4.5.11).
    - `(framework)` references come from the package `frameworkAssemblies`, the same ones a VS install adds.
    - Read every `WARNING` (content files such as `NLog.config`, runtime-only assemblies) and pass it on to the user.
-3. **`--apply`** writes `packages.config`, removes `PackageReference`/`RestoreProjectStyle`, adds `<Reference>`+`HintPath`, adds `<None Include="packages.config" />`, adds the `.props`/`.targets` imports plus `EnsureNuGetPackageBuildImports`, and deletes `obj\project.assets.json` and `obj\<proj>.nuget.*`. Without that deletion MSBuild keeps importing the old nuget.g.props/targets. The script refuses if packages.config or EnsureNuGetPackageBuildImports already exists; merge those by hand.
-4. **Restore:** `nuget restore <projdir>\packages.config -PackagesDirectory <sln dir>\packages -NonInteractive`. The VS2017 MSBuild cannot restore packages.config, and `MSBuild <sln> /restore` fails on solutions that contain `.vdproj`.
+3. **`--apply`**, then read its `Wrote / Edited / Deleted` lines. Deleting `obj\project.assets.json` and `obj\<proj>.nuget.*` is deliberate — leftovers keep MSBuild importing the old nuget.g.props/targets.
+4. **Restore:** `nuget restore <projdir>\packages.config -PackagesDirectory <sln dir>\packages -NonInteractive`. The VS2017 MSBuild cannot restore packages.config, and `MSBuild <sln> /restore` fails on solutions that contain `.vdproj`. No `nuget` on `PATH` → stop and ask the user to restore once in Visual Studio, then continue at step 5.
 5. **`--check`** must exit 0. A missing HintPath is only warning MSB3245 at build time, so the build alone does not prove it.
 6. **Build the whole solution:** `node .claude/scripts/build-solution.mjs` (pass the `.sln` path when the root holds none or several). Consumers of the project are affected too. Compare errors and warnings with the earlier build.
 7. **Compare the output folder** with `before.txt`. packages.config does not flow packages to consumers the way PackageReference does, so DLLs that came in transitively can disappear. For each missing DLL, check whether it is needed at runtime: config-registered providers (`entityFramework`, `DbProviderFactories`, NLog targets in Web.config/App.config), `Assembly.Load`, or real use in the code (grep). If it is needed, add the package to this project's packages.config. Otherwise, report it as safely gone.

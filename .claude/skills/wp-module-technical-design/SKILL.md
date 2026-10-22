@@ -1,6 +1,6 @@
 ---
 name: wp-module-technical-design
-description: Turn a confirmed plan (from /wp-module-plan-discuss) into a build-ready breakdown — the technical cut (API surface, class/file map per the project's layering, data access, frontend) AND the ordered task list that says in what verifiable chunks it gets built, vertically sliced and grouped into parallel waves when the feature needs it. Use when a plan exists and the work needs nailing down before coding, or the user says "generate technical design", "design the API/classes", "slice this", "break this into increments", "brief to design", "切片". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
+description: Turn a confirmed plan into a build-ready breakdown: the technical cut (API surface, class/file map, data access, frontend) and the ordered task list — vertical slices, parallel waves when the feature needs them. Use when a plan exists and needs nailing down before coding, or the user says "technical design" or "slice this" / "切片". No plan yet → /wp-module-plan-discuss first.
 ---
 
 <what-to-do>
@@ -9,14 +9,10 @@ Take a confirmed plan and produce the build-ready breakdown: the technical cut (
 ordered task list (in what chunks, in what order). The plan owns the WHAT; this skill owns
 everything between that and the first line of code.
 
-Design comes before the task list, always. Cutting a feature into slices means naming a thin path
-through every layer — and you cannot name the path until you know which files sit on it. Slicing
-first is guesswork dressed as planning.
-
 ## Step 1: Locate and absorb the inputs
 
-1. **The plan** — the user names it, otherwise take the most recent file in the target module's `plans/`. If none exists, stop and route to `/wp-module-plan-discuss`.
-2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and skim `impl/` for prior decisions that constrain this design.
+1. **The plan** — the user names it; otherwise grep the status headers (`grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md`) and take the plan at `Planned`. Several → ask which (Question pattern); none → stop and route to `/wp-module-plan-discuss`. Collect its rows marked `→ /wp-module-technical-design` — this run's inbox; Step 5 starts only when each is `☑`.
+2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and the `impl/` records that name a file on the suspected cut — `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md` per file — reading their `Decisions + why` and `Ruled out` sections.
 3. **Hard rules** — apply whatever layering, forbidden patterns, language-version limits, and naming conventions `project-memory/stack-architecture.md` defines; it is non-negotiable.
 4. **Project skills** — follow any stack-bound skills present in `.claude/skills/` (e.g. a data-layer pattern skill, a frontend-standards skill); the design must not contradict them.
 
@@ -30,8 +26,8 @@ Walk the layers top-down. For each design decision follow the **Question pattern
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
-- **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack)
-- **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern
+- **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack) — a design pattern enters only with its named pain (`wp-csharp-gof-design-patterns`), written under Decisions + why
+- **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-sql-query-design`
 - **Frontend** — view file, script/component structure, which stack components render which widget (e.g. DataTables / ECharts / Select2 / datepicker)
 - **Wiring** — whatever the project needs for the change to actually appear: menu/permission registration, route config, bundle/asset registration
 
@@ -41,6 +37,11 @@ Batch related small decisions into one round; don't interrogate trivia the archi
 whole feature costs little and is what makes the next step possible; a full up-front design of every
 detail is the speculation this step must not become. Detail per task is deepened when you reach it.
 
+If the plan is missing information the design needs (e.g. an undefined metric formula), surface the
+gap and resolve it with the user first — don't design on top of a guess. Record the resolution as a
+row in the plan's `## Decisions & open items` table (decision + why, `☑ Resolved`), not just in the
+design.
+
 ## Step 4: Break it into tasks
 
 **Every plan this skill touches gets a `## Tasks` table — there is no "too small for tasks".** What changes with size
@@ -49,7 +50,8 @@ is what the rows are:
 | The plan | Rows are | Extra columns carry |
 |---|---|---|
 | One demoable behavior, builds in one code→build→test pass | The plain steps to do it | `—` for Layers / Blocked by / Wave |
-| Multiple behaviors, a full flow end-to-end, or a wide refactor | **Vertical increments** (tracer bullets) | Real layers, blocking edges, and waves |
+| Multiple behaviors, or a full flow end-to-end | **Vertical increments** (tracer bullets) | Real layers, blocking edges, and waves |
+| A wide refactor — one mechanical change across many call sites | **Expand → migrate → contract** batches (**The wide-refactor exception**, below) | Blocking edges in that order |
 
 ### When the rows are vertical increments
 
@@ -68,13 +70,14 @@ that groundwork as the first increment(s).
 **Order by blocking.** Each increment declares **Blocked by:** the increments that must land first,
 and blockers are listed earlier in the sequence.
 
-**Don't manufacture increments.** A feature that genuinely builds in one pass gets plain steps, not
-five ceremonial slices. Say so and move on.
+Every increment must be a **full vertical path** that can be built, manually tested, and demoed on
+its own — the skeleton and other prefactor rows excepted, done on a green build. If a proposed
+increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 
 ### Parallel waves
 
 Increments that span several layers get a **wave** each, so subagents can write them at once
-(`workspace-workflow.md` Step 2 → **Parallel waves** runs them). Plain steps stay sequential:
+(**Running a wave** below runs them). Plain steps stay sequential:
 `Wave` = `—`.
 
 1. **Skeleton first** — row #1, alone in Wave 1, done when the build is green:
@@ -92,6 +95,10 @@ Increments that span several layers get a **wave** each, so subagents can write 
    map belongs to exactly one of them. A file two layers would both edit → move that edit into the
    skeleton, or add a `Blocked by` edge so the two rows land in different waves.
 
+#### Running a wave
+
+On the user's go per wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: dispatch one background `Agent` per layer the wave touches (Data / Service / Web, ownership per **Parallel waves** above), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check, then the user tests each row of the wave. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
+
 ### Quiz the user before writing
 
 Walk the proposed breakdown with them using the **Question pattern** in `.claude/skills/_shared-conventions.md`. Confirm
@@ -102,8 +109,7 @@ agreed.
 
 Append `## Technical Design` and `## Tasks` to the SAME plan document
 (`plans/<name>-<date>-<slug>.md`) — never a separate file, so the plan/impl pairing stays
-one-to-one. Use the templates below and project-root-relative paths only (see
-`workspace-doc-relative-paths.md`).
+one-to-one. Use the templates below.
 
 **Set the plan's status header to `Designed`** — the line directly under the H1 (rules: the
 **Status header** section of `.claude/skills/_shared-conventions.md`):
@@ -112,17 +118,14 @@ one-to-one. Use the templates below and project-root-relative paths only (see
 > **Status:** Designed · **Updated:** <today>
 ```
 
-Stop after the breakdown is confirmed. Coding starts only on the user's go, and each task runs
-through the normal Step 2 work loop (code → build → test → save).
-
-**Offer a diagram** — the **Optional diagram (archify)** section of `.claude/skills/_shared-conventions.md`.
+**Offer a diagram** — `.claude/skills/_optional-diagram.md`.
 Options: "No diagram" (recommended) · "Class diagram of the Class & file map" · "Architecture of the
 layers touched" (source for both: the `### Class & file map` just written). Link line goes at the end
 of that `### Class & file map` section.
 
 **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
 Done = the plan path, `Status: Designed`, and the task count; You now = review the `## Tasks` table
-and say go; Next = task 1 through the Step 2 act loop (name the task).
+and say go; Next = task 1 through the Step 2 act loop (name the task). Coding waits for that go.
 
 </what-to-do>
 
@@ -153,15 +156,9 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 | File | New/Modified | Layer | Responsibility |
 |------|--------------|-------|----------------|
 
-Any design pattern in this map follows `wp-csharp-gof-design-patterns` — it enters only with its
-named pain, written under **Decisions + why**. No pain named, no pattern: plain classes.
-
 ### Data access
 
 Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.
-
-The SQL approach follows `wp-sql-query-design` — place logic on the correct side of the
-SQL/Service line here, or the build inherits the wrong cut.
 
 ### Frontend structure
 
@@ -198,15 +195,10 @@ SQL/Service line here, or the build inherits the wrong cut.
 ```
 
 The `> Broken down:` line states which kind the rows are, so a reader knows whether each row is
-independently demoable or just the next step. The `✔` column starts all `☐`; the Step 2 act loop
-ticks each row `☑` as it lands and keeps the header's `N/M` counter in step.
+independently demoable or just the next step. The `✔` column starts all `☐`.
 
 ## Guardrails
 
-- A design that violates the stack hard rules is dead on arrival — fix it before presenting, don't present-then-apologise.
-- If the plan is missing information the design needs (e.g. an undefined metric formula), surface the gap and resolve it with the user first — don't design on top of a guess. Record the resolution as a row in the plan's `## Decisions & open items` table (decision + why, `☑ Resolved`), not just in the design. Rows the plan marked `→ /wp-module-technical-design` are this step's inbox — close every one of them, or the plan still carries an open `☐` after the design lands.
-- Keep the design at cut-level (files, methods, SQL approach) — no full code listings; code belongs to implementation.
-- When the rows are vertical increments, every one must be a **full vertical path** that can be built, manually tested, and demoed on its own — the skeleton and other prefactor rows excepted, done on a green build. If a proposed increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
 - Keep every row at the level of what gets done, not how — the HOW is the `## Technical Design` section above it, the code is the work loop.
 - The **Manager summary** cell is for a reader who never opens the code: what the task delivers or changes for the business, in plain words, under 50 words. No file, class, method, table or layer names — those stay in `Task` and `Layers touched`.
 - New gotchas or conventions discovered while exploring code → backfill the module's MODULE.md immediately (one line each).

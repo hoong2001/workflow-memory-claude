@@ -1,6 +1,7 @@
 ---
 name: wp-system-overview-spec-generator
-description: Bootstrap a brand-new system from a reasonably complete spec/PRD/design doc — generate project-memory/overview/system-overview-spec.md (the WHAT) and scaffold the modules derived from it, after ONE sign-off on the tech-reconciliation diff + module decomposition. Also handles the expansion re-run - existing module folders are never re-scaffolded or overwritten. Trigger on "fill in the spec template", "draft the system overview", "build the modules from this spec", "治理檔 / 總覽 spec". Do NOT use for a single module/component spec, or to edit the architecture (HOW) doc.
+description: Bootstrap a system from its spec: overview + module scaffolds, one sign-off.
+disable-model-invocation: true
 ---
 
 # System Overview & Spec Generator (System Bootstrap)
@@ -9,19 +10,15 @@ Turn an arbitrary external spec into **(1)** a filled-in **System Overview & Spe
 single governance file answering **WHAT a system is and does**) **and (2)** the **scaffolded
 modules** derived from it — in one run, with one human sign-off checkpoint.
 
-The canonical overview structure lives in `assets/system-overview-spec.template.md`. Always start
-from that file so section order, headings, and the embedded governance comments stay intact.
-
-## The two boundaries that make this work
+## The boundaries
 
 **WHAT, not HOW.** The overview answers what the system is and does. It must contain **zero**
 stack / framework / layer / implementation detail — that is the architecture doc's job
 (`project-memory/stack-architecture.md`). A spec almost always carries tech; it does
 NOT get copied into the overview (see Step 4).
 
-**Whole, not part.** The overview is the WHOLE system. A module is a COMPONENT. Never nest the
-overview inside a module, never pull component internals into it, never restate the module index
-(that lives in root `CLAUDE.md` "Module Map").
+**Whole, not part.** The overview is the WHOLE system; a module is a COMPONENT. Component internals
+stay in the module's docs, and the module index stays in root `CLAUDE.md` "Module Map".
 
 **Tech binds to the module, not the overview.** Module-relevant technical detail travels with the
 module — it is written into that module's `MODULE.md` when scaffolded (Step 7), never into the
@@ -31,18 +28,19 @@ overview.
 
 ### Step 0 — Confirm this is a system bootstrap (or a system expansion re-run)
 This skill needs a reasonably **complete** spec (purpose, capabilities, ideally data entities). If
-the spec is thin or fuzzy, stop and route to `/wp-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
+the spec is thin or fuzzy, stop and tell the user to run `/wp-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
 
 Two run modes, same procedure:
 - **First bootstrap** — no overview filled yet, no real modules exist.
 - **Expansion re-run** — the system is live and a new expansion spec arrives. The overview is
   updated **in place** (§4/§5 grow; it stays ONE file per system).
 
-### Step 1 — Load the template
-Read `assets/system-overview-spec.template.md`. This is the skeleton you fill. Preserve every
-heading and every `<!-- ... -->` governance comment verbatim; you only replace `(TBD)` /
-placeholder lines with real content. (If this file is missing, do not improvise — restore it
-first; a missing template is what lets HOW leak in.)
+### Step 1 — Load the skeleton
+First bootstrap → read `assets/system-overview-spec.template.md`. Expansion re-run → read the live
+`project-memory/overview/system-overview-spec.md` instead; its filled lines stay unless the new spec
+changes them, and §4/§5 grow. Either way: preserve every heading and every `<!-- ... -->`
+governance comment verbatim, and replace only `(TBD)` / placeholder lines or lines the new spec
+changes. (Template missing → restore it first; a missing template is what lets HOW leak in.)
 
 ### Step 2 — Read and mine the external spec
 Read the source document in full. Extract raw material for each target section using the
@@ -50,9 +48,9 @@ Read the source document in full. Extract raw material for each target section u
 
 ### Step 3 — Gap analysis (complete → proceed; gaps → ask first)
 Classify each section: **Confident** (stated or follows unambiguously) or **Gap** (you would guess).
-- No meaningful gaps → continue.
-- Meaningful gaps → list them and ask focused questions BEFORE generating. Offer concrete options
-  so the user is never left guessing. Once answered, continue.
+- A Gap in §1, §2 or §4 (what §5 and the scaffold are built from) → ask before generating, one
+  Question pattern question per Gap (`.claude/skills/_shared-conventions.md`).
+- A Gap in §3, §6 or §7 → write `(TBD — <what is needed>)` and continue; Step 8's checklist lists it.
 
 ### Step 4 — Tech reconciliation (keep HOW out of the overview)
 Specs usually carry a tech stack / framework. Extract it, but **do not write it into the overview.**
@@ -65,7 +63,8 @@ architecture doc should change is the **user's** decision — you only surface t
 lists for the checkpoint in Step 6.
 
 ### Step 5 — Fill the overview (WHAT only)
-Write the template section by section per the guide below. Obey WHAT-not-HOW / whole-not-part
+Write §1–§4, §6 and §7 per the guide below; §5 stays `(TBD)` until the Step 6 sign-off — Step 7
+writes it. Obey WHAT-not-HOW / whole-not-part
 throughout. One idea per bullet. Flag any assumption inline.
 
 ### Step 6 — ONE sign-off checkpoint (tech diff + module decomposition)
@@ -142,8 +141,8 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
 - All template headings and governance comments preserved verbatim; first-use acronyms expanded.
 
 ## Notes
-- Match the source document's language for filled content when it is not English; keep the
-  template's English headings/comments as-is.
+- Write filled content in English, whatever the source's language
+  (`.claude/rules/workspace-doc-writing-style.md`).
 - If the user pastes the spec inline instead of as a file, treat the pasted text as the source.
 - If multiple candidate "systems" appear in one source, confirm which one this overview is for —
   this file is ONE per system.

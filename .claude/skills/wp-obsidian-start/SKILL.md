@@ -1,24 +1,20 @@
 ---
 name: wp-obsidian-start
-description: Entry point for working with the user's Obsidian vault. Infers what the user wants to do with Obsidian and routes to the right underlying Obsidian skill (CLI, Markdown, Bases, Canvas, web capture) instead of reinventing them. Use when the user's request names Obsidian but the specific action is not yet pinned down — "open obsidian", "用 obsidian", "obsidian 幫我...", "put this in my vault", "start a note", or any vault task where the tool/format to use is unclear. Do NOT use when the action is already unambiguous — go straight to the specific skill (e.g. reading a note → obsidian:obsidian-cli; writing note syntax → obsidian:obsidian-markdown).
+description: Route an Obsidian vault request to the right obsidian:* skill.
+disable-model-invocation: true
 ---
 
 # Obsidian Start — vault dispatcher
 
-This skill is a **router, not a worker**. It never re-teaches CLI commands or Markdown
-syntax. Its whole job is: figure out what the user wants to do with their Obsidian vault,
-then hand off to the right underlying Obsidian skill. Those skills own the actual how-to and
-stay maintained upstream — this dispatcher just points at them.
+This skill is a **router, not a worker**: infer what the user wants in the vault, then hand off
+to the skill that owns it.
 
 ## Step 1 · Preflight
 
-- **This dispatcher resolves no vault path itself** — it only routes. Every write path is owned
-  by the skill it hands off to: `wp-obsidian-progress-log` reads its own config;
-  `obsidian:obsidian-cli` targets the focused vault; `obsidian:obsidian-markdown` composes and
-  writes through the CLI. So there is nothing to configure here and NO dependency on any sibling
-  skill — the two Obsidian skills stay fully independent and can be split apart without breaking.
 - Any command that talks to a live vault (via `obsidian:obsidian-cli`) needs **Obsidian open**.
   If a CLI action is coming and it may not be running, say so in one line before proceeding.
+- A route's `obsidian:*` skill missing from the available-skills list → the Obsidian skills plugin
+  is not installed here: say so in one line and stop.
 
 ## Step 2 · Infer the intent (do not ask yet)
 
@@ -45,12 +41,6 @@ one-line description). Then route per the table.
 
 ## Step 4 · Hand off
 
-Invoke the chosen skill (via the Skill tool) and follow its guidance to completion. This
-dispatcher adds nothing on top except the routing decision — the chosen skill's closing handoff
-closes this run too; do not add a second one.
-
-## Step 5 · Never write silently
-
-The vault is the user's. Before creating, overwriting, or modifying
-ANY note or vault file, state exactly what will be written and where, and get a yes first.
-Reading and searching need no confirmation.
+Invoke the chosen skill (Skill tool) and follow it to completion. Before it creates, overwrites
+or modifies any note or vault file, state what will be written and where, and get a yes; reads
+and searches go ahead unconfirmed. The chosen skill's closing handoff closes this run too.

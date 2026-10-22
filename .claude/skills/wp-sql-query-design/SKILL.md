@@ -1,18 +1,16 @@
 ---
 name: wp-sql-query-design
-description: SQL query design standard for this stack — decides what belongs in SQL versus the C# Service layer via the row-count test, bans SELECT *, and keeps the SQL that remains simple, readable, and maintainable. Use whenever writing or reviewing any SQL: a query inside a Repository method, a .sql schema or seed script, a persisted test script. Also trigger when deciding where a calculation or rule should live, simplifying a query that has grown hard to follow, judging whether a performance rewrite is worth its readability cost, or on questions about GROUP BY vs LINQ, N+1 queries, paging, CASE expressions in SQL, window functions, CTE vs temp table, or "should this be in the query or in the service". Use alongside wp-repository-unitofwork-pattern (which owns the C# plumbing around the query — DynamicParameters, UnitOfWork, Dapper method choice) and the workspace-sql-house-style rule (which owns .sql-file conventions such as plain-INSERT seed scripts), never instead of them.
+description: SQL query design for this stack: the row-count test decides what belongs in SQL vs the C# Service layer, and the SQL that remains stays simple and readable. Use when writing or reviewing any SQL (a Repository query, a .sql schema, seed, or test script), deciding where a calculation or rule should live, weighing a performance rewrite against readability, or on N+1, paging, window-function, or CTE-vs-temp-table questions.
 ---
 
 # SQL Query Design
 
 Applies to every piece of SQL this project writes — a Repository query, a `.sql` schema or seed
-script, a persisted test script. A one-line `SELECT` clears these rules in one pass; a report
-query is where they earn their keep.
+script, a persisted test script. Done when every query this task writes or reviews passes every
+row of the **Review checklist** at the end.
 
-Readability and maintainability rank above query cleverness. A query that a teammate reads
-once and understands is worth more than one that shaves 40ms off a page nobody complained
-about. Performance still matters — this skill says when it is allowed to cost you clarity,
-and demands evidence before it does.
+Readability and maintainability rank above query cleverness: performance may cost clarity only
+with a **measured** number (*Paid performance*).
 
 ## Scope — what this skill owns, and what it does not
 
@@ -20,14 +18,14 @@ and demands evidence before it does.
 |---|---|
 | What the query should do, how simple it should be, where logic lives | **this skill** |
 | `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-repository-unitofwork-pattern` |
-| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file — and, for all SQL, read the real definition first | `workspace-sql-house-style.md` rule |
+| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `workspace-sql-house-style.md` rule |
 | Stack versions, layering, forbidden patterns | `project-memory/stack-architecture.md` |
-
-Never restate a rule from those three here. Point to them.
 
 The readability rules below apply to `.sql` files too — a seed or schema script gets the same
 explicit column lists and the same ban on `SELECT *`. The house-style rule owns what is
 special about `.sql` files; this skill owns what every piece of SQL has in common.
+
+Seed / reference data ships as a `.sql` file in the module's `schema/` (`workspace-sql-house-style.md` rule 3).
 
 ---
 
@@ -40,9 +38,6 @@ The test is objective, so two people applying it reach the same answer. It also 
 put the database engine on exactly the work it is better at — reducing a result set — and
 leaves the reasoning about that result set to a language you can debug and unit-test.
 
-Ordering is the one addition the test does not cover: keep `ORDER BY` in SQL even without
-paging, because an index supplies order for free and the C# sort would be pure waste.
-
 ### Where each kind of logic belongs
 
 | Work | Where | Why |
@@ -50,7 +45,7 @@ paging, because an index supplies order for free and the C# sort would be pure w
 | `WHERE` filtering | SQL | Fewer rows returned |
 | `JOIN` | SQL | The set operation the engine exists for |
 | `GROUP BY` + `SUM`/`COUNT`/`MAX` | SQL | 2000 detail rows become 20 |
-| `ORDER BY` | SQL | The index already provides it |
+| `ORDER BY` | SQL, even without paging | The index supplies order; a C# sort is waste |
 | Paging (`OFFSET`/`FETCH`) | SQL | Fewer rows returned |
 | `DISTINCT` on a real duplicate | SQL | Fewer rows returned |
 | Business rules — discount tiers, credit scoring, status derivation, eligibility | C# Service | Row count unchanged; needs tests and a readable name |
@@ -127,8 +122,8 @@ using (var uow = new UnitOfWork(_connectionString))
 }
 ```
 
-For a parent list plus a child list that do not flatten cleanly, `QueryMultiple` returns both
-sets in one round trip — see `wp-repository-unitofwork-pattern` for the call itself.
+For a parent list plus a child list that do not flatten cleanly, one `QueryMultiple` call returns
+both sets in one round trip.
 
 **Review trigger:** any `foreach` whose body calls a Repository method through the UnitOfWork
 (`uow.<Entity>Repo...`). Check every one.
@@ -137,12 +132,18 @@ sets in one round trip — see `wp-repository-unitofwork-pattern` for the call i
 
 ## Keep the query readable
 
-### `SELECT *` is banned — no exceptions
+### Read the real definition first
+
+Before designing anything on top of a view or table, read its ACTUAL current definition — the
+`.sql` in the module's `schema/` folder, or the live database object. Never infer a schema from a
+sibling module or an earlier design document, and never rely on recall. The user hand-edits views:
+their local edit is the source of truth, and every round of "fix the columns" is a round a single
+read would have prevented. Echo back the exact column list you are relying on before writing the
+query, so a mismatch surfaces in one cheap confirmation.
+
+### List every column — `SELECT *` is the one absolute ban
 
 ```sql
--- ❌ Never. Not in a quick query, not in a dynamic template, not "just for now"
-SELECT * FROM Products WHERE IsActive = 1
-
 -- ✅ The query states its own contract
 SELECT ProductID, ProductName, Price, CategoryID, IsActive
 FROM Products
@@ -202,66 +203,40 @@ WHERE oc.OrderCount > @MinOrders
 
 Stop at two CTEs. A third is usually two Repository methods, or work that belongs in C#.
 
-**Reference a CTE once.** A non-recursive CTE in SQL Server is an inline view, not a stored
-result — the optimizer expands its definition at every reference point, so referencing it
-twice can run the underlying query twice. (It may insert a spool to reuse the result, but that
-is its choice, not a guarantee.) Referenced once, a CTE and a subquery produce the identical
-plan, which is why the readable form is free.
-
-Do not preemptively rewrite a multi-reference CTE into a temp table. Write it the readable
-way, and if that query later shows up as an actual measured problem, this paragraph tells you
-where to look first.
+**Reference a CTE once.** SQL Server expands a non-recursive CTE at every reference, so a second
+reference can run its query twice; referenced once, it compiles to the same plan as the subquery.
+A multi-reference CTE stays as written until a measured problem sends it to *Paid performance*.
 
 ### Alias every table, and mean something by it
 
-`o` for Orders, `oi` for OrderItems. Never `a`, `b`, `t1`. Qualify every column in a
+`o` for Orders, `oi` for OrderItems. Qualify every column in a
 multi-table query — an unqualified column becomes ambiguous the day someone adds it to the
-other table.
+other table. Join conditions go in `ON`, filters in `WHERE`, where a reader looks for them.
 
 ### Formatting inside C# verbatim strings
 
-C# 7.3 has no raw string literals, so SQL lives in `@"..."`. Align the continuation to the
-opening quote and keep one clause per line — the same shape as `wp-repository-unitofwork-pattern`.
-
-```csharp
-var sql = @"SELECT o.OrderId,
-                   o.OrderDate,
-                   SUM(oi.Qty * oi.Price) AS SubTotal
-            FROM Orders o
-            INNER JOIN OrderItems oi ON oi.OrderId = o.OrderId
-            WHERE o.CustomerId = @CustomerId
-            GROUP BY o.OrderId, o.OrderDate
-            ORDER BY o.OrderDate DESC";
-```
-
-Keywords upper case, identifiers as the schema spells them. One-line queries stay on one
-line — `"SELECT ProductId, ProductName FROM Products WHERE ProductId = @ProductId"` needs no
-ceremony.
+SQL lives in `@"..."` (C# 7.3 has no raw string literals): one clause per line, continuation
+aligned under the first keyword, keywords upper case, identifiers as the schema spells them — the
+shape of every sample here and in `wp-repository-unitofwork-pattern`. A one-line query stays on
+one line.
 
 ---
 
 ## Free performance — costs no readability, so always do it
 
-- **Never wrap an indexed column in a function in `WHERE`.** `WHERE YEAR(OrderDate) = @Year`
-  scans; `WHERE OrderDate >= @YearStart AND OrderDate < @NextYearStart` seeks. The range
-  version is also the clearer statement of intent.
-- **Explicit column lists** — already the rule above; it also stops the engine reading
-  columns nobody wanted.
+- **Compare an indexed column bare in `WHERE`.** `OrderDate >= @YearStart AND OrderDate <
+  @NextYearStart` seeks; `YEAR(OrderDate) = @Year` scans. The range also states the intent.
 - **Set-based over row-by-row.** One `INSERT` with multiple `VALUES` rows, or one `UPDATE ...
   FROM`, instead of a C# loop calling `Execute` per row. Cursors are never the answer here.
 - **`EXISTS` instead of `COUNT(*) > 0`** when you only need to know whether a row exists —
   it stops at the first match and says what you meant.
-- **Kill N+1** — see above.
 
 ## Paid performance — costs readability, so bring evidence
 
 Query hints, covering indexes designed around one query, window functions replacing a
 readable aggregate, temp tables, denormalized read paths, `UNION` rewrites of `OR`.
 
-None of these is a default. Reaching for one before a problem exists is over-engineering:
-it buys a hypothetical gain with certain, permanent complexity, and the codebase pays the
-interest forever. Write the simple version, ship it, and let real data tell you if it is a
-problem.
+None of these is a default: ship the simple version, and rewrite only on a measured problem.
 
 **Once it is a problem, you need a measured number before rewriting**: the actual row count
 and the actual execution time, from realistic data. Not an estimate, not a hunch. Then leave
@@ -275,22 +250,8 @@ the number in the code:
 A rewrite without that comment is an unexplained complication, and the next person will
 either break it or revert it. The comment is what makes the trade reversible.
 
----
-
-## Three pieces of common advice that are wrong
-
-**Moving an `INNER JOIN` filter from `WHERE` into `ON` is not an optimization.** For an inner join
-the optimizer produces the same plan either way. Put join conditions in `ON` and filters in
-`WHERE`, where a reader looks for them. (For an `OUTER JOIN` the two placements return different
-rows — a correctness choice, not a speed one.)
-
-**`DISTINCT` → `GROUP BY` is not an optimization.** They deduplicate identically. The real
-smell is a `DISTINCT` that exists to hide a join producing rows you did not want — fix the
-join, or accept the `DISTINCT` as intentional. Swapping the keyword changes nothing.
-
-**`OR` → `UNION` needs `UNION`, not `UNION ALL`.** The rewrite only holds when the branches
-are mutually exclusive; when a row can satisfy both, `UNION ALL` duplicates it, and plain
-`UNION` adds a sort that often eats the gain. Prove exclusivity or leave the `OR` alone.
+Before proposing or accepting an `ON`↔`WHERE`, `DISTINCT`→`GROUP BY`, or `OR`→`UNION` rewrite,
+read `references/rewrites-that-buy-nothing.md`.
 
 ---
 
@@ -303,6 +264,7 @@ are mutually exclusive; when a row can satisfy both, `UNION ALL` duplicates it, 
 - [ ] No `foreach` in a Service calling a Repository
 
 **Readability**
+- [ ] Columns read from the real view/table definition and echoed back before the query was written
 - [ ] Explicit column list, no `SELECT *`
 - [ ] Every computed column aliased
 - [ ] At most two CTEs, no nested subquery that reads inside-out

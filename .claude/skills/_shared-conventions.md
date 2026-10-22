@@ -21,31 +21,6 @@ If `AskUserQuestion` is unavailable in the current environment, fall back to lis
 same options as numbered plain text and asking the user to pick one or state a custom answer —
 never revert to a bare statement waiting for a nod.
 
-## Interview conduct
-
-- **One question at a time** — wait for the answer before asking the next.
-- **Explore before asking** — if the codebase or the existing docs can answer it, read them
-  instead of spending a question on it.
-
-## Optional diagram (archify)
-
-`/wp-module-code-trace-flow` and `/wp-module-technical-design` offer one interactive diagram at the
-end of a run, before the handoff. The text (and the Mermaid block in `<name>-flow.md`) stays the
-source of truth; the diagram is for people and is never read back as a source.
-
-- **Only when `archify` is in the available-skills list.** It is a personal skill, not part of this
-  template — absent, skip this section without a word.
-- **Ask once, never draw unasked.** One diagram costs roughly 15–25k tokens (archify reads its
-  schema, example and authoring rules, writes typed JSON, then runs browser-backed checks). Ask
-  through `AskUserQuestion` (**Question pattern**), with "No diagram" as the recommended option.
-  The skill that calls this section names the diagram options.
-- **On yes,** invoke the `archify` skill. Hand it the source the calling skill names (the Mermaid
-  block, or the plan's Class & file map) and, as its output location, the folder
-  `project-memory/modules/<name>/diagrams/` — archify creates its own `<type>-<slug>-<timestamp>/`
-  folder inside it.
-- **Link it, one line,** where the calling skill says: `Diagram: diagrams/<folder>/<file>.html — <type>, <date>`.
-  The HTML is a Done leaf of the handoff.
-
 ## Handoff
 
 Every skill run ends with a handoff, and so does every task that runs without a skill
@@ -65,7 +40,8 @@ only when something is still pending, what is the user's to do and what comes af
 
 **The block is a tree inside a ` ```text ` fence** (the fence keeps the branch characters aligned).
 Each slot is a branch, in the order below; each item under a slot is a leaf. One leaf is one line;
-a long item is cut short, never wrapped. A slot with nothing to say is no branch.
+a long item is cut short, never wrapped. A slot with nothing to say is no branch — except
+**You now** in the open block, which reads `nothing`.
 
 **The tree is the only place that says what was done.** Text above it carries only what a leaf
 cannot: a judgment and its reason the user needs (why something was left out, what a check found).
@@ -131,7 +107,9 @@ emoji variation selector).
   - **Both in one stop** — the action stays the line, and the choice goes to the tool.
 - **Next** names ONE step: a skill (`/wp-...`) or a workflow step (e.g. "Step 2 act loop, task 1").
   At a fork, name the recommended branch and the condition for the other in the same line. It is
-  a reminder, never an action: a user-triggered skill stays user-triggered.
+  a reminder, never an action: a user-triggered skill stays user-triggered, and the leaf names the
+  full command for the user to type (`Ready to record → type /wp-module-save-implementation`,
+  `type /wp-retro`).
 - **Stopping blocked or mid-flight** still gets the block: Done says what landed, You now names
   the blocker the user must clear, Next says where work resumes.
 - **A plan is live → its `> **Resume:**` line takes You now and Next** in the same turn (see
@@ -154,8 +132,8 @@ record (`project-memory/tasks/<date>-<slug>/TASK.md`) opens with ONE line direct
 > **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
 ```
 
-A plan's line holds up to three fields, always in this order (a task record uses the one variant
-under **Rules that hold for both**):
+A plan's line holds up to three fields, always in this order (a task record: **Values — one-off
+task records**):
 
 - **`Status`** — one bare word from the value set below, never decorated. It names the last thing
   that actually happened to the document — which step the work stopped at, not merely that it
@@ -208,12 +186,16 @@ the table.
 
 ### Values — one-off task records
 
-A one-off task has no design step and no slicing, so it carries three values only:
+A task record's line is `Status · Date · Likely to repeat` (`Detail` after `Status` when
+`Blocked`): `> **Status:** Done · **Date:** 2026-09-14 · **Likely to repeat:** Monthly`. `Date` is
+the day the work happened.
+
+A one-off task has no design step and no slicing, and its record is written once the work stops, so
+it carries two values only:
 
 | Status | Detail | Means | Set by |
 |---|---|---|---|
-| `Doing` | — | The work is live; the Request section is written, the rest is not | `/wp-task-record` |
-| `Blocked` | one line: the reason (required) | Stopped on something external | whoever hits the blocker |
+| `Blocked` | one line: the reason (required) | Stopped on something external; the record ends where the work stopped | `/wp-task-record` |
 | `Done` | — | Finished | `/wp-task-record` |
 
 ### Rules that hold for both
@@ -221,10 +203,7 @@ A one-off task has no design step and no slicing, so it carries three values onl
 - **Whoever appends a section to the document sets `Status` to their own value** — no exceptions
   to remember.
 - **Keep it on ONE line in that exact shape** — fields in the order `Status · Detail · Updated`,
-  separated by ` · `. The single allowed variant is the one-off task record's
-  `Status · Date · Likely to repeat` (`Detail` after `Status` when `Blocked`):
-  `> **Status:** Done · **Date:** 2026-09-14 · **Likely to repeat:** Monthly`.
-  Unfinished work is found by scanning headers, never
+  separated by ` · `. Unfinished work is found by scanning headers, never
   by opening every file, and a scan that has to parse variations is a scan that silently misses
   work:
   ```bash
@@ -234,7 +213,6 @@ A one-off task has no design step and no slicing, so it carries three values onl
   `[!_]` skips `plans/_README.md`, whose example header would otherwise read as live work in
   every module.
 - **`Updated` is the date this header last changed**, not the date the document was written.
-  A task record's `Date` is the day the work happened.
 - **The document is the single source of truth for its own progress.** No one writes a copy by
   hand. The one derived view is `project-memory/project-memory-status.md` — every module plan not
   `Done`, in one table (Done plans are left out, so it never grows with history), rebuilt by the

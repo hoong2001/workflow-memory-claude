@@ -1,6 +1,6 @@
 ---
 name: wp-obsidian-progress-log
-description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", "收工", "where was I", "what's pending", "還有什麼未做", "resume this project". Never suggest it unprompted — not everyone uses Obsidian. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
+description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", or asks where things stand across projects in the vault. Never suggest it unprompted — not everyone uses Obsidian. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
 ---
 
 # Obsidian Progress Log — cross-project state board
@@ -23,18 +23,15 @@ project's own `project-memory/modules/*/impl/`, `plans/`, and `<name>-flow.md`
 **Trigger is manual.** Never write to the vault on your own, and never prompt the user to log or
 read back — not everyone uses Obsidian, so this skill runs only when the user invokes it.
 
-**Separate from this skill, an automatic mirror shares the same vault path.** On a machine with a
-vault configured (**Vault path** below), the `.claude/hooks/project-memory-status.mjs` hook writes each
-project's live plans to `Project Progress/<project>/_plans.md` and rebuilds
-`Project Progress/_Live plans.md` across all projects. Those two files are hook-generated: never
-edit them, never fold them into the cards.
+The two `_…plans.md` files in **Layout** come from `.claude/hooks/project-memory-status.mjs` on any
+machine with a vault path set.
 
 **Vault path — the `vaultPath` value of the first of these config files that sets one** (the
 hook's order; a value still holding the example's `<you>` placeholder counts as unset):
 1. this skill's `references/vault-path.local.json` (machine-local, gitignored, never synced);
 2. `~/.claude/progress-vault.json` (per user, every project on the machine).
 
-Never hardcode a path in the skill body. **Neither sets one → do NOT guess or use a default** —
+**Neither sets one → do NOT guess or use a default** —
 tell the user in one line to copy `references/vault-path.example.json` →
 `references/vault-path.local.json` (same folder) and set their vault's absolute path, then stop
 until they've done it. Everything lives under a `Project Progress/` folder inside that vault
@@ -52,9 +49,7 @@ until they've done it. Everything lives under a `Project Progress/` folder insid
    needed.
 2. **CLI absent** → fall back to writing the notes and the `.base` files directly to the vault
    folder with normal file tools. The vault is plain Markdown, so this is a sanctioned, equivalent
-   fallback. Use the vault path resolved above — never hardcode it.
-
-Either track still obeys Step 3: never write to the vault before the user confirms the draft.
+   fallback. Use the vault path resolved above.
 
 ## Layout in the vault
 
@@ -62,14 +57,16 @@ Either track still obeys Step 3: never write to the vault before the user confir
 Project Progress/
 ├── Projects.base              top level — every project card, oldest-touched first
 ├── Modules.base               drill-down — every module card, grouped by project
+├── _Live plans.md             hook-generated, all projects — read first in RESUME, never edit
 └── <project>/                 one folder per project
     ├── _<project>.md          the project card (type: project-progress); leading _ sorts it first
+    ├── _plans.md              hook-generated — never edit, never fold into the cards
     └── <module>.md            one module card per module (type: module-progress)
 ```
 
-Use a STABLE project name (from the working dir / repo name / root `CLAUDE.md` title) as the folder
-name, and each module's own folder name for its card — so re-logging updates cards in place instead
-of duplicating them.
+Name the project folder after the project root folder's name — the name the
+`project-memory-status.mjs` hook files `_plans.md` under — and each module card after the module's
+folder name, so re-logging updates cards in place instead of duplicating them.
 
 ---
 
@@ -145,10 +142,11 @@ of duplicating them.
    ```
 
    `last_touched` = today (real date, never invented). Append to `## Log`; don't erase history.
-   The embedded `![[Modules.base#This project]]` is meant to auto-scope to the current project via
-   the base's `this.project` filter — **verify it renders when you create it**; if `this`-based
-   filtering isn't supported in the installed Obsidian version, fall back to plain wikilinks to
-   each module card under `## Modules`.
+   The embedded `![[Modules.base#This project]]` scopes itself to the current project through the
+   base's `this.project` filter. Claude cannot see Obsidian render it: the first time a project
+   card is created, the handoff (step 5) asks the user to open it and confirm the module table
+   appears; not rendered → replace the embed with plain wikilinks to each module card under
+   `## Modules`.
 4. **Ensure both Bases exist** at `Project Progress/` (create per `obsidian:obsidian-bases` if
    missing):
    - **`Projects.base`** — table over `type == "project-progress"`, sorted `last_touched` ascending
@@ -161,12 +159,12 @@ of duplicating them.
 5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`:
    Done = every card and Base written, by vault path. Logging leaves nothing behind it, so
    this run is closed (`└─ 🏁 Closed  nothing pending`) — the project card's `next_step` belongs to
-   the project, not to this run, and is not repeated as a Next. Only when a Base embed failed to
-   render and needs the user's eye is it open (You now = check that card).
+   the project, not to this run, and is not repeated as a Next. Only when this run created a project
+   card is it open: You now = open that card and confirm the module table appears.
 
 ## Mode B · RESUME (read back)
 
-- **First, `Project Progress/_Live plans.md`** (the hook mirror above), when it exists — it is
+- **First, `Project Progress/_Live plans.md`** (see **Layout**), when it exists — it is
   always current, while the cards are only as fresh as the last LOG.
 - **One project:** read its `_<project>.md` card, then the module cards in the same folder; report
   briefly — overall `status` · each module's state + next step · the project's next step. Offer to

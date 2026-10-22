@@ -1,6 +1,6 @@
 ---
 name: wp-module-plan-discuss
-description: Talk a module-level requirement into a work-ready plan document - the ONLY on-ramp for module work docs. Adaptive depth via five-element gap detection (Goal, Background, Material, Boundary, Definition of Done) against module docs and real code. Entry requires the user to state a purpose/goal first. Lands plans/<name>-<date>-<slug>.md in the target module. Use whenever a module-level task needs a plan before coding. Do NOT use for a whole-system spec (/wp-system-spec-discuss), or when a plan already exists and what is missing is the technical cut or the task breakdown (/wp-module-technical-design).
+description: Talk a module-level requirement into a work-ready plan in the module's plans/ — the only on-ramp for module work docs; the user states the goal first. Use when module work, clear or fuzzy, needs a plan before coding. A whole-system spec → /wp-system-spec-discuss; a plan that exists and needs the technical cut or tasks → /wp-module-technical-design.
 ---
 
 <what-to-do>
@@ -11,7 +11,8 @@ Converge a stated module-level requirement into a work-ready plan in the module'
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Question pattern** and **interview conduct** (one question at a time; explore before asking): follow
+**Interview:** one question at a time, each answer in before the next; read the code and docs before
+spending a question they answer. Choices follow the **Question pattern** in
 `.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
@@ -22,13 +23,12 @@ Converge a stated module-level requirement into a work-ready plan in the module'
 
 ## Step 0 — Preconditions
 
-- **Goal stated?** If the user has not provided a purpose / goal / requirement, ask for it and stop until it arrives.
 - **Hard rules loaded** — `project-memory/stack-architecture.md` is non-negotiable; every inference and option must already respect it.
 - **Target module identified** — if ambiguous, resolve it first (Module Map in root `CLAUDE.md`).
 
 ## Step 1 — Evidence before questions
 
-Read the target module's memory BEFORE asking anything: `MODULE.md` (local conventions + known gotchas), `<name>-flow.md`, recent `impl/` records (prior decisions that constrain this task), `schema/` and `references/` if relevant, and the real code around the suspected cut point. Most "questions" die here — the docs or the code already answer them.
+Read the target module's memory BEFORE asking anything: `MODULE.md` (local conventions + known gotchas), `<name>-flow.md`, the `impl/` records that name a file on the suspected cut — `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md` per file — reading their `Decisions + why` and `Ruled out` sections, `schema/` and `references/` if relevant, and the real code around the suspected cut point. Most "questions" die here — the docs or the code already answer them.
 
 If the code is unfamiliar and no flow doc exists, route through `/wp-module-code-trace-flow` first to extract the flow, then come back.
 
@@ -58,16 +58,17 @@ Mixed results are normal: two blanks + one conflict = two interview questions + 
 
 **Implicit-decision sweep before writing.** The five elements reading CLEAR does not prove every call has been made — a downstream decision can still sit silently assumed. Before the final confirmation, sweep once: "what has this plan quietly decided without saying so?" (error handling, an edge case, a default value, a boundary the user never named). Surface each one with the question pattern until nothing important is left implicit. Then do a final confirmation of the assembled plan.
 
-**Log every item the moment it is raised.** Each question asked, conflict challenged, implicit
-decision surfaced, or item parked becomes one row in the plan's `## Decisions & open items` table
-(Step 4) as it happens — not reconstructed at the end. A settled row carries the answer + why and
+**Log every item the moment it is raised.** At the first item, create the plan at its Step 4 path
+with the H1, the `Planned` header and an empty `## Decisions & open items` table; write each
+question asked, conflict challenged, implicit decision surfaced, or item parked into that table as
+it is raised. A settled row carries the answer + why and
 a `☑`; an unsettled one carries what it waits on, a `☐`, and a `🔴`/`🟢` saying whether the build
 can start without it — judge that at the moment you park it, not on build day. An item that lived only in the chat is
 gone when the session ends, and the next session re-argues it from zero.
 
 ## Step 4 — Write the plan and hand off
 
-Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up).
+Complete the plan at `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — the file created at the first logged item (Step 3); on the fast path with no item logged, create it now. Same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up). Fill every section of the template below around the `## Decisions & open items` rows already logged.
 
 **The status header** — one line directly under the H1, as in the template below. This
 skill writes **`Planned`**, or **`Blocked · **Detail:** <that item>`** while a `🔴` row is open. Shape,
@@ -78,8 +79,8 @@ value set and `Detail` rules: the **Status header** section of `.claude/skills/_
 Write the body in these sections, in this order. Tables over prose: a reader must see the goal,
 what gets touched, and what is still open within one screen, without parsing paragraphs. **Rows
 scale with content, sections do not** — a trivial fix has one row per table; a complex task has
-twenty. Drop a section only when it is genuinely empty, and say so in one line rather than leaving
-a blank heading. Use project-root-relative paths only (see `workspace-doc-relative-paths.md`).
+twenty. A genuinely empty section keeps its heading, with one line saying why it is empty
+(`None — no file changes`).
 
 ```markdown
 # <module> — <short title>
@@ -137,9 +138,7 @@ whose cost nobody judged is exactly the item that surfaces on build day.
 `Blocked` value above, so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
 stay open and the work proceeds around them.
 
-If the technical cut (API / classes / patterns / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design`.
-
-**Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. The verdict decides the handoff's **Next** line — never auto-run anything, the trigger is the user's:
+**Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. The verdict decides the handoff's **Next** line:
 
 - Clearly one pass (a trivial fix, one field, one method) → "Step 2 act loop — say go and coding starts."
 - Borderline or clearly too big → "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first."

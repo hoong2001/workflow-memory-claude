@@ -17,8 +17,8 @@ own names, everything derived carries the module + date + slug convention alread
 
 ## Keeping it current
 
-Claude reads these when writing data-access code, and `workspace-sql-house-style.md` rule 2
-requires reading the real definition before designing anything on top of it. A stale file here
+Claude reads these when writing data-access code, and `wp-sql-query-design` (**Read the real
+definition first**) requires reading the real definition before designing anything on top of it. A stale file here
 produces a design that drifts from the live database — so when you hand-edit a view or add an
 index, update the file too. Your local edit is the source of truth; this folder is where it
 becomes visible.

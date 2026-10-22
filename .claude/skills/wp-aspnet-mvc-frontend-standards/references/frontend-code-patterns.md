@@ -150,7 +150,7 @@ function handleSubmit() {
             if (response.success) {
                 handleSuccess(response.data);
             } else {
-                toastr.warning(response.message);
+                toastr.warning(escapeHtml(response.message));
             }
         },
         error: (xhr) => handleAjaxError(xhr),
@@ -177,8 +177,22 @@ function handleAjaxError(xhr) {
         toastr.error('You do not have permission to perform this action.');
     } else {
         const serverMessage = xhr.responseJSON && xhr.responseJSON.message;
-        toastr.error(serverMessage || 'An unexpected error occurred. Please try again.');
+        toastr.error(serverMessage ? escapeHtml(serverMessage) : 'An unexpected error occurred. Please try again.');
     }
+}
+```
+
+---
+
+## Output Encoding
+
+toastr 2.1.4 renders its message as HTML (`escapeHtml` option defaults to `false`), so every server
+or user value passes through this helper before it reaches toastr or a hand-built HTML string.
+
+```javascript
+// Section 9 (UTILITIES) — the one escape helper
+function escapeHtml(value) {
+    return $('<div>').text(value == null ? '' : String(value)).html();
 }
 ```
 

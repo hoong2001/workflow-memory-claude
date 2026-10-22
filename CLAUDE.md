@@ -48,22 +48,22 @@
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
-- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up) and `workspace-doc-writing-style.md`, which load when a matching file is read or written
+- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up), `workspace-doc-writing-style.md`, and `workspace-sql-house-style.md` (`.sql` files), which load when a matching file is read or written
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
 - Hooks (credential guard, connection-string check, plan-status rebuild, template-update check) → `.claude/hooks/`, wired in `.claude/settings.json`; each file's header says what it does
 
 ## Behavioral Rules (auto-applied every turn)
 <!-- Index only: every .claude/rules/*.md without `paths:` frontmatter loads at launch whether or not
      it is listed here, so deleting a line disables nothing — to disable a rule, move it out of
-     .claude/rules/. Never list the two path-scoped rules (workspace-update-memory.md,
-     workspace-doc-writing-style.md): an @import loads at launch and undoes their scoping. -->
+     .claude/rules/. Never list the path-scoped rules (workspace-update-memory.md,
+     workspace-doc-writing-style.md, workspace-sql-house-style.md): an @import loads at launch and
+     undoes their scoping. -->
 @.claude/rules/workspace-workflow.md
 @.claude/rules/workspace-doc-relative-paths.md
 @.claude/rules/workspace-no-secrets.md
 @.claude/rules/workspace-tech-mentor.md
 @.claude/rules/workspace-reduce-coding-mistake.md
 @.claude/rules/workspace-library-docs-first.md
-@.claude/rules/workspace-sql-house-style.md
 @.claude/rules/workspace-plan-impl.md
 @.claude/rules/workspace-template-sync.md
 

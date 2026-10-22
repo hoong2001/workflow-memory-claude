@@ -1,13 +1,15 @@
 ---
 name: wp-system-spec-discuss
-description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - it feeds /wp-system-overview-spec-generator for the brand-new-system bootstrap and is saved to project-memory/overview/references/. SYSTEM SCOPE ONLY. Use when the user wants to "discuss the system spec" or "write the system requirements doc together". Do NOT use for a single module/feature requirement (/wp-module-plan-discuss), or when a reasonably complete spec already exists - hand that straight to the generator.
+description: Discuss a whole-system spec into existence → project-memory/overview/references/.
+disable-model-invocation: true
 ---
 
 <what-to-do>
 
 Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/wp-module-plan-discuss`, never into a spec.
 
-**Question pattern** and **interview conduct** (one question at a time; explore before asking): follow
+**Interview:** one question at a time, each answer in before the next; read the code and docs before
+spending a question they answer. Choices follow the **Question pattern** in
 `.claude/skills/_shared-conventions.md`.
 
 **Synthesize before you interview.** If the conversation that led here has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
@@ -18,7 +20,7 @@ Drive a structured discussion that converges on a written whole-system spec — 
 
 ## Step 0a — Read the stack constraints FIRST
 
-Before the first question, read `project-memory/stack-architecture.md` in full. It is the
+`project-memory/stack-architecture.md` (in context through `CLAUDE.md`) is the
 single source of truth for the stack, the layering, and the forbidden patterns. Every inference you
 offer and every option you present must already respect it — never propose a capability that quietly
 assumes tech the doc's forbidden-patterns section rules out (in some stacks that might be async
@@ -73,10 +75,10 @@ The spec must be complete enough to pass the generator's own entry check: purpos
 
 ## Step 3 — Write and hand off
 
-Write the spec to `project-memory/overview/references/spec-<date>-<slug>.md`, using project-root-relative paths in the content (see `workspace-doc-relative-paths.md`). Then hand off:
+Write the spec to `project-memory/overview/references/spec-<date>-<slug>.md`. Then hand off:
 
 **Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
 
-Tell the user the spec is ready and recommend running `/wp-system-overview-spec-generator` on it to execute the bootstrap. Say it as the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): Done = the spec path; You now = read the spec once end to end; Next = `/wp-system-overview-spec-generator` on that file.
+Tell the user the spec is ready, and tell them to run `/wp-system-overview-spec-generator` on it to execute the bootstrap. Say it as the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): Done = the spec path; You now = read the spec once end to end; Next = the user runs `/wp-system-overview-spec-generator` on that file.
 
 </supporting-info>

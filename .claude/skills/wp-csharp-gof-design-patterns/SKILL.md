@@ -1,13 +1,9 @@
 ---
 name: wp-csharp-gof-design-patterns
-description: GoF design-pattern standard for this C# 7.3 / .NET Framework stack — which patterns fit, the concrete pain that must exist before one is introduced, how each is shaped with no DI, and which patterns are banned or not worth it here. Use when designing or refactoring C# Service, ServBackend, or integration code (incl. the class map of /wp-module-technical-design) — a type-code switch repeated across methods, two classes running the same step sequence, a third-party library (RestSharp, NPOI, NDbfReader) called from several places, Worker.cs growing a second job — or when the user asks "which design pattern", "should this be a Strategy / Factory", "refactor this with a pattern", "設計模式", "重構設計". Use alongside wp-repository-unitofwork-pattern (owns the data-access layer) and project-memory/stack-architecture.md (owns what is forbidden), never instead of them. Do NOT use to add a pattern to code the task does not touch, or for frontend JavaScript (wp-aspnet-mvc-frontend-standards).
+description: GoF design patterns for this C# 7.3 stack with no DI: which fit, the pain that must exist first, which are banned. Use when designing or refactoring Service, ServBackend, or integration code (incl. the /wp-module-technical-design class map) and a smell shows — a type-code switch repeated across methods, two classes running the same step sequence, one third-party library (RestSharp, NPOI, NDbfReader) called from several places, Worker.cs gaining a second job — or the user asks which pattern fits (設計模式).
 ---
 
 # C# Design Patterns
-
-A pattern is a named fix for a pain that already exists. Introduced before the pain, it is an
-abstraction with one caller, which `.claude/rules/workspace-reduce-coding-mistake.md` §2 forbids.
-Every pattern below therefore carries a trigger. No trigger, no pattern: write the plain code.
 
 ## Scope — what this skill owns, and what it does not
 
@@ -18,8 +14,6 @@ Every pattern below therefore carries a trigger. No trigger, no pattern: write t
 | What is forbidden (its §4.1 Forbidden list), C# version, layering | `project-memory/stack-architecture.md` |
 | Whether logic lives in SQL or in the Service | `wp-sql-query-design` |
 
-Never restate a rule from those three here. Point to them.
-
 ---
 
 ## The one rule: name the pain first
@@ -29,9 +23,12 @@ Before introducing a pattern, write one sentence that names the pain and points 
 > "The `switch (customerType)` in `PriceService.Calculate` and `InvoiceService.Build` must change
 > together every time a customer type is added."
 
-If you cannot write that sentence, the pattern does not belong. If you can, it goes into the
-plan's Touch points (or Technical Design) and into the impl record's **Decisions + why** — a
-future session that wants to remove the pattern needs to know what it was for.
+If you cannot write that sentence, write the plain code — a pattern before its pain is an
+abstraction with one caller (`.claude/rules/workspace-reduce-coding-mistake.md` §2). Every pattern
+below therefore carries a trigger. If you can write it, it goes into the plan's Technical Design →
+**Decisions + why** (Touch points while the plan has no Technical Design yet) and into the impl
+record's **Decisions + why** — a future session that wants to remove the pattern needs to know
+what it was for.
 
 ## How this stack shapes every pattern
 
@@ -45,9 +42,7 @@ future session that wants to remove the pattern needs to know what it was for.
   code): brownfield code follows the local style.
 - **Every Service class inherits `BaseService`** (§2.3), and C# allows one parent class. A pattern
   family in the Services project is held to the same rule: its base class inherits `BaseService`
-  (`DiscountRuleBase : BaseService`), and its members reach it through that base.
-  With a parameterless `BaseService` constructor (the usual case) subclasses pass nothing up; if a
-  project's takes parameters, the family base passes them through once. A C# `static`
+  (`DiscountRuleBase : BaseService`), and its members reach it through that base. A C# `static`
   class cannot inherit anything, so a Factory is a regular class the Service `new`s.
 - **A pattern class that is not itself a Service holds no UnitOfWork and runs no SQL.** The owning
   Service loads the data and passes it in; the Strategy only decides. A class that needs data
@@ -56,8 +51,8 @@ future session that wants to remove the pattern needs to know what it was for.
   `Services/Strategies/` — the structure in `stack-architecture.md` §3 stays as it is. ServBackend
   jobs sit in the ServBackend project beside `Worker.cs`; that project has no mandatory base class
   in §2.3, so a job inherits only its own family's base.
-- **Synchronous, and no mutable static state.** IIS serves requests in parallel; a static field
-  that changes is a race.
+- **Stateless:** synchronous, no mutable static state — IIS serves requests in parallel, so a
+  static field that changes is a race.
 - **C# 7.3 syntax:** a `switch` statement, never a switch expression; `is` type patterns and
   expression-bodied members are fine.
 
@@ -151,8 +146,7 @@ var rule = new DiscountRuleFactory().Create(order.CustomerType);
 order.Discount = rule.Apply(order);
 ```
 
-- The factory and the strategies hold no state, so they are safe under IIS, and a new instance
-  per call costs nothing.
+- Factory and strategies are *stateless*, so a new instance per call is safe and costs nothing.
 - `default` throws. A factory that silently returns a do-nothing rule hides a missing type until
   the numbers are wrong.
 - The type codes live in `ConstValues/` (`stack-architecture.md` §2.4).
@@ -250,7 +244,7 @@ private void RunDueJobs(DateTime now)
 
 | Pattern | Why not |
 |---|---|
-| Singleton holding a connection, a UnitOfWork, or any mutable state | IIS runs requests in parallel and recycles the app pool; shared state is a race, and a shared connection breaks UnitOfWork's lifetime. Allowed: a `static readonly` immutable lookup, or `Lazy<T>` over read-only config |
+| Singleton holding a connection, a UnitOfWork, or any mutable state | Breaks *stateless*, and IIS recycles the app pool; a shared connection also breaks UnitOfWork's lifetime. Allowed: a `static readonly` immutable lookup, or `Lazy<T>` over read-only config |
 | Generic Repository, Specification | Forbidden by `stack-architecture.md` §4.1 |
 | Mediator (MediatR style) | Only pays off with DI, which is forbidden |
 | Decorator / Proxy around a Repository | Possible once Repository interfaces are allowed, but the concerns it would add (logging, timing) belong in `BaseRepository` or the Service's NLog call — one place, not a wrapper per Repository |
@@ -261,17 +255,12 @@ private void RunDueJobs(DateTime now)
 
 ## Refactoring existing code into a pattern
 
-- **Only code the current task touches.** A trigger spotted in untouched code goes into the report
-  as one line; the code stays as it is (`workspace-reduce-coding-mistake.md` §3, brownfield mode in
-  `stack-architecture.md` §0).
+- **Only code the current task touches.** A trigger in untouched code is one report line; the code
+  stays.
 - **Shared symbol → list its callers first**, from the fan-in table in `<name>-flow.md`, or by
-  running `/wp-module-code-trace-flow`. Every caller must compile and behave the same afterwards.
+  running `/wp-module-code-trace-flow`. Every caller compiles and behaves the same afterwards.
 - **A refactor is its own Tasks row**, never mixed with a behavior change. Its done-criterion is
-  "same observable behavior before and after"; Claude builds it and the user tests it (per
-  `workspace-workflow.md` Step 2).
-
-This skill applies inside a coding task and adds no handoff of its own; that task's handoff covers
-it (`.claude/skills/_shared-conventions.md` → Handoff).
+  "same observable behavior before and after".
 
 ## Review checklist
 
@@ -284,6 +273,6 @@ it (`.claude/skills/_shared-conventions.md` → Handoff).
       directly or through its family base
 - [ ] Pattern classes that are not Services hold no UnitOfWork and run no SQL
 - [ ] No new folder — pattern classes sit beside the Service that owns them
-- [ ] No mutable static state
+- [ ] Pattern classes are *stateless*
 - [ ] No third-party type leaks past its Adapter
 - [ ] C# 7.3 syntax only

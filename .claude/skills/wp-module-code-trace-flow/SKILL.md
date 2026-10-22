@@ -9,8 +9,6 @@ description: Trace a feature's call chain through the codebase by reading real s
 
 In maintenance, the hard part is never editing code — it's knowing *where to cut*. This skill does not make the change itself; it starts from a feature or method name, traces the call chain bidirectionally through the **actual source** (grep/read, never recall), and produces two deliverables: a refreshed module flow doc (`<name>-flow.md`) and a concrete "where to cut" recommendation for the user's intended change.
 
-A map built from memory is worthless and dangerous. **Every link in the chain must be backed by a file the skill actually read.** If a link can't be verified in source, it is marked as a gap, not guessed.
-
 ## Two dimensions — depth AND breadth (why single-path tracing misses shared code)
 
 The main path (**depth**) is the readable spine: input → process → output, one chain. But a chain alone is blind to **shared symbols** — a method on `BaseService`/`BaseRepository`, a reused `Result` class, a `ConstValues` entry, or a shared query/column builder used by both Web and ServBackend. These have many callers (**fan-in**), and editing one ripples to every caller.
@@ -25,7 +23,6 @@ A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`
 ## Entry & Boundaries
 
 - **Entry point:** a feature name or method name supplied by the user. Trace **both directions** from it.
-- **Scope hint (optional):** if the user can name a starting file, module, or directory, narrow the search to it — faster and far less noise. If they only have the method name, fall back to a codebase-wide grep and disambiguate matches (Step 1).
 - **Upstream stop (input boundary):** stop at the entry point that receives input — controller / handler / UI event / message consumer.
 - **Downstream stop (output boundary):** stop at persistence, an external call, or the produced output — repository/query, HTTP/queue client, file/response write.
 - **Cross-cutting concerns** (logging, DI registration, generic utilities, framework plumbing) are *noted in passing, never expanded.* They turn a clean line into a spider web.
@@ -38,14 +35,14 @@ The shape to recover is always: **input → process → output.**
 
 Before touching the codebase, ask the user **what change they intend** — this is what makes the final "where to cut" section useful instead of a generic file dump.
 
-- Ask one short question with concrete options, e.g.: add a display field? change a behavior? fix a bug in this flow? extend an output?
+- Ask it through the **Question pattern** (`.claude/skills/_shared-conventions.md`): options such as add a display field · change a behavior · fix a bug in this flow · extend an output, with the one the user's words point to marked recommended.
 - Also confirm the **entry symbol** to trace from (the feature/method name) if not already clear.
 - Ask for an **optional scope hint** — a starting file, module, or directory. If given, it narrows the search; if not, proceed with a codebase-wide grep. Never demand it: not knowing where to look is the exact problem this skill solves.
 - If the user says "just map it, no specific change yet" — accept it, skip the cut-recommendation tailoring, and deliver only the flow doc.
 
 ### Step 1: Locate the entry symbol in source
 
-Grep for the supplied method/feature name — **within the scope hint if one was given**, otherwise codebase-wide. Confirm the real definition before tracing. If multiple matches survive (common with generic names like `Save` / `GetData` / `Process`), list them with their file paths and ask which one — do not silently pick.
+Grep for the supplied method/feature name — **within the scope hint if one was given**, otherwise codebase-wide. Confirm the real definition before tracing. If multiple matches survive (common with generic names like `Save` / `GetData` / `Process`), ask which one through the Question pattern, one option per match with its path.
 
 ### Step 2: Trace upstream to the input boundary
 
@@ -70,7 +67,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow: **the stable flow (chain + shared-symbol fan-in) goes into the module's `<name>-flow.md`; the where-to-cut and its blast radius go into the change's plan (`plans/`), never into the flow doc.**
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
 
 ## Verification Rule
 
@@ -115,7 +112,7 @@ Plan already exists → write the rows into its table (merge with what is there;
 1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
-4. **Offer a diagram** — the **Optional diagram (archify)** section of `.claude/skills/_shared-conventions.md`.
+4. **Offer a diagram** — `.claude/skills/_optional-diagram.md`.
    Options: "No diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
    "Architecture of the shared-symbol fan-in" (source: the fan-in table). Link line goes under the flow doc's
    `## Diagram` heading.
@@ -123,8 +120,5 @@ Plan already exists → write the rows into its table (merge with what is there;
 
 ## Conduct Rules
 
-- Trace from real source every time. A spec not backed by reads is a liability, not a deliverable.
-- One entry symbol per run unless the user asks to map several. The main path is the readable spine — but branches MUST be enumerated, never pruned to keep the line clean. Only cross-cutting concerns (logging, DI, generic utilities) stay pruned.
-- The guided dialogue follows the language of the user's input. (This document is in English; the conversation need not be.)
-- This skill's output is the map, not the change. Stop after the flow doc is saved and wait for instruction before editing any traced file.
-- When a call target is ambiguous, ask — do not guess and proceed silently.
+- One entry symbol per run unless the user asks to map several.
+- The run ends at Save Workflow step 5 (the handoff); editing a traced file waits for the user's go.

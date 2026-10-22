@@ -51,7 +51,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-tech-mentor.md       technical mentorship style
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (incl. KISS / DRY)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
-│   ├── workspace-sql-house-style.md   schema / seed .sql conventions
+│   ├── workspace-sql-house-style.md   schema / seed .sql conventions (path-scoped: loads when a .sql file is read or written)
 │   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer
 │   ├── workspace-doc-writing-style.md  how documents are written (path-scoped: loads when a matching file is read or written)
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
@@ -173,8 +173,9 @@ skills-dir plugin whose name matches an installed one is not loaded.
 
 ## Notes
 
-- Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md` and `workspace-doc-writing-style.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
+- Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md`, `workspace-doc-writing-style.md`, and `workspace-sql-house-style.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
 - `stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
+- Seven skills are user-invoked — Claude never runs them; type the command yourself: `/wp-system-spec-discuss`, `/wp-system-overview-spec-generator`, `/wp-update-from-master`, `/wp-secret-scan`, `/wp-connstr-check`, `/wp-packageref-to-packages-config`, `/wp-obsidian-start`. Trigger tiers: `.claude/skills/README.md` → Trigger convention.
 
 ## Skill dependencies (important when copying)
 
@@ -207,7 +208,7 @@ Skills travel with the folder; these tools do not. Install them on each develope
 | `nuget.exe` on `PATH` | restoring missing packages during the build | restore once in Visual Studio | nuget.org download |
 | `tf.exe` on `PATH` | `wp-tfvc` | TFVC commands unavailable | Visual Studio Team Explorer |
 | Python on `PATH` | `wp-packageref-to-packages-config` | that skill cannot run | python.org installer |
-| `archify` skill (personal, optional) | the diagram offer at the end of `/wp-module-code-trace-flow` and `/wp-module-technical-design` | no offer — the Mermaid diagram in `<name>-flow.md` still renders | install it as a user-level skill; see `.claude/skills/_shared-conventions.md` → Optional diagram |
+| `archify` skill (personal, optional) | the diagram offer at the end of `/wp-module-code-trace-flow` and `/wp-module-technical-design` | no offer — the Mermaid diagram in `<name>-flow.md` still renders | install it as a user-level skill; see `.claude/skills/_optional-diagram.md` |
 
 ### Obsidian memory skills (optional add-on)
 
@@ -220,7 +221,8 @@ needs the vault path, set once per machine in its own gitignored
 real path never syncs), or else in `~/.claude/progress-vault.json` for every project on the
 machine. For the richest path both prefer the `obsidian` CLI plus the global
 `obsidian:*` plugin skills, but degrade gracefully:
-`wp-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
+`wp-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent,
+`wp-obsidian-start` says so and stops when the `obsidian:*` plugin is not installed, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
 unaffected. `wp-obsidian-progress-log` is the cross-project counterpart to `wp-module-save-implementation` (a
 shallow snapshot vs. the deep in-project record). No workflow step reminds anyone to run it — not

@@ -32,14 +32,5 @@ needs. The rules below apply to both.
 - **State the conclusion, not the contrast.** "Not X, it's Y" → "Y".
 - **No pull-quotes.** If a line wants to be tweeted, rewrite it as a fact.
 
-## Deliberately not adopted
-
-Em-dash bans, rhythm variation, list-length limits, prose-scoring rubrics. Those tune
-essays; these are reference documents read in fragments, and em dashes are this repo's
-house punctuation for glossing a term.
-
-## Optional deeper pass
-
-A personal global `stop-slop` skill covers prose-level editing in more depth. It is
-optional and may be absent on another machine — this file stands alone and never
-depends on it.
+Em dashes are house punctuation for glossing a term; these are reference documents read in
+fragments, so essay tuning (rhythm variation, list-length limits, prose scoring) does not apply.

@@ -1,33 +1,47 @@
 ---
 name: wp-update-from-master
-description: Sync workflow-template updates from the master workflow-memory-claude repo into the current project, strictly following the master's SYNC-MANIFEST.md whitelist. By default git-clones the master fresh (URL/branch from SYNC-MANIFEST.md's Master source block); a local master path is the offline/test fallback. Use when the user says "sync from master", "update the template", "pull template updates" (in any language). Do NOT use for syncing project → master (improvements flow back by hand), and NEVER as an excuse to bulk-copy the whole .claude/ or project-memory/ tree.
+description: Sync template updates from the master repo per its SYNC-MANIFEST.md.
+disable-model-invocation: true
 ---
 
 # Update From Master — Template Sync (project side)
 
 Pull template updates from the master `workflow-memory-claude` repo into the current
 project. The master's `SYNC-MANIFEST.md` is the single source of truth for what may
-be copied; this skill is the executor, not the policy.
+be copied.
 
-**Hard safety rules (non-negotiable):**
-- NEVER copy the whole `project-memory/` tree, the whole `.claude/` tree, or the repo root wholesale.
-- NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
-- NEVER write to a path in the master manifest's 🚫 table (real modules, the overview, shared docs, task records) — inside those folders only the ✅ `_README.md` files are copied.
-- Grey-zone files are merged with user confirmation, never mechanically overwritten.
+**Scope of every write:** ✅ rows are copied (Step 4), 🗑️ rows deleted after the user's go
+(Step 4b), ⚠️ files merged by hand after the user's go (Step 5); every other target path — 🚫
+rows, the project's own rules, skills, hooks and scripts — stays exactly as it is. Inside 🚫
+folders only the ✅ `_README.md` files are written. Nothing is mirrored: a target file the master
+lacks is deleted only when the 🗑️ list names it, because a renamed skill left behind keeps
+auto-triggering beside its replacement. A path that fits no manifest category → treat it as 🚫
+and ask the user.
 
 ## Step 1 · Get the master (git clone by default)
 
-The master is pulled fresh from git, so there is no machine-specific path to maintain.
-
 1. **Read the source** from the target project's **local** `SYNC-MANIFEST.md` → "📦 Master
-   source" block: `$repo` = its `Repo` row, `$branch` = its `Branch` row. Offer them as the
+   source" block: `<repo>` = its `Repo` row, `<branch>` = its `Branch` row. Offer them as the
    default; let the user override the URL/branch if they say so.
-2. **Shallow-clone** it into a fresh temp directory (deleted in Step 6):
+2. **Shallow-clone** it into a fresh temp directory, in ONE command. `GIT_DIR` / `GIT_WORK_TREE`
+   leaking in from the parent shell make a clone download objects without populating the working
+   tree, so clear both, force a checkout, and assert the tree is non-empty before any diff — an
+   empty tree is a hard stop:
 
    ```powershell
+   Remove-Item Env:GIT_DIR, Env:GIT_WORK_TREE -ErrorAction SilentlyContinue
    $master = Join-Path $env:TEMP ("wmc-master-" + [guid]::NewGuid().ToString('N'))
-   git clone --depth 1 --branch $branch $repo $master
+   git clone --depth 1 --branch <branch> <repo> "$master"
+   git -C "$master" checkout -f HEAD
+   if (-not (Get-ChildItem -Force "$master" | Where-Object Name -ne '.git')) {
+       throw "Clone left an empty working tree — stop, do not diff."
+   }
+   $master
    ```
+
+   Keep the printed path: shell variables do not survive between tool calls, so every later
+   command spells out `<master path>` and `<target root>` literally, quoted — both may contain
+   spaces, and an unquoted path resolves to the wrong depth.
 
    If the clone fails (no network, bad URL), report the exact error and offer the local
    fallback below — never proceed with a half-cloned tree.
@@ -39,32 +53,12 @@ Then validate the master (clone OR local path) before proceeding — ALL must pa
 2. It contains `.claude/rules/` and `.claude/skills/`.
 3. The current project is **not the master itself** — if the project's
    `git remote get-url origin` equals the master URL, this repo IS the master; syncing onto
-   itself is a no-op. Warn and stop.
+   itself is a no-op. Warn and stop. No git repo or no `origin` (a TFVC project) → not the
+   master; carry on.
 
-### Known environment issues (handle these, never rediscover them)
-
-These have each cost a run before. Treat them as part of the procedure, not as surprises:
-
-- **The clone may download objects without populating the working tree** (`GIT_DIR` /
-  `GIT_WORK_TREE` leaking in from the parent shell). After cloning: clear both, force a
-  checkout, and assert the tree is non-empty **before** any diff. An empty tree is a hard
-  stop, not a warning.
-
-  ```powershell
-  Remove-Item Env:GIT_DIR, Env:GIT_WORK_TREE -ErrorAction SilentlyContinue
-  git -C "$master" checkout -f HEAD
-  if (-not (Get-ChildItem -Force "$master" | Where-Object Name -ne '.git')) {
-      throw "Clone left an empty working tree — stop, do not diff."
-  }
-  ```
-
-- **Quote every path.** The master temp path and the target project path may both contain
-  spaces; an unquoted path fails or, worse, resolves to the wrong depth.
-- **Never combine copy and delete in one command.** The permission layer misresolves
-  multi-action path commands — run them as separate steps (Step 4 then Step 4b).
-- **Run the Step 5b alignment scan with `--no-ignore`.** The TARGET project's `.gitignore`
-  may hide `.md` / `.claude` from ripgrep even when the master's does not, which makes the
-  scan silently find nothing and report "aligned".
+**Every exit after a clone deletes it** — a stop in this validation, Step 2.5 or Step 3 as much
+as the end of Step 6: `Remove-Item "<master path>" -Recurse -Force`. A local-path master is never
+deleted.
 
 ## Step 2 · Read the manifest (SSOT)
 
@@ -87,16 +81,13 @@ Compare versions before doing the full content diff:
 4. **Different, or target has no Version row** → proceed to Step 3 as normal, carrying both
    numbers (`vX.Y.Z → vA.B.C`, or `none → vA.B.C`) into the Step 3 report and the Step 6 summary.
 
-This step only short-circuits the "nothing changed" case. It never substitutes for Step 3
-when versions differ or the target predates versioning.
-
 ## Step 3 · Pre-flight report
 
 Before copying anything, show the user a dry-run summary:
-- ✅ paths that will be overwritten (list files that actually differ, not everything — compare content or timestamps)
+- ✅ paths that will be overwritten (only files whose content differs — compare content; a fresh clone stamps every file with the checkout time)
 - 🆕 files that exist only in master (will be added)
 - 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
-- 🧩 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
+- 🧩 files that exist only in the target under any ✅ folder row AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
 
 If nothing differs, report "already up to date" and stop.
@@ -112,15 +103,15 @@ target folder first. A folder row copies the folder's contents into the target's
 target's own files there stay; a file row copies that one file:
 
 ```powershell
-Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force          # folder row
-Copy-Item "$master\project-memory\tasks\_README.md" "$target\project-memory\tasks\" -Force  # file row
+Copy-Item "<master path>\.claude\skills\*" "<target root>\.claude\skills\" -Recurse -Force          # folder row
+Copy-Item "<master path>\project-memory\tasks\_README.md" "<target root>\project-memory\tasks\" -Force  # file row
 ```
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
-Renames and merges in the master leave stale copies behind in the target — and a stale
-skill keeps auto-triggering alongside its replacement. For each path in the master
-manifest's 🗑️ Renames / deletions section that exists in the target:
+Run the deletions as their own commands, apart from Step 4's copies — the permission layer
+misresolves multi-action path commands. For each path in the master manifest's 🗑️ Renames /
+deletions section that exists in the target:
 
 1. Check its "Replaced by" cell. A cell naming a path → that path must exist in the target
    after Step 4 (a "merged into" entry counts if the merge target exists); if it is missing,
@@ -134,9 +125,7 @@ Anything NOT on that list is never deleted, no matter how obsolete it looks.
 
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
-For each ⚠️ file (per the manifest — typically root `CLAUDE.md`,
-`project-memory/stack-architecture.md`, `project-memory/stack-architecture.next.md`,
-`.claude/settings.json`, and root `.gitignore`):
+For each ⚠️ row of the master manifest:
 
 1. Diff master vs. target.
 2. Identify **template-side** changes only — e.g. a new `@import` line (per the rule-file
@@ -161,7 +150,8 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
    section — it holds more than one, and a sub-heading table (e.g. a bulk prefix rename) counts.
    Take each obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
    `specs/` folder).
-2. Grep those terms across the target's LIVING docs only:
+2. Grep those terms with `rg --no-ignore` — the target's `.gitignore` may hide `.md` / `.claude`,
+   and the scan then silently reports "aligned" — across the target's LIVING docs only:
    root `CLAUDE.md`, `project-memory/overview/system-overview-spec.md`,
    `project-memory/modules/*/MODULE.md`, `project-memory/modules/*/<name>-flow.md`.
    **Leave historical archives untouched**: `plans/`, `impl/`, `references/` describe what
@@ -188,5 +178,4 @@ rules take effect. That block is the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`): the summary is Done, the follow-ups are You now, the
 fresh session is Next.
 
-**Clean up:** if a temp master clone was created in Step 1, delete it now —
-`Remove-Item $master -Recurse -Force`. (Nothing to clean up for the local-path fallback.)
+**Clean up** the temp clone per Step 1.

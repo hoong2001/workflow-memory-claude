@@ -1,11 +1,11 @@
+---
+paths:
+  - "**/*.sql"
+---
+
 # SQL House Style — Schema & Seed Scripts
 
-Scope: `.sql` files — table/view definitions and seed/reference-data scripts — and, for rule 2,
-all SQL, wherever it is written. How a query is
-designed (what belongs in SQL vs the Service layer, readability, `SELECT *`) is governed by the
-`wp-sql-query-design` skill, and the C# around it by `wp-repository-unitofwork-pattern` — both
-auto-trigger when the work matches. This rule owns only what is special about `.sql` files, plus
-rule 2.
+Scope: `.sql` files — table/view definitions and seed/reference-data scripts.
 
 ## 1. Seed scripts are plain INSERTs
 
@@ -18,16 +18,7 @@ that it silently did nothing.
 
 ## 2. Read the real definition before writing SQL against it
 
-Before designing anything on top of a view or table, read its ACTUAL current definition —
-the `.sql` in the module's `schema/` folder, or the live database object. Never infer a
-schema from a sibling module or an earlier design document, and never rely on recall.
-
-**Why:** the user hand-edits views. Their local edit is the source of truth; a design
-derived from a sibling report drifts from it and every round of "fix the columns" is a
-round that a single read would have prevented.
-
-**How to apply:** echo back the exact column list you are relying on before writing the
-query, so a mismatch surfaces in one cheap confirmation instead of after implementation.
+Moved to `wp-sql-query-design` → **Read the real definition first** — it applies to every piece of SQL.
 
 ## 3. A seed script is a delivered file, never prose
 

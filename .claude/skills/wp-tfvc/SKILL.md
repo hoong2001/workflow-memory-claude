@@ -1,6 +1,6 @@
 ---
 name: wp-tfvc
-description: Operate TFVC (Team Foundation Version Control, Azure DevOps / TFS) from the command line with tf.exe the way git is used in a git repo - status, diff, get latest, add/delete, check in, undo, shelve/unshelve, history, merge between branches, resolve conflicts. Use whenever the working folder is a TFVC workspace (no .git folder; `tf workfold .` names a mapping) or the user says check in, get latest, shelve, changeset, merge branch, "簽入", "取得最新版", "擱置", "合併分支", or names `tf`. Do NOT use in a git repository - use git there.
+description: Operate TFVC with tf.exe the way git is used in a git repo — status, diff, get latest, add/delete, check in, undo, shelve, history, merge, resolve conflicts. Use whenever the working folder is a TFVC workspace (no .git; `tf workfold .` names a mapping), or the user names tf, a changeset, or an operation (簽入 / 取得最新版 / 擱置 / 合併分支). In a git repo use git.
 ---
 
 # TFVC with `tf` — the git habits, translated
@@ -23,21 +23,10 @@ Team Explorer's folder on `PATH` (`...\Common7\IDE\CommonExtensions\Microsoft\Te
 `C:/Program Files/Git/candidate`), so `tf` misreads them — e.g. `Exactly two items (source and
 target) are required.` Run `tf` from PowerShell, or prefix `MSYS_NO_PATHCONV=1` in Bash.
 
-**`TF30063: You are not authorized to access ...` = the sign-in is missing or expired.** It cannot
-be fixed inside Claude's shell, nor through `!` in the prompt: neither is interactive, and
-`/noprompt` suppresses the sign-in dialog. Stop, and give the user this command (or run it on their
-go) — it opens a separate, interactive window where the dialog can appear. `<collection>` is the
-`Collection:` line of `tf workfold .`:
-
-```
-PowerShell:  Start-Process powershell -ArgumentList '-NoExit','-Command','tf workspaces /collection:<collection>'
-Bash:        cmd //c start "" powershell -NoExit -Command "tf workspaces /collection:<collection>"
-```
-
-The user signs in there and says so; then rerun the command that failed. Never put a password or
-token in `/login:` — it lands in the shell history and the transcript. A local workspace runs
-`tf status` and `tf diff` without the server, so those passing proves nothing; `tf branches` in the
-orienting step below is the first call that reaches the server and surfaces TF30063 early.
+**`TF30063: You are not authorized to access ...`** = the sign-in is missing or expired and cannot
+be fixed from Claude's shell: stop and follow [`sign-in.md`](sign-in.md). `tf status` and `tf diff`
+run without the server in a local workspace; `tf branches` (orienting step 2) is the first server
+call, so TF30063 surfaces there.
 
 ## Orient before every request
 
@@ -60,11 +49,13 @@ Before running what the user asked for, find out where this folder sits and say 
    changesets not yet merged, or prints `There are no changes to merge.` Run it both ways:
    this branch → parent (merge up) and parent → this branch (merge down).
 
-Then offer the choices through `AskUserQuestion`, each option naming source → target and the
-candidate count, with "Do nothing" as the last option — e.g. "Merge up: `…/MyApp.Server-v1.25.xx` →
-`$/MyApp/Main/Src` (2 changesets)". A direction with no candidates is not offered; say so instead. A
-merge between siblings has no merge history (`/baseless`) — never offer it unasked. For a request
-that is not a merge (status, get, check-in), the one orienting line is enough; no choice needed.
+Then ask through `AskUserQuestion` per the **Question pattern** (`.claude/skills/_shared-conventions.md`):
+the direction the request points to first, marked (Recommended), then the other direction and
+"Do nothing" — each merge option naming source → target and the candidate count, e.g. "Merge up:
+`…/MyApp.Server-v1.25.xx` → `$/MyApp/Main/Src` (2 changesets)". A direction with no candidates is
+not offered; say so instead. A merge between siblings has no merge history (`/baseless`) — offer it
+only when the user asks. For a request that is not a merge (status, get, check-in), the one
+orienting line is enough; no choice needed.
 
 ## Four rules that prevent real damage
 

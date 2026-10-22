@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `13.4.0` |
+| Version | `14.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -94,7 +94,8 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
 template-side changes (e.g. the `@import` line of a new rule without `paths:` frontmatter), keep all project-side
-content untouched.
+content untouched. A rule that gained `paths:` frontmatter loses its `@import` line in the target's
+`CLAUDE.md` (e.g. `@.claude/rules/workspace-sql-house-style.md`) — an import loads it at launch.
 
 ## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
 

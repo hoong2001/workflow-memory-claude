@@ -1,35 +1,31 @@
 ---
 name: wp-repository-unitofwork-pattern
-description: Repository Pattern implementation guide using Dapper.NET for C# 7.3 ASP.NET MVC 5 projects. Use this skill whenever writing, reviewing, or modifying Repository classes, BaseRepository, UnitOfWork, or any data access layer code. Also trigger when the user asks about Dapper queries, SQL parameterization, dynamic queries, transaction management, or DAL structure. Always use DynamicParameters for all queries. No async, no DI, no stored procedures; interfaces only where project-memory/stack-architecture.md allows them.
+description: Repository + UnitOfWork data access with Dapper for this C# 7.3 / MVC 5 stack. Use when writing, reviewing, or changing a Repository, BaseRepository, UnitOfWork, or any data-access code, or on Dapper, SQL parameterization, dynamic queries, or transaction questions.
 ---
 
 # Repository Pattern with Dapper.NET
 
 ## Core Rules (Non-Negotiable)
 
-§2.1 (layering) and §4.1 of `project-memory/stack-architecture.md` apply in full; this skill adds:
+§2.1 (layering), §3 (folders) and §4.1 of `project-memory/stack-architecture.md` apply in full;
+this skill adds:
 
-- Interfaces on Repository or UnitOfWork: whatever `project-memory/stack-architecture.md` §4.1
-  says — it is the switch, this skill never overrides it. **If the architecture doc does not
-  explicitly permit them, there are none.** The samples below are the no-interface form;
-  the interface form is in **Repository interfaces** below.
-- Always use `DynamicParameters` for all queries
+- Repositories and UnitOfWork are concrete classes. A Repository gets an interface only when
+  `project-memory/stack-architecture.md` §4.1 explicitly permits it **and** the module's
+  `MODULE.md` Local conventions records it — then read `references/repository-interfaces.md`
+  before writing the Repository. The samples below are the no-interface form.
+- Every value enters the SQL as a `DynamicParameters` parameter — a LIKE keyword included
+  (`LIKE '%' + @Keyword + '%'`). Concatenating a value into the SQL string is the one hard ban
+  (injection).
 - SQL Server only — `SqlConnection` is hardcoded; no multi-database abstraction
+
+**Done when** every Repository method this task writes or changes passes each value through
+`DynamicParameters` with an explicit `DbType` (`AnsiString` for `varchar`), passes `_transaction`,
+maps its rows to a Result class, and every multi-step mutation runs in one UnitOfWork with
+`Commit()` / `Rollback()`.
 
 > This skill owns the C# around the query. What the query does, and how readable it is, belongs
 > to `wp-sql-query-design` — reach for it alongside this one when writing the SQL itself.
-
----
-
-## Project Layer Mapping
-
-```
-[ProjectName].UnitOfWork
-├── ConstValues/       ← Constants and enums
-├── Repositories/      ← Repository classes (+ I[Entity]Repository only where §4.1 allows)
-├── Results/           ← Result classes for object mapping (output)
-└── UnitOfWork.cs      ← Transaction control, implements IDisposable
-```
 
 ---
 
@@ -82,30 +78,6 @@ public class UnitOfWork : IDisposable
 
 **Adding a new Repository:** add a backing field + property pair. No other changes needed.
 
-### Repository interfaces (only where §4.1 permits them)
-
-Only the declared types change. UnitOfWork stays concrete and still news up the Repository,
-because the Repository runs on UnitOfWork's connection and transaction; the container-free
-`using (var uow = new UnitOfWork(...))` call sites below stay exactly as they are.
-
-```csharp
-public interface IProductRepository
-{
-    ProductResult GetById(int productId);
-    int Insert(ProductResult product);
-}
-
-public class ProductRepository : BaseRepository, IProductRepository { ... }
-
-// In UnitOfWork — field and property typed as the interface
-private IProductRepository _productRepo;
-public IProductRepository ProductRepo => _productRepo ?? (_productRepo = new ProductRepository(this));
-```
-
-Follow the module's `MODULE.md` Local conventions: a module gives every Repository an interface
-or none. Never mix the two forms inside one module. A module with no such record has none — so an
-existing module keeps its concrete Repositories when the architecture doc is switched.
-
 **Read-only (dirty read allowed):**
 ```csharp
 using (var uow = new UnitOfWork(_connectionString, IsolationLevel.ReadUncommitted))
@@ -155,9 +127,10 @@ public abstract class BaseRepository
 
 ## Result Classes
 
-All query results are mapped to classes in the `Results/` folder.
-No DTOs, no Entities — Result classes are the single output model.
-**Every Result class must inherit `BaseResult`** (in `Results/BaseResult.cs`) — mandatory per the project architecture.
+Result classes (`Results/`, inheriting `BaseResult` — `stack-architecture.md` §2.3–2.4) carry
+data both ways: output, and input — `Insert(ProductResult model)`, and one criteria Result such as
+`ProductSearchResult` for a multi-criteria method, never a long parameter list. A single-key
+lookup takes the primitive (`GetById(int id)`).
 
 ```csharp
 // Results/ProductResult.cs
@@ -174,7 +147,7 @@ public class ProductResult : BaseResult
 
 ## DynamicParameters — Standard Usage
 
-Always use `DynamicParameters`. Specify `DbType` explicitly for type safety.
+Specify `DbType` explicitly for type safety.
 Use `DbType.AnsiString` for a `varchar` column and `DbType.String` for `nvarchar`: an `nvarchar`
 parameter against a `varchar` column forces an implicit conversion and can turn a seek into a scan.
 
@@ -265,12 +238,6 @@ public class ProductRepository : BaseRepository
 Use string replace to build conditional WHERE clauses.
 Define the full SQL template with placeholder tokens, then replace only when values are present.
 
-**Input convention:** multi-criteria methods take an **input object**, never a long parameter list.
-There is no separate input/Parameter layer — in this architecture the input object is a `Result` class
-(in `Results/`, inheriting `BaseResult`), the same universal carrier used for output. This keeps `Search`
-consistent with `Insert(ProductResult model)` / `Update(ProductResult model)`. Single-key lookups
-(`GetById(int id)`) still take a primitive — one argument is no smell.
-
 ```csharp
 // Results/ProductSearchResult.cs — search criteria (a Result class; no separate input layer exists)
 public class ProductSearchResult : BaseResult
@@ -331,10 +298,8 @@ public IEnumerable<ProductResult> Search(ProductSearchResult criteria)
 ## WHERE IN Parameters
 
 `DynamicParameters.Add()` supports passing an array or list directly — Dapper automatically expands it into an `IN` clause.
-Both `DynamicParameters` and anonymous type work. Use `DynamicParameters` to stay consistent.
 
 ```csharp
-// ✅ Using DynamicParameters — preferred for consistency
 public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
 {
     var p = new DynamicParameters();
@@ -345,53 +310,4 @@ public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
                 WHERE ProductID IN @Ids";
     return _connection.Query<ProductResult>(sql, p, _transaction);
 }
-
-// ✅ Using anonymous type — also valid
-public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
-{
-    var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
-                FROM Products
-                WHERE ProductID IN @Ids";
-    return _connection.Query<ProductResult>(sql, new { Ids = ids }, _transaction);
-}
-```
-
----
-
-## Common Dapper Methods
-
-| Method | Use Case |
-|--------|---------|
-| `Query<T>` | Return list of Result records |
-| `QueryFirstOrDefault<T>` | Return single Result, null if not found |
-| `Execute` | INSERT / UPDATE / DELETE — returns rows affected |
-| `ExecuteScalar<T>` | Return single value (e.g. new ID after INSERT) |
-| `QueryMultiple` | Multiple result sets from one query |
-
----
-
-## Security Rules
-
-❌ **Never — SQL injection:**
-```csharp
-var sql = "SELECT ProductID, ProductName FROM Products WHERE Name = '" + name + "'";
-```
-
-✅ **Always — DynamicParameters:**
-```csharp
-var p = new DynamicParameters();
-p.Add("@Name", name, DbType.String);
-var sql = "SELECT ProductID, ProductName FROM Products WHERE Name = @Name";
-```
-
-❌ **Never — LIKE injection:**
-```csharp
-var sql = "SELECT ProductID, ProductName FROM Products WHERE Name LIKE '%" + keyword + "%'";
-```
-
-✅ **Correct LIKE:**
-```csharp
-var p = new DynamicParameters();
-p.Add("@Keyword", keyword, DbType.String);
-var sql = "SELECT ProductID, ProductName FROM Products WHERE Name LIKE '%' + @Keyword + '%'";
 ```

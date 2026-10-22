@@ -1,16 +1,18 @@
 ---
 name: wp-aspnet-mvc-frontend-standards
-description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and Web API 2.2. Use this skill whenever writing, reviewing, or modifying frontend JavaScript in an ASP.NET MVC project — including jQuery AJAX calls, form submissions, dropdown binding, Razor-to-JS data passing, frontend validation, file export, or page structure. Also trigger when the user asks about @Model, ViewBag, $.ajax(), JSON.stringify, contentType, Store-Then-Bind, hidden form POST, or any ASP.NET MVC frontend-backend data flow question. Do NOT use for Vue.js, React.js, or other SPA frameworks.
+description: Frontend standards for this ASP.NET MVC stack (jQuery, Razor, Web API 2.2). Use when writing, reviewing, or changing frontend JavaScript or a view's script, or on any Razor-to-JS / AJAX / form-POST data-flow question (@Model, ViewBag, $.ajax, Store-Then-Bind).
 ---
 
 # Frontend Skill — ASP.NET MVC JavaScript Standards
-
-> Single source of truth for **all frontend rules and how-to**. The project architecture doc (`stack-architecture.md`) owns only the stack versions, the §1.2 widget mandates and the backend rules, and points here for everything frontend.
 
 > **Code patterns:** this SKILL.md carries the **rules**; every rule's concrete, copy-ready
 > code example lives in `references/frontend-code-patterns.md` (section headings match). **Read
 > that file whenever you're writing or modifying frontend code** — don't reconstruct patterns
 > from memory. For reviews and rule questions, the rules below are usually enough on their own.
+
+**Done when** every per-view script this task writes or changes follows the Page Structure order,
+Store-Then-Bind in both directions, the Payload Rules, Output Encoding, validation before every
+submit, and a loading state on every AJAX call.
 
 ## Syntax Constraints (ES6 + CSS)
 
@@ -27,9 +29,6 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 - Promise — jQuery handles internally
 - `class` syntax — use constructor functions or plain objects
 - ES6 Modules (`import` / `export`) — use `<script>` tags
-- Magic numbers / strings — use named constants
-
-> **Note on examples:** all inline literals in the reference file (URLs like `/api/districts`, status codes `401`/`403`, messages, `'-- Select --'`) are illustrative only. In real code, extract them into named constants, a `CONFIG`/`PAGE_CONFIG` object, or an `apiUrlObj` — the "no magic numbers / strings" rule still applies.
 
 **CSS — Allowed:** Bootstrap and AdminLTE at the §1.2 versions, CSS3 only.
 
@@ -53,6 +52,9 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 | Event handlers | `handle` + Event | `function handleClick() {}` |
 | Init functions | `init` + Component | `function initDataTable() {}` |
 
+Every literal — URL, status code, message, placeholder — lives in a named constant, `CONFIG` /
+`PAGE_CONFIG`, or `apiUrlObj`; the literals in the reference file are illustrative.
+
 ---
 
 ## Page Structure (Per-View JavaScript, Required Order)
@@ -74,7 +76,7 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 
 ## Store-Then-Bind (Required, Both Directions)
 
-The single rule behind the AJAX, validation, and export patterns below. Never bind directly from a response callback; never build a payload inline.
+The single rule behind the AJAX, validation, and export patterns below.
 
 **Backend → Frontend (inbound):**
 1. Receive AJAX response
@@ -86,7 +88,7 @@ The single rule behind the AJAX, validation, and export patterns below. Never bi
 2. Validate the collected variable (see *Frontend Validation Rules*)
 3. Send it — by the method chosen per *Form Submit Rules* (AJAX POST for mutations, MVC Form GET for navigation, Hidden Form POST for export)
 
-> Scope note: "Store-Then-Bind" governs **AJAX response data** and **outbound payloads**. Server values needed at page load are a separate concern — pass them via `data-*` attributes / an init block, never by reading Razor in JS logic (see *Razor → JavaScript Data Passing*). The outbound *implementation* is shown in *AJAX Standard Pattern*; this section is the principle.
+> Scope: AJAX response data and outbound payloads. Server values needed at page load follow *Razor → JavaScript Data Passing*.
 
 → Code: `references/frontend-code-patterns.md` § Store-Then-Bind
 
@@ -106,13 +108,12 @@ The single rule behind the AJAX, validation, and export patterns below. Never bi
 ❌ **Forbidden:**
 - Using `@Model` to pass search results — bind via AJAX instead
 - Mixing `ViewBag` and AJAX for the same data on the same page
-- Reading Razor values in JS after page load (use `data-*` attributes instead)
 
 ---
 
 ## Razor → JavaScript Data Passing
 
-When backend data must be available in JS on page load, use `data-*` attributes or a dedicated init block. Never scatter Razor expressions inside JS logic.
+When backend data must be available in JS on page load, put it in `data-*` attributes or one init block — the only places Razor meets JS.
 
 > Init block safety rules — **quoting is type-driven**:
 > - **Numeric / boolean typed properties** — output unquoted: `userId: @Model.UserId`.
@@ -128,7 +129,7 @@ When backend data must be available in JS on page load, use `data-*` attributes 
 ## Dropdown Binding Rules
 
 Dropdowns are always initialized from `@Model` / `ViewBag` on page load.
-Never fetch dropdown options via AJAX unless they are dependent (cascading).
+Only a dependent (cascading) dropdown loads its options by AJAX.
 
 → Code: `references/frontend-code-patterns.md` § Dropdown Binding (static Razor · cascading AJAX)
 
@@ -150,7 +151,7 @@ Which widget does which job is mandated in `project-memory/stack-architecture.md
 
 ### Payload Rules (Mandatory)
 
-1. **Always collect the payload into a named variable first** — never construct the object inline inside `$.ajax()`. A function-local `const` is the default; module scope only when the payload must be re-read after the call.
+1. **Collect the payload into a named variable first** (Store-Then-Bind, outbound step 1), then pass the variable to `$.ajax()`.
 2. **`JSON.stringify()` + `contentType: 'application/json'` are mandatory for JSON bodies (POST/PUT)** — omitting either causes the backend to receive malformed data. **Exception: GET requests** — pass `data: { ... }` as a plain object so jQuery serializes it into the query string; never stringify a GET payload.
 
 → Code: `references/frontend-code-patterns.md` § AJAX Standard Pattern (correct + wrong)
@@ -183,6 +184,8 @@ Any value that came from the server or the user is untrusted when it re-enters t
 - **toastr / notification messages**: static strings or escaped values only — never concatenate raw user input or server data into the message HTML.
 - When an HTML string must be built by hand, escape values through a shared helper (e.g. an `escapeHtml()` utility in section 9), not ad-hoc `.replace()` calls.
 
+→ Code: `references/frontend-code-patterns.md` § Output Encoding
+
 ---
 
 ## Frontend Validation Rules
@@ -204,12 +207,10 @@ Validate before every AJAX submission. Backend validation is the safety net, not
 | Scenario | Method |
 |----------|--------|
 | Simple page navigation with filters | MVC Form GET |
-| Data mutation (save, update, delete) | AJAX POST |
+| Data mutation (save, update, delete) | AJAX POST — errors handled without a page reload |
 | Partial update without page reload | AJAX |
 | File upload | MVC Form POST with `enctype="multipart/form-data"` |
 | File export with complex filters | Hidden Form POST (see below) |
-
-❌ **Never use MVC Form POST for save/update/delete** — always use AJAX so errors can be handled without full page reload.
 
 ### File Export Pattern (Hidden Form POST)
 
