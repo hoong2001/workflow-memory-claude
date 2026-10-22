@@ -89,10 +89,10 @@ function scan(text, app) {
     const { parts, dropped } = parse(old);
     const missing = KEEP.filter((k) => !parts[k]);
     if (missing.length) {
-      out.push({ start, end, old, new: null, note: `缺少 ${missing.join(", ")}（Integrated Security=True 的連線需人手處理）` });
+      out.push({ start, end, old, new: null, note: `missing ${missing.join(", ")} (an Integrated Security=True connection needs manual handling)` });
       continue;
     }
-    out.push({ start, end, old, new: build(parts, app), note: dropped.length ? `將捨棄: ${dropped.join("; ")}` : null });
+    out.push({ start, end, old, new: build(parts, app), note: dropped.length ? `will drop: ${dropped.join("; ")}` : null });
   }
   return out;
 }
@@ -125,9 +125,9 @@ function checkFile(file) {
   const errs = [];
   for (const r of scan(text, app)) {
     if (r.new === null) errs.push(`${r.old}\n  → ${r.note}`);
-    else if (r.old !== r.new) errs.push(`${r.old}\n  → 應為 ${r.new}` + (r.note ? `\n  → ${r.note}` : ""));
+    else if (r.old !== r.new) errs.push(`${r.old}\n  → should be ${r.new}` + (r.note ? `\n  → ${r.note}` : ""));
   }
-  if (app === "{appName}" && errs.length) errs.push("找不到 .csproj，Application Name 請填項目名稱");
+  if (app === "{appName}" && errs.length) errs.push("no .csproj found; set Application Name to the project name");
   return errs;
 }
 
@@ -136,9 +136,9 @@ function fix(root, apply) {
     const file = path.join(root, rel);
     if (!NAME_RE.test(path.basename(file)) || !fs.statSync(file).isFile()) continue;
     let doc;
-    try { doc = read(file); } catch { console.log(`SKIP ${file}: 不是 UTF-8 / UTF-16，需人手處理`); continue; }
+    try { doc = read(file); } catch { console.log(`SKIP ${file}: not UTF-8 / UTF-16, needs manual handling`); continue; }
     const app = projectName(file);
-    if (!app) { console.log(`SKIP ${file}: 找不到 .csproj`); continue; }
+    if (!app) { console.log(`SKIP ${file}: no .csproj found`); continue; }
     let out = "", pos = 0, changed = false;
     for (const r of scan(doc.text, app)) {
       if (r.new === null) { console.log(`MANUAL ${file}: ${r.note}`); continue; }
@@ -163,7 +163,7 @@ function hook() {
   if (!NAME_RE.test(path.basename(file)) || !fs.statSync(file, { throwIfNoEntry: false })?.isFile()) return 0;
   const errs = checkFile(file);
   if (!errs.length) return 0;
-  process.stderr.write(`${file} connectionString 不符合統一寫法:\n${errs.join("\n")}\n`);
+  process.stderr.write(`${file} connectionString does not match the house template:\n${errs.join("\n")}\n`);
   return 2;
 }
 

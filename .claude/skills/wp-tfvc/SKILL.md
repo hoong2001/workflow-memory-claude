@@ -73,7 +73,7 @@ that is not a merge (status, get, check-in), the one orienting line is enough; n
    Without it `tf` may open a GUI dialog and the shell hangs until timeout. `status` and
    `workfold` print to the shell.
 2. **Check in by explicit path, never the workspace root.** The root also holds files that must
-   not go in (`project-memory/`, local notes, build output). Show the user the file list and the
+   not go in (local notes, build output); `project-memory/` is checked in like source. Show the user the file list and the
    comment, and check in only after their go — same as a git commit the user has not approved.
 3. **New and deleted files are only "detected" until pended.** In a local workspace, an edited
    file is pending automatically; a new file needs `tf add`, a removed file needs `tf delete`

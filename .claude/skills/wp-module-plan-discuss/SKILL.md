@@ -5,14 +5,13 @@ description: Talk a module-level requirement into a work-ready plan document - t
 
 <what-to-do>
 
-Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → AskUserQuestion (recommended + 2 alternatives + Re-infer, then the tool's own Other) → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
+Converge a stated module-level requirement into a work-ready plan in the module's `plans/` folder. The flow is always: **goal stated → infer & reason → ask (Question pattern) → interview only the gaps → confirm → write the plan.** Depth is never chosen up front — it emerges from how many gaps and conflicts the detection pass finds.
 
 **Entry requirement — no goal, no session.** The user must state a purpose / goal / requirement before this skill does anything. If it is missing, ask for it in one line and wait. Do not guess a goal on the user's behalf.
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Question pattern** (always via `AskUserQuestion`: recommended answer + 2 alternatives + Re-infer, then the
-tool's own Other) and **interview conduct** (one question at a time; explore before asking): follow
+**Question pattern** and **interview conduct** (one question at a time; explore before asking): follow
 `.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
@@ -50,12 +49,12 @@ An element is a **GAP** if it cannot be filled (blank) or if filling it contradi
 ## Step 3 — Converge (the gap list drives the depth)
 
 - **All five CLEAR, cut point obvious** → present the filled five elements + the cut point in one block for a **single confirmation**. This is the trivial-fix fast path — still a confirmation, never a silent assumption.
-- **Element fillable but conflicting** → challenge exactly that point, quoting the doc or code it collides with ("MODULE.md says times here are UTC, but your plan formats them in the repository layer — which is it?"). Resolve with the question pattern (infer, then `AskUserQuestion` with 4+1).
+- **Element fillable but conflicting** → challenge exactly that point, quoting the doc or code it collides with ("MODULE.md says times here are UTC, but your plan formats them in the repository layer — which is it?"). Resolve it with the Question pattern.
 - **Element blank** → interview ONLY the blank elements, one at a time, with the question pattern.
 
 Mixed results are normal: two blanks + one conflict = two interview questions + one challenge. Loop until all five are CLEAR and conflicts are zero.
 
-**Shared-symbol check before writing.** If the cut point lands on a shared symbol (`Base*`, `ConstValues/`, `Results/`, or anything with more than one caller), the plan is also changing every other caller — the five elements can all read CLEAR while this stays invisible. Read the fan-in table in `<name>-flow.md`; if it is missing or stale, run `/wp-module-code-trace-flow` Step 3.5 before confirming. List the affected callers in the plan: an unstated blast radius is the plan's largest silent decision.
+**Shared-symbol check before writing.** If the cut point lands on a shared symbol (`Base*`, `ConstValues/`, `Results/`, or anything with more than one caller), the plan is also changing every other caller — the five elements can all read CLEAR while this stays invisible. Read the fan-in table in `<name>-flow.md`; if it is missing or stale, run `/wp-module-code-trace-flow` Step 3.5 before confirming. List the affected callers as Touch points rows (Step 4): an unstated blast radius is the plan's largest silent decision.
 
 **Implicit-decision sweep before writing.** The five elements reading CLEAR does not prove every call has been made — a downstream decision can still sit silently assumed. Before the final confirmation, sweep once: "what has this plan quietly decided without saying so?" (error handling, an edge case, a default value, a boundary the user never named). Surface each one with the question pattern until nothing important is left implicit. Then do a final confirmation of the assembled plan.
 
@@ -70,17 +69,9 @@ gone when the session ends, and the next session re-argues it from zero.
 
 Save to `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` — same naming as the future paired `impl/` record (written by `/wp-module-save-implementation` at wrap-up).
 
-**Open the file with the status header — one line, always, directly under the H1:**
-
-```markdown
-# <module> — <short title>
-
-> **Status:** Planned · **Updated:** YYYY-MM-DD
-```
-
-The full value set, the `Detail` field, who sets each one, and the `N/M` rule live in one place — the **Status header**
-section of `.claude/skills/_shared-conventions.md`. Follow it in full. What this skill owns is the
-value it writes: **`Planned`**, because nothing has happened to the plan yet beyond existing.
+**The status header** — one line directly under the H1, as in the template below. This
+skill writes **`Planned`**, or **`Blocked · **Detail:** <that item>`** while a `🔴` row is open. Shape,
+value set and `Detail` rules: the **Status header** section of `.claude/skills/_shared-conventions.md`.
 
 ### Output template — the plan's fixed shape
 
@@ -131,24 +122,22 @@ Three rules make these tables worth their ink:
   the evidence in Step 1 actually supports. The exact class/method map, the API surface and the SQL
   belong to `/wp-module-technical-design`'s `## Class & file map`; this table is the honest
   first-pass blast radius, including the shared-symbol callers found above, and that skill refines
-  it rather than repeating it. A caller you know is affected goes in a row — an unstated blast
-  radius is the plan's largest silent decision.
+  it rather than repeating it.
 - **Every ☐ is a landmine with a name.** `Status` is one of `☑ Resolved`, `☐ Open — waiting on
   <who/what>`, or `→ <the skill/step that owns it>`. This framework has no ADR layer, so a
   resolved row IS the decision record — the `Decision + why` cell must survive without the
-  conversation that produced it ("what" is reconstructable later; "why this over that" is lost
-  forever if unwritten).
+  conversation that produced it.
 
 **`Blocks build` is the column that gets read first**, so it carries a mark, not a sentence:
 `🔴` = coding cannot start until this row is `☑`; `🟢` = open, but the build proceeds without it;
 `—` = already resolved, nothing to weigh. Every `☐` row gets one of the two marks — an open item
 whose cost nobody judged is exactly the item that surfaces on build day.
 
-**No coding starts while a `🔴` row is open.** Either resolve it first, or set the status header to
-`Blocked · **Detail:** <that item>` so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
+**No coding starts while a `🔴` row is open.** Either resolve it first, or the header carries the
+`Blocked` value above, so the plan announces it instead of hiding it behind `Planned`. `🟢` rows
 stay open and the work proceeds around them.
 
-If the technical cut (API / classes / patterns / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design` — it appends BOTH a "Technical Design" and a "Tasks" section to this SAME plan file, slicing into vertical increments when the feature needs it.
+If the technical cut (API / classes / patterns / SQL / frontend) or the build order still needs nailing down, route to `/wp-module-technical-design`.
 
 **Sizing check — does this need slicing?** After the plan is written, judge whether it builds in a single code→build→test pass. It does NOT (so suggest slicing) when the plan shows any of: multiple independent user-facing behaviors, a full new page/flow spanning several layers end-to-end, or a wide refactor whose blast radius hits many call sites. The verdict decides the handoff's **Next** line — never auto-run anything, the trigger is the user's:
 
@@ -156,6 +145,6 @@ If the technical cut (API / classes / patterns / SQL / frontend) or the build or
 - Borderline or clearly too big → "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first."
 - An open `🔴` row → Next is resolving that row; coding waits.
 
-**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the plan path + `Status: Planned` (or `Blocked`); You now = review the plan and answer any `🔴` row; Next = the verdict above.
+**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the plan path + the status it carries; You now = review the plan and answer any `🔴` row; Next = the verdict above.
 
 </supporting-info>

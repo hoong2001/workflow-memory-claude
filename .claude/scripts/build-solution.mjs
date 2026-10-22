@@ -8,9 +8,7 @@
  *
  * Exit codes: 0 = build green · 1 = errors or a failed step (compile lines read `file.cs(line,col): error CSxxxx`)
  *             2 = environment problem (no .sln, msbuild not on PATH) —
- *                 the build falls back to the user. *
- * Node rather than PowerShell so the same file runs from any shell; MSBuild itself is still
- * Windows-only, which the exit-2 path reports instead of failing obscurely.
+ *                 the build falls back to the user.
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';

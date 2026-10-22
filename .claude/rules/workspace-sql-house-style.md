@@ -1,9 +1,11 @@
 # SQL House Style — Schema & Seed Scripts
 
-Scope: `.sql` files — table/view definitions and seed/reference-data scripts. How a query is
+Scope: `.sql` files — table/view definitions and seed/reference-data scripts — and, for rule 2,
+all SQL, wherever it is written. How a query is
 designed (what belongs in SQL vs the Service layer, readability, `SELECT *`) is governed by the
 `wp-sql-query-design` skill, and the C# around it by `wp-repository-unitofwork-pattern` — both
-auto-trigger when the work matches. This rule owns only what is special about `.sql` files.
+auto-trigger when the work matches. This rule owns only what is special about `.sql` files, plus
+rule 2.
 
 ## 1. Seed scripts are plain INSERTs
 

@@ -20,31 +20,15 @@ module work at that moment: create the module, and drop this task folder's `.sql
 material into that module's `references/` and `schema/`. The task record stays where it
 is as the origin story.
 
-## Layout — one folder per task, isolated
+## What a task folder holds
 
-```
-project-memory/tasks/
-├── _README.md                          ← this file (the only committed one)
-└── <YYYY-MM-DD>-<slug>/                ← one task, self-contained
-    ├── TASK.md                         ← the record (mandatory)
-    ├── schema/                         ← any .sql this task used or produced (on demand)
-    └── references/                     ← material received: spec, screenshot, sample (on demand)
-```
+Each task is one self-contained folder, `<YYYY-MM-DD>-<slug>/`: its `TASK.md` record, plus
+`schema/` for the `.sql` it used and `references/` for the material it was given, when it had
+any. Two tasks never share a file. When a request comes back, open the old `TASK.md` at
+**"If this comes back"**: what to re-run, what to change first, what tripped someone up.
 
-- `<slug>` is short kebab-case, naming the request: `2026-09-14-q3-sales-report`.
-- `schema/` and `references/` are created only when there is something to put in them.
-  Do not scaffold empty folders.
-- Everything a task touches stays inside its own folder. Two ad-hoc report requests
-  never share a file.
-
-## Writing the record
-
-`/wp-task-record` writes `TASK.md` and owns its format. Invoke it at whatever point you
-reach for it — starting the task (requirement captured, `Status: Doing`) or finishing it
-(`Status: Done`). Same file either way.
-
-The section that pays for this folder's existence is **"If this comes back"**: what to
-re-run, what to change first, what tripped you up.
+`/wp-task-record` creates the folder and writes `TASK.md`; the folder layout and the record's
+format are defined in that skill.
 
 ## Not committed to git
 

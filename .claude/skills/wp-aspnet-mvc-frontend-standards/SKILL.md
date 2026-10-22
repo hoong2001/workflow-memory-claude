@@ -5,7 +5,7 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 
 # Frontend Skill — ASP.NET MVC JavaScript Standards
 
-> Single source of truth for **all frontend rules and how-to**. The project architecture doc (`stack-architecture.md`) owns only the stack versions and backend rules, and points here for everything frontend.
+> Single source of truth for **all frontend rules and how-to**. The project architecture doc (`stack-architecture.md`) owns only the stack versions, the §1.2 widget mandates and the backend rules, and points here for everything frontend.
 
 > **Code patterns:** this SKILL.md carries the **rules**; every rule's concrete, copy-ready
 > code example lives in `references/frontend-code-patterns.md` (section headings match). **Read
@@ -31,7 +31,7 @@ description: ASP.NET MVC frontend JavaScript standards using jQuery, Razor, and 
 
 > **Note on examples:** all inline literals in the reference file (URLs like `/api/districts`, status codes `401`/`403`, messages, `'-- Select --'`) are illustrative only. In real code, extract them into named constants, a `CONFIG`/`PAGE_CONFIG` object, or an `apiUrlObj` — the "no magic numbers / strings" rule still applies.
 
-**CSS — Allowed:** Bootstrap 3.4.1 and AdminLTE 2.x, CSS3 only.
+**CSS — Allowed:** Bootstrap and AdminLTE at the §1.2 versions, CSS3 only.
 
 **CSS — Forbidden:**
 - CSS4+ features (`:has()`, `@layer`, `color-mix()`, container queries)
@@ -136,13 +136,11 @@ Never fetch dropdown options via AJAX unless they are dependent (cascading).
 
 ## Control Initialization Patterns (Mandated Widgets)
 
-The stack mandates these widgets for their jobs (see architecture doc §1.2). Standard init per widget — settings in the reference file are the required project defaults.
+Which widget does which job is mandated in `project-memory/stack-architecture.md` §1.2 (Usage column). Standard init per widget — settings in the reference file are the required project defaults.
 
-- **DataTables — ALL tabular data.** Initialize once, keep the instance in a module-scope variable, reload via `clear().rows.add().draw()`. Never re-initialize on data refresh; destroy/re-init only if the column structure itself changes.
-- **Select2 — ALL select boxes.**
-- **Bootstrap Datepicker — ALL date inputs.**
-- **ECharts — ALL charts.** Build the option object in a configuration factory (`getChartOption()`, section 10 of the page structure), never inline in the AJAX callback; bind via a `renderChart(data)` function following Store-Then-Bind.
-- **moment.js — ALL date formatting:** `moment(date).format('YYYY-MM-DD')`.
+- **DataTables:** initialize once, keep the instance in a module-scope variable, reload via `clear().rows.add().draw()`. Never re-initialize on data refresh; destroy/re-init only if the column structure itself changes.
+- **ECharts:** build the option object in a configuration factory (`getChartOption()`, section 10 of the page structure), never inline in the AJAX callback; bind via a `renderChart(data)` function following Store-Then-Bind.
+- **moment.js:** `moment(date).format('YYYY-MM-DD')`.
 
 → Code: `references/frontend-code-patterns.md` § Control Initialization
 

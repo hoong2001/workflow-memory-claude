@@ -6,23 +6,18 @@ description: Repository Pattern implementation guide using Dapper.NET for C# 7.3
 # Repository Pattern with Dapper.NET
 
 ## Core Rules (Non-Negotiable)
-- No async / await — synchronous only
-- No Dependency Injection — concrete class instantiation only
+
+§2.1 (layering) and §4.1 of `project-memory/stack-architecture.md` apply in full; this skill adds:
+
 - Interfaces on Repository or UnitOfWork: whatever `project-memory/stack-architecture.md` §4.1
   says — it is the switch, this skill never overrides it. **If the architecture doc does not
-  explicitly permit them, there are none** — a project's own doc that never mentions interfaces
-  gets the concrete form this skill always had. The samples below are the no-interface form;
+  explicitly permit them, there are none.** The samples below are the no-interface form;
   the interface form is in **Repository interfaces** below.
-- No stored procedures — Raw SQL only (supports dynamic query)
-- No DTO or Entities — use `Results/` classes for all object mapping
-- Always use `DynamicParameters` for all queries — exception: WHERE IN (see below)
-- All SQL must be parameterized — no string concatenation
-- Business logic in Service layer only — never in Repository
-- Explicit column lists — never `SELECT *`
+- Always use `DynamicParameters` for all queries
+- SQL Server only — `SqlConnection` is hardcoded; no multi-database abstraction
 
 > This skill owns the C# around the query. What the query does, and how readable it is, belongs
 > to `wp-sql-query-design` — reach for it alongside this one when writing the SQL itself.
-- SQL Server only — `SqlConnection` is hardcoded; no multi-database abstraction
 
 ---
 
@@ -168,7 +163,7 @@ No DTOs, no Entities — Result classes are the single output model.
 // Results/ProductResult.cs
 public class ProductResult : BaseResult
 {
-    public int ProductID { get; set; }
+    public int ProductId { get; set; }
     public string ProductName { get; set; }
     public decimal Price { get; set; }
     public bool IsActive { get; set; }
@@ -180,6 +175,8 @@ public class ProductResult : BaseResult
 ## DynamicParameters — Standard Usage
 
 Always use `DynamicParameters`. Specify `DbType` explicitly for type safety.
+Use `DbType.AnsiString` for a `varchar` column and `DbType.String` for `nvarchar`: an `nvarchar`
+parameter against a `varchar` column forces an implicit conversion and can turn a seek into a scan.
 
 ```csharp
 var p = new DynamicParameters();
@@ -238,7 +235,7 @@ public class ProductRepository : BaseRepository
     public bool Update(ProductResult model)
     {
         var p = new DynamicParameters();
-        p.Add("@ProductID", model.ProductID, DbType.Int32);
+        p.Add("@ProductID", model.ProductId, DbType.Int32);
         p.Add("@ProductName", model.ProductName, DbType.String);
         p.Add("@Price", model.Price, DbType.Decimal);
 

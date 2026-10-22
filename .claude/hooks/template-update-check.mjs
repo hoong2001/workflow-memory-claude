@@ -10,8 +10,7 @@
  * Only GitHub repos are checked (the raw file URL is derived from the repo URL); any other host
  * is skipped silently. No caching: one small HTTP request per session start, capped by TIMEOUT_MS.
  *
- * Runtime: Node.js 18+ (global fetch), so one implementation behaves identically on Windows,
- * WSL, macOS and Linux.
+ * Runtime: Node.js 18+ (global fetch).
  *
  * Fails OPEN: offline, a timeout, a missing manifest, any error → exit 0 with no output.
  * A version check must never delay or block a session.

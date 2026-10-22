@@ -12,14 +12,13 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `13.3.1` |
+| Version | `13.4.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
 master; git is the default source.
 
-> **Version policy** — bump on any commit that touches a ✅ path below (`.claude/rules/`,
-> `.claude/skills/`, `.claude/hooks/`, `.claude/scripts/`, `project-memory/modules/example-module/`, or this manifest). Semver:
+> **Version policy** — bump on any commit that touches a ✅ path below. Semver:
 > **MAJOR** — a path is renamed or deleted (adds a 🗑️ row below) or a rule's behavior
 > changes in a way that breaks a project already relying on the old one. **MINOR** — a new
 > rule, skill, or section is added, purely additive. **PATCH** — wording, doc fixes,
@@ -33,10 +32,12 @@ master; git is the default source.
 | Path | What it is |
 |---|---|
 | `.claude/rules/` | Behavioral rules (whole folder) |
-| `.claude/skills/` | Workflow skills (whole folder). It holds no mods since v13.0.0 — they are optional plugins in the `hoong2001/workflow-memory-mods` marketplace (see the 🗑️ rows) |
-| `.claude/hooks/` | Hook scripts — `block-secrets.mjs`, the credential guard, `project-memory-status.mjs`, the system-wide plan-status view (plus an opt-in mirror into a cross-project vault board when the machine has a vault path configured), `connstr-check.mjs`, the `Web.config` / `App.config` connection-string format check, and `template-update-check.mjs`, the session-start reminder when the master has a newer version (whole folder) |
-| `.claude/scripts/` | Scripts the workflow runs — `build-solution.mjs`, Claude's build step — always `/t:Rebuild` (whole folder) |
+| `.claude/skills/` | Workflow skills (whole folder) |
+| `.claude/hooks/` | Hook scripts, wired in by the `.claude/settings.json` merge below (whole folder) |
+| `.claude/scripts/` | Scripts the workflow runs, such as the build step (whole folder) |
+| `.claude/adoption-conformance-scan.md` | Conformance-scan procedure, read once when a project adopts the template |
 | `project-memory/modules/example-module/` | Module scaffold template |
+| `project-memory/overview/references/_README.md` | System-references folder conventions (the folder's own files are never synced) |
 | `project-memory/tasks/_README.md` | One-off task folder conventions (the folder's own records are never synced) |
 | `project-memory/docs/_README.md` | Shared-docs folder conventions (the folder's own files are never synced) |
 | `SYNC-MANIFEST.md` | This manifest itself |
@@ -45,7 +46,7 @@ master; git is the default source.
 
 Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 
-`.gitignore` is master-only as a FILE, but carries one template-side block — see the grey zone below.
+`.gitignore` is master-only as a FILE, but carries template-side lines — see the grey zone below.
 
 ## 🚫 Never overwrite (project state — overwriting loses progress permanently)
 
@@ -53,7 +54,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 |---|---|
 | `project-memory/modules/<any real module>/` | MODULE.md, schema/, plans/, impl/, references/, `<name>-flow.md` — the project's accumulated memory |
 | `project-memory/overview/system-overview-spec.md` | That system's functional spec |
-| `project-memory/overview/references/` | That system's reference materials |
+| `project-memory/overview/references/<any file but _README.md>` | That system's reference materials |
 | `project-memory/docs/<any file but _README.md>` | Shared files several modules lean on but none owns |
 | `project-memory/tasks/<any task folder>/` | One-off task records — `TASK.md`, `schema/`, `references/`. Git-ignored in the target too, so a sync never sees them |
 | `project-memory/project-memory-status.md` | Generated from the target's own plans by its own `project-memory-status.mjs` hook — copying the master's would show the master's modules. Rebuild it in the target with `node .claude/hooks/project-memory-status.mjs --regenerate` |
@@ -72,79 +73,28 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | Root `CLAUDE.md` | Structure + `@import` lines | Module Map rows, "What this system is" |
 | `project-memory/stack-architecture.md` | Default stack/architecture baseline | Any project-specific customization |
 | `project-memory/stack-architecture.next.md` | Staged, partly-unsealed draft of the baseline — inert until the user renames it to `stack-architecture.md` | A target that already switched holds its own copy under `stack-architecture.md`; merge into that file, never re-create the draft beside it |
-| `.claude/settings.json` | The `SessionStart` → `template-update-check.mjs`, `PreToolUse` → `block-secrets.mjs` and `PostToolUse` → `project-memory-status.mjs` / `connstr-check.mjs` hook entries. Delete any `extraKnownMarketplaces.workflow-memory-local` entry and any `enabledPlugins` key ending `@workflow-memory-local` left by v6.1.0–v9.0.0 | Every other hook, permission, and setting the project has added |
-| Root `.gitignore` | The `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block. Drop the `.claude/skills/*/.claude-plugin/types/` line (and its comment) an earlier sync added — no skill folder holds a mod since v13.0.0 | Every other ignore rule the project has |
+| `.claude/settings.json` | Every `hooks` entry that runs a `.claude/hooks/` script, plus clean-up of the retired `workflow-memory-local` marketplace — see the merge note below | Every other hook, permission, and setting the project has added |
+| Root `.gitignore` | The `*.local.json` line and the `project-memory/tasks/*` + `!project-memory/tasks/_README.md` block, each with its comment. Drop the `.claude/skills/*/.claude-plugin/types/` line (and its comment) an earlier sync added — no skill folder holds a mod any more | Every other ignore rule the project has |
 
-> **`.claude/settings.json` merge:** a target may already have its own hooks and permissions,
-> so never copy the file whole. Add only the `PreToolUse` entry whose `matcher` is
-> `Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell` and whose command runs
-> `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secrets.mjs`, merging it into the existing
-> `hooks.PreToolUse` array. Likewise add the `PostToolUse` entry whose `matcher` is
-> `Write|Edit|MultiEdit|Bash|PowerShell` and whose command runs
-> `${CLAUDE_PROJECT_DIR}/.claude/hooks/project-memory-status.mjs` into `hooks.PostToolUse`, then
-> run it once with `--regenerate` so the status view exists before the first plan write. Add the
-> second `PostToolUse` entry too, `matcher` `Write|Edit|MultiEdit`, running
-> `${CLAUDE_PROJECT_DIR}/.claude/hooks/connstr-check.mjs`. Add the `SessionStart` entry, `matcher`
-> `startup`, running `${CLAUDE_PROJECT_DIR}/.claude/hooks/template-update-check.mjs`, into
-> `hooks.SessionStart`. If the
-> target has no `.claude/settings.json` at all, copying the master's file wholesale is safe.
->
-> A target synced at 3.1.0 has the OLD PowerShell entry, which points at a script this
-> version deletes. Replace that entry - do not add a second one beside it.
+> **`.claude/settings.json` merge:** merge every `hooks` entry of the master's
+> `.claude/settings.json` that runs a `.claude/hooks/` script into the same event array
+> (`hooks.SessionStart`, `hooks.PreToolUse`, `hooks.PostToolUse`, …) of the target's file. An
+> entry in the target that runs the same script, or a retired one (a `.claude/hooks/` script the
+> master no longer ships, such as `block-secrets.ps1`), is replaced — never add a second entry
+> beside it. Delete the leftovers of the retired `workflow-memory-local` marketplace:
+> `extraKnownMarketplaces.workflow-memory-local` and every `enabledPlugins` key ending
+> `@workflow-memory-local`. Then run `node .claude/hooks/project-memory-status.mjs --regenerate`
+> once, so the target's `project-memory/project-memory-status.md` is rebuilt from its own plans in
+> the current table format. A target with no `.claude/settings.json` takes the master's file whole.
 
 > **`.gitignore` merge:** add only those lines (plus their comments) to the target's existing
-> file. Without them a project commits its ad-hoc task records — report queries, customer data —
-> into its repo. A project with a private repo that WANTS them versioned simply skips this row.
+> file. Without them a project commits machine-local config and its ad-hoc task records — report
+> queries, customer data — into its repo. A project with a private repo that WANTS its task
+> records versioned skips the tasks block.
 
 **Merge procedure for grey-zone files:** diff master vs. target, apply only the
-template-side changes (e.g. a newly added `@import` line), keep all project-side
+template-side changes (e.g. the `@import` line of a new rule without `paths:` frontmatter), keep all project-side
 content untouched.
-
-> **Module Map 4th column:** master now lists BOTH deep docs (`MODULE.md` + `<name>-flow.md`).
-> A target synced from an older master has rows naming only `MODULE.md` — take the new header
-> from master, then backfill each existing row with its own flow-doc filename. The rows remain
-> project content; only this column gains a second filename.
-
-## 🚚 Relocation: memory docs moved out of `.claude/` (v2.0.0 — USER MOVES, sync never does)
-
-`.claude/` is tool wiring that many teams gitignore wholesale, which silently took every
-handover doc down with it. Three paths moved to a plain, always-committable root folder:
-
-| Old path (in a target synced before v2.0.0) | New path |
-|---|---|
-| `.claude/modules/` | `project-memory/modules/` |
-| `.claude/overview/` | `project-memory/overview/` |
-| `.claude/workspace-project-stack-architecture.md` | `project-memory/stack-architecture.md` |
-
-**Sync NEVER moves, renames, or deletes a target's real modules — the user migrates them by
-hand.** These paths hold a project's accumulated memory; they are 🚫, absent from the 🗑️
-deletion list, and out of reach of every automated step. What sync does instead:
-
-1. **Create the skeleton first.** `project-memory/modules/` and `project-memory/overview/`
-   must exist before anything else, so the ✅ copy has a home. Sync creates the two folders
-   and lands `example-module/` in the first — that is the full extent of its authority here.
-2. **Detect and report.** If `.claude/modules/`, `.claude/overview/`, or
-   `.claude/workspace-project-stack-architecture.md` still exist in the target, list them and
-   say plainly that the user must move them by hand. Then stop touching them.
-
-### Manual migration checklist (the user runs this, not sync)
-
-1. `git mv .claude/modules/<each real module> project-memory/modules/` — one at a time, so a
-   half-finished move is visible. `example-module/` is already there from the skeleton; if the
-   target has its own edited copy, keep whichever the user prefers.
-2. `git mv .claude/overview/* project-memory/overview/`.
-3. `git mv .claude/workspace-project-stack-architecture.md project-memory/stack-architecture.md`,
-   keeping the target's own stack content — only the filename changes.
-4. Rewrite the three old strings across the target's `CLAUDE.md`, `.claude/rules/`,
-   `.claude/skills/`, and every living doc under `project-memory/`. The `@import` line in
-   `CLAUDE.md` becomes `@project-memory/stack-architecture.md`.
-5. Leave historical `plans/` / `impl/` / `references/` files alone — stale paths there are
-   history, not defects.
-6. If the target gitignored `.claude/`, confirm `project-memory/` is NOT ignored.
-
-> **Do this promptly after syncing.** From the moment the ✅ copy lands, the target's rules and
-> skills point at `project-memory/modules/`, where only `example-module/` lives. Until the real
-> modules are moved across, Claude will not find them.
 
 ## 🗑️ Renames / deletions (obsolete template paths — remove from target after copy)
 
@@ -161,34 +111,26 @@ deletion list, and out of reach of every automated step. What sync does instead:
 | `.claude/skills/workspace-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
 | `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/wp-module-plan-discuss/` |
-| `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` (renamed — skill names allow lowercase letters/digits/hyphens only) |
-| `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` (renamed to kebab-case, content unchanged — the target's `CLAUDE.md` `@import` line must be updated to match) |
-| `project-memory/modules/example-module/specs/` | folder concept removed — material → `references/` (`.sql` → `schema/`), work docs → `plans/` |
-| `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — the credential guard moved from PowerShell to Node so one implementation behaves identically on Windows, WSL, macOS and Linux. The target's `.claude/settings.json` hook entry must be repointed at the same time (see the grey-zone note above), or the guard silently stops running |
-| `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` — one skill now derives the technical cut AND the task list, because slicing a feature means naming a path through every layer and that needs the file map first. Its `## Build Increments` section is now `## Tasks`, written for every plan rather than only for big ones |
-| `.claude/skills/wp-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` — renamed because "concrete" named a rule (no interfaces) that `stack-architecture.next.md` relaxes; the new name says what the skill owns. Content otherwise unchanged. A leftover old folder keeps auto-triggering beside the new one, so delete it |
-| `.claude/skills/wp-plan-status/` | `.claude/mods/plan-status/` — the mod moved out of the skills folder in v7.0.0. Claude Code scans `.claude/skills/`, so the same `plugin.json` was loaded twice (scan + the marketplace entry in `settings.json`) and every session opened with `name "plan-status" is already taken by an installed plugin`. Renaming it does not help; only the move does. Repoint `.claude/settings.json` → `extraKnownMarketplaces.workflow-memory-local.source.path` to `./.claude/mods` (the folder is now the marketplace root for every mod, so the per-mod `marketplace.json` inside `plan-status/` is gone) in the same pass, and update the `.gitignore` types line. Superseded in v8.0.0 — see the `.claude/mods/` row below |
-| `.claude/mods/` (whole folder, in the target) | nothing — v10.0.0 removed the `tfvc` mod; `.claude/skills/wp-tfvc/` (a plain skill) teaches Claude to use `tf` instead, and `mods-plan-status` lives in `.claude/skills/`. Delete the folder, drop the `.claude/mods/*/.claude-plugin/types/` line from the target's `.gitignore`, clean `.claude/settings.json` per the grey-zone row, and on each machine run `claude plugin uninstall tfvc@workflow-memory-local --scope user` and `claude plugin marketplace remove workflow-memory-local` if `claude plugin list` still shows them |
-| `.claude/mods/plan-status/` (from v7.0.0) | `.claude/skills/plan-status/` (renamed `mods-plan-status/` in v12.0.0) — back in the skills folder in v9.0.0, where Claude Code loads it with no install. v7.0.0 moved it out only because a marketplace entry loaded it a second time; v9.0.0 removes it from the marketplace instead. Delete the old folder, delete any `enabledPlugins` key `plan-status@workflow-memory-local` from `.claude/settings.json`, and on each machine run `claude plugin uninstall plan-status@workflow-memory-local --scope user` if `claude plugin list` shows it — while installed it blocks the skills-dir copy |
-| `.claude/skills/wp-auto-test-loop/` | removed in v6.0.0 — its build step became the default: Claude builds after every coding chunk with `.claude/scripts/build-solution.mjs` (`workspace-workflow.md` Step 2). Its CRUD-SQL checks and web test were dropped because they did not fit every environment; test is manual. A target's existing `schema/test/` scripts are project state and stay |
-| `.claude/skills/plan-status/` | `.claude/skills/mods-plan-status/` — v12.0.0 names every mod `mods-<name>` (folder, plugin name, slash command, pane id, state key), so `/plan-status` is now `/mods-plan-status`. Both folders hold a `plugin.json`, so a leftover old one loads a second pane; delete it. The pane's shown / hidden choice resets once, because the state key changed. The `<!-- plan-status-table v2 -->` marker in `project-memory/project-memory-status.md` is a data contract and keeps its name |
-| `.claude/skills/context-panel/` | `.claude/skills/mods-context-panel/` — same v12.0.0 rename; `/context-panel` is now `/mods-context-panel` |
-| `.claude/skills/mod-panel/` | `.claude/skills/mods-toggle-band/` — same v12.0.0 rename, named for what it draws; `/mod-panel` is now `/mods-toggle-band` |
-| `.claude/skills/mods-plan-status/` | the optional `mods-plan-status` plugin in the `hoong2001/workflow-memory-mods` marketplace — v13.0.0 takes every mod out of the template, so a teammate who does not want a pane installs nothing and loses no workflow step. Delete the folder FIRST, then install on each machine that wants it: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods`. While both exist they share one name and the installed plugin stops the skills-dir copy loading. The `project-memory-status.mjs` hook stays in the template and keeps writing the table the plugin reads |
-| `.claude/skills/mods-context-panel/` | nothing — v13.0.0 took it out of the template; since v13.0.1 it is a personal mod, not published in any marketplace. Delete the folder |
-| `.claude/skills/mods-toggle-band/` | nothing — same as `mods-context-panel` (v13.0.0 out of the template, v13.0.1 personal, unpublished). Delete the folder |
+| `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
+| `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` — update the target's `CLAUDE.md` `@import` line to match |
+| `project-memory/modules/example-module/specs/` | nothing — delete it; the module `specs/` folder concept is gone |
+| `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — repoint the `.claude/settings.json` entry at `block-secrets.mjs` |
+| `.claude/skills/wp-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` |
+| `.claude/skills/wp-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` |
+| `.claude/skills/wp-plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it |
+| `.claude/mods/` (whole folder, in the target) | nothing — delete it; `.claude/skills/wp-tfvc/` replaces the old `tfvc` mod and the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces `plan-status`. Drop the `.claude/mods/*/.claude-plugin/types/` line from the target's `.gitignore`, clean `.claude/settings.json` per the grey-zone note, and on each machine run `claude plugin uninstall tfvc@workflow-memory-local --scope user` and `claude plugin marketplace remove workflow-memory-local` if `claude plugin list` still shows them |
+| `.claude/mods/plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it. On each machine run `claude plugin uninstall plan-status@workflow-memory-local --scope user` if `claude plugin list` shows it |
+| `.claude/skills/wp-auto-test-loop/` | nothing — delete it; Claude's build step is `.claude/scripts/build-solution.mjs` (`workspace-workflow.md` Step 2) and test is manual. A target's existing `schema/test/` scripts are project state and stay |
+| `.claude/skills/plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it. The `plan-status-table` marker in `project-memory/project-memory-status.md` is a data contract and keeps its name |
+| `.claude/skills/context-panel/` | nothing — delete it |
+| `.claude/skills/mod-panel/` | nothing — delete it |
+| `.claude/skills/mods-plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods` on each machine that wants the pane |
+| `.claude/skills/mods-context-panel/` | nothing — delete it |
+| `.claude/skills/mods-toggle-band/` | nothing — delete it |
 
-> Paths in these tables are POST-relocation. A target that predates v2.0.0 still carries them
-> under `.claude/` — the 🚚 relocation runs first, so by deletion time (Step 4b) every path
-> above resolves as written.
+### `workspace-*` → `wp-*` skill prefix
 
-### `workspace-*` → `wp-*` skill prefix (the 13 skills that existed at the time, content unchanged)
-
-Renamed so typing `/wp` filters to exactly this workflow's skills. **Rule files keep the
-`workspace-` prefix on purpose** — they are never typed as commands, so the two prefixes now
-signal which is which: `wp-*` = a slash command you invoke, `workspace-*` = an always-on rule
-file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
-`project-memory/stack-architecture.md`.
+`wp-*` names a skill you invoke, `workspace-*` a rule file — never rename a file under `.claude/rules/` or `project-memory/stack-architecture.md`.
 
 | Obsolete path (delete in target) | Replaced by |
 |---|---|
@@ -196,42 +138,19 @@ file. Do NOT rename anything under `.claude/rules/`, and do NOT rename
 | `.claude/skills/workspace-system-overview-spec-generator/` | `.claude/skills/wp-system-overview-spec-generator/` |
 | `.claude/skills/workspace-module-plan-discuss/` | `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-module-technical-design/` | `.claude/skills/wp-module-technical-design/` |
-| `.claude/skills/workspace-module-slice-plan/` | `.claude/skills/wp-module-technical-design/` (renamed, then merged in v3.0.0 — delete in one step, do not create `wp-module-slice-plan/`) |
+| `.claude/skills/workspace-module-slice-plan/` | merged into `.claude/skills/wp-module-technical-design/` |
 | `.claude/skills/workspace-module-code-trace-flow/` | `.claude/skills/wp-module-code-trace-flow/` |
 | `.claude/skills/workspace-module-save-implementation/` | `.claude/skills/wp-module-save-implementation/` |
-| `.claude/skills/workspace-auto-test-loop/` | nothing — renamed to `wp-auto-test-loop/`, then removed in v6.0.0 (delete in one step) |
+| `.claude/skills/workspace-auto-test-loop/` | nothing — delete it |
 | `.claude/skills/workspace-aspnet-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
-| `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` (renamed to `wp-concrete-repository-pattern/`, then again in v5.0.0 — delete in one step, do not create `wp-concrete-repository-pattern/`) |
+| `.claude/skills/workspace-concrete-repository-pattern/` | `.claude/skills/wp-repository-unitofwork-pattern/` |
 | `.claude/skills/workspace-update-from-master/` | `.claude/skills/wp-update-from-master/` |
 | `.claude/skills/workspace-obsidian-start/` | `.claude/skills/wp-obsidian-start/` |
 | `.claude/skills/workspace-obsidian-progress-log/` | `.claude/skills/wp-obsidian-progress-log/` |
 
-> Deleting these is not cosmetic: a leftover `workspace-*` skill keeps auto-triggering beside its
-> `wp-*` replacement, so the agent sees two copies of the same standard. The Step 5b alignment scan
-> then rewrites the target's own living docs (`CLAUDE.md`, overview, `MODULE.md`, `<name>-flow.md`)
-> from the old names to the new ones.
-
-> Scope: TEMPLATE paths only. A real module's `specs/` folder is project state (🚫) —
-> its content is migrated by hand per the workflow routing rule, never deleted by sync.
+> The alignment scan of `/wp-update-from-master` (its Step 5b) rewrites the target's living docs from these old names to the new ones.
 
 ## Sync procedure
 
-> Preferred: run `/wp-update-from-master` in the target project — it git-clones the
-> master (per the Master source block above; local-path fallback on request) and executes
-> the steps below with a dry-run report. The manual steps:
-
-1. Copy the ✅ paths from master into the target project, overwriting.
-2. Delete the 🗑️ paths from the target — ONLY those on the list above, only after the
-   replacement has been copied in step 1, and only with user confirmation.
-3. Diff the ⚠️ files; hand-merge template-side changes only.
-4. Never touch the 🚫 paths.
-5. If the master added a new rule file, remember to add its `@import` line to the
-   target's `CLAUDE.md` (step 3 covers this).
-6. Alignment scan: grep the target's LIVING docs (root `CLAUDE.md`, overview spec,
-   each module's `MODULE.md` + `<name>-flow.md`) for the 🗑️ obsolete names; fix hits
-   with user confirmation. Historical `plans/` / `impl/` / `references/` stay untouched —
-   stale names there are history, not defects.
-7. Report, never move: if the target still has `.claude/modules/`, `.claude/overview/`, or
-   `.claude/workspace-project-stack-architecture.md`, list them and hand the user the 🚚
-   manual migration checklist above. Sync's only 🚚 action is creating the
-   `project-memory/modules/` + `project-memory/overview/` skeleton in step 1.
+Run `/wp-update-from-master` in the target project — the skill owns the procedure. The freshly
+cloned master's copy of this manifest is the authority, never the target's local copy.

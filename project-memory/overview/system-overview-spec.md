@@ -37,7 +37,7 @@
 <!-- How the capabilities above split into modules and fit together.
      §4 → §5 is the bridge that DRIVES module creation: each capability is grouped into a module,
      each module here becomes a project-memory/modules/<name>/ folder.
-     Procedure: workflow Step 1 "Brand-new system" (decompose → get sign-off → scaffold each via Step 2 Branch C).
+     Procedure: /wp-system-overview-spec-generator (decompose → one sign-off → scaffold the NEW modules).
      For the module index (names + paths) see root CLAUDE.md "Module Map" — do not duplicate it here. -->
 - (TBD)
 

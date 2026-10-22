@@ -15,7 +15,7 @@ Every pattern below therefore carries a trigger. No trigger, no pattern: write t
 |---|---|
 | Which pattern, when to introduce it, how it is shaped in this stack | **this skill** |
 | Repository, UnitOfWork, Dapper, Repository interfaces | `wp-repository-unitofwork-pattern` |
-| What is forbidden (DI, async, interfaces, Generic Repository), C# version, layering | `project-memory/stack-architecture.md` |
+| What is forbidden (its §4.1 Forbidden list), C# version, layering | `project-memory/stack-architecture.md` |
 | Whether logic lives in SQL or in the Service | `wp-sql-query-design` |
 
 Never restate a rule from those three here. Point to them.
@@ -43,8 +43,8 @@ future session that wants to remove the pattern needs to know what it was for.
   layer where `stack-architecture.md` §4.1 explicitly permits one — or where the module already
   uses interfaces for the same kind of thing (its `MODULE.md` Local conventions, or the existing
   code): brownfield code follows the local style.
-- **Every class in the Services project inherits `BaseService`** — §2.3 says "no exceptions", and
-  C# allows one parent class. So a pattern family's base class inherits `BaseService`
+- **Every Service class inherits `BaseService`** (§2.3), and C# allows one parent class. A pattern
+  family in the Services project is held to the same rule: its base class inherits `BaseService`
   (`DiscountRuleBase : BaseService`), and its members reach it through that base.
   With a parameterless `BaseService` constructor (the usual case) subclasses pass nothing up; if a
   project's takes parameters, the family base passes them through once. A C# `static`
@@ -110,7 +110,7 @@ branch grows past about 15 lines of its own rules. A single short `switch` in on
 `switch`.
 
 ```csharp
-// In the Services project, so the family base inherits BaseService (§2.3)
+// In the Services project, so the family base inherits BaseService
 public abstract class DiscountRuleBase : BaseService
 {
     public abstract decimal Apply(OrderResult order);
@@ -234,7 +234,7 @@ private void RunDueJobs(DateTime now)
 ```
 
 - One failing job is logged and does not stop the others.
-- A job calls `Services.Backend` Services, never a Repository directly (`stack-architecture.md` §2.2).
+- A job calls Services — shared, or `Services.Backend` for backend-only logic (`stack-architecture.md` §2.2, §3.1).
 
 ---
 
@@ -280,7 +280,8 @@ it (`.claude/skills/_shared-conventions.md` → Handoff).
 - [ ] Objects are created in the Factory or the owning Service, not scattered `new`s
 - [ ] The family abstraction is an abstract base class; an interface only where §4.1 permits it
       or the module already uses one for the same kind of thing
-- [ ] Every class in the Services project inherits `BaseService`, directly or through its family base
+- [ ] Every Service class and pattern family class in the Services project inherits `BaseService`,
+      directly or through its family base
 - [ ] Pattern classes that are not Services hold no UnitOfWork and run no SQL
 - [ ] No new folder — pattern classes sit beside the Service that owns them
 - [ ] No mutable static state

@@ -20,7 +20,7 @@ and demands evidence before it does.
 |---|---|
 | What the query should do, how simple it should be, where logic lives | **this skill** |
 | `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-repository-unitofwork-pattern` |
-| `.sql`-file conventions — plain-INSERT seeds, read the real definition first, ship it as a real file | `workspace-sql-house-style.md` rule |
+| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file — and, for all SQL, read the real definition first | `workspace-sql-house-style.md` rule |
 | Stack versions, layering, forbidden patterns | `project-memory/stack-architecture.md` |
 
 Never restate a rule from those three here. Point to them.
@@ -102,28 +102,36 @@ one query becomes 200, and the fix belongs in SQL.
 
 ```csharp
 // ❌ 1 + N queries
-var orders = _uow.OrderRepository.GetByCustomer(customerId);
-foreach (var o in orders)
-    o.Items = _uow.OrderItemRepository.GetByOrder(o.OrderId);
+using (var uow = new UnitOfWork(_connectionString))
+{
+    var orders = uow.OrderRepo.GetByCustomer(customerId);
+    foreach (var o in orders)
+        o.Items = uow.OrderItemRepo.GetByOrder(o.OrderId);
+    return orders;
+}
 ```
 
 ```csharp
 // ✅ One round trip, reshaped in C#
-var rows = _uow.OrderRepository.GetWithItemsByCustomer(customerId);
-var orders = rows.GroupBy(r => r.OrderId)
-                 .Select(g => new OrderResult
-                 {
-                     OrderId   = g.Key,
-                     OrderDate = g.First().OrderDate,
-                     Items     = g.Select(ToItem).ToList()
-                 })
-                 .ToList();
+using (var uow = new UnitOfWork(_connectionString))
+{
+    var rows = uow.OrderRepo.GetWithItemsByCustomer(customerId);
+    return rows.GroupBy(r => r.OrderId)
+               .Select(g => new OrderResult
+               {
+                   OrderId   = g.Key,
+                   OrderDate = g.First().OrderDate,
+                   Items     = g.Select(ToItem).ToList()
+               })
+               .ToList();
+}
 ```
 
 For a parent list plus a child list that do not flatten cleanly, `QueryMultiple` returns both
 sets in one round trip — see `wp-repository-unitofwork-pattern` for the call itself.
 
-**Review trigger:** any `foreach` whose body reaches `_uow`. Check every one.
+**Review trigger:** any `foreach` whose body calls a Repository method through the UnitOfWork
+(`uow.<Entity>Repo...`). Check every one.
 
 ---
 
@@ -243,8 +251,6 @@ ceremony.
   FROM`, instead of a C# loop calling `Execute` per row. Cursors are never the answer here.
 - **`EXISTS` instead of `COUNT(*) > 0`** when you only need to know whether a row exists —
   it stops at the first match and says what you meant.
-- **Filter before you join** where the filter is on the joined table and the join is `INNER` —
-  move the predicate into the `ON` clause.
 - **Kill N+1** — see above.
 
 ## Paid performance — costs readability, so bring evidence
@@ -271,7 +277,12 @@ either break it or revert it. The comment is what makes the trade reversible.
 
 ---
 
-## Two pieces of common advice that are wrong
+## Three pieces of common advice that are wrong
+
+**Moving an `INNER JOIN` filter from `WHERE` into `ON` is not an optimization.** For an inner join
+the optimizer produces the same plan either way. Put join conditions in `ON` and filters in
+`WHERE`, where a reader looks for them. (For an `OUTER JOIN` the two placements return different
+rows — a correctness choice, not a speed one.)
 
 **`DISTINCT` → `GROUP BY` is not an optimization.** They deduplicate identically. The real
 smell is a `DISTINCT` that exists to hide a join producing rows you did not want — fix the

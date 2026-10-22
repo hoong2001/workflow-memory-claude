@@ -24,19 +24,21 @@ project's own `project-memory/modules/*/impl/`, `plans/`, and `<name>-flow.md`
 read back — not everyone uses Obsidian, so this skill runs only when the user invokes it.
 
 **Separate from this skill, an automatic mirror shares the same vault path.** On a machine with a
-vault configured (this skill's `references/vault-path.local.json`, else
-`~/.claude/progress-vault.json`), the `.claude/hooks/project-memory-status.mjs` hook writes each
+vault configured (**Vault path** below), the `.claude/hooks/project-memory-status.mjs` hook writes each
 project's live plans to `Project Progress/<project>/_plans.md` and rebuilds
 `Project Progress/_Live plans.md` across all projects. Those two files are hook-generated: never
-edit them, never fold them into the cards. In RESUME, read `_Live plans.md` first — it is
-always current, while the cards are only as fresh as the last LOG.
+edit them, never fold them into the cards.
 
-**Vault path — read it from this skill's own config: `references/vault-path.local.json`**
-(machine-local, gitignored, never synced). Read its `vaultPath` value; never hardcode a path in
-the skill body. **If that file is missing, do NOT guess or use a default** — tell the user in one
-line to copy `references/vault-path.example.json` → `references/vault-path.local.json` (same
-folder) and set their vault's absolute path, then stop until they've done it. Everything lives
-under a `Project Progress/` folder inside that vault (create it if missing) — see **Layout** below.
+**Vault path — the `vaultPath` value of the first of these config files that sets one** (the
+hook's order; a value still holding the example's `<you>` placeholder counts as unset):
+1. this skill's `references/vault-path.local.json` (machine-local, gitignored, never synced);
+2. `~/.claude/progress-vault.json` (per user, every project on the machine).
+
+Never hardcode a path in the skill body. **Neither sets one → do NOT guess or use a default** —
+tell the user in one line to copy `references/vault-path.example.json` →
+`references/vault-path.local.json` (same folder) and set their vault's absolute path, then stop
+until they've done it. Everything lives under a `Project Progress/` folder inside that vault
+(create it if missing) — see **Layout** below.
 
 **Under the hood, reuse the global Obsidian skills** — do not reinvent them:
 `obsidian:obsidian-cli` (read/create/append notes), `obsidian:obsidian-markdown` (note format),
@@ -50,7 +52,7 @@ under a `Project Progress/` folder inside that vault (create it if missing) — 
    needed.
 2. **CLI absent** → fall back to writing the notes and the `.base` files directly to the vault
    folder with normal file tools. The vault is plain Markdown, so this is a sanctioned, equivalent
-   fallback. Use the vault path from `references/vault-path.local.json` — never hardcode it.
+   fallback. Use the vault path resolved above — never hardcode it.
 
 Either track still obeys Step 3: never write to the vault before the user confirms the draft.
 
@@ -77,9 +79,8 @@ of duplicating them.
    - **Modules — from the source of truth, the actual `project-memory/modules/*/` folders.** For each:
      infer its state from its own docs (`MODULE.md`, `<name>-flow.md`, whether `impl/` has records)
      → done / in-progress / planned, plus what it did recently and its next step. Record EVERY
-     module found. Absence from `project-memory/overview/system-overview-spec.md` is NOT an error and must
-     never be "backfilled" on that basis — the overview is curated; some modules exist only for a
-     bug fix and rightly never appear there.
+     module found; absence from `project-memory/overview/system-overview-spec.md` is no reason to
+     add it there (the overview is curated — `.claude/rules/workspace-update-memory.md` item 5b).
    - Recent work per module — latest files under that module's `impl/` and `plans/`;
      `git log` / `git status` for what changed this session.
    - **A module's blocker and next step are usually already written down**: the live plan's status
@@ -165,6 +166,8 @@ of duplicating them.
 
 ## Mode B · RESUME (read back)
 
+- **First, `Project Progress/_Live plans.md`** (the hook mirror above), when it exists — it is
+  always current, while the cards are only as fresh as the last LOG.
 - **One project:** read its `_<project>.md` card, then the module cards in the same folder; report
   briefly — overall `status` · each module's state + next step · the project's next step. Offer to
   open the deep record a module links to.

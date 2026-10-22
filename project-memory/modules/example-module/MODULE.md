@@ -7,10 +7,10 @@
 　
 　Standard file structure (every module looks like this):
 　  project-memory/modules/<name>/
-　  ├── MODULE.md                      ← this file. KEEP this exact name — do NOT prefix it (tool-neutral; the workflow reads it by this fixed filename)
+　  ├── MODULE.md                      ← this file
 　  ├── schema/                        ← EVERY .sql this module owns: tables/views/indexes (you provide) + seed scripts (generated). See schema/_README.md
 　  ├── references/                    ← source material YOU provide: requirement docs, images, links (read on demand)
-　  ├── <name>-flow.md                 ← handover map: module flow + Mermaid diagram + called files/methods + short notes (NOT change history)
+　  ├── <name>-flow.md                 ← handover map: module flow + Mermaid diagram + called files/methods + short notes
 　  ├── diagrams/                      ← optional archify HTML diagrams for people, made only when you say yes (created on first use)
 　  ├── plans/<name>-<date>-<slug>.md  ← pre-change plans (produced by /wp-module-plan-discuss)
 　  └── impl/<name>-<date>-<slug>.md   ← post-change records (produced by /wp-module-save-implementation, which also syncs <name>-flow.md)
@@ -40,10 +40,5 @@
 - Exposed to:
 - Depends on which modules:
 
-## Standard workflow (follow this when changing this module)
-0. **New conversation → open two files, always:** this `MODULE.md` (the rules and gotchas) AND `<name>-flow.md` (how the module works now). Neither is auto-loaded — @-mention both, or just name the module and let Claude read them.
-1. Unfamiliar code → `/wp-module-code-trace-flow` → update `<name>-flow.md`, figure out where to cut.
-2. Before acting → `/wp-module-plan-discuss` (state the goal; gap detection scales the discussion depth) → save the plan to `plans/<name>-<date>-<slug>.md`.
-   Need the technical cut or the task breakdown before coding? → `/wp-module-technical-design` (appends "Technical Design" + "Tasks" to the same plan file; slices into vertical increments when the feature needs it).
-3. After done → remind the user to run `/wp-module-save-implementation` (never auto-run; their call) → it saves the record to `impl/<name>-<date>-<slug>.md` AND syncs `<name>-flow.md`.
-4. If new rules or gotchas emerged → backfill the lists above in this file.
+## Standard workflow
+Changing this module follows `.claude/rules/workspace-workflow.md` Step 2 (Branch A starts by reading this file and `<name>-flow.md`).

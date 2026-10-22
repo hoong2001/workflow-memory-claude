@@ -18,7 +18,7 @@ The main path (**depth**) is the readable spine: input → process → output, o
 So every run recovers **both**:
 
 - **Depth** — the main path, one numbered chain (the spine, kept readable).
-- **Breadth** — for every *shared* symbol on that chain, ALL its callers, enumerated by a full reference sweep (LSP `findReferences`, `rg` as fallback), never pruned to just the one already on the main path.
+- **Breadth** — for every *shared* symbol on that chain, ALL its callers (Step 3.5), never pruned to just the one already on the main path.
 
 A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`, **or** grep shows more than one caller. Shared symbols are exactly where "I changed this and it broke something else" is born — e.g. a `BaseRepository` shared column list or a dynamic-`Add`-column builder edited to add one field for one table silently adds that column to **every other table** that reuses the builder. Catching that fan-out before the edit is the whole point of the breadth dimension.
 
@@ -57,7 +57,7 @@ From the entry symbol, follow callees downward through the process layers until 
 
 ### Step 3.5: Sweep every shared symbol for ALL its callers (breadth)
 
-The main path gives you one caller per symbol; this step finds the rest. For **every** symbol on the chain that is shared (defined in `Base*`, `ConstValues/`, `Results/`, or a grep shows more than one caller), do a full reference sweep across the whole solution and enumerate **every** call site as `file:method`, not just the one already on the main path.
+The main path gives you one caller per symbol; this step finds the rest. For **every** shared symbol on the chain (definition above), do a full reference sweep across the whole solution and enumerate **every** call site as `file:method`.
 
 How to sweep — **LSP first, `rg` as the fallback:**
 
@@ -67,11 +67,10 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 - Tag each caller by entry point (Web / ServBackend) so the blast radius is legible.
 - Many callers (say > 15)? List them but cap with a stated count ("28 callers; the 12 in `[Name].Services` shown, rest are views") — never silently truncate.
-- This is the step that catches "changed a shared method, broke another consumer." Skipping it for a shared symbol is the exact defect this skill now exists to prevent — the dynamic-column-builder fan-out above is the canonical case.
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation **plus its blast-radius list** for the Step 0 change. Then persist per the Save Workflow: **the stable flow (chain + shared-symbol fan-in) goes into the module's `<name>-flow.md`; the where-to-cut and its blast radius go into the change's plan (`plans/`), never into the flow doc.**
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow: **the stable flow (chain + shared-symbol fan-in) goes into the module's `<name>-flow.md`; the where-to-cut and its blast radius go into the change's plan (`plans/`), never into the flow doc.**
 
 ## Verification Rule
 
@@ -80,60 +79,25 @@ Combine both directions into a single input → process → output chain, draw t
 - It must come from a file the skill actually opened or grepped during this run.
 - If a call target cannot be resolved in source (dynamic dispatch, reflection, config-driven wiring, generated code), mark it `unverified` with a one-line reason — never paper over it with a plausible guess.
 - Substituting recalled framework knowledge for an actual read is the primary failure mode this skill exists to prevent.
-- **Completeness for shared symbols (Step 3.5).** No shared symbol may be reported without a full reference sweep. State the method and count backing its caller list (e.g. "LSP found 6 callers, all listed" or "`rg` found 9 hits, 6 callers after filtering"); if capped, say the cap and where the rest live. An unswept shared symbol is as dangerous as a guessed link — it is precisely how a shared-method edit silently breaks another consumer.
 
 ## Output Templates (two deliverables)
 
-**Deliverable 1 — the module flow doc.** Persisted to `project-memory/modules/<name>/<name>-flow.md`, using the module template's structure (same headings as `example-module-flow.md`). Keep only the stable "how it works" parts:
+**Deliverable 1 — the module flow doc**, `project-memory/modules/<name>/<name>-flow.md`. No flow doc
+yet → copy `project-memory/modules/example-module/example-module-flow.md` (the one source of its
+shape), rename its H1 to the module, keep its header block and every heading, then fill it. Fill rules:
 
-```markdown
-# [Module Name] — Flow (handover map)
+- **Flow** — the main path end to end, input → process → output, as one numbered chain:
+  `` 1. `path/File.ext : Method()` — one-line role ``.
+- **Diagram** — the same chain as a Mermaid `sequenceDiagram`: one participant per class/file on the
+  chain, one arrow per numbered step, a dashed return where a value comes back. Draw only what the
+  numbered chain holds; never add a call it does not list.
+- **Called files & methods** — one row per `file:method` on the chain.
+- **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
+  `file:method`, and its entry points.
+- **Notes** — cross-cutting concerns (noted, not expanded) and `unverified` links, each with its reason.
+- Every `(e.g.)` placeholder is replaced or removed.
 
-## Flow
-
-[The main path end to end, input → process → output. One numbered chain:]
-1. `path/File.ext : Method()` — [one-line role]
-2. ...
-
-## Diagram
-
-[The same chain as a Mermaid sequence diagram — one participant per class/file on the chain,
-one arrow per numbered step, a dashed return where a value comes back. Draw only what the
-numbered chain above holds; never add a call it does not list. VS Code, Obsidian and GitHub
-render it; Claude reads it as text.]
-
-```mermaid
-sequenceDiagram
-    participant C as OrderController
-    participant S as OrderService
-    participant R as OrderRepository
-    C->>S: GetOrder(id)
-    S->>R: GetById(id)
-    R-->>S: OrderResult
-    S-->>C: OrderResult
-```
-
-## Called files & methods
-
-| File | Method | Role (short) |
-|---|---|---|
-| ... | ... | ... |
-
-## Shared symbols & their callers (fan-in)
-
-Only the symbols reused across the chain (`Base*`, `ConstValues/`, `Results/`, or multi-caller). This is the stable "who else depends on this" map — it makes every future blast-radius check instant instead of a fresh grep.
-
-| Shared symbol | Callers (`file:method`) | Entry points |
-|---|---|---|
-| `BaseRepository.BuildColumns()` | `OrderRepository.Insert()`, `StockRepository.Insert()` | Web, ServBackend |
-
-## Notes
-
-- Cross-cutting (noted, not expanded): logging via …, DI via …
-- Unverified links (could not be resolved in source): `...` — [reason]
-```
-
-**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace, and it does **NOT** go into the flow doc (the flow doc holds only stable structure — a specific change's cut points belong to that change). It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision.
+**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace. It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision. List every other caller of a shared cut point as a Touch points row too, or state "no shared cut points" under the table.
 
 Plan already exists → write the rows into its table (merge with what is there; a row you would duplicate is a row you update instead). No plan yet → present the same table in the conversation, so `/wp-module-plan-discuss` lands it directly:
 
@@ -143,20 +107,13 @@ Plan already exists → write the rows into its table (merge with what is there;
 | File / object | New or Modified | What changes |
 |---|---|---|
 | `path/File.ext : Method()` | Modified | [what to add/change here] |
-
-## Blast Radius — other callers inheriting a shared-symbol edit
-
-If any cut point above is a shared symbol, list EVERY other caller that inherits the change so each is checked before it breaks. State "no shared cut points" explicitly when the list is empty — never omit this section silently.
-
-| Shared symbol edited | Other caller (`file:method`) | Entry point | Effect / re-check |
-|---|---|---|---|
-| `BaseRepository.BuildColumns()` | `StockRepository.Insert()` | ServBackend | also gets the new column — confirm intended |
+| `StockRepository.Insert()` | Modified | no edit — inherits the new column from `BaseRepository.BuildColumns()` (ServBackend); confirm intended |
 ```
 
 ## Save Workflow
 
 1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
-2. **Where-to-cut**: route Deliverable 2 to the change's plan as above — never into the flow doc.
+2. **Where-to-cut**: route Deliverable 2 to the change's plan as above.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 4. **Offer a diagram** — the **Optional diagram (archify)** section of `.claude/skills/_shared-conventions.md`.
    Options: "No diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
@@ -167,7 +124,7 @@ If any cut point above is a shared symbol, list EVERY other caller that inherits
 ## Conduct Rules
 
 - Trace from real source every time. A spec not backed by reads is a liability, not a deliverable.
-- One entry symbol per run unless the user asks to map several. The main path is the readable spine — but branches and **every caller of a shared symbol MUST be enumerated** (Step 3.5), never pruned to keep the line clean. Only cross-cutting concerns (logging, DI, generic utilities) stay pruned.
+- One entry symbol per run unless the user asks to map several. The main path is the readable spine — but branches MUST be enumerated, never pruned to keep the line clean. Only cross-cutting concerns (logging, DI, generic utilities) stay pruned.
 - The guided dialogue follows the language of the user's input. (This document is in English; the conversation need not be.)
 - This skill's output is the map, not the change. Stop after the flow doc is saved and wait for instruction before editing any traced file.
 - When a call target is ambiguous, ask — do not guess and proceed silently.

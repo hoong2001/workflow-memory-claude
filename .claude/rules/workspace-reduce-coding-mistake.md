@@ -70,9 +70,7 @@ For multi-step tasks, state a brief plan:
 3. [Step] → verify: [check]
 ```
 
-**Verification here is MANUAL — Claude builds, the user runs and tests** (`workspace-workflow.md` Step 2). So a
-criterion must be something THEY can observe and report back; you do not loop on it yourself.
-Weak criteria ("make it work") require constant clarification.
+Write each criterion as something the user can observe and report back — the test is theirs (`.claude/rules/workspace-workflow.md` Step 2).
 
 ---
 

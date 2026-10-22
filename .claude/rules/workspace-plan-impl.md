@@ -19,5 +19,5 @@ wrap-up. This file owns only the principles that apply to EVERY document written
   README/index rows describing it. Report which files were swept. **Nobody should have to ask
   "are all the docs aligned?"** — a half-aligned convention is worse than the old one, because two
   files now disagree and the next session follows whichever it opens first.
-- **Writing style** — before writing any document, read
-  `.claude/rules/workspace-doc-writing-style.md` (read on demand, not always-on).
+- **Writing style** — `.claude/rules/workspace-doc-writing-style.md`, path-scoped: it loads when a
+  matching file is read or written. Not yet in context before a document's first write → read it first.

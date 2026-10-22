@@ -53,7 +53,7 @@ Found a candidate → open its `TASK.md` and route by its status line:
 
 Ambiguous which row applies → don't guess. Ask via `AskUserQuestion` (pattern in
 `.claude/skills/_shared-conventions.md`): infer the likely answer as the recommended option,
-e.g. "呢單嘢係咪延續 `<old task title>` (`<old date>`)?"
+e.g. "Is this a continuation of `<old task title>` (`<old date>`)?"
 
 No candidate found → this is new. Continue to Step 0.6.
 
@@ -67,9 +67,9 @@ does the request's purpose (what + why) already read unambiguously from what the
   step silently. Not every task earns a question.
 - **Ambiguous or open to more than one reading** (e.g. a date range not stated, "the sales
   report" when more than one could match, a patch whose intended scope could be narrow or
-  broad) → ask ONE question via `AskUserQuestion`, following the question pattern in
-  `.claude/skills/_shared-conventions.md` (infer a recommended reading + 3 real alternatives +
-  custom). Resolve it before Step 1 — don't let an assumed "why" ride silently into the SQL.
+  broad) → ask ONE question, following the **Question pattern** in
+  `.claude/skills/_shared-conventions.md`. Resolve it before Step 1 — don't let an assumed "why"
+  ride silently into the SQL.
 
 The answer becomes the `## Request` section in Step 3 directly — no re-deriving it later.
 
@@ -135,14 +135,10 @@ the date range), and anything that tripped you up. Write it for someone with no 
 today.
 ```
 
-The header line follows the **Status header** section of `.claude/skills/_shared-conventions.md`
-(same one-line shape and same grep as a module plan) — read it there rather than from here. Two
-things are specific to a task record: its values are only `Doing` / `Blocked` / `Done` (a `Blocked`
-record adds `**Detail:** <why>` after the status), and it carries `**Date:**` (the day the work
-happened) where a plan carries `**Updated:**`.
-
-Invoking this skill at the START of a task is fine — write the Request section, set `Doing`, and
-fill the rest when you land.
+The header line is the one allowed variant of the **Status header** — `Status · Date · Likely to
+repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. This skill writes
+`Done` when the task has landed. Invoked at the START of a task, it writes the Request section and
+`Doing`, and fills the rest when you land.
 
 ## Step 4 · Report, then stop
 

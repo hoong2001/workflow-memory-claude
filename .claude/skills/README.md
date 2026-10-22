@@ -6,11 +6,10 @@
 
 > Rules that several skills share — the question pattern, interview conduct, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
-> Every skill run closes with the handoff, a tree (each slot a branch, each item a leaf): finished with nothing pending → ✅ Done · 🏁 Closed; still pending → ✅ Done · (⏳ In progress, only while background work runs) · 👉 You now · 🔜 Next, and a You now that is a choice is asked with `AskUserQuestion`. The user always sees what changed, and sees a next step only when one exists.
 
 ## Trigger convention
 
-- **User-invoked** (you type `/skill-name`) — the agent never auto-runs these; it may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `retro`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
+- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`; the agent may *remind* you they're ready. Everything in the build chain plus `save-implementation`, `retro`, `task-record`, `update-from-master`, `secret-scan`, `connstr-check`, and the Obsidian memory skills (`wp-obsidian-start`, `wp-obsidian-progress-log`) — the Obsidian pair is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)
@@ -39,7 +38,7 @@ requirement ──────────────┤                       
 ```
 
 **Brand-new whole system** runs once, upstream of all of the above:
-`system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` (bootstrap overview + scaffold the modules) → then each module goes through the main flow.
+`system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` → each module through the main flow.
 
 ## Catalog
 
@@ -48,7 +47,7 @@ requirement ──────────────┤                       
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
 | 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) | Spec doc in `project-memory/overview/references/` |
-| 0b | `wp-system-overview-spec-generator` | A reasonably complete system spec/PRD exists and you want to bootstrap from it | Generate the overview (the WHAT) + scaffold the modules it implies, after ONE sign-off. Existing module folders are never re-scaffolded | `project-memory/overview/system-overview-spec.md` + new module folders |
+| 0b | `wp-system-overview-spec-generator` | A reasonably complete system spec/PRD exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
 
@@ -64,12 +63,12 @@ requirement ──────────────┤                       
 
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
-| `wp-repository-unitofwork-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no async/DI/stored procs, interfaces only where `stack-architecture.md` allows | Auto |
+| `wp-repository-unitofwork-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no stored procedures; the stack's forbidden list is `project-memory/stack-architecture.md` §4.1 | Auto |
 | `wp-sql-query-design` | Writing/reviewing any SQL — Repository queries, `.sql` schema/seed scripts, persisted test scripts | The query standard: the row-count test draws the SQL↔C# line; keep the remaining SQL simple; `SELECT *` banned; readability-costing rewrites need a measured number | Auto |
 | `wp-csharp-gof-design-patterns` | Designing (the class & file map in `technical-design` points here) or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 
-> The build needs no skill — after each coding chunk Claude runs `.claude/scripts/build-solution.mjs` handles what it can, stops for what needs you, and reports both (`workspace-workflow.md` Step 2). Before handing over for test, Claude checks the changed files against the module's recorded decisions and ruled-out options, and stops on a conflict (same step, **Decision check**). Test stays **manual**: you run it.
+> The build, the Decision check and the manual test need no skill — `.claude/rules/workspace-workflow.md` Step 2.
 
 ### Phase 3 · Wrap up
 
@@ -80,17 +79,12 @@ requirement ──────────────┤                       
 
 ### Standing · One-off work (no module)
 
-Sits beside the main flow, not inside it. When the system keeps nothing after the work is done —
-a report run once, a data patch, an ad-hoc investigation — there is no module to plan against and
-no implementation to record, so the whole memory path is this one skill.
+The test is one question: **does the system keep anything afterwards?** Yes → module work, the
+main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is skipped.
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task holding the record, the `.sql` it used, and the material it was given — built around "if this comes back" | `project-memory/tasks/<date>-<slug>/TASK.md` (+ `schema/`, `references/`) |
-
-> The test is one question: **does the system keep anything afterwards?** Yes → module work, use
-> the main flow. No → `wp-task-record`, and Step 3 wrap-up is skipped entirely. Task folders are
-> git-ignored — they hold real business data.
+| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task, built around "if this comes back" | `project-memory/tasks/<date>-<slug>/` |
 
 ### Standing · Maintenance
 
@@ -103,26 +97,22 @@ no implementation to record, so the whole memory path is this one skill.
 | `wp-tfvc` | The project is a TFVC workspace (Azure DevOps / TFS), not git | Orient first (this folder's branch, its parent, what is waiting to merge each way), offer merges as choices, then use `tf.exe` the way git is used: status, diff, get latest, add/delete, check-in by explicit path after your go, shelve, history, merge, resolve — always with `/noprompt` |
 | `wp-packageref-to-packages-config` | A legacy (non-SDK) .NET Framework `.csproj` / `.vbproj` uses NuGet `PackageReference` and must go back to `packages.config` | Dry run, then on your go write `packages.config` + `Reference`/`HintPath` and the package build imports, clear stale `obj` NuGet files, `nuget restore`, build, and check `bin` for lost DLLs. Needs Python on `PATH` |
 
-> Routine credential blocking needs no skill — `.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on every write and denies it outright. `wp-secret-scan` is the backfill for what predates the hook. Both are governed by `.claude/rules/workspace-no-secrets.md`.
->
-> The system-wide plan status also needs no skill — `.claude/hooks/project-memory-status.mjs` runs as a `PostToolUse` hook and rebuilds `project-memory/project-memory-status.md` whenever a module plan is written. Showing that file in a pane is the job of the optional `mods-plan-status` plugin, which lives outside this template in the `hoong2001/workflow-memory-mods` marketplace (install: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods`). Nothing in the workflow depends on it. It reads only the table format it knows (`TABLE_FORMAT`, the same marker in the hook and in the plugin's `hooks/parse.ts`) and shows a warning on any other, so a marker bump here needs a plugin release there.
->
-> TFVC needs no mod either. `wp-tfvc` teaches Claude to drive `tf.exe` in a TFVC workspace the way it drives git in a git repo — orienting on the branch tree before every request, the git → tf command map, and the traps that cause real damage: `/noprompt` on every command that accepts it (without it `tf` opens a GUI dialog and the shell hangs), check-in by explicit path only, detected adds/deletes that must be pended, and conflicts never resolved by picking a side blindly.
->
-> So does the connection-string format — `.claude/hooks/connstr-check.mjs` runs as a `PostToolUse` hook on every write to a `Web.config` / `App.config` (and their transforms) and rejects an MSSQL `connectionString` that departs from the house template, naming the corrected string. `node .claude/hooks/connstr-check.mjs --fix <root>` lists the fixes for existing files; add `--write` to apply them. `wp-connstr-check` wraps that sweep for files the hook never saw — it only fires on Claude's Write / Edit / MultiEdit, not on Visual Studio or shell edits.
->
-> Template updates need no skill to be noticed — `.claude/hooks/template-update-check.mjs` runs as a `SessionStart` hook, compares the project's `SYNC-MANIFEST.md` version with the master's on GitHub, and says `Workflow template update available: X → Y` when the master is newer. Applying the update is still `wp-update-from-master`, on the user's go.
+> Hooks need no skill; each file's header owns its behaviour (wired in `.claude/settings.json`):
+> - `.claude/hooks/block-secrets.mjs` — denies a credential written to a guarded path; backfill: `wp-secret-scan`; rule: `.claude/rules/workspace-no-secrets.md`.
+> - `.claude/hooks/project-memory-status.mjs` — rebuilds `project-memory/project-memory-status.md` when a module plan is written.
+> - `.claude/hooks/connstr-check.mjs` — rejects an off-template MSSQL `connectionString` that Claude writes; config edited elsewhere: `wp-connstr-check`.
+> - `.claude/hooks/template-update-check.mjs` — at session start, says when the master template is newer; applying it: `wp-update-from-master`.
 
 ### Standing · Cross-project memory (Obsidian)
 
 Adjacent to the module flow — a lightweight record that lives in the user's central Obsidian vault, so a project paused for a while can be resumed and nothing built is lost from view. `wp-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (shallow snapshot vs. the deep in-project record). Optional: not everyone uses Obsidian, so no workflow step reminds you to run these — invoke them when you want them.
 
-The always-current half needs no skill: on a machine with a vault path configured (`wp-obsidian-progress-log/references/vault-path.local.json`, else `~/.claude/progress-vault.json`, both `{ "vaultPath": "..." }`), the `project-memory-status.mjs` hook mirrors each project's `project-memory-status.md` into `Project Progress/<project>/_plans.md` and rebuilds `Project Progress/_Live plans.md` — every project's own table, verbatim, under a heading per project, the project with the oldest plan first. One table format: change it in the hook's `render()` and the board follows. Plain Markdown, so any editor reads it. No config → the hook skips it silently.
+The always-current half needs no skill: on a machine with a vault path configured, the `project-memory-status.mjs` hook mirrors the status table into the vault — config and layout in the hook's header.
 
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
-| `wp-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Expandable cards in the vault — a project card + one card per module, aggregated by two Bases (projects oldest-first, and modules grouped by project); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-invoked |
-| `wp-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `wp-obsidian-progress-log`); reinvents nothing | User-invoked |
+| `wp-obsidian-progress-log` | Log/read a project's progress snapshot (modules, done work, next step), or see what's stalled across projects | Expandable cards in the vault — a project card + one card per module, aggregated by two Bases (projects oldest-first, and modules grouped by project); deep record stays in `impl/`/`plans/`. Dual-track write: `obsidian` CLI if present, else direct file | User-triggered |
+| `wp-obsidian-start` | You want to use Obsidian but haven't pinned the action | Entry-point dispatcher — infers intent and routes to the right Obsidian skill (CLI, Markdown, Bases, Canvas, capture, or `wp-obsidian-progress-log`); reinvents nothing | User-triggered |
 
 ## Quick "what do I reach for?" forks
 

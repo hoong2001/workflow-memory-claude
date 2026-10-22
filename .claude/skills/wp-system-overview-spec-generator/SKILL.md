@@ -9,10 +9,6 @@ Turn an arbitrary external spec into **(1)** a filled-in **System Overview & Spe
 single governance file answering **WHAT a system is and does**) **and (2)** the **scaffolded
 modules** derived from it — in one run, with one human sign-off checkpoint.
 
-This skill is the **single source of truth for the "Brand-new system" bootstrap procedure**.
-`.claude/rules/workspace-workflow.md` (Step 1) only routes here with a one-paragraph summary;
-if the two ever diverge, THIS skill wins — update the workflow's summary to match it.
-
 The canonical overview structure lives in `assets/system-overview-spec.template.md`. Always start
 from that file so section order, headings, and the embedded governance comments stay intact.
 
@@ -40,8 +36,7 @@ the spec is thin or fuzzy, stop and route to `/wp-system-spec-discuss` (discuss 
 Two run modes, same procedure:
 - **First bootstrap** — no overview filled yet, no real modules exist.
 - **Expansion re-run** — the system is live and a new expansion spec arrives. The overview is
-  updated **in place** (§4/§5 grow; it stays ONE file per system), and the idempotence hard rule
-  in Step 7 protects every existing module from being overwritten.
+  updated **in place** (§4/§5 grow; it stays ONE file per system).
 
 ### Step 1 — Load the template
 Read `assets/system-overview-spec.template.md`. This is the skeleton you fill. Preserve every
@@ -80,8 +75,8 @@ Present together:
 - **(a) Tech Reconciliation Report** — the Overlaps + Inconsistencies from Step 4, for the user to
   verify and decide (e.g. update the architecture doc, or accept as-is).
 - **(b) Module Decomposition Proposal** — each proposed module as `name → capabilities it owns →
-  key dependencies`, and **mark each one NEW or EXISTING** (check whether `project-memory/modules/<name>/`
-  already exists — EXISTING modules will only receive incremental updates, never a re-scaffold).
+  key dependencies`, and **mark each one NEW or EXISTING** (whether `project-memory/modules/<name>/`
+  already exists).
   Module boundaries are an architecture decision; the user may adjust them here.
 
 ### Step 7 — One-shot build (only after sign-off)
@@ -100,10 +95,9 @@ For each agreed **NEW** module:
 3. **Register** the module in root `CLAUDE.md` "Module Map" (one row: name · one-line responsibility
    · path · deep-doc path).
 
-For each agreed **EXISTING** module (expansion touches it): incremental updates only —
-append the new capabilities to its `MODULE.md` "What this module does" / "Local conventions",
-and refresh its Module Map row if the one-line responsibility changed. Do NOT copy anything
-from the template into it; the actual feature work then flows through the normal Step 2 loop.
+For each agreed **EXISTING** module (expansion touches it): append the new capabilities to its
+`MODULE.md` "What this module does" / "Local conventions", and refresh its Module Map row if the
+one-line responsibility changed; the actual feature work then flows through the normal Step 2 loop.
 
 Also record the agreed decomposition into overview **§5 Module Composition** (how modules fit; not
 the index/paths).
@@ -143,8 +137,6 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
 - §4 capabilities and §5 modules are consistent — every module traces back to capabilities.
 - Every signed-off NEW module is both **scaffolded** and **registered in the Module Map**, and §5
   reflects the same set.
-- **No EXISTING module folder was re-scaffolded or overwritten** — existing modules received
-  incremental `MODULE.md` / Module Map updates only.
 - Module-relevant tech lives in each module's `MODULE.md` (Local conventions), not the overview.
 - No component-internal detail or duplicated module paths in the overview.
 - All template headings and governance comments preserved verbatim; first-use acronyms expanded.

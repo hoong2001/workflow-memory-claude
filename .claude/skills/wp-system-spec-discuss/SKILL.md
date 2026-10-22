@@ -7,8 +7,7 @@ description: Discuss a WHOLE-SYSTEM spec into existence when none exists yet - i
 
 Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/wp-module-plan-discuss`, never into a spec.
 
-**Question pattern** (always via `AskUserQuestion`: recommended answer + 2 alternatives + Re-infer, then the
-tool's own Other) and **interview conduct** (one question at a time; explore before asking): follow
+**Question pattern** and **interview conduct** (one question at a time; explore before asking): follow
 `.claude/skills/_shared-conventions.md`.
 
 **Synthesize before you interview.** If the conversation that led here has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
@@ -68,9 +67,9 @@ The spec body is the **WHAT** — capabilities, boundaries, data, and done-crite
 
 7. **Implementation decisions** — the concrete technical decisions settled during the discussion, as a list: modules to build or modify and their interfaces, architectural decisions, schema changes, API contracts, specific interactions, and technical clarifications from the user. Section 6 is the pass that *surfaces* the questions; this section records what was *decided*. Honour the spec durability rule (Step 3): name modules and interfaces, never source-file paths or code snippets.
 
-8. **Testing decisions** — at which seams the feature will be tested: prefer existing seams over new ones, the highest seam possible, and as few as possible (the ideal number is one); confirm the chosen seams match the user's expectations. Plus what makes a good test here (external behavior only, never implementation details), which modules get tested, and prior art if similar tests already exist in the codebase.
+8. **Testing decisions** — testing in this workflow is manual: Claude builds, the user tests. Per module, the acceptance check the user will run by hand: the screen or output they open, the input they try, the result they expect. External behavior only, never implementation details; confirm each check matches the user's expectations.
 
-The spec must be complete enough to pass the generator's own entry check: purpose, capability map, and data entities all present. Thin sections mean the bootstrap will bounce it back.
+The spec must be complete enough to pass the generator's own entry check: purpose and capabilities present, ideally data entities too. Thin sections mean the bootstrap will bounce it back.
 
 ## Step 3 — Write and hand off
 

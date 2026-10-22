@@ -17,11 +17,12 @@ can never disagree.
 ### 1 · Run the sweep
 
 ```bash
-node .claude/hooks/block-secrets.mjs project-memory .claude CLAUDE.md README.md
+node .claude/hooks/block-secrets.mjs .
 ```
 
-Runs the same on Windows, WSL, macOS and Linux — the guard is Node, not PowerShell, so the
-sweep needs no per-platform variant.
+The script walks the whole project and checks only the files its `isGuarded` filter accepts —
+`project-memory/`, `.claude/` and every `.md`, minus the guard's own toolkit — so the sweep covers
+exactly what the hook guards.
 
 Output is one line per hit — `path:line: <key> = <masked value>` — and a count. The value is
 masked on purpose; read the file to see the real one only when triaging that specific hit.
@@ -73,8 +74,7 @@ or every hit redacted with nothing in git history to rotate — is closed: `└�
 
 ## Boundaries
 
-- Scope is the memory and workflow layer only, exactly matching the hook. Application source
-  and config are out of scope by design.
+- Scope is the hook's scope (step 1). Application source and config are out of scope by design.
 - The skill never rotates a credential, never edits git history, and never prints a real
   secret value.
 - Trigger is the user's. Never auto-run this sweep after ordinary work.

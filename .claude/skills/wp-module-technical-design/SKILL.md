@@ -1,13 +1,13 @@
 ---
 name: wp-module-technical-design
-description: Turn a confirmed plan (from /wp-module-plan-discuss) into a build-ready breakdown — the technical cut (API surface, class/file map per the project's layering, data access, frontend) AND the ordered task list that says in what verifiable chunks it gets built, vertically sliced and grouped into parallel waves when the feature needs it. Both append to the SAME plan document in the module's plans/ folder. Use when a plan exists and the work needs nailing down before coding, or the user says "generate technical design", "design the API/classes", "slice this", "break this into increments", "brief to design", "切片". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
+description: Turn a confirmed plan (from /wp-module-plan-discuss) into a build-ready breakdown — the technical cut (API surface, class/file map per the project's layering, data access, frontend) AND the ordered task list that says in what verifiable chunks it gets built, vertically sliced and grouped into parallel waves when the feature needs it. Use when a plan exists and the work needs nailing down before coding, or the user says "generate technical design", "design the API/classes", "slice this", "break this into increments", "brief to design", "切片". Do NOT use when no plan exists yet (run /wp-module-plan-discuss first), or for requirement discussion.
 ---
 
 <what-to-do>
 
 Take a confirmed plan and produce the build-ready breakdown: the technical cut (the HOW) and the
 ordered task list (in what chunks, in what order). The plan owns the WHAT; this skill owns
-everything between that and the first line of code. Both sections append to the same plan file.
+everything between that and the first line of code.
 
 Design comes before the task list, always. Cutting a feature into slices means naming a thin path
 through every layer — and you cannot name the path until you know which files sit on it. Slicing
@@ -26,8 +26,7 @@ Before proposing anything new, search the real codebase for existing patterns to
 
 ## Step 3: Design the cut, one decision at a time
 
-Walk the layers top-down. For each design decision follow the **question pattern** (always via
-`AskUserQuestion`: recommended answer + 2 alternatives + Re-infer, then the tool's own Other) in `.claude/skills/_shared-conventions.md`.
+Walk the layers top-down. For each design decision follow the **Question pattern** in `.claude/skills/_shared-conventions.md`.
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
@@ -44,7 +43,7 @@ detail is the speculation this step must not become. Detail per task is deepened
 
 ## Step 4: Break it into tasks
 
-**Every plan gets a `## Tasks` table — there is no "too small for tasks".** What changes with size
+**Every plan this skill touches gets a `## Tasks` table — there is no "too small for tasks".** What changes with size
 is what the rows are:
 
 | The plan | Rows are | Extra columns carry |
@@ -95,8 +94,7 @@ Increments that span several layers get a **wave** each, so subagents can write 
 
 ### Quiz the user before writing
 
-Walk the proposed breakdown with them using the **question pattern** (always via `AskUserQuestion`:
-recommended answer + 2 alternatives + Re-infer, then the tool's own Other) in `.claude/skills/_shared-conventions.md`. Confirm
+Walk the proposed breakdown with them using the **Question pattern** in `.claude/skills/_shared-conventions.md`. Confirm
 granularity, the blocking edges, the waves and the skeleton's contents, and anything to merge or split. Don't publish the table until it is
 agreed.
 
@@ -107,16 +105,12 @@ Append `## Technical Design` and `## Tasks` to the SAME plan document
 one-to-one. Use the templates below and project-root-relative paths only (see
 `workspace-doc-relative-paths.md`).
 
-**Set the plan's status header to `Designed`** — the `> **Status:** ...` line directly under the H1:
+**Set the plan's status header to `Designed`** — the line directly under the H1 (rules: the
+**Status header** section of `.claude/skills/_shared-conventions.md`):
 
 ```markdown
 > **Status:** Designed · **Updated:** <today>
 ```
-
-Appending these sections is real progress and the header must say so, otherwise a plan that already
-carries a full design and task list still reads `Planned` and the next session redoes it from
-scratch. `Designed` is also precise about what did NOT happen: no code exists yet, so nobody goes
-hunting for half-written classes.
 
 Stop after the breakdown is confirmed. Coding starts only on the user's go, and each task runs
 through the normal Step 2 work loop (code → build → test → save).
@@ -204,9 +198,8 @@ SQL/Service line here, or the build inherits the wrong cut.
 ```
 
 The `> Broken down:` line states which kind the rows are, so a reader knows whether each row is
-independently demoable or just the next step. The `✔` column starts all `☐`; as tasks land, the
-Step 2 act loop flips them to `☑` and turns the status header into `Building · **Detail:** N/M`,
-deriving `N` from the `☑` marks in this table.
+independently demoable or just the next step. The `✔` column starts all `☐`; the Step 2 act loop
+ticks each row `☑` as it lands and keeps the header's `N/M` counter in step.
 
 ## Guardrails
 

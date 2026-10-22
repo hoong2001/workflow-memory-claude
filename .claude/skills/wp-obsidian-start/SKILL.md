@@ -10,9 +10,6 @@ syntax. Its whole job is: figure out what the user wants to do with their Obsidi
 then hand off to the right underlying Obsidian skill. Those skills own the actual how-to and
 stay maintained upstream — this dispatcher just points at them.
 
-The vault path lives in the user's global config, not here — keep this skill generic (no
-hardcoded vault path, no personal folder names), so it stays portable across projects.
-
 ## Step 1 · Preflight
 
 - **This dispatcher resolves no vault path itself** — it only routes. Every write path is owned
@@ -42,8 +39,9 @@ Many real tasks combine two: e.g. "save this note about X" = compose content wit
 
 ## Step 3 · If intent is unclear, offer the menu
 
-Ask the user with AskUserQuestion, presenting the capabilities above as options (label +
-one-line description), so they pick what to do with Obsidian this time. Then route per the table.
+Ask one question per the **Question pattern** in `.claude/skills/_shared-conventions.md`: the
+route you infer as most likely first, up to 3 other rows of the table as alternatives (label +
+one-line description). Then route per the table.
 
 ## Step 4 · Hand off
 
@@ -53,6 +51,6 @@ closes this run too; do not add a second one.
 
 ## Step 5 · Never write silently
 
-Per the user's standing rule, Obsidian is theirs. Before creating, overwriting, or modifying
+The vault is the user's. Before creating, overwriting, or modifying
 ANY note or vault file, state exactly what will be written and where, and get a yes first.
 Reading and searching need no confirmation.

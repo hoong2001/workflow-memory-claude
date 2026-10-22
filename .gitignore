@@ -1,7 +1,8 @@
+# Machine-local config (e.g. a skill's references/vault-path.local.json) - never committed.
 *.local.json
 
 # Ad-hoc task records (project-memory/tasks/) hold real business data - report
-# queries, customer names, sample output - and this repo is a public template.
-# They sync with the drive instead. Only the convention file ships.
+# queries, customer names, sample output - so they stay out of git. Only the
+# convention file is committed.
 project-memory/tasks/*
 !project-memory/tasks/_README.md

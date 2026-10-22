@@ -37,7 +37,7 @@ procedure in `.claude/adoption-conformance-scan.md` (read on demand at adoption 
 | Framework | ASP.NET MVC 5, Web API 2.2 | Web framework | |
 | Runtime | .NET Framework 4.7.2 | Runtime environment | |
 | Database | SQL Server 2022 | Database server | |
-| Dapper.NET | 1.50.5 | Data access | `Query<T>`, `Execute`, `QueryFirstOrDefault<T>` |
+| Dapper.NET | 1.50.5 | Data access | |
 | RestSharp | 106.15.0 | External API calls | |
 | NPOI | 2.6.2 | Excel file generation | |
 | Npoi.Mapper | 6.2.1 | Excel object mapping | |
@@ -99,7 +99,7 @@ ServBackend  ──►  Services  ──►  UnitOfWork  ──►  SQL Server
 
 ### 2.3 Base Classes
 
-Every layer has a mandatory Base class. All concrete classes must inherit from it — no exceptions.
+Every Service, Repository and Result class inherits its base class.
 
 | Base Class | Location | Mandatory? | Purpose |
 |------------|----------|------------|---------|
@@ -194,12 +194,13 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✘ Generic Repository
 - ✘ Async / Await
 - ✘ Entity Framework, or any heavy/full ORM with change-tracking, lazy-loading, or LINQ-to-SQL translation — Dapper.NET (micro-ORM) is the only permitted data-access library
+- ✘ Stored procedures — SQL lives in Repository methods as raw, parameterized SQL
 - ✘ C# syntax newer than 7.3
 - ✘ DTO or Entity layers — use Result objects only
 
 ### 4.2 Frontend (JavaScript & CSS)
 
-> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only the stack versions (§1.2) and the backend rules above.
+> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — and the backend rules above.
 
 ---
 

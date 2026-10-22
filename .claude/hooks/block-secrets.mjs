@@ -23,8 +23,9 @@
  *   .claude/hooks/, .claude/skills/wp-secret-scan/, .claude/rules/workspace-no-secrets.md
  *
  * Audit mode (used by /wp-secret-scan):
- *   node block-secrets.mjs project-memory .claude CLAUDE.md
- * Walks those roots instead of reading stdin and prints every offending line. The
+ *   node .claude/hooks/block-secrets.mjs .
+ * Walks the given roots instead of reading stdin, checks only the files isGuarded() accepts,
+ * and prints every offending line. The
  * detection patterns live here once, so the live guard and the sweep cannot drift.
  *
  * Fails OPEN: any parse or runtime error exits 0 and allows the call. This is a guard

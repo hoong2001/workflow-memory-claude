@@ -1,4 +1,11 @@
-# Document Writing Style (read on demand — NOT @imported)
+---
+paths:
+  - "project-memory/**"
+  - ".claude/**/*.md"
+  - "*.md"
+---
+
+# Document Writing Style (path-scoped — loads when a matching file is read or written)
 
 > Read this BEFORE writing or editing any document under `project-memory/` or `.claude/`, plus root
 > `README.md` / `CLAUDE.md`. It does NOT govern chat replies — response tone and
@@ -29,7 +36,7 @@ needs. The rules below apply to both.
 
 Em-dash bans, rhythm variation, list-length limits, prose-scoring rubrics. Those tune
 essays; these are reference documents read in fragments, and em dashes are this repo's
-house punctuation for glossing a term (541 of them across 39 files).
+house punctuation for glossing a term.
 
 ## Optional deeper pass
 

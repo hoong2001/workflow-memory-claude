@@ -28,7 +28,7 @@ Each line of output is one of:
 | Prefix | Meaning | Action |
 |---|---|---|
 | `DIFF` + `WOULD FIX` | The string departs from the template; `-` is the current value, `+` the corrected one | Goes into the fix list |
-| `WARN` | Keys the template drops (`將捨棄: ...`) | Show the user — a dropped key may carry meaning |
+| `WARN` | Keys the template drops (`will drop: ...`) | Show the user — a dropped key may carry meaning |
 | `MANUAL` | `Data Source` / `Initial Catalog` / `User ID` / `Password` missing, typically `Integrated Security=True` | Never auto-fixed; the user decides |
 | `SKIP` | Not UTF-8 / UTF-16, or no `.csproj` above the file | Name the file and the reason |
 

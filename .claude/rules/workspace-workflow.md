@@ -9,14 +9,14 @@ asks for the requirement and offers the on-ramps:
 
 It can arrive in any form:
 - **Full spec doc** → read it; confirm; then route by scope:
-  - *Whole-system* overview/spec (what the system is/does) → `project-memory/overview/system-overview-spec.md` (one per system).
-  - *Single component/feature* requirement doc → raw material: drop into the target module's `references/` (and any `.sql` table schemas into `schema/`); then derive the work doc in `plans/` via `/wp-module-plan-discuss`.
+  - *Whole-system* overview/spec (what the system is/does) → drop it into `project-memory/overview/references/`, then bootstrap (below).
+  - *Single component/feature* requirement doc → raw material: drop into the target module's `references/`; then derive the work doc in `plans/` via `/wp-module-plan-discuss`.
 - **Stated directly** → take it; if you already know the target, name the module + files to skip discovery.
 - **Any module-level goal, clear or fuzzy** → `/wp-module-plan-discuss` (state the goal first; lands in `plans/`).
 - **A whole-system spec is needed but doesn't exist yet** → `/wp-system-spec-discuss` (system-level only: discuss the system spec into existence → `project-memory/overview/references/`, then run the bootstrap). Module-level requirements never need a spec — talk them straight into a work doc in `plans/`.
 - **Supporting references** (docs, images, external links) → drop into the matching `references/` folder: system-wide → `project-memory/overview/references/`; shared by several modules but owned by none → `project-memory/docs/`; module-specific → that module's `references/`. Consulted on demand, never auto-loaded.
 
-> Routing rule of thumb: **material received → `references/` (+ ANY `.sql` → `schema/`, whoever wrote it — provided tables/views/indexes and generated seed/test scripts alike); work doc talked out → `plans/`; after the work is done, durable truth settles into `MODULE.md` / `<name>-flow.md`.** There is no module-level `specs/` folder.
+> Routing rule of thumb: **material received → `references/` (+ ANY `.sql` → `schema/`, whoever wrote it — provided tables/views/indexes and generated seed/test scripts alike); work doc talked out → `plans/`; after the work is done, durable truth settles into `MODULE.md` / `<name>-flow.md`.**
 
 ### Not every requirement is module work
 Before picking a module, ask: **does the system keep anything after this is done?**
@@ -27,12 +27,7 @@ impl record. Route it to Branch D in Step 2. A task that later becomes permanent
 report gets its own screen) turns into module work at that moment.
 
 ### Brand-new system (from a system spec) — bootstrap before any module work
-When the requirement is a whole-system spec, run `wp-system-overview-spec-generator` —
-that skill owns the full bootstrap procedure: tech reconciliation (spec stack vs the architecture
-doc — never auto-edited), fill the overview (WHAT only), propose the module decomposition (each
-module marked NEW/EXISTING), **ONE sign-off checkpoint**, then register + scaffold **NEW modules
-only** — an EXISTING module folder is NEVER re-scaffolded or template-overwritten.
-Then build feature by feature through the normal Step 2 loop.
+Run `/wp-system-overview-spec-generator` — it owns the bootstrap — then build feature by feature through Step 2.
 
 Pull out **what + why** (purpose is mandatory), then identify the target module(s) and their
 state — unless the user already named them. Don't start coding until this is clear; then route to Step 2.
@@ -45,7 +40,7 @@ Branch first, then act, saving as you go:
 | **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then check for unfinished work (below) before starting anything new |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
-| **D One-off task** | no module involved — the system keeps nothing afterwards | do the work, then `/wp-task-record` → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql` and material. Skip Step 3 entirely; that folder IS the record. Details: `project-memory/tasks/_README.md` |
+| **D One-off task** | no module involved — the system keeps nothing afterwards | do the work, then `/wp-task-record` → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql` and material. Skip Step 3 entirely; that folder IS the record. |
 
 **Branch A · check for unfinished work first.** Every plan carries a one-line status header, so
 one grep answers "is something already half-built here?" without opening a single plan:
@@ -56,14 +51,11 @@ grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
 
 Across every module at once → `project-memory/project-memory-status.md`, which lists every plan
 not `Done` and is rebuilt by a hook on each write to a plan (derived view, never edited; the
-plans win on any disagreement). The optional `mods-plan-status` plugin (marketplace
-`hoong2001/workflow-memory-mods`) shows the same rows in a pane; nothing in this workflow needs it.
+plans win on any disagreement).
 Anything not `Done` is live work. Open that ONE plan in full — its `Status` says which step it
 stopped at, its `> **Resume:**` line (if any) says what was waiting on the user and what comes
 next, and its `## Tasks` table (if it has one) says which task is next —
-and resume there rather than starting a fresh plan on top of it. A `## Tasks` table with no
-`Manager summary` column predates that column — add it and fill every row (rules:
-`/wp-module-technical-design` Guardrails) before resuming. Nothing unfinished, or every
+and resume there rather than starting a fresh plan on top of it. Nothing unfinished, or every
 header says `Done` → this is new work, carry on below.
 
 Plan landed, and it needs the technical cut and a task breakdown before coding?
@@ -93,15 +85,14 @@ table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row a
 
    **Whatever the build hits, Claude handles it when it can and stops when it can't.** The test:
    the fix stays inside code this task touched, needs no decision from the user, and breaks no hard
-   rule in `project-memory/stack-architecture.md`. All three hold → handle it and rebuild. Any one
+   rule in `project-memory/stack-architecture.md` §4.1. All three hold → handle it and rebuild. Any one
    fails → stop and ask.
 
    | Claude handles, then rebuilds | Claude stops — the user steps in |
    |---|---|
    | Compile errors in code this task wrote or changed — first errors first, later ones are often cascades | An error in code this task never touched — someone else's breakage, not this task's to rewrite |
-   | Warnings in new code (unused variable, unreachable code) | A fix that would need async, DI, an interface, or syntax past C# 7.3 |
-   | Missing NuGet packages, when `nuget.exe` is on `PATH` → `nuget restore <sln>` | Missing NuGet packages and no `nuget.exe` → restore once in Visual Studio |
-   | | A copy or file-lock error under `bin\` → Visual Studio or IIS Express holds the DLL; stop debugging |
+   | Warnings in new code (unused variable, unreachable code) | Missing NuGet packages and no `nuget.exe` → restore once in Visual Studio |
+   | Missing NuGet packages, when `nuget.exe` is on `PATH` → `nuget restore <sln>` | A copy or file-lock error under `bin\` → Visual Studio or IIS Express holds the DLL; stop debugging |
    | | A missing assembly reference, a `MSB3277` version conflict, or a `Web.config` / `.csproj` change the fix would need |
    | | Exit `2` → put `msbuild` on `PATH` or name the `.sln`; never guess a path |
    | | 5 rounds reached, or the same error survives two rounds |
@@ -130,33 +121,13 @@ table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row a
    **Test is MANUAL — the user runs it.** Wait for the results they report back, and fix from there.
 
 ## Step 3 · Wrap up: update memory
-**Branch D skips this step.** `/wp-task-record` already wrote the entire record for a one-off
-task; there is no impl record, no flow, no Module Map row, and no overview to judge. Its one
-wrap-up item, the `/wp-retro` reminder, comes from `/wp-task-record` Step 4.
-
-For Branches A–C, after the task completes, run through `workspace-update-memory.md`:
-impl record → `/wp-module-save-implementation` (user-triggered) → backfill gotchas to the module →
-archive the plan → update the index (module map, flow) → architecture changes → judge whether the overview needs it (remind; user decides) → keep `CLAUDE.md` lean → friction seen? remind `/wp-retro`.
+For Branches A–C, once the task completes, work through `.claude/rules/workspace-update-memory.md`.
 
 ## Every stop ends with a handoff
-Whenever Claude finishes a task, a skill run, or a coding chunk, or stops blocked, it first judges
-whether the work is closed, then ends with one of two shapes, each a tree in a `text` fence: every slot a
-branch, every item a leaf (Done leaves: path, size, what changed). The tree is the only place that says what was done — text above it holds only
-judgments and their reasons.
-- **Closed** (delivered, nothing waiting on the user, no live plan or `🔴` row, no required workflow
-  step pending, nothing still running) → branches **✅ Done** · **🏁 Closed** (nothing pending). Then stop.
-- **Open** → branches **✅ Done** · **⏳ In progress** (only while background work still runs) · **⚠️ Attention** (only what needs a human) · **👉 You now** (the user's one action) · **🔜 Next** (the one next step or skill).
-  Judge each You now: a choice between options is asked through `AskUserQuestion` in the same
-  turn, never left for the user to type; a manual action (run a `.sql`, test, supply a
-  reference file) stays a plain line.
-  **Every `AskUserQuestion`, anywhere, ends with a `Re-infer` option** — recommended + 2
-  alternatives + `Re-infer` (the tool caps a question at 4). Picking it re-asks only that
-  question with fresh options; every other answer in the same call stays final. Full rule:
-  **Question pattern** in `.claude/skills/_shared-conventions.md`.
-  **An open handoff on a live plan also lands in the plan**: overwrite its `> **Resume:** You now — …
-  · Next — …` line under the status line (Done is already the `Detail` counter). Delete the line
-  when the plan turns `Done`. Rule: **Status header → Resume line** in `.claude/skills/_shared-conventions.md`.
+Every finished task, skill run, or coding chunk, and every blocked stop, ends with the handoff tree — the only place that says what was done. It sits in a `text` fence: each slot a branch, each item a leaf (a Done leaf: path, size, what changed).
+- **Closed** — nothing waiting on the user, no live plan the work belongs to, no `🔴` row, no required workflow step pending, nothing still running → **✅ Done** · **🏁 Closed**, then stop. A finished task ends closed, never with an invented follow-up.
+- **Open** → **✅ Done** · **⏳ In progress** (only while work runs) · **⚠️ Attention** (only what needs a human) · **👉 You now** · **🔜 Next**.
+- **You now**: a choice between options → `AskUserQuestion` in the same turn — recommended option first, then up to 3 real alternatives (**Question pattern**); a manual action (run a `.sql`, test, supply a file) → a plain line.
+- **A live plan** → overwrite its `> **Resume:**` line with You now · Next.
 
-Never invent a follow-up to fill a slot — a finished task ends closed, not with a suggestion. This
-applies in every branch and step above, including work that runs without a skill. The closed test
-and the rules: the **Handoff** section of `.claude/skills/_shared-conventions.md`.
+Shape, the closed test in full, and every rule: **Handoff** in `.claude/skills/_shared-conventions.md`.

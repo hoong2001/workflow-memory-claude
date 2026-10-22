@@ -31,39 +31,32 @@
 -->
 | Module | One-line responsibility | Location | Deep docs (open BOTH) |
 |---|---|---|---|
-| Example module | Demo only, deletable | `project-memory/modules/example-module/` | `MODULE.md` + `example-module-flow.md` |
+| Example module | Scaffold template every new module is copied from — keep it | `project-memory/modules/example-module/` | `MODULE.md` + `example-module-flow.md` |
 
-<!--
-　Standard contents of each module folder (a module's whole brain lives in its own folder):
-　  MODULE.md (rules/gotchas) · <name>-flow.md (call chain) · plans/ (pre-change plans) · impl/ (post-change records)
-　Workflow: /wp-module-code-trace-flow→flow ; /wp-module-plan-discuss→plans (optionally deepened by /wp-module-technical-design) ; /wp-module-save-implementation→impl (also syncs flow)
-　Full explanation: see the comment at the top of any module's MODULE.md.
--->
+<!-- A module folder's standard layout: the header comment of project-memory/modules/example-module/MODULE.md. -->
 
 ## Global Hard Rules
 <!-- Project-specific hard constraints. Auto-loaded from the single per-project file below,
-     so this section stays generic — only stack-architecture.md changes per project. -->
+     so this section stays generic — the file changes per project, this section never does. -->
 @project-memory/stack-architecture.md
 
 ## Common Entry Points
 - Starting or resuming module work in a new conversation → open BOTH `project-memory/modules/<name>/MODULE.md` (rules + gotchas) and `project-memory/modules/<name>/<name>-flow.md` (how it works now). Two files, every time. Nothing under `project-memory/modules/` is auto-loaded.
-- What is live across all modules → `project-memory/project-memory-status.md` — every plan not `Done`, in one table (Done plans are left out), rebuilt by a hook (`.claude/hooks/project-memory-status.mjs`); never edit it, the plans are the source. The optional `mods-plan-status` plugin shows it in a pane (install: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods`); the workflow never depends on it.
-- One-off work that changes no module (report run once, data patch, ad-hoc investigation) → `/wp-task-record`, landing in `project-memory/tasks/<date>-<slug>/`. Conventions: `project-memory/tasks/_README.md`
+- What is live across all modules → `project-memory/project-memory-status.md` — every plan not `Done`, in one table (Done plans are left out), rebuilt by a hook (`.claude/hooks/project-memory-status.mjs`); never edit it, the plans are the source.
+- One-off work that changes no module → workflow Branch D (`/wp-task-record`)
+- Files several modules lean on but none owns → `project-memory/docs/` (committed, read on demand)
 - Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
-- Behavioral rules → `.claude/rules/` (auto-applied via @import below)
-- Memory-update flow → `.claude/rules/workspace-update-memory.md` (read on demand at task wrap-up — see workflow Step 3)
+- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up) and `workspace-doc-writing-style.md`, which load when a matching file is read or written
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
-- Credential hygiene (hook + `/wp-secret-scan`) → `.claude/rules/workspace-no-secrets.md`; the hook itself is `.claude/hooks/block-secrets.mjs`, wired in `.claude/settings.json`
-- `Web.config` / `App.config` connection-string format (hook + `/wp-connstr-check`) → the hook is `.claude/hooks/connstr-check.mjs`, wired in `.claude/settings.json`; the skill sweeps config files the hook never saw
-- Template update reminder → `.claude/hooks/template-update-check.mjs`, a `SessionStart` hook wired in `.claude/settings.json`: compares this project's `SYNC-MANIFEST.md` version with the master's on GitHub and, when the master is newer, says so and names `/wp-update-from-master`
+- Hooks (credential guard, connection-string check, plan-status rebuild, template-update check) → `.claude/hooks/`, wired in `.claude/settings.json`; each file's header says what it does
 
 ## Behavioral Rules (auto-applied every turn)
-<!-- @import loads every turn → ongoing token cost. Only mount rules that must always be on;
-     to temporarily disable one, comment out its line. This project uses .claude/rules/workspace-*.md.
-     NOTE: workspace-update-memory.md is intentionally NOT mounted — it's a task-WRAP-UP procedure,
-     read on demand at workflow Step 3 (no need to carry it every turn). -->
+<!-- Index only: every .claude/rules/*.md without `paths:` frontmatter loads at launch whether or not
+     it is listed here, so deleting a line disables nothing — to disable a rule, move it out of
+     .claude/rules/. Never list the two path-scoped rules (workspace-update-memory.md,
+     workspace-doc-writing-style.md): an @import loads at launch and undoes their scoping. -->
 @.claude/rules/workspace-workflow.md
 @.claude/rules/workspace-doc-relative-paths.md
 @.claude/rules/workspace-no-secrets.md
@@ -73,14 +66,6 @@
 @.claude/rules/workspace-sql-house-style.md
 @.claude/rules/workspace-plan-impl.md
 @.claude/rules/workspace-template-sync.md
-
-## About this memory system
-Layered memory: this file (layer 1, auto-loaded, lean index) → module layer `project-memory/modules/<name>/`
-(layer 2, read on demand — `MODULE.md` AND `<name>-flow.md`, always both) → governance layer per
-Common Entry Points above (+ `.claude/skills/` project-bound skills). Beside the layers, not inside
-them: `project-memory/tasks/` holds one-off work that belongs to no module — self-contained folders,
-never auto-loaded, not committed to git. `project-memory/docs/` holds files several modules lean on
-but none owns — committed, read on demand.
 
 <!--
 　Advanced: the @import syntax

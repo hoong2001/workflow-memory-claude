@@ -22,28 +22,24 @@ next session re-argues from zero.
 
 ## Status header — one line, always
 
-Every plan opens with this line directly under its H1:
+Every plan opens with one status line directly under its H1, for example:
 
 ```markdown
 > **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
 ```
 
-`Status` is one bare word; `Detail` carries the `N/M` counter or a block reason, and is omitted when
-the status needs neither. `Status` names the last thing that actually happened, so a scan tells you which step the work
-stopped at — not merely that it stopped. One `grep` reads the whole folder:
+It names the step the work stopped at, so one `grep` over this folder shows what is unfinished
+without opening a single plan:
 
 ```bash
 grep -H "^> \*\*Status:\*\*" plans/[!_]*.md
 ```
 
-While a plan is live, a `> **Resume:** You now — … · Next — …` line sits directly under the status
-line, rewritten at every handoff and deleted at `Done` (rule: `.claude/skills/_shared-conventions.md`
-→ Status header → Resume line).
-
 `[!_]` skips this `_README.md`, whose example header above would otherwise read as live work.
-Every module's plans not `Done`, in one table: `project-memory/project-memory-status.md` (hook-generated).
+While a plan is live, a `> **Resume:**` line under the status line carries the last handoff's
+You now and Next. Every module's plans not `Done`, in one table:
+`project-memory/project-memory-status.md` (hook-generated).
 
-The value set (`Planned` → `Designed` → `Building` → `Blocked` → `Done`), what each puts in
-`Detail`, who writes each one, and the `N/M` rule are defined once in the **Status header** section of
-`.claude/skills/_shared-conventions.md` — that file is the authority, this folder does not keep a
-second copy to drift from.
+The values (`Planned` → `Designed` → `Building` → `Blocked` → `Done`), who writes each, the
+`Detail` and `N/M` rules, and the Resume line are defined once in the **Status header** section of
+`.claude/skills/_shared-conventions.md`.

@@ -13,7 +13,8 @@ Check each hard rule in the architecture doc against repo evidence:
 - Frontend library versions vs §1.2
 
 **Outcome:**
-- All pass → declare `brownfield-conformant` in §0 and keep the architecture doc as-is.
-- Any deviation → report the list and let the user rule: amend the architecture doc, or
-  record it as debt in the affected module's `MODULE.md` (Local conventions / Known gotchas).
-  Never silently edit either side.
+- All pass → set **Current mode** to `brownfield-conformant` and keep the architecture doc as-is.
+- Any deviation → report the list and set **Current mode** to `brownfield`. A deviation the user
+  rules a mistake in the doc itself (e.g. a wrong version) → amend the doc on their go. Record
+  nothing in module folders now: per §0, a module's deviations go into its `MODULE.md` when work
+  first touches that module.

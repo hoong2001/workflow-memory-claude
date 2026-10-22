@@ -3,17 +3,12 @@
 > Companion to `SKILL.md`. The SKILL.md carries the **rules**; this file carries the
 > **how-to** — one concrete, copy-ready example per rule. Section headings mirror SKILL.md
 > so you can jump straight from a rule to its code.
->
-> **Reminder on inline literals:** URLs (`/api/districts`), status codes (`401`/`403`),
-> messages, and `'-- Select --'` below are illustrative only. In real code, extract them
-> into named constants, a `CONFIG`/`PAGE_CONFIG` object, or an `apiUrlObj` — the
-> "no magic numbers / strings" rule still applies.
 
 ---
 
 ## Store-Then-Bind
 
-**Backend → Frontend (inbound)** — store the response to a module-scope variable first, then bind:
+**Backend → Frontend (inbound):**
 ```javascript
 let tableData = null;
 
@@ -88,7 +83,7 @@ function loadDistricts(regionId) {
 
 ## Control Initialization
 
-**DataTables — ALL tabular data.** Initialize once, keep the instance in a module-scope variable, reload via `clear().rows.add().draw()`. Never re-initialize on data refresh; destroy/re-init only if the column structure itself changes.
+**DataTables:**
 ```javascript
 let $orderTable = null;
 
@@ -113,7 +108,7 @@ function bindDataToTable(data) {
 }
 ```
 
-**Select2 — ALL select boxes:**
+**Select2:**
 ```javascript
 $('#regionSelect').select2({
     allowClear: true,
@@ -122,17 +117,13 @@ $('#regionSelect').select2({
 });
 ```
 
-**Bootstrap Datepicker — ALL date inputs:**
+**Bootstrap Datepicker:**
 ```javascript
 $('.date-input').datepicker({
     format: 'yyyy-mm-dd',
     autoclose: true
 });
 ```
-
-**ECharts — ALL charts.** Build the option object in a configuration factory (`getChartOption()`, section 10 of the page structure), never inline in the AJAX callback; bind via a `renderChart(data)` function following Store-Then-Bind.
-
-**moment.js — ALL date formatting:** `moment(date).format('YYYY-MM-DD')`.
 
 ---
 
@@ -177,7 +168,6 @@ $.ajax({
 
 ### Standard Error Handler
 
-Surface the backend's `message` when the response carries one; fall back to a generic message only when it doesn't.
 ```javascript
 function handleAjaxError(xhr) {
     if (xhr.status === 401) {
@@ -248,8 +238,6 @@ function isPositiveNumber(value) {
 
 ## File Export (Hidden Form POST)
 
-Use when exporting files (Excel, PDF) with complex filter parameters. GET requests have URL
-length limits — hidden Form POST bypasses this and triggers browser download via `target: '_blank'`.
 ```javascript
 $('#btnExport').click(() => {
     // Collect filters into a variable first (Store-Then-Bind)
@@ -273,16 +261,10 @@ $('#btnExport').click(() => {
 });
 ```
 
-**Why this works:**
-- Avoids URL length limits from complex multi-select filters
-- `target: '_blank'` lets browser handle the file download naturally
-- Form is removed from DOM immediately after submit — no side effects
-
 ---
 
 ## Loading State
 
-Always show a loading indicator during AJAX calls to prevent double submission.
 ```javascript
 function showLoading() {
     $('#btnSubmit').prop('disabled', true).text('Processing...');

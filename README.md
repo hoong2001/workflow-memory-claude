@@ -1,7 +1,7 @@
 # workflow-memory-claude — Reusable Claude Code Memory Framework
 
 A drop-in memory + workflow framework for developing any project with Claude Code.
-Copy it into a project, swap one file, and Claude gains layered long-term memory and a
+Copy it into a project, swap the stack file, and Claude gains layered long-term memory and a
 consistent development workflow.
 
 ## Core idea
@@ -10,8 +10,11 @@ consistent development workflow.
 stays lean and points to detail that loads on demand. Memory is layered so the "always-on"
 part stays small and depth is read only when needed.
 
-Only one file is swapped per project: **`project-memory/stack-architecture.md`** (the stack,
-architecture, and hard constraints). `CLAUDE.md`'s system description and Module Map then grow as
+Per project you swap **`project-memory/stack-architecture.md`** (the stack, architecture, and hard
+constraints). On a stack other than this template's (ASP.NET MVC 5 / C# 7.3 / Dapper), the pieces
+bound to it are swapped too: the staged `project-memory/stack-architecture.next.md` and the skills
+`wp-repository-unitofwork-pattern`, `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, and
+`wp-aspnet-mvc-frontend-standards`. `CLAUDE.md`'s system description and Module Map then grow as
 you work; everything else is reusable as-is.
 
 ## Layout
@@ -19,7 +22,7 @@ you work; everything else is reusable as-is.
 ```
 CLAUDE.md                              Layer 1 index (auto-loaded) + @imports
 project-memory/                        the project's own memory — plain folder, always committable
-├── stack-architecture.md              ← the ONE per-project file (stack / architecture SSOT)
+├── stack-architecture.md              ← the per-project stack / architecture SSOT
 ├── stack-architecture.next.md         staged, partly-unsealed draft of it — inert until you rename it in (switch by hand)
 ├── project-memory-status.md           every module plan not Done, in one table — hook-generated, never edited
 ├── overview/
@@ -42,19 +45,19 @@ project-memory/                        the project's own memory — plain folder
 │   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 │   └── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
 ├── scripts/
-│   └── build-solution.mjs             Claude's build step: msbuild /t:Rebuild from PATH on the root .sln (Node; exit 2 = hand the build back)
-├── rules/                             behavioral rules (@imported = always-on)
+│   └── build-solution.mjs             Claude's build step (how it runs and what it hands back: workspace-workflow.md Step 2)
+├── rules/                             behavioral rules (each loads at launch unless path-scoped)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       technical mentorship style
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (incl. KISS / DRY)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions
 │   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer
-│   ├── workspace-doc-writing-style.md  how documents are written (read on demand, NOT @imported)
+│   ├── workspace-doc-writing-style.md  how documents are written (path-scoped: loads when a matching file is read or written)
 │   ├── workspace-doc-relative-paths.md  no absolute paths in docs
 │   ├── workspace-template-sync.md     never blind-overwrite project state on sync
 │   ├── workspace-no-secrets.md        never write credentials into memory/workflow docs
-│   └── workspace-update-memory.md     Step 3: wrap-up memory update (read on demand, NOT @imported)
+│   └── workspace-update-memory.md     Step 3: wrap-up memory update (path-scoped: loads when a module file is read or written)
 └── skills/                            project-bound skills (travel WITH .claude/)
     ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
@@ -86,11 +89,17 @@ the repo, with or without Claude Code.
 
 ## Apply to a new project (3 steps)
 
-1. Copy `.claude/`, `project-memory/`, `CLAUDE.md`, **and `SYNC-MANIFEST.md`** into the project.
-2. Replace `project-memory/stack-architecture.md` with that project's stack / architecture / constraints,
-   and set its **§0 Adoption Mode**. For an existing system, run the conformance scan defined
-   there first — fully conformant keeps the file as-is (`brownfield-conformant`); any deviation
-   is reported as a list for the user to rule on (amend the file vs. record as module debt).
+1. Copy `.claude/`, `project-memory/`, `CLAUDE.md`, **and `SYNC-MANIFEST.md`** into the project,
+   and add the tasks block of this repo's `.gitignore` to the project's `.gitignore` — task folders
+   hold real business data:
+   ```gitignore
+   project-memory/tasks/*
+   !project-memory/tasks/_README.md
+   ```
+2. Replace `project-memory/stack-architecture.md` with that project's stack / architecture / constraints
+   (plus the stack-bound pieces under **Core idea** when the stack differs), and set its
+   **§0 Adoption Mode** — for an existing system, by the one-time scan in
+   `.claude/adoption-conformance-scan.md`.
 3. Clear `CLAUDE.md`'s "What this system is" and "Module Map" — fill them in as you work.
 
 That's it for the framework files. The rules, the workflow, the module template, and all
@@ -100,10 +109,10 @@ self-contained (see **Skill dependencies** below).
 ### Gitignoring `.claude/`
 
 A project that ignores `.claude/` wholesale still keeps every handover doc, because they all
-live in `project-memory/` — but it loses all three hooks, which are wired in
-`.claude/settings.json` and implemented in `.claude/hooks/`: the credential guard, the
-rebuild of `project-memory/project-memory-status.md` (the file stays, frozen at its last state),
-and the connection-string format check.
+live in `project-memory/` — but it loses every hook in `.claude/hooks/` (wired in
+`.claude/settings.json`): the credential guard, the rebuild of
+`project-memory/project-memory-status.md` (the file stays, frozen at its last state), the
+connection-string format check, and the template-update notice.
 Ignore the machine-local files at minimum:
 
 ```gitignore
@@ -134,10 +143,10 @@ it is the failure this layout exists to prevent.
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
 1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
-2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; before the test it checks the changed files against the module's recorded decisions and ruled-out options and stops on a conflict; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.
+2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new / D one-off task, where the system keeps nothing afterwards → `/wp-task-record`, and Step 3 is skipped) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; before the test it checks the changed files against the module's recorded decisions and ruled-out options and stops on a conflict; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 
-Every stop in all three steps — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — closes with a handoff, laid out as a tree (each slot a branch, each item a leaf). Claude first judges whether the work is closed: finished with nothing pending → **✅ Done** (one leaf per file or step: path, size, what changed — the only place the reply says what was done) · **🏁 Closed**, and it stops; still pending → **✅ Done** · **⏳ In progress** (only while background work still runs) · **👉 You now** (the user's one action; a choice between options is asked with `AskUserQuestion`, not left to be typed) · **🔜 Next** (the next step or skill). When a plan is live, You now and Next are also written into its `> **Resume:**` line, so the next session reads them from the plan. No invented follow-ups. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
+Every stop — a task done, a skill run finished, a coding chunk handed over for test, or work blocked — ends with a handoff tree. Nothing pending → **✅ Done** · **🏁 Closed**. Still pending → **✅ Done** · **⏳ In progress** (only while work runs) · **⚠️ Attention** (only what needs a human) · **👉 You now** · **🔜 Next**; a live plan also gets You now and Next in its `> **Resume:**` line, so the next session reads them from the plan. Shape and the closed test: `.claude/skills/_shared-conventions.md` → Handoff.
 
 ## Mods
 
@@ -157,29 +166,34 @@ skills-dir plugin whose name matches an installed one is not loaded.
 
 | Layer | Files | Per project? |
 |-------|-------|--------------|
-| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills), `.claude/hooks/*`, `.claude/scripts/*`, `project-memory/modules/example-module/` template, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
+| Framework (copy as-is) | `.claude/rules/workspace-*.md`, `.claude/skills/*` (all project-bound skills, incl. the Obsidian memory skills; the four stack-bound ones only while the stack matches), `.claude/hooks/*`, `.claude/scripts/*`, `.claude/adoption-conformance-scan.md`, `project-memory/modules/example-module/` template, the `_README.md` of `project-memory/tasks/`, `project-memory/docs/` and `project-memory/overview/references/`, `CLAUDE.md` skeleton, `SYNC-MANIFEST.md` | unchanged |
 | Framework, but merge by hand | `.claude/settings.json` — take the template hook entries, keep the project's own hooks and permissions | merge, never overwrite |
-| The one config | `project-memory/stack-architecture.md` | swap each project |
+| The stack config | `project-memory/stack-architecture.md` (+ `stack-architecture.next.md` and the four stack-bound skills when the stack differs — see **Core idea**) | swap each project |
 | Grows as you work | `CLAUDE.md` system description + module map, real module folders under `project-memory/modules/` | filled per project |
 
 ## Notes
 
-- Rules are `@import`ed from `CLAUDE.md`, so they apply every turn (token cost — keep them tight). Exception: `workspace-update-memory.md` is read on demand at task wrap-up, not imported.
+- Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md` and `workspace-doc-writing-style.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
 - `stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
+
 ## Skill dependencies (important when copying)
 
 All skills the workflow invokes are **project-bound** — they live in `.claude/skills/` and travel
-with the folder: `wp-system-overview-spec-generator`, `wp-module-save-implementation`,
-`wp-module-plan-discuss`, `wp-module-technical-design` (which in turn follows the
-stack-bound `wp-repository-unitofwork-pattern` + `wp-sql-query-design` +
-`wp-csharp-gof-design-patterns` + `wp-aspnet-mvc-frontend-standards`),
-`wp-system-spec-discuss`, `wp-module-code-trace-flow`,
-and `wp-update-from-master`. No user-level (global) skill is required:
-copying the framework files (adoption step 1) brings everything along.
+with the folder:
 
-> `wp-module-save-implementation` is this project's replacement for the generic global `save-implementation`:
-> it saves impl records to the module's `impl/` folder using this project's path convention **and** lightweight-syncs
-> `<name>-flow.md`. Use it instead of `/save-implementation` here.
+- the module chain: `wp-system-spec-discuss`, `wp-system-overview-spec-generator`,
+  `wp-module-plan-discuss`, `wp-module-code-trace-flow`, `wp-module-technical-design`,
+  `wp-module-save-implementation`, `wp-retro`;
+- one-off work: `wp-task-record`;
+- the stack-bound standards that apply while coding: `wp-repository-unitofwork-pattern`,
+  `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, `wp-aspnet-mvc-frontend-standards`;
+- the steering-file writing standard: `wp-writing-for-agents`;
+- maintenance: `wp-update-from-master`, `wp-secret-scan`, `wp-connstr-check`, `wp-tfvc`,
+  `wp-packageref-to-packages-config`;
+- the Obsidian add-on: `wp-obsidian-start`, `wp-obsidian-progress-log` (see below).
+
+No user-level (global) skill is required: copying the framework files (adoption step 1) brings
+everything along.
 
 ### Machine tools
 
@@ -187,7 +201,7 @@ Skills travel with the folder; these tools do not. Install them on each develope
 
 | Tool | Needed by | Without it | Install |
 |---|---|---|---|
-| Node.js on `PATH` | every hook in `.claude/hooks/`, `.claude/scripts/build-solution.mjs` | hooks fail open (no secret guard, no plan-status view); no build | nodejs.org installer |
+| Node.js on `PATH` | every hook in `.claude/hooks/`, `.claude/scripts/build-solution.mjs` | hooks fail open (no secret guard, plan-status rebuild, connection-string check, or update notice); no build | nodejs.org installer |
 | `msbuild` on `PATH` | the build step of the act loop | build exits `2` | Visual Studio / Build Tools |
 | `csharp-ls` on `PATH` + the `csharp-lsp` Claude Code plugin | `/wp-module-code-trace-flow` Step 3.5 (callers of a shared symbol) | falls back to `rg` — more false hits to filter by hand | `dotnet tool install --global csharp-ls` (needs .NET SDK 6+), then `/plugin install csharp-lsp@claude-plugins-official` |
 | `nuget.exe` on `PATH` | restoring missing packages during the build | restore once in Visual Studio | nuget.org download |
@@ -203,10 +217,11 @@ fully independent (no cross-skill dependency) and can be split apart safely: `wp
 is a pure dispatcher that resolves no path; `wp-obsidian-progress-log` is the only one that
 needs the vault path, set once per machine in its own gitignored
 `references/vault-path.local.json` (copied from the committed `vault-path.example.json`, so the
-real path never syncs). For the richest path both prefer the `obsidian` CLI plus the global
+real path never syncs), or else in `~/.claude/progress-vault.json` for every project on the
+machine. For the richest path both prefer the `obsidian` CLI plus the global
 `obsidian:*` plugin skills, but degrade gracefully:
 `wp-obsidian-progress-log` writes directly to the vault as plain Markdown when the CLI is absent, and
 the whole add-on stays inert until you invoke it, so a project that never touches Obsidian is
-unaffected. `wp-obsidian-progress-log` is the cross-project counterpart to `save-implementation` (a
+unaffected. `wp-obsidian-progress-log` is the cross-project counterpart to `wp-module-save-implementation` (a
 shallow snapshot vs. the deep in-project record). No workflow step reminds anyone to run it — not
 everyone uses Obsidian, so the add-on waits to be invoked.

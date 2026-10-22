@@ -26,30 +26,15 @@ secret's location precisely: `Web.config → connectionStrings/OpsDb`.
 
 ## The hook that enforces this
 
-`.claude/hooks/block-secrets.mjs` runs as a `PreToolUse` hook on `Write`, `Edit`, `MultiEdit`,
-`NotebookEdit`, `Bash`, and `PowerShell`, wired in `.claude/settings.json`. It scans only the
-INCOMING text of a call and answers `permissionDecision: "deny"` on a match, with the value
-masked in the reason so the secret never re-enters the conversation.
+`.claude/hooks/block-secrets.mjs` denies a call whose incoming text carries a credential; its
+header owns the matcher, the guarded and exempt paths, and fail-open. It never scans `old_string`,
+so an edit that redacts a secret already on disk goes through.
 
-It is a Node script, not a PowerShell one, so a single implementation behaves identically on
-Windows, WSL, macOS and Linux. Hooks are not PowerShell-bound: `shell` accepts `bash` or
-`powershell`, and the `args` exec form spawns any executable with no shell at all.
-
-Four things it deliberately does NOT do:
-
-- **It does not scan application code or config.** `Web.config`, `appsettings.json`, `.env` are
-  out of scope — a connection string belongs there.
-- **It does not scan `old_string`.** Redacting a secret already on disk stays possible.
-- **It exempts its own toolkit** — `.claude/hooks/`, `.claude/skills/wp-secret-scan/`, and this
-  file — because they quote the patterns they hunt for.
-- **It fails open.** A script error, or a machine without Node on `PATH`, allows the write and
-  prints a warning. The hook is a safety net under this rule, never a substitute for it.
-
-Blocked by it? Do not route around it with a different tool. Replace the value with a
-placeholder and rewrite.
+Blocked by it → replace the value with a placeholder and rewrite; the same value never goes
+through another tool.
 
 ## Backfilling what predates the guard
 
-`/wp-secret-scan` sweeps `project-memory/` and `.claude/` for credentials written before the
-hook existed. A hit that is already committed needs more than an edit — rotate the credential,
+`/wp-secret-scan` sweeps every file the hook guards for credentials written before the hook
+existed. A hit that is already committed needs more than an edit — rotate the credential,
 because git history still holds the old value.

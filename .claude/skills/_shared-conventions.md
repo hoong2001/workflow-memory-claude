@@ -6,30 +6,20 @@ nothing here overrides a skill's own explicit instruction.
 
 ## Question pattern
 
-Every question Claude asks — in a discussion skill or anywhere else — goes through the `AskUserQuestion` tool — never a
+Every choice between options Claude puts to the user — in a discussion skill or anywhere else — goes through the `AskUserQuestion` tool — never a
 plain-text statement waiting for a nod, and never gated behind a rejection first. The same holds
-for a decision left in a handoff's **You now** (see **Handoff** below).
+for a decision left in a handoff's **You now** (see **Handoff** below). A request for free
+information (the opening "what's the requirement?") may be plain text.
 
 1. **Infer, then ask** — work out your recommended answer from the plan, the module docs,
    the code, or the stack constraints, and use it as the first option, marked "(Recommended)".
-2. **2 more real alternatives** — each a genuine, distinct direction with a one-line
-   trade-off, never filler to pad the count.
-3. **`Re-infer` last** — the fourth option is labelled `Re-infer`, described as "None of these
-   fit — infer again from a different angle". `AskUserQuestion`'s built-in "Other" stays the
-   free-form custom choice.
-
-**When `Re-infer` is picked:**
-
-- Every other question answered in the same call is final — record it and never re-ask it.
-- Re-ask only the re-inferred question, in a new call, with options that repeat none of the
-  rejected ones. Change the angle, not the wording, and treat any note the user attached to
-  the pick as the steer.
-- A second `Re-infer` on the same question means inference is not the bottleneck: name the
-  fact you are missing in one line and ask for it, instead of guessing a third set.
+2. **Up to 3 more real alternatives + 1 custom** — each alternative a genuine, distinct
+   direction with a one-line trade-off; when fewer real ones exist, list fewer — never filler to
+   pad the count. `AskUserQuestion`'s built-in "Other" serves as the free-form custom choice.
 
 If `AskUserQuestion` is unavailable in the current environment, fall back to listing the
-same options, `Re-infer` included, as numbered plain text and asking the user to pick one or
-state a custom answer — never revert to a bare statement waiting for a nod.
+same options as numbered plain text and asking the user to pick one or state a custom answer —
+never revert to a bare statement waiting for a nod.
 
 ## Interview conduct
 
@@ -107,13 +97,9 @@ It never restates a Done leaf. Nothing of that kind → no text above the tree.
 ```
 
 `⏳ In progress` and `⚠️ Attention` branches appear only when they apply (rules below). The last branch uses
-`└─` and its leaves hang under three spaces instead of `│`. Every branch is emoji + one space + label,
-no exceptions. Every slot emoji is one terminals count two columns wide, so one space always shows.
-Never swap in a text-default emoji such as `⏭` (U+23ED): terminals count it one wide but draw it two
-wide, so the space disappears and the label touches the emoji. Symbols in the old U+2xxx blocks risk
-the same miscount on terminals with stale width tables, so a new slot emoji comes from U+1F000 and
-up — that is why Next uses `🔜` (U+1F51C). (`⚠️` carries the emoji variation selector, is counted
-two wide, and keeps one space.)
+`└─` and its leaves hang under three spaces instead of `│`. Every branch is emoji + one space + label;
+a new slot emoji comes from U+1F000 and up, never a text-default symbol such as `⏭` (`⚠️` keeps its
+emoji variation selector).
 
 - **Never invent a follow-up to fill a slot.** "Consider adding tests", "you could also…", "another
   project could sync this" — if it was not asked for and no rule requires it, it is not a Next.
@@ -138,18 +124,14 @@ two wide, and keeps one space.)
 - **Judge each You now: a choice gets asked, an action stays a line.** The test: does the user
   pick between outcomes you can name?
   - **Yes, a choice** — which name, which approach, one commit or two, supply a reference file or
-    go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn:
-    recommended option first, marked "(Recommended)", then only the real alternatives, then
-    `Re-infer` (see **Question pattern**) — 3–4
-    options in all, never padded. Several independent choices go in one call, up to 4 questions.
+    go on without it. Print the block, then ask it through `AskUserQuestion` in the same turn,
+    per **Question pattern**. Several independent choices go in one call, up to 4 questions.
   - **No, an action only the user can do** — run a `.sql`, test the change, drop a
     file into `references/`, review a file. A plain line: name the action and what to report back.
   - **Both in one stop** — the action stays the line, and the choice goes to the tool.
-
-  Without `AskUserQuestion`, list the options numbered.
 - **Next** names ONE step: a skill (`/wp-...`) or a workflow step (e.g. "Step 2 act loop, task 1").
   At a fork, name the recommended branch and the condition for the other in the same line. It is
-  a reminder, never an action: a user-invoked skill stays user-invoked.
+  a reminder, never an action: a user-triggered skill stays user-triggered.
 - **Stopping blocked or mid-flight** still gets the block: Done says what landed, You now names
   the blocker the user must clear, Next says where work resumes.
 - **A plan is live → its `> **Resume:**` line takes You now and Next** in the same turn (see
@@ -172,7 +154,8 @@ record (`project-memory/tasks/<date>-<slug>/TASK.md`) opens with ONE line direct
 > **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
 ```
 
-The line holds up to three fields, always in this order:
+A plan's line holds up to three fields, always in this order (a task record uses the one variant
+under **Rules that hold for both**):
 
 - **`Status`** — one bare word from the value set below, never decorated. It names the last thing
   that actually happened to the document — which step the work stopped at, not merely that it
@@ -238,7 +221,10 @@ A one-off task has no design step and no slicing, so it carries three values onl
 - **Whoever appends a section to the document sets `Status` to their own value** — no exceptions
   to remember.
 - **Keep it on ONE line in that exact shape** — fields in the order `Status · Detail · Updated`,
-  separated by ` · `. Unfinished work is found by scanning headers, never
+  separated by ` · `. The single allowed variant is the one-off task record's
+  `Status · Date · Likely to repeat` (`Detail` after `Status` when `Blocked`):
+  `> **Status:** Done · **Date:** 2026-09-14 · **Likely to repeat:** Monthly`.
+  Unfinished work is found by scanning headers, never
   by opening every file, and a scan that has to parse variations is a scan that silently misses
   work:
   ```bash
@@ -248,15 +234,11 @@ A one-off task has no design step and no slicing, so it carries three values onl
   `[!_]` skips `plans/_README.md`, whose example header would otherwise read as live work in
   every module.
 - **`Updated` is the date this header last changed**, not the date the document was written.
-  (A task record carries `**Date:**` — the day the work happened — in its place, after `Detail`.)
+  A task record's `Date` is the day the work happened.
 - **The document is the single source of truth for its own progress.** No one writes a copy by
   hand. The one derived view is `project-memory/project-memory-status.md` — every module plan not
   `Done`, in one table (Done plans are left out, so it never grows with history), rebuilt by the
   `PostToolUse` hook `.claude/hooks/project-memory-status.mjs` on each write to a plan. Read it for
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
   it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
-  not in it. The optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) reads its
-  table to show the live plans in a pane — the table's shape is a versioned contract (`TABLE_FORMAT`
-  in the hook, the same marker in the plugin's `hooks/parse.ts`). The two live in different repos:
-  bump the hook's marker → release a `mods-plan-status` version that reads it; until then the pane
-  shows a format warning instead of misread rows.
+  not in it.

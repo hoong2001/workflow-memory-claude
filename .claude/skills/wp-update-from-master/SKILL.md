@@ -12,8 +12,7 @@ be copied; this skill is the executor, not the policy.
 **Hard safety rules (non-negotiable):**
 - NEVER copy the whole `project-memory/` tree, the whole `.claude/` tree, or the repo root wholesale.
 - NEVER delete files in the target that don't exist in the master (no mirror/`robocopy /MIR` semantics) — projects may have added their own rules/skills. ONLY exception: paths explicitly listed in the master manifest's 🗑️ Renames / deletions section, removed after user confirmation (Step 4b) — otherwise renamed/merged skills linger and keep auto-triggering alongside their replacements.
-- NEVER touch real module folders under `project-memory/modules/` (anything other than `example-module`), `project-memory/overview/`, or any file in `project-memory/docs/` other than its `_README.md`.
-- NEVER move or rename a target's real modules, overview, or architecture doc — including migrating them out of a pre-v2.0.0 `.claude/`. Sync creates the empty `project-memory/` skeleton and REPORTS what is left behind; the user migrates by hand (manifest 🚚 section).
+- NEVER write to a path in the master manifest's 🚫 table (real modules, the overview, shared docs, task records) — inside those folders only the ✅ `_README.md` files are copied.
 - Grey-zone files are merged with user confirmation, never mechanically overwritten.
 
 ## Step 1 · Get the master (git clone by default)
@@ -21,14 +20,13 @@ be copied; this skill is the executor, not the policy.
 The master is pulled fresh from git, so there is no machine-specific path to maintain.
 
 1. **Read the source** from the target project's **local** `SYNC-MANIFEST.md` → "📦 Master
-   source" block (URL + branch). If that block is missing (an older project), default to
-   `https://github.com/hoong2001/workflow-memory-claude.git`, branch `main`. Offer it as
-   the default; let the user override the URL/branch if they say so.
+   source" block: `$repo` = its `Repo` row, `$branch` = its `Branch` row. Offer them as the
+   default; let the user override the URL/branch if they say so.
 2. **Shallow-clone** it into a fresh temp directory (deleted in Step 6):
 
    ```powershell
    $master = Join-Path $env:TEMP ("wmc-master-" + [guid]::NewGuid().ToString('N'))
-   git clone --depth 1 --branch main https://github.com/hoong2001/workflow-memory-claude.git $master
+   git clone --depth 1 --branch $branch $repo $master
    ```
 
    If the clone fails (no network, bad URL), report the exact error and offer the local
@@ -64,7 +62,7 @@ These have each cost a run before. Treat them as part of the procedure, not as s
   spaces; an unquoted path fails or, worse, resolves to the wrong depth.
 - **Never combine copy and delete in one command.** The permission layer misresolves
   multi-action path commands — run them as separate steps (Step 4 then Step 4b).
-- **Run the Step 6 alignment scan with `--no-ignore`.** The TARGET project's `.gitignore`
+- **Run the Step 5b alignment scan with `--no-ignore`.** The TARGET project's `.gitignore`
   may hide `.md` / `.claude` from ripgrep even when the master's does not, which makes the
   scan silently find nothing and report "aligned".
 
@@ -98,75 +96,25 @@ Before copying anything, show the user a dry-run summary:
 - ✅ paths that will be overwritten (list files that actually differ, not everything — compare content or timestamps)
 - 🆕 files that exist only in master (will be added)
 - 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
-- 🏠 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
+- 🧩 files that exist only in the target's `rules/`/`skills/` AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
 - ⚠️ grey-zone files that differ and need manual merge (Step 5)
-- 🚚 memory docs still sitting under `.claude/` (target predates v2.0.0) — list what was
-  found and state plainly that sync will NOT move them; the user migrates by hand
 
 If nothing differs, report "already up to date" and stop.
 
-**Gate: present the report and WAIT for the user's go before executing Steps 3.5–5b.** The
-relocation in Step 3.5 and the deletions in Step 4b both rely on this confirmation — without
-it, nothing is moved, copied, or deleted.
-
-## Step 3.5 · Create the `project-memory/` skeleton, then report old paths
-
-Two actions, in this order. The first is mandatory; the second never touches anything.
-
-**a. Build the skeleton (always, before Step 4).** The ✅ copy needs a home, and a target
-synced before v2.0.0 has none:
-
-```powershell
-New-Item -ItemType Directory -Force "$target\project-memory\modules"  | Out-Null
-New-Item -ItemType Directory -Force "$target\project-memory\overview" | Out-Null
-```
-
-Creating empty folders is safe and idempotent — skip silently if they already exist.
-Step 4 then lands `example-module/` inside `project-memory/modules/`.
-
-**b. Report old-path memory — never move it.** If any of these still exist in the target,
-list them in the Step 6 summary and hand the user the manifest's 🚚 manual migration
-checklist:
-
-- `.claude/modules/` (name each real module folder found)
-- `.claude/overview/`
-- `.claude/workspace-project-stack-architecture.md`
-
-**Hard rule: this skill never moves, renames, or deletes a target's real module folders,
-overview, or architecture doc.** Migration is the user's, by hand, one module at a time. Do
-not offer to run the `git mv` commands, and do not run them if the user's confirmation at
-Step 3 seems to cover them — it does not.
-
-Say this plainly in the report: from the moment Step 4 lands, the target's rules and skills
-point at `project-memory/modules/`, where only `example-module/` lives. Until the user moves
-the real modules across, Claude will not find them.
+**Gate: present the report and WAIT for the user's go before executing Steps 4–5b.** The
+deletions in Step 4b rely on this confirmation — without it, nothing is copied or deleted.
 
 ## Step 4 · Copy the whitelist paths
 
-Copy each ✅ path from master → target with overwrite-but-never-delete semantics
-(PowerShell `Copy-Item -Force`, with `-Recurse` for folders). Typical set per the manifest:
+Copy every ✅ row of the freshly cloned master's manifest from master → target, overwriting
+but never deleting (PowerShell `Copy-Item -Force`, `-Recurse` for a folder). Create any missing
+target folder first. A folder row copies the folder's contents into the target's folder, so the
+target's own files there stay; a file row copies that one file:
 
 ```powershell
-Copy-Item "$master\.claude\rules\*"  "$target\.claude\rules\"  -Force
-Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force
-Copy-Item "$master\.claude\hooks\*"  "$target\.claude\hooks\"  -Force
-Copy-Item "$master\.claude\scripts\*" "$target\.claude\scripts\" -Force
-Copy-Item "$master\project-memory\modules\example-module" "$target\project-memory\modules\" -Recurse -Force
-New-Item -ItemType Directory -Force "$target\project-memory\docs" | Out-Null
-Copy-Item "$master\project-memory\docs\_README.md" "$target\project-memory\docs\" -Force
-Copy-Item "$master\SYNC-MANIFEST.md" "$target\" -Force
+Copy-Item "$master\.claude\skills\*" "$target\.claude\skills\" -Recurse -Force          # folder row
+Copy-Item "$master\project-memory\tasks\_README.md" "$target\project-memory\tasks\" -Force  # file row
 ```
-
-If a target folder doesn't exist yet (first-time bootstrap of an old project), create it first —
-`project-memory/modules/` and `project-memory/overview/` were already created in Step 3.5a, but
-`.claude/hooks/` is new in v4.0.0 and `.claude/scripts/` in v6.0.0 — each
-is missing from any target synced before its version. `.claude/mods/` no longer exists (v10.0.0); a target that still has one deletes it per
-the 🗑️ table.
-
-A copied hook script does nothing until `.claude/settings.json` points at it, and that file is
-⚠️ grey-zone — Step 5 merges its hook entries. Flag this in the report: a target that copies
-`hooks/` but skips the Step 5 merge has the credential guard, the status view and the
-connection-string check on disk and switched off.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -174,14 +122,15 @@ Renames and merges in the master leave stale copies behind in the target — and
 skill keeps auto-triggering alongside its replacement. For each path in the master
 manifest's 🗑️ Renames / deletions section that exists in the target:
 
-1. Verify its replacement was just copied in Step 4 (never delete before the replacement
-   is in place; a "merged into" entry counts if the merge target exists).
+1. Check its "Replaced by" cell. A cell naming a path → that path must exist in the target
+   after Step 4 (a "merged into" entry counts if the merge target exists); if it is missing,
+   skip the deletion and report it. A cell starting with "nothing" needs no check.
 2. Delete it — the user already confirmed via the Step 3 pre-flight report.
+3. A clean-up the cell names in a grey-zone file (`.gitignore`, `.claude/settings.json`,
+   `CLAUDE.md`) joins Step 5; a per-machine command (`claude plugin …`, `/plugin install …`)
+   goes to the Step 6 report for the user.
 
-Anything NOT on that list is never deleted, no matter how obsolete it looks. Real module
-folders are always out of scope (🚫) even if they contain a `specs/` folder — that content
-is migrated by hand per the workflow routing rule (material → `references/`, `.sql` →
-`schema/`, work docs → `plans/`), never deleted by sync.
+Anything NOT on that list is never deleted, no matter how obsolete it looks.
 
 ## Step 5 · Merge the grey zone (manual, user-confirmed)
 
@@ -190,29 +139,18 @@ For each ⚠️ file (per the manifest — typically root `CLAUDE.md`,
 `.claude/settings.json`, and root `.gitignore`):
 
 1. Diff master vs. target.
-2. Identify **template-side** changes only — e.g. a new `@import` line for a newly added
-   rule, a new Common Entry Points line, structural comments. Project-side content
+2. Identify **template-side** changes only — e.g. a new `@import` line (per the rule-file
+   special case below), a new Common Entry Points line, structural comments. Project-side content
    (Module Map rows, "What this system is", project stack customizations) is untouchable.
 3. Present the proposed merge to the user and apply only after confirmation.
 
-Special case: if Step 4 copied a rule file that is new to the target, its `@import`
-line MUST be added to the target's `CLAUDE.md` — flag this explicitly. **Exception:** a
-rule file whose own header says it is read-on-demand (e.g. `workspace-update-memory.md`,
-`workspace-doc-writing-style.md`) is deliberately NOT `@import`ed — adding the line would
-make it always-on and defeat its purpose. Read the file's first lines before adding.
+Special case: a rule file Step 4 copied that is new to the target. Read its frontmatter: a
+rule with `paths:` is never `@import`ed (an import would load it at launch); every other new
+rule gets its `@import` line in the target's `CLAUDE.md` index — flag this explicitly.
 
-Special case: `.claude/settings.json`. Merge ONLY the four template hook entries — the
-update-check `SessionStart` entry (`template-update-check.mjs`) into `hooks.SessionStart`, the
-credential-guard `PreToolUse` entry into `hooks.PreToolUse`, and the status-view
-(`project-memory-status.mjs`) and connection-string (`connstr-check.mjs`) `PostToolUse` entries
-into `hooks.PostToolUse` — and delete any leftover `extraKnownMarketplaces.workflow-memory-local` entry and
-`enabledPlugins` key ending `@workflow-memory-local` (v6.1.0–v9.0.0 mod loader); never copy the file whole, or the
-project's own hooks and permissions are wiped. After merging, run
-`node .claude/hooks/project-memory-status.mjs --regenerate` once so the target's
-`project-memory/project-memory-status.md` is built from its own plans — and carries the
-`TABLE_FORMAT` marker the optional `mods-plan-status` plugin requires; without
-the rerun the plugin shows a format warning until the next plan write. A target synced at 3.1.0
-carries the old PowerShell entry — replace it rather than adding a second one beside it.
+Special case: `.claude/settings.json` — merge it per the master manifest's
+**`.claude/settings.json` merge** note. Until it is merged, the copied hook scripts stay
+switched off; say so in the report if the user skips it.
 
 ## Step 5b · Post-sync alignment scan (the target's OWN docs)
 
@@ -222,7 +160,7 @@ whatever was renamed or removed. Scan and align them — this step is NOT option
 1. Build the search-term list from **every table in** the manifest's 🗑️ Renames / deletions
    section — it holds more than one, and a sub-heading table (e.g. a bulk prefix rename) counts.
    Take each obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
-   `specs/` folder), plus anything the manifest's grey-zone notes flag as renamed.
+   `specs/` folder).
 2. Grep those terms across the target's LIVING docs only:
    root `CLAUDE.md`, `project-memory/overview/system-overview-spec.md`,
    `project-memory/modules/*/MODULE.md`, `project-memory/modules/*/<name>-flow.md`.
@@ -249,12 +187,6 @@ user's follow-up. Remind the user to start a fresh session (or continue) so newl
 rules take effect. That block is the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`): the summary is Done, the follow-ups are You now, the
 fresh session is Next.
-
-**If Step 3.5b found memory still under `.claude/`, lead the report with it** — name each
-module folder found, state that sync left them untouched by design, and paste the manifest's
-🚚 manual migration checklist. Flag the consequence in one line: the freshly copied rules and
-skills now point at `project-memory/modules/`, so those modules are invisible to Claude until
-the user moves them.
 
 **Clean up:** if a temp master clone was created in Step 1, delete it now —
 `Remove-Item $master -Recurse -Force`. (Nothing to clean up for the local-path fallback.)

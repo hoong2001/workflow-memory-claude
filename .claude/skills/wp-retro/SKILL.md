@@ -60,9 +60,8 @@ Ask which to apply through `AskUserQuestion` with `multiSelect: true`.
 
 - **Project-owned** (module folders, `project-memory/stack-architecture.md`, the project half of
   `CLAUDE.md`) → edit here.
-- **Template-owned** (a ✅ path: `.claude/rules/`, `.claude/skills/`, `.claude/hooks/`,
-  `.claude/scripts/`, `example-module/`) in a project → list the exact change (file, before →
-  after) for the master; a project edit is overwritten by the next `/wp-update-from-master`.
+- **Template-owned** (the ✅ paths in `SYNC-MANIFEST.md`) in a project → list the exact change
+  (file, before → after) for the master; a project edit is overwritten by the next `/wp-update-from-master`.
 - **Template-owned, in the master** (its root holds the master-only `README.md` and `LICENSE`) →
   edit, and bump the manifest's version per its Version policy.
 

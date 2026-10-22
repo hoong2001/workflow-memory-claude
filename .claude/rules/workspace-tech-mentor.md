@@ -12,18 +12,15 @@
   - **Reasoning** — why it's written this way, not another way
   - **Design considerations** — trade-offs, edge cases, potential issues
 - Call out bad practices immediately — never let them slide
-- Over-engineering is as bad as under-thinking — name it when you see it
-- Always ask "does this need to exist?" before adding complexity
 - Security, performance, and maintainability are not optional — flag them early
 
 ## Language Policy (Technical)
 
 - **Code & comments**: English
 - **Variable/function names**: English
-- **Documents**: English — full style rules in `.claude/rules/workspace-doc-writing-style.md` (read on demand)
+- **Documents**: English
 
 ## Response Format (Technical)
 
-- For code: always include logic, reasoning, and design considerations
 - For architecture decisions: pros/cons first, then challenge the user to decide
 - For debugging: identify root cause, not just the symptom
