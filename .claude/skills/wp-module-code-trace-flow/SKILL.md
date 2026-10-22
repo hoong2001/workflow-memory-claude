@@ -11,7 +11,7 @@ In maintenance, the hard part is never editing code — it's knowing *where to c
 
 ## Two dimensions — depth AND breadth (why single-path tracing misses shared code)
 
-The main path (**depth**) is the readable spine: input → process → output, one chain. But a chain alone is blind to **shared symbols** — a method on `BaseService`/`BaseRepository`, a reused `Result` class, a `ConstValues` entry, or a shared query/column builder used by both Web and ServBackend. These have many callers (**fan-in**), and editing one ripples to every caller.
+The main path (**depth**) is the readable spine: input → process → output, one chain. But a chain alone is blind to **shared symbols** — a method on `BaseService`/`BaseRepository`, a reused `Result` class, a `ConstValues` entry, or a shared query/column builder used by more than one entry point. These have many callers (**fan-in**), and editing one ripples to every caller.
 
 So every run recovers **both**:
 
@@ -62,7 +62,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 - **Fall back to `rg -n "SymbolName"`** when the LSP tool is absent, errors, or returns nothing. An empty LSP answer is never taken as "no callers": check the position, then sweep with `rg` and filter the hits by hand. LSP needs the C# language server `csharp-ls` on `PATH` (`dotnet tool install --global csharp-ls`, used by the `csharp-lsp` Claude Code plugin) and answers only for the solution in the session's working directory.
 - Say which method backed each caller list (`LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
 
-- Tag each caller by entry point (Web / ServBackend) so the blast radius is legible.
+- Tag each caller by entry point (Web / Api / ServBackend) so the blast radius is legible.
 - Many callers (say > 15)? List them but cap with a stated count ("28 callers; the 12 in `[Name].Services` shown, rest are views") — never silently truncate.
 
 ### Step 4: Assemble and deliver the two outputs

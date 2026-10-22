@@ -81,21 +81,31 @@ The solution follows a classic layered architecture. Each project maps to exactl
 
 | Layer | Project | Responsibility |
 |-------|---------|---------------|
-| Presentation | [Name].Web | MVC/Web API controllers (route to Service — no business logic, no data access), Razor views, ViewModels |
-| Business Logic | [Name].Services | All business logic, shared by Web and ServBackend — no direct data access, no UI concerns |
+| Presentation | [Name].Web | MVC controllers, and the Web API controllers its own pages call (route to Service — no business logic, no data access), Razor views, ViewModels |
+| Presentation (API) | [Name].Api | Optional. Web API 2.2 controllers for every other caller — other systems, mobile apps, partners (route to Service — no business logic, no data access) |
+| Business Logic | [Name].Services | All business logic, shared by every entry point (Web, Api, ServBackend) — no direct data access, no UI concerns |
 | Data Access | [Name].UnitOfWork | Repositories (SQL via Dapper only — no business logic); UnitOfWork owns transactions (`Commit()` / `Rollback()`) and DB connection lifetime |
 | Windows Service | [Name].ServBackend | Background workers, scheduled jobs — depends on Services + UnitOfWork |
+
+> **Web or Api — the caller decides.** An endpoint the Web's own pages call stays in
+> `[Name].Web/ApiControllers/`: same origin, same login cookie, deployed with the page that calls it.
+> An endpoint any other caller uses goes in `[Name].Api`, which deploys as its own IIS application —
+> an API change then redeploys the Api alone, never the Web. The cost: a second `Web.config`
+> (connection strings, NLog) kept in step with the Web's. Add `[Name].Api` only when the system has
+> such callers.
 
 ### 2.2 Dependency Direction
 
 Dependencies flow strictly downward. No layer may reference a layer above it.
 
 ```
-Web  ──►  Services  ──►  UnitOfWork  ──►  SQL Server
+Web          ──►  Services  ──►  UnitOfWork  ──►  SQL Server
+Api          ──►  Services  ──►  UnitOfWork  ──►  SQL Server
 ServBackend  ──►  Services  ──►  UnitOfWork  ──►  SQL Server
 ```
 
-> Web and ServBackend are independent entry points. Neither knows the other exists.
+> Web, Api and ServBackend are independent entry points. None references another; what two of
+> them share lives in Services.
 
 ### 2.3 Base Classes
 
@@ -103,7 +113,7 @@ Every Service, Repository and Result class inherits its base class.
 
 | Base Class | Location | Mandatory? | Purpose |
 |------------|----------|------------|---------|
-| `BaseService` | `Services/` | Yes — ALL Services (shared, Web, Backend) | Shared properties and common helper methods across all service types |
+| `BaseService` | `Services/` | Yes — ALL Services (shared, Web, Api, Backend) | Shared properties and common helper methods across all service types |
 | `BaseRepository` | `UnitOfWork/Repositories/` | Yes — all Repositories | DB connection, shared Dapper execute helpers |
 | `BaseResult` | `UnitOfWork/Results/` | Yes — all Result classes | Shared properties to avoid duplication across Result classes |
 
@@ -117,9 +127,14 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 |----------|---------|
 | `UnitOfWork/Results/` | Result classes shared across Repository methods — a single class (e.g. `StockistResult`) may be reused by multiple queries |
 | `UnitOfWork/ConstValues/` | Shared constants and Enums — accessible to all projects via existing UnitOfWork reference |
-| `Web/Models/` | ViewModels for MVC views — UI-bound, NOT shared with ServBackend |
+| `Web/Models/` | ViewModels for MVC views — UI-bound, NOT shared with Api or ServBackend |
+| `Api/Models/` | The Api's counterpart of ViewModels: request models, and response models whose shape differs from any Result — Api-only, NOT shared. A Result whose shape already is the response is returned as-is |
 
 > Reuse an existing Result class where possible — a single class may cover multiple Repository methods.
+>
+> A Result the Api returns as-is is part of the Api's contract with outside callers: renaming or
+> removing one of its properties breaks them. Before that change, check the Api's callers, or give
+> the endpoint its own response model in `Api/Models/`.
 
 ---
 
@@ -129,7 +144,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 [YourSolution].sln
 │
 ├── [ProjectName].Web              ← Presentation Layer (MVC 5)
-│   ├── ApiControllers/            ← Web API 2.2 controllers
+│   ├── ApiControllers/            ← Web API 2.2 controllers its own pages call
 │   ├── Controllers/               ← MVC controllers
 │   ├── Views/                     ← Razor views
 │   ├── Models/                    ← ViewModels (Web-only, not shared)
@@ -137,8 +152,15 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── Content/                   ← CSS, images
 │   └── App_Start/                 ← Route, bundle config
 │
+├── [ProjectName].Api              ← Presentation Layer (Web API 2.2, no views) — optional (§2.1)
+│   ├── Controllers/               ← Web API 2.2 controllers for every other caller
+│   ├── Models/                    ← Request / response models (Api-only, not shared — §2.4)
+│   └── App_Start/                 ← WebApiConfig (routes, formatters)
+│
 ├── [ProjectName].Services         ← Business Logic Layer
 │   ├── Web/                       ← Web-only services (namespace: Services.Web)
+│   │   └── [Entity]Service.cs
+│   ├── Api/                       ← Api-only services (namespace: Services.Api)
 │   │   └── [Entity]Service.cs
 │   ├── Backend/                   ← Backend-only services (namespace: Services.Backend)
 │   │   └── [Entity]Service.cs
@@ -163,15 +185,17 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 | Logic type | Where it lives |
 |------------|---------------|
-| Shared business rules (Web AND ServBackend) | `[Name].Services/[Entity]Service.cs` : `BaseService` |
+| Shared business rules (more than one entry point) | `[Name].Services/[Entity]Service.cs` : `BaseService` |
 | Web-only business logic | `[Name].Services/Web/[Entity]Service.cs` : `BaseService` |
+| Api-only business logic | `[Name].Services/Api/[Entity]Service.cs` : `BaseService` |
 | Backend-only business logic | `[Name].Services/Backend/[Entity]Service.cs` : `BaseService` |
 | Database queries and result shaping | `[Name].UnitOfWork/Repositories/[Entity]Repository.cs` : `BaseRepository` |
 | Query result / reusable data objects | `[Name].UnitOfWork/Results/[Entity]Result.cs` : `BaseResult` |
 | Shared constants and Enums | `[Name].UnitOfWork/ConstValues/` |
 | MVC ViewModels (UI-bound) | `[Name].Web/Models/` |
+| Api request / response models | `[Name].Api/Models/` (§2.4) |
 
-> Repository is split by Entity, never by entry point. The same `OrderRepository` may be used by both Web and ServBackend.
+> Repository is split by Entity, never by entry point. The same `OrderRepository` may be used by Web, Api and ServBackend.
 
 ---
 

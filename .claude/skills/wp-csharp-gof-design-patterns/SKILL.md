@@ -249,7 +249,7 @@ private void RunDueJobs(DateTime now)
 | Mediator (MediatR style) | Only pays off with DI, which is forbidden |
 | Decorator / Proxy around a Repository | Possible once Repository interfaces are allowed, but the concerns it would add (logging, timing) belong in `BaseRepository` or the Service's NLog call — one place, not a wrapper per Repository |
 | Abstract Factory, Visitor, Prototype, Flyweight, Memento, Interpreter | No problem in a synchronous CRUD MVC system that these solve |
-| Observer between Web and ServBackend | The two are separate processes that share no memory; in-process events cannot connect them |
+| Observer between entry points (Web, Api, ServBackend) | Each runs in its own process and shares no memory; in-process events cannot connect them |
 
 ---
 
