@@ -1,6 +1,7 @@
 ---
 name: wp-task-record
-description: Record a one-off task that belongs to no module - a report run once, a data patch, an ad-hoc investigation, a file conversion - into its own isolated folder under project-memory/tasks/, together with the .sql it used and the material it was given. Use when the work produces a one-time artifact for a person and leaves no code, view, or schema behind in the system, or when the user says "record this task", "記低呢單嘢", "呢個唔關 module 事". Do NOT use when the system keeps something afterwards (that is module work - /wp-module-plan-discuss then /wp-module-save-implementation). Never auto-run it: when such work finishes or stops on a blocker, REMIND the user in one line to type `/wp-task-record`.
+description: Record a one-off task (no module) in its own project-memory/tasks/ folder.
+disable-model-invocation: true
 ---
 
 # Task Record

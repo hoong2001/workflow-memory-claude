@@ -1,6 +1,7 @@
 ---
 name: wp-module-save-implementation
-description: Saves the implementation record to the module's impl/ folder, closes the paired plan by setting its status header to Done, and lightweight-updates the module's <name>-flow.md handover map whenever the change altered how the module works. It is a closing summary, not a mid-flight tracker - the Step 2 act loop maintains the plan's running status while building. NEVER auto-run this skill - the trigger belongs to the user. After a feature, refactor, or significant bug fix, REMIND the user in one line to type `/wp-module-save-implementation`, and run only on their go.
+description: Close a module task: impl record, plan → Done, flow-map sync.
+disable-model-invocation: true
 ---
 
 # Module Save Implementation

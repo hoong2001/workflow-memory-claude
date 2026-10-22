@@ -1,6 +1,7 @@
 ---
 name: wp-retro
-description: Retrospective on one session's friction — traces each struggle to a moment in the record and proposes the check, pointer, or rule in the workflow (rules, skills, hooks, build script, module memory) that stops it recurring; the user picks what lands. Use when the user says "retro", "回顧", "檢討今次 session", or after the wrap-up reminder names a friction signal. Code review and recording what was built belong to other skills.
+description: Retrospective on this session's friction; proposes workflow fixes.
+disable-model-invocation: true
 ---
 
 # Retro — fix the environment the friction came from

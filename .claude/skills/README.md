@@ -9,8 +9,8 @@
 
 ## Trigger convention
 
-- **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it. `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
-- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`; the agent may *remind* you, naming the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). Everything in the build chain plus `save-implementation`, `retro`, `task-record`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
+- **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
+- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain plus `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)

@@ -65,7 +65,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
     ├── wp-module-technical-design/  append "Technical Design" + "Tasks" (vertical slices and parallel waves when needed) to the SAME plan file
     ├── wp-module-code-trace-flow/  legacy code → extract <name>-flow.md
-    ├── wp-module-save-implementation/  save impl record + sync flow (user-triggered)
+    ├── wp-module-save-implementation/  save impl record + sync flow (user-invoked)
     ├── wp-retro/  session hit friction? trace it, then fix the environment (check · pointer · rule) — you pick
     ├── wp-writing-for-agents/  how to write steering files (.claude/, CLAUDE.md) — fork of mattpocock/skills, MIT
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
@@ -175,7 +175,7 @@ skills-dir plugin whose name matches an installed one is not loaded.
 
 - Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md`, `workspace-doc-writing-style.md`, and `workspace-sql-house-style.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
 - `stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
-- Seven skills are user-invoked — Claude never runs them; type the command yourself: `/wp-system-spec-discuss`, `/wp-system-overview-spec-generator`, `/wp-update-from-master`, `/wp-secret-scan`, `/wp-connstr-check`, `/wp-packageref-to-packages-config`, `/wp-obsidian-start`. Trigger tiers: `.claude/skills/README.md` → Trigger convention.
+- Ten skills are user-invoked — Claude never runs them; type the command yourself: `/wp-module-save-implementation`, `/wp-task-record`, `/wp-retro`, `/wp-system-spec-discuss`, `/wp-system-overview-spec-generator`, `/wp-update-from-master`, `/wp-secret-scan`, `/wp-connstr-check`, `/wp-packageref-to-packages-config`, `/wp-obsidian-start`. Trigger tiers: `.claude/skills/README.md` → Trigger convention.
 
 ## Skill dependencies (important when copying)
 
