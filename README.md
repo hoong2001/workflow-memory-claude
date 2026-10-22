@@ -48,7 +48,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── build-solution.mjs             Claude's build step (how it runs and what it hands back: workspace-workflow.md Step 2)
 ├── rules/                             behavioral rules (each loads at launch unless path-scoped)
 │   ├── workspace-workflow.md          the 3-step development workflow
-│   ├── workspace-tech-mentor.md       technical mentorship style
+│   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (incl. KISS / DRY)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions (path-scoped: loads when a .sql file is read or written)

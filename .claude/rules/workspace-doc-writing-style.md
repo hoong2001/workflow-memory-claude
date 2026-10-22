@@ -9,7 +9,7 @@ paths:
 
 > Read this BEFORE writing or editing any document under `project-memory/` or `.claude/`, plus root
 > `README.md` / `CLAUDE.md`. It does NOT govern chat replies — response tone and
-> language belong to the user's own `CLAUDE.md` persona.
+> language belong to the user's own output style or personal `CLAUDE.md`.
 
 **Language: English** — the document, and the code and comments it quotes.
 
