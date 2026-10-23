@@ -123,8 +123,9 @@ emoji variation selector).
 
 ## Status header
 
-Every plan (`project-memory/modules/<name>/plans/<name>-<date>-<slug>.md`) and every one-off task
-record (`project-memory/tasks/<date>-<slug>/TASK.md`) opens with ONE line directly under its H1:
+Every plan (`project-memory/modules/<name>/plans/<name>-<date>-<slug>.md`), every one-off task
+record (`project-memory/tasks/<date>-<slug>/TASK.md`) and every idea interview record
+(`project-memory/interviews/<name>-<date>-<slug>.md`) opens with ONE line directly under its H1:
 
 ```markdown
 # <title>
@@ -132,8 +133,8 @@ record (`project-memory/tasks/<date>-<slug>/TASK.md`) opens with ONE line direct
 > **Status:** Building · **Detail:** 2/5 · **Updated:** 2026-09-07
 ```
 
-A plan's line holds up to three fields, always in this order (a task record: **Values — one-off
-task records**):
+A plan's or an interview record's line holds up to three fields, always in this order (a task
+record: **Values — one-off task records**):
 
 - **`Status`** — one bare word from the value set below, never decorated. It names the last thing
   that actually happened to the document — which step the work stopped at, not merely that it
@@ -149,10 +150,11 @@ task records**):
 > **Status:** Done · **Updated:** 2026-09-07
 ```
 
-### Resume line — plans only
+### Resume line — plans and interview records
 
-A live plan carries a second line directly under the status line — the handoff's You now and
-Next, so a session that opens the plan weeks later knows what was waiting and what comes after:
+A live plan or interview record carries a second line directly under the status line — the
+handoff's You now and Next, so a session that opens it weeks later knows what was waiting and what
+comes after:
 
 ```markdown
 > **Status:** Building · **Detail:** 3/5 · **Updated:** 2026-10-15
@@ -161,10 +163,12 @@ Next, so a session that opens the plan weeks later knows what was waiting and wh
 
 - **Written at every open handoff that touches a plan**, overwritten in the same edit as the status
   line — never appended. Copy the handoff's You now and Next, shortened to one line; You now
-  `nothing` is written as `You now — nothing`.
-- **No Done slot.** What landed is already the `Detail` counter and the `☑` rows; a copy would drift.
-- **Deleted when the plan turns `Done`** — a closed plan has nothing to resume.
-- The hook copies the text after `You now —` (up to ` · Next —`) into the You now column and the
+  `nothing` is written as `You now — nothing`. An interview record rewrites it after every answer:
+  You now — the question now waiting · Next — the step after it.
+- **No Done slot.** What landed is already the `Detail` counter and the `☑` rows (an interview:
+  the Answers table); a copy would drift.
+- **Deleted when the document turns `Done`** — a closed document has nothing to resume.
+- For plans, the hook copies the text after `You now —` (up to ` · Next —`) into the You now column and the
   text after `Next —` into the Next column of `project-memory/project-memory-status.md` (and its
   vault mirror), so keep the order `You now — … · Next — …` with `Next —` last on the line.
 
@@ -198,7 +202,15 @@ it carries two values only:
 | `Blocked` | one line: the reason (required) | Stopped on something external; the record ends where the work stopped | `/wp-task-record` |
 | `Done` | — | Finished | `/wp-task-record` |
 
-### Rules that hold for both
+### Values — interview records
+
+| Status | Detail | Means | Set by |
+|---|---|---|---|
+| `Interviewing` | `N/6` — `N` = steps of `/wp-idea-interview` completed | The interview is open | `/wp-idea-interview` |
+| `Blocked` | one line: the reason (required) | Waiting on something external — material a colleague holds, a decision only someone else makes | `/wp-idea-interview` |
+| `Done` | — | Goal confirmed, route written; continuing it reopens it as `Interviewing` | `/wp-idea-interview` |
+
+### Rules that hold for every record
 
 - **Whoever appends a section to the document sets `Status` to their own value** — no exceptions
   to remember.
@@ -209,6 +221,7 @@ it carries two values only:
   ```bash
   grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md
   grep -H "^> \*\*Status:\*\*" project-memory/tasks/*/TASK.md
+  grep -H "^> \*\*Status:\*\*" project-memory/interviews/*.md
   ```
   `[!_]` skips `plans/_README.md`, whose example header would otherwise read as live work in
   every module.
@@ -218,5 +231,5 @@ it carries two values only:
   `Done`, in one table (Done plans are left out, so it never grows with history), rebuilt by the
   `PostToolUse` hook `.claude/hooks/project-memory-status.mjs` on each write to a plan. Read it for
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
-  it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records are
-  not in it.
+  it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records and
+  interview records are not in it.

@@ -22,18 +22,27 @@ Mark an option Recommended only when you can name its evidence.
 reshapes the next question. After that, rounds of up to 3 questions, each answerable on its own; a
 question that depends on an open one waits for the next round. One question is a full round.
 
+0. **Resume first** — a record attached or named in the argument
+   (`@project-memory/interviews/<file>.md`) is the one to continue. Otherwise
+   `grep -H "^> \*\*Status:\*\*" project-memory/interviews/*.md`; a record not `Done` → ask whether
+   to resume it or start a new one. Resuming reads the record and continues from its `Resume` line.
+   A `Done` record reopens: `Status` back to `Interviewing`, `Detail` at the step the user wants to
+   revisit; Step 6 replaces its old Route. An attached file that is not an interview record is
+   material for Step 3.
 1. **Open** — ask where the idea came from: a repeated pain, an "if only we had…", something seen
    elsewhere.
-2. **Find the what** — narrow by kind, then domain, then the thing itself. Done when you can state in
-   one line what it is.
+2. **Find the what** — narrow by kind, then domain, then the thing itself. Kind narrows the what; the
+   route is inferred at Step 6. Done when you can state in one line what it is.
 3. **Ask for material** — see **Material**. Done when the user has supplied it or said there is none.
 4. **Steer to the goal** — draw from the **Question pool** only what the goal sentence still lacks.
    Done when purpose, users, and a success measure with its baseline are known.
 5. **Confirm** — one round: the goal sentence assembled from the answers, the success baseline, the
    deadline. Done when the user confirms the sentence.
-6. **Route** — pick the row in **Route**, mark the record `Done`, and close with the handoff
-   (**Handoff** in `.claude/skills/_shared-conventions.md`): Done = the record path; You now = the
-   command to type; Next = the skill after it.
+6. **Route** — only now, from the finished record, infer where the goal goes — see **Route**. Write
+   the route into the record, mark it `Done`, and close with the handoff (**Handoff** in
+   `.claude/skills/_shared-conventions.md`): Done = the record path; You now = the wp- command to
+   type, with the record pasted after it as `@project-memory/interviews/<file>.md`; Next = the skill
+   after it.
 
 Write the record from the first answer on — see **The record**.
 
@@ -82,7 +91,8 @@ English, per `.claude/rules/workspace-doc-writing-style.md`.
 ```markdown
 # Idea interview — <working title>
 
-> **Status:** Interviewing · **Updated:** YYYY-MM-DD
+> **Status:** Interviewing · **Detail:** 1/6 · **Updated:** YYYY-MM-DD
+> **Resume:** You now — <the question now waiting> · Next — <the step after it>
 
 ## Goal
 <the confirmed goal sentence; until Step 5, "Not settled" plus what is known>
@@ -108,10 +118,16 @@ English, per `.claude/rules/workspace-doc-writing-style.md`.
 <each open point, and who or what settles it>
 ```
 
-`Status` is `Interviewing` while open and `Done` once the goal is confirmed and routed. An empty
-section keeps its heading with one line saying why.
+The status line and the `Resume` line follow **Status header** in
+`.claude/skills/_shared-conventions.md` (values: interview records); rewrite both with every answer.
+An empty section keeps its heading with one line saying why.
 
 ## Route
+
+Infer the route from the whole record, then place it on the Branch table in Step 2 of
+`.claude/rules/workspace-workflow.md`: a target module with an unfinished plan is resumed (Branch A,
+its status-header grep); a module that does not exist yet is scaffolded first (Branch C). The table
+maps the result to its command.
 
 | The goal lands as | Route |
 |---|---|
@@ -122,7 +138,8 @@ section keeps its heading with one line saying why.
 | A change to how Claude works here (skill, rule, hook) | name the lightest form that meets the goal; `wp-writing-for-agents` governs the edit |
 | Not software | one first step that fits in 15 minutes; no skill |
 
-Pass the record to the next skill as its argument, e.g.
-`/wp-module-plan-discuss project-memory/interviews/<file>.md`.
+The next skill gets the record pasted after its command, e.g.
+`/wp-module-plan-discuss @project-memory/interviews/<file>.md` — every answer reaches it, in this
+session or a fresh one.
 
 </supporting-info>

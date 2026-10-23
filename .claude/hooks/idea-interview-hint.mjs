@@ -9,5 +9,5 @@
  * Runtime: Node.js 18+. Wired in .claude/settings.json → hooks.SessionStart, matcher "startup".
  */
 
-const msg = 'Got an idea but no clear requirement yet? Type /wp-idea-interview — clickable questions turn it into a goal and the next command.';
+const msg = 'Not sure where to start? /wp-idea-interview';
 process.stdout.write(JSON.stringify({ systemMessage: msg }));

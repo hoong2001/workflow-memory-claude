@@ -52,7 +52,7 @@ routed to one of the entry points above or to a one-off task.
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-idea-interview` | You have a spark or a want, but no requirement yet, or don't know where to start | Interview the idea through a funnel (spark → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it | `project-memory/interviews/<name>-<date>-<slug>.md` — answers, material, risks, route |
+| `wp-idea-interview` | You have a spark or a want, but no requirement yet, or don't know where to start | Interview the idea through a funnel (spark → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it; a past interview — attached as `@<record>` or found unfinished by its status line — continues from its `Resume` line, a `Done` one reopens | `project-memory/interviews/<name>-<date>-<slug>.md` — status header (`Interviewing` · `N/6`, `Blocked`, `Done`) + `Resume` line, answers, material, risks, route |
 
 ### Phase 0 · Brand-new system bootstrap (run once, only for a new system)
 
