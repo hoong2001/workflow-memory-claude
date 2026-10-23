@@ -114,6 +114,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 > - `.claude/hooks/project-memory-status.mjs` — rebuilds `project-memory/project-memory-status.md` when a module plan is written.
 > - `.claude/hooks/connstr-check.mjs` — rejects an off-template MSSQL `connectionString` that Claude writes; config edited elsewhere: `wp-connstr-check`.
 > - `.claude/hooks/template-update-check.mjs` — at session start, says when the master template is newer; applying it: `wp-update-from-master`.
+> - `.claude/hooks/idea-interview-hint.mjs` — at every session start, one line pointing at `wp-idea-interview`.
 
 ### Standing · Cross-project memory (Obsidian)
 

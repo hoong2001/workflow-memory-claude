@@ -44,7 +44,8 @@ project-memory/                        the project's own memory — plain folder
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
 │   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured)
 │   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
-│   └── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
+│   ├── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
+│   └── idea-interview-hint.mjs        SessionStart: one line pointing at /wp-idea-interview, every session
 ├── scripts/
 │   └── build-solution.mjs             Claude's build step (how it runs and what it hands back: workspace-workflow.md Step 2)
 ├── rules/                             behavioral rules (each loads at launch unless path-scoped)
