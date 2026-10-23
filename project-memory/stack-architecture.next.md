@@ -156,10 +156,14 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 ## 3. Solution Structure
 
+> `[Name]` is the app's name. A solution with one app uses the system name (`MyApp.Web`,
+> `MyApp.Api`). A solution holding several apps names each one `<System>.<App>`, and every project
+> of that app carries it (`MyApp.Reports.Web`, `MyApp.Reports.Services`, `MyApp.Reports.Api`).
+
 ```
 [YourSolution].sln
 │
-├── [ProjectName].Web              ← Presentation Layer (MVC 5)
+├── [Name].Web                     ← Presentation Layer (MVC 5)
 │   ├── ApiControllers/            ← Web API 2.2 controllers its own pages call
 │   ├── Controllers/               ← MVC controllers
 │   ├── Views/                     ← Razor views
@@ -168,12 +172,12 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── Content/                   ← CSS, images
 │   └── App_Start/                 ← Route, bundle config
 │
-├── [ProjectName].Api              ← Presentation Layer (Web API 2.2, no views) — optional (§2.1)
+├── [Name].Api                     ← Presentation Layer (Web API 2.2, no views) — optional (§2.1)
 │   ├── Controllers/               ← Web API 2.2 controllers for every other caller
 │   ├── Models/                    ← Request / response models (Api-only, not shared — §2.4)
 │   └── App_Start/                 ← WebApiConfig (routes, formatters)
 │
-├── [ProjectName].Services         ← Business Logic Layer
+├── [Name].Services                ← Business Logic Layer
 │   ├── Web/                       ← Web-only services (namespace: Services.Web)
 │   │   └── [Entity]Service.cs
 │   ├── Api/                       ← Api-only services (namespace: Services.Api)
@@ -183,7 +187,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── BaseService.cs
 │   └── [Entity]Service.cs        ← Shared services
 │
-├── [ProjectName].UnitOfWork       ← Data Access Layer
+├── [Name].UnitOfWork              ← Data Access Layer
 │   ├── ConstValues/                ← Shared constants and Enums
 │   ├── Repositories/              ← Repository classes, organised by Entity
 │   │   ├── BaseRepository.cs
@@ -194,7 +198,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   │   └── [Entity]Result.cs
 │   └── UnitOfWork.cs              ← Implements IDisposable
 │
-└── [ProjectName].ServBackend      ← Windows Service
+└── [Name].ServBackend             ← Windows Service
     └── Worker.cs                  ← Background job entry point
 ```
 
