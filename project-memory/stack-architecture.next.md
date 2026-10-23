@@ -241,9 +241,6 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✔ Query design per the **`wp-sql-query-design`** skill — the row-count test decides what
   belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
 - ✔ C# 7.3 syntax maximum
-- ✔ Short type names in code, imported by a `using` (VB: `Imports`) at the top of the file. The
-  import is part of the change that needs it, not adjacent code. A fully-qualified name is for a
-  clash only — e.g. `System.Web.Http` and `System.Web.Mvc` attributes in one file.
 
 **Forbidden:**
 - ✘ Dependency Injection (DI)
@@ -258,11 +255,16 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 > Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — the backend rules above, and §4.3, which covers frontend code too.
 
-### 4.3 Code comments (all languages)
+### 4.3 All languages
 
-- ✔ A comment you write or rewrite opens with today's date as `yyyy.MM.dd`:
+- ✔ **Comments** — a comment you write or rewrite opens with today's date as `yyyy.MM.dd`:
   `// 2026.10.23 Skip closed accounts.` In `/// <summary>` the date opens the first text line;
   a multi-line comment dates its first line only. Older `yyyy-MM-dd` dates stay as written.
+- ✔ **Imports** sit at the top of the file — `using`, `Imports`, `import`, `require` — and belong
+  to the change that needs them, not to adjacent code. The body names an imported item the way
+  its language does: the short name in C#, VB, Java and JS; `module.name` in Python and Go. A
+  fully-qualified path written inline is for a clash only — e.g. `System.Web.Http` and
+  `System.Web.Mvc` attributes in one file.
 
 ---
 
