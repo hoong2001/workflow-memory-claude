@@ -12,7 +12,7 @@
 ## Trigger convention
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
-- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain plus `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
+- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-idea-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)
@@ -43,7 +43,16 @@ requirement ──────────────┤                       
 **Brand-new whole system** runs once, upstream of all of the above:
 `system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` → each module through the main flow.
 
+**Only an idea, no requirement yet** — `idea-interview` runs first and ends in a confirmed goal,
+routed to one of the entry points above or to a one-off task.
+
 ## Catalog
+
+### Before a requirement · an idea (optional)
+
+| Skill | When to use | Purpose / function | Output |
+|-------|-------------|--------------------|--------|
+| `wp-idea-interview` | You have a spark or a want, but no requirement yet, or don't know where to start | Interview the idea through a funnel (spark → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it | `project-memory/interviews/<name>-<date>-<slug>.md` — answers, material, risks, route |
 
 ### Phase 0 · Brand-new system bootstrap (run once, only for a new system)
 
@@ -119,6 +128,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 
 ## Quick "what do I reach for?" forks
 
+- **Only an idea, don't know where to start** → `idea-interview` (ends in a confirmed goal and the command to type next).
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
 - **Plan done, need API/class/SQL detail, or a task breakdown, or both** → `technical-design` (it does the cut and the task list in one pass).
