@@ -243,8 +243,8 @@ and the actual execution time, from realistic data. Not an estimate, not a hunch
 the number in the code:
 
 ```sql
--- Perf: 68k detail rows; C#-side grouping measured 4.2s, this window function 0.3s.
--- Measured 2026-09-03 against PROD copy. Revisit if OrderItems shrinks.
+-- 2026.09.03 Perf: 68k detail rows; C#-side grouping measured 4.2s, this window function 0.3s.
+-- Measured against PROD copy. Revisit if OrderItems shrinks.
 ```
 
 A rewrite without that comment is an unexplained complication, and the next person will
