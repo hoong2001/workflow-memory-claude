@@ -6,6 +6,8 @@
 
 > Rules that several skills share — the question pattern, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
+> The whole-system spec format lives the same way in `_system-spec-template.md`: `system-spec-discuss`
+> writes it, `system-overview-spec-generator` reads it.
 
 ## Trigger convention
 
@@ -48,7 +50,7 @@ requirement ──────────────┤                       
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
 | 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) | Spec doc in `project-memory/overview/references/` |
-| 0b | `wp-system-overview-spec-generator` | A reasonably complete system spec/PRD exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies | `project-memory/overview/system-overview-spec.md` + new module folders |
+| 0b | `wp-system-overview-spec-generator` | A system spec/PRD that covers the template's required sections exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
 

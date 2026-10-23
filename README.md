@@ -27,7 +27,7 @@ project-memory/                        the project's own memory — plain folder
 ├── project-memory-status.md           every module plan not Done, in one table — hook-generated, never edited
 ├── overview/
 │   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
-│   └── references/                    system-wide reference material you provide (docs/images/links)
+│   └── references/                    system-wide reference material you provide (docs/images/links) + the whole-system spec
 ├── docs/                              shared files several modules lean on but none owns (read on demand)
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
@@ -60,6 +60,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── workspace-update-memory.md     Step 3: wrap-up memory update (path-scoped: loads when a module file is read or written)
 └── skills/                            project-bound skills (travel WITH .claude/)
     ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
+    ├── _system-spec-template.md       the whole-system spec format: spec-discuss writes it, the generator reads it (not a skill)
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
     ├── wp-system-overview-spec-generator/  spec → overview + scaffold modules (bound to the workflow)
     ├── wp-module-plan-discuss/   talk a module goal into a work-ready plan (gap detection scales depth)
@@ -142,7 +143,7 @@ it is the failure this layout exists to prevent.
 
 Defined in `.claude/rules/workspace-workflow.md` (always-on):
 
-1. **Requirement in** — bring the requirement (full spec / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
+1. **Requirement in** — bring the requirement (a whole-system spec in the format of `.claude/skills/_system-spec-template.md`, none yet → `/wp-system-spec-discuss`, bootstrapped once by `/wp-system-overview-spec-generator` / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new / D one-off task, where the system keeps nothing afterwards → `/wp-task-record`, and Step 3 is skipped) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; before the test it checks the changed files against the module's recorded decisions and ruled-out options and stops on a conflict; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.
 3. **Wrap up** — update memory per `workspace-update-memory.md` (impl record, gotchas, plan, index).
 

@@ -27,8 +27,9 @@ overview.
 ## Workflow
 
 ### Step 0 — Confirm this is a system bootstrap (or a system expansion re-run)
-This skill needs a reasonably **complete** spec (purpose, capabilities, ideally data entities). If
-the spec is thin or fuzzy, stop and tell the user to run `/wp-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
+The entry bar is the sections `.claude/skills/_system-spec-template.md` marks (required). A spec in
+another shape (an external PRD) passes when the material for those sections can be mined from it.
+Short of the bar, stop and tell the user to run `/wp-system-spec-discuss` (discuss the spec into existence) instead of forcing a build.
 
 Two run modes, same procedure:
 - **First bootstrap** — no overview filled yet, no real modules exist.
@@ -53,7 +54,8 @@ Classify each section: **Confident** (stated or follows unambiguously) or **Gap*
 - A Gap in §3, §6 or §7 → write `(TBD — <what is needed>)` and continue; Step 8's checklist lists it.
 
 ### Step 4 — Tech reconciliation (keep HOW out of the overview)
-Specs usually carry a tech stack / framework. Extract it, but **do not write it into the overview.**
+Specs usually carry a tech stack / framework (a template spec: its Technical Considerations and
+Implementation Decisions). Extract it, but **do not write it into the overview.**
 Instead diff it against `project-memory/stack-architecture.md` and prepare two lists:
 - **Overlaps** — spec tech that matches the architecture doc (consistent; just confirm).
 - **Inconsistencies** — spec tech that conflicts with, or is missing from, the architecture doc.
@@ -91,12 +93,15 @@ For each agreed **NEW** module:
 2. **Seed** the module's `MODULE.md`: fill "What this module does" from the spec, and **bind the
    module-relevant tech into its "Local conventions"** (tech travels with the module; the overview
    stays HOW-free).
-3. **Register** the module in root `CLAUDE.md` "Module Map" (one row: name · one-line responsibility
+3. **Point back to the spec** — last line of "What this module does":
+   `Source spec: <spec path> — capabilities <their numbers or headings>; read their acceptance checks and data there before planning work on them.`
+4. **Register** the module in root `CLAUDE.md` "Module Map" (one row: name · one-line responsibility
    · path · deep-doc path).
 
 For each agreed **EXISTING** module (expansion touches it): append the new capabilities to its
-`MODULE.md` "What this module does" / "Local conventions", and refresh its Module Map row if the
-one-line responsibility changed; the actual feature work then flows through the normal Step 2 loop.
+`MODULE.md` "What this module does" / "Local conventions" plus a `Source spec:` line for this spec,
+and refresh its Module Map row if the one-line responsibility changed; the actual feature work then
+flows through the normal Step 2 loop.
 
 Also record the agreed decomposition into overview **§5 Module Composition** (how modules fit; not
 the index/paths).
@@ -113,20 +118,24 @@ and run `/wp-module-plan-discuss` on it (name the module you recommend and why).
 
 ## Section extraction guide
 
-Map source material into the sections. `§4 → §5` is the spine: capabilities drive modules.
+Map source material into the sections. `§4 → §5` is the spine: capabilities drive modules. The
+template spec section each one draws from is in brackets.
 
-1. **What this system is** — One sentence: *"This system is a ___, for ___, solving ___."* From the
-   doc's purpose / intro / problem statement.
-2. **Scope** — In-scope = what it delivers; Out-of-scope = explicit exclusions / non-goals. If none
+1. **What this system is** [Purpose] — One sentence: *"This system is a ___, for ___, solving ___."*
+   From the doc's purpose / intro / problem statement.
+2. **Scope** [Scope] — In-scope = what it delivers; Out-of-scope = explicit exclusions / non-goals. If none
    stated, out-of-scope is often a gap worth asking.
-3. **Actors / Users** — Who uses it and in what role (human roles, calling systems, operators).
-4. **Capability Map** — Major **functional areas** (the WHAT). One bullet per capability. Strip any
+3. **Actors / Users** [Actors] — Who uses it and in what role (human roles, calling systems, operators).
+4. **Capability Map** [Capabilities] — Major **functional areas** (the WHAT). One bullet per capability. Strip any
    HOW. Verbs of *function* ("manages X", "reports Y"), not of *implementation*.
-5. **Module Composition** — Group §4 capabilities into modules and show how they fit. Each module
+5. **Module Composition** [Implementation Decisions, when they name modules] — Group §4 capabilities into modules and show how they fit. Each module
    here becomes a `project-memory/modules/<name>/` folder. Do NOT restate the module index (that's root
    CLAUDE.md Module Map). This is what you get sign-off on in Step 6.
-6. **External Integrations** — External systems, APIs, file feeds the system talks to.
-7. **Domain Glossary** — Domain terms a new reader needs, each as `term — meaning`.
+6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to.
+7. **Domain Glossary** [Domain Glossary] — Domain terms a new reader needs, each as `term — meaning`.
+
+The rest of the spec has no overview home and stays in the spec file: Technical Considerations feed
+Step 4; Data and Acceptance Checks are reached through each module's `Source spec:` line (Step 7).
 
 ## Quality checklist
 - Every `(TBD)` either filled or replaced with `(TBD — <specific missing input>)`.
@@ -136,6 +145,8 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
 - §4 capabilities and §5 modules are consistent — every module traces back to capabilities.
 - Every signed-off NEW module is both **scaffolded** and **registered in the Module Map**, and §5
   reflects the same set.
+- Every NEW module, and every EXISTING one this run touched, has a `Source spec:` line naming its
+  capabilities.
 - Module-relevant tech lives in each module's `MODULE.md` (Local conventions), not the overview.
 - No component-internal detail or duplicated module paths in the overview.
 - All template headings and governance comments preserved verbatim; first-use acronyms expanded.
@@ -143,6 +154,8 @@ Map source material into the sections. `§4 → §5` is the spine: capabilities 
 ## Notes
 - Write filled content in English, whatever the source's language
   (`.claude/rules/workspace-doc-writing-style.md`).
-- If the user pastes the spec inline instead of as a file, treat the pasted text as the source.
+- If the user pastes the spec inline instead of as a file, save the pasted text as is to
+  `project-memory/overview/references/spec-<date>-<slug>.md` first and use that file as the source —
+  the `Source spec:` lines point at it.
 - If multiple candidate "systems" appear in one source, confirm which one this overview is for —
   this file is ONE per system.

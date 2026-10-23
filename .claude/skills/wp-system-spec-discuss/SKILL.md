@@ -28,7 +28,7 @@ jobs, an ORM, or a SPA framework), and challenge me immediately if my own wordin
 
 **If the file is missing or still a placeholder** (framework freshly copied, or the stack genuinely
 undecided): say so explicitly, then continue — do NOT block, and do NOT silently pretend constraints
-exist. The technical pass (section 6) flips role: instead of checking against constraints, it
+exist. The technical pass (Technical Considerations) flips role: instead of checking against constraints, it
 *produces candidate stack decisions* (each with a one-line why). At wrap-up, recommend seeding
 `stack-architecture.md` from them — but never create or edit that file yourself;
 the architecture doc is always the user's to write (same rule as the generator's tech
@@ -52,33 +52,21 @@ A spec rarely starts from nothing. Before questioning, read what already exists:
 
 ## Step 2 — Discuss, section by section
 
-The spec body is the **WHAT** — capabilities, boundaries, data, and done-criteria. Technical matter is discussed too, but it is collected into its own sections (6–8), never scattered through the body. Cover, in order:
+The spec's sections, their order, and what goes in each are `.claude/skills/_system-spec-template.md`
+— read it now and discuss its sections in that order. The interview adds:
 
-1. **Purpose** — what problem this solves and for whom. One paragraph.
-2. **Capabilities** — what it must do, as a numbered list of verifiable statements. Where naming the actor and benefit adds clarity, write the statement as a user story: "As an <actor>, I want <feature>, so that <benefit>".
-3. **Boundaries** — explicitly out of scope. As valuable as the capabilities list.
-4. **Data** — the entities involved and their key relationships. If concrete tables emerge, note that their `.sql` schemas belong in the owning module's `schema/` folder once modules are scaffolded.
-5. **Acceptance criteria** — how we will know each capability works.
-6. **Technical considerations** — a deliberate technical pass over the finished capability list, grounded in the architecture doc read in Step 0a. For each capability, probe:
-   - **Feasibility on this stack** — can it be built within the stack and forbidden-pattern rules? If a capability genuinely needs something outside them (a new library, a scheduled job, an external API), name it here explicitly — never smuggle it in.
-   - **Layer placement** — which layer(s) it touches, per the architecture doc's layering, and any cross-entry-point sharing (e.g. used by both the web app and a background service?).
-   - **Integration points** — external systems, file formats, notifications, existing modules it must talk to.
-   - **Performance / volume traits** — data volumes, batch vs interactive, anything that shapes the design later.
+- **Acceptance Checks** — confirm each check matches the user's expectations.
+- **Technical Considerations** — a deliberate pass over the finished capability list, grounded in the
+  architecture doc read in Step 0a. A capability that genuinely needs something outside the stack and
+  forbidden-pattern rules (a new library, a scheduled job, an external API) is named here as a
+  **delta** — never smuggled in. This section is what the generator's tech reconciliation consumes.
 
-   Anything that deviates from or adds to the architecture doc gets flagged as an explicit **delta** — this section is exactly what the generator's tech-reconciliation step consumes.
-
-7. **Implementation decisions** — the concrete technical decisions settled during the discussion, as a list: modules to build or modify and their interfaces, architectural decisions, schema changes, API contracts, specific interactions, and technical clarifications from the user. Section 6 is the pass that *surfaces* the questions; this section records what was *decided*. Honour the spec durability rule (Step 3): name modules and interfaces, never source-file paths or code snippets.
-
-8. **Testing decisions** — testing in this workflow is manual: Claude builds, the user tests. Per module, the acceptance check the user will run by hand: the screen or output they open, the input they try, the result they expect. External behavior only, never implementation details; confirm each check matches the user's expectations.
-
-The spec must be complete enough to pass the generator's own entry check: purpose and capabilities present, ideally data entities too. Thin sections mean the bootstrap will bounce it back.
+The spec is done when every section the template marks (required) is filled and every other one is
+filled or `(TBD — <what is still needed>)`.
 
 ## Step 3 — Write and hand off
 
-Write the spec to `project-memory/overview/references/spec-<date>-<slug>.md`. Then hand off:
-
-**Spec durability rule:** the spec body is the WHAT — do not pin specific source-file paths or code snippets into it; they go stale fast. Name modules and interfaces instead (pointers to other `.claude/` docs are fine). Exception: a snippet that encodes a decision more precisely than prose can (a state machine, schema, type shape — often from a prototype) may be inlined in the relevant section, trimmed to the decision-rich parts.
-
-Tell the user the spec is ready, and tell them to run `/wp-system-overview-spec-generator` on it to execute the bootstrap. Say it as the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): Done = the spec path; You now = read the spec once end to end; Next = the user runs `/wp-system-overview-spec-generator` on that file.
+Write the spec as a filled copy of the template, headings and comments kept, to
+`project-memory/overview/references/spec-<date>-<slug>.md`. Then tell the user the spec is ready, and tell them to run `/wp-system-overview-spec-generator` on it to execute the bootstrap. Say it as the handoff (the **Handoff** section of `.claude/skills/_shared-conventions.md`): Done = the spec path; You now = read the spec once end to end; Next = the user runs `/wp-system-overview-spec-generator` on that file.
 
 </supporting-info>
