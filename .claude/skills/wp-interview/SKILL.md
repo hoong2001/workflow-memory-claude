@@ -54,7 +54,7 @@ Write the record from the first answer on — see **The record**.
 
 | Dimension | What it settles |
 |---|---|
-| Kind | new system · change to an existing module · one-off output · change to how Claude works here · not software |
+| Kind | new system · new area spanning several modules · change to an existing module · one-off output · change to how Claude works here · not software |
 | Who | the users, and who decides |
 | Feeling | fuzzy, eager, anxious — ask when pace or scope is in doubt; fuzzy → smaller steps, more inferred options |
 | Purpose | the one main problem it removes — one pick, the rest ranked below it |
@@ -131,7 +131,7 @@ maps the result to its command.
 
 | The goal lands as | Route |
 |---|---|
-| A brand-new system | `/wp-system-spec-discuss` → `/wp-system-overview-spec-generator`, then each module through `/wp-module-plan-discuss` |
+| A brand-new system, or a new area spanning several modules of a live one | `/wp-system-spec-discuss` → `/wp-system-overview-spec-generator`, then each module through `/wp-module-plan-discuss` |
 | A change to an existing module, code location known | `/wp-module-plan-discuss` |
 | A change to an existing module, location unknown | `/wp-module-code-trace-flow`, then `/wp-module-plan-discuss` |
 | A one-off output — the system keeps nothing | do the work, then `/wp-task-record` |

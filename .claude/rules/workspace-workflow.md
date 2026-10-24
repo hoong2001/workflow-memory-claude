@@ -27,7 +27,7 @@ ad-hoc investigation, a file conversion → it is a **one-off task**: no module,
 impl record. Route it to Branch D in Step 2. A task that later becomes permanent (the one-off
 report gets its own screen) turns into module work at that moment.
 
-### Brand-new system (from a system spec) — bootstrap before any module work
+### A new system, or a new area spanning several modules (from a system spec) — bootstrap before any module work
 Tell the user to run `/wp-system-overview-spec-generator` — it owns the bootstrap — then build feature by feature through Step 2.
 
 ## Step 2 · Core work loop (straight line, no looping back)

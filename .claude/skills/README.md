@@ -40,8 +40,8 @@ requirement ──────────────┤                       
                           retro  (fix the environment: pointer · check · rule — you pick)
 ```
 
-**Brand-new whole system** runs once, upstream of all of the above:
-`system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` → each module through the main flow.
+**A new system, or a new area spanning several modules of a live one** runs upstream of all of the above:
+`system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` (first bootstrap, or an expansion re-run that grows the overview in place) → each module through the main flow.
 
 **Only an idea or a problem, no requirement yet** — `interview` runs first and ends in a confirmed goal,
 routed to one of the entry points above or to a one-off task.
@@ -54,12 +54,12 @@ routed to one of the entry points above or to a one-off task.
 |-------|-------------|--------------------|--------|
 | `wp-interview` | You have a spark, a want, or a problem, but no requirement yet, or don't know where to start | Interview the idea or problem through a funnel (spark or problem → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it, which takes the record attached, named, or pasted; a past interview — attached as `@<record>` or found unfinished by its status line — continues from its `Resume` line, a `Done` one reopens | `project-memory/interviews/<name>-<date>-<slug>.md` — status header (`Interviewing` · `N/6`, `Blocked`, `Done`) + `Resume` line, answers, material, risks, route |
 
-### Phase 0 · Brand-new system bootstrap (run once, only for a new system)
+### Phase 0 · System bootstrap (a new system, or a new area spanning several modules of a live one)
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module); an interview record pre-fills the sections it settles | Spec doc in `project-memory/overview/references/` |
-| 0b | `wp-system-overview-spec-generator` | A system spec/PRD that covers the template's required sections exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies | `project-memory/overview/system-overview-spec.md` + new module folders |
+| 0a | `wp-system-spec-discuss` | A new system, or a new area spanning several modules of a live one, has no spec yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module); an interview record pre-fills the sections it settles | Spec doc in `project-memory/overview/references/` |
+| 0b | `wp-system-overview-spec-generator` | A system spec/PRD that covers the template's required sections exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies; on a live system, an expansion re-run grows the overview in place and appends the new capabilities to the existing modules it touches | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
 
@@ -141,7 +141,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Resuming this project after a gap / "where was I?"** → `project-memory/project-memory-status.md`, then the live plan's `> **Resume:**` line.
 - **Where do all my projects stand?** → `wp-obsidian-progress-log` (RESUME), or type `/wp-obsidian-start` if unsure which Obsidian skill you need.
 - **One-off report / data patch, nothing ships into the system** → type `/wp-task-record` when the work stops (skip the module layer and Step 3 entirely).
-- **Brand-new system** → type `/wp-system-spec-discuss` (if needed) → `/wp-system-overview-spec-generator`, then per-module main flow.
+- **Brand-new system, or a new area spanning several modules of a live one** → type `/wp-system-spec-discuss` (if needed) → `/wp-system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → type `/wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → type `/wp-connstr-check`.
 - **Project is in TFVC, not git — check in, get latest, shelve, merge (which branch → which)** → `wp-tfvc`.
