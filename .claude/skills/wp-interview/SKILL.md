@@ -1,11 +1,11 @@
 ---
-name: wp-idea-interview
-description: Interview a raw idea — a spark, a want, an "if only we had…" — into one confirmed goal, then route it to the skill that builds it. Use when the user has an idea but no requirement yet, or does not know where to start (靈感, 不知道怎麼開始). A stated module goal → /wp-module-plan-discuss.
+name: wp-interview
+description: Interview a raw idea or a problem into one confirmed goal, then route it to the skill that builds it. Use when the user has an idea or a problem but no requirement yet, or does not know where to start (靈感, 遇到問題, 不知道怎麼開始). A stated module goal → /wp-module-plan-discuss; an error to debug → debug it directly.
 ---
 
 <what-to-do>
 
-Run a **funnel**: spark → want → purpose → goal. The session is done when the user has confirmed one
+Run a **funnel**: spark or problem → want → purpose → goal. The session is done when the user has confirmed one
 **goal sentence** — who, what result, how success is measured — and you have named the route with
 the exact command to type.
 
@@ -29,8 +29,8 @@ question that depends on an open one waits for the next round. One question is a
    A `Done` record reopens: `Status` back to `Interviewing`, `Detail` at the step the user wants to
    revisit; Step 6 replaces its old Route. An attached file that is not an interview record is
    material for Step 3.
-1. **Open** — ask where the idea came from: a repeated pain, an "if only we had…", something seen
-   elsewhere.
+1. **Open** — ask where it came from: a problem just hit, a repeated pain, an "if only we had…",
+   something seen elsewhere.
 2. **Find the what** — narrow by kind, then domain, then the thing itself. Kind narrows the what; the
    route is inferred at Step 6. Done when you can state in one line what it is.
 3. **Ask for material** — see **Material**. Done when the user has supplied it or said there is none.
@@ -84,12 +84,12 @@ whether it matches.
 
 ## The record
 
-`project-memory/interviews/<name>-<date>-<slug>.md`. `<name>` is the module or system the idea lands
-in, `idea` until known; rename the file once, when the route settles. Update it after every answer.
+`project-memory/interviews/<name>-<date>-<slug>.md`. `<name>` is the module or system the goal lands
+in, `tbd` until known; rename the file once, when the route settles. Update it after every answer.
 English, per `.claude/rules/workspace-doc-writing-style.md`.
 
 ```markdown
-# Idea interview — <working title>
+# Interview — <working title>
 
 > **Status:** Interviewing · **Detail:** 1/6 · **Updated:** YYYY-MM-DD
 > **Resume:** You now — <the question now waiting> · Next — <the step after it>

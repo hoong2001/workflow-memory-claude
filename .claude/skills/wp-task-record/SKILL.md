@@ -10,6 +10,9 @@ The module layer assumes the system keeps what you built. A one-off report does 
 there is no module to plan against, no flow to trace, no implementation to record. This
 skill is the whole memory path for that kind of work — one folder, one file, done.
 
+An interview record answers Step 0 and Step 0.6 and seeds `## Request`: follow
+**Interview record as input** in `.claude/skills/_shared-conventions.md`.
+
 ## Step 0 · Confirm it really is a task, not module work
 
 Ask one question: **does the system keep anything after this is done?**

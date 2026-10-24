@@ -8,5 +8,5 @@ project-memory/tasks/*
 !project-memory/tasks/_README.md
 
 # Master only - not in SYNC-MANIFEST's .gitignore row. Interviews run here test
-# wp-idea-interview; a project commits its own interviews like its plans.
+# wp-interview; a project commits its own interviews like its plans.
 project-memory/interviews/

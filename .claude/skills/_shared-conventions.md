@@ -124,7 +124,7 @@ emoji variation selector).
 ## Status header
 
 Every plan (`project-memory/modules/<name>/plans/<name>-<date>-<slug>.md`), every one-off task
-record (`project-memory/tasks/<date>-<slug>/TASK.md`) and every idea interview record
+record (`project-memory/tasks/<date>-<slug>/TASK.md`) and every interview record
 (`project-memory/interviews/<name>-<date>-<slug>.md`) opens with ONE line directly under its H1:
 
 ```markdown
@@ -206,9 +206,9 @@ it carries two values only:
 
 | Status | Detail | Means | Set by |
 |---|---|---|---|
-| `Interviewing` | `N/6` — `N` = steps of `/wp-idea-interview` completed | The interview is open | `/wp-idea-interview` |
-| `Blocked` | one line: the reason (required) | Waiting on something external — material a colleague holds, a decision only someone else makes | `/wp-idea-interview` |
-| `Done` | — | Goal confirmed, route written; continuing it reopens it as `Interviewing` | `/wp-idea-interview` |
+| `Interviewing` | `N/6` — `N` = steps of `/wp-interview` completed | The interview is open | `/wp-interview` |
+| `Blocked` | one line: the reason (required) | Waiting on something external — material a colleague holds, a decision only someone else makes | `/wp-interview` |
+| `Done` | — | Goal confirmed, route written; continuing it reopens it as `Interviewing` | `/wp-interview` |
 
 ### Rules that hold for every record
 
@@ -233,3 +233,18 @@ it carries two values only:
   the system-wide picture; never edit it, and when it disagrees with a plan, the plan wins (rebuild
   it with `node .claude/hooks/project-memory-status.mjs --regenerate`). One-off task records and
   interview records are not in it.
+
+## Interview record as input
+
+An interview record (`project-memory/interviews/<file>.md`) arrives attached as `@<path>`,
+named by its path, or pasted as text (H1 `# Interview — …`, or `# Idea interview — …` before 15.0.0).
+Before the first question, read the files its `Material` table lists too.
+
+- **Its answers are the user's statement** — the sections they settle go straight to confirmation;
+  questions go only to what they leave open.
+- **`Still unknown` and `Risks` carry over**, each as an open item — a plan's `☐` row, a spec's
+  `(TBD — …)`, a task's `If this comes back` line when the work left it open.
+- **`Status` other than `Done`** → its goal is not confirmed yet: say so, and offer to finish it
+  first with `/wp-interview @<path>`.
+- **Name the record** in what the skill writes — its path, or the H1 title of pasted text with no
+  file.

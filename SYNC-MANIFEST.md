@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `14.8.0` |
+| Version | `15.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -56,7 +56,7 @@ Root `README.md`, `LICENSE` — they describe/govern the master repo itself.
 | `project-memory/overview/system-overview-spec.md` | That system's functional spec |
 | `project-memory/overview/references/<any file but _README.md>` | That system's reference materials |
 | `project-memory/docs/<any file but _README.md>` | Shared files several modules lean on but none owns |
-| `project-memory/interviews/` | Idea interview records written by `wp-idea-interview` |
+| `project-memory/interviews/` | Interview records written by `wp-interview` |
 | `project-memory/tasks/<any task folder>/` | One-off task records — `TASK.md`, `schema/`, `references/`. Git-ignored in the target too, so a sync never sees them |
 | `project-memory/project-memory-status.md` | Generated from the target's own plans by its own `project-memory-status.mjs` hook — copying the master's would show the master's modules. Rebuild it in the target with `node .claude/hooks/project-memory-status.mjs --regenerate` |
 | Root `CLAUDE.md` Module Map section | Project state (see grey zone below) |
@@ -114,6 +114,7 @@ content untouched. A rule that gained `paths:` frontmatter loses its `@import` l
 | `.claude/skills/workspace-task-brief/` | merged into `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-grill-with-docs/` | merged into `.claude/skills/wp-module-plan-discuss/` |
 | `.claude/skills/workspace-asp.net-mvc-frontend-standards/` | `.claude/skills/wp-aspnet-mvc-frontend-standards/` |
+| `.claude/skills/wp-idea-interview/` | `.claude/skills/wp-interview/` — the hook `idea-interview-hint.mjs` keeps its name; records in `project-memory/interviews/` stay where they are |
 | `.claude/rules/workspace-plan.impl.md` | `.claude/rules/workspace-plan-impl.md` — update the target's `CLAUDE.md` `@import` line to match |
 | `project-memory/modules/example-module/specs/` | nothing — delete it; the module `specs/` folder concept is gone |
 | `.claude/hooks/block-secrets.ps1` | `.claude/hooks/block-secrets.mjs` — repoint the `.claude/settings.json` entry at `block-secrets.mjs` |

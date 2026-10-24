@@ -12,7 +12,7 @@
 ## Trigger convention
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
-- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-idea-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
+- **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
 
 ## The main flow (module work)
@@ -43,29 +43,29 @@ requirement ──────────────┤                       
 **Brand-new whole system** runs once, upstream of all of the above:
 `system-spec-discuss` (only if no spec exists yet) → `system-overview-spec-generator` → each module through the main flow.
 
-**Only an idea, no requirement yet** — `idea-interview` runs first and ends in a confirmed goal,
+**Only an idea or a problem, no requirement yet** — `interview` runs first and ends in a confirmed goal,
 routed to one of the entry points above or to a one-off task.
 
 ## Catalog
 
-### Before a requirement · an idea (optional)
+### Before a requirement · an idea or a problem (optional)
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-idea-interview` | You have a spark or a want, but no requirement yet, or don't know where to start | Interview the idea through a funnel (spark → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it; a past interview — attached as `@<record>` or found unfinished by its status line — continues from its `Resume` line, a `Done` one reopens | `project-memory/interviews/<name>-<date>-<slug>.md` — status header (`Interviewing` · `N/6`, `Blocked`, `Done`) + `Resume` line, answers, material, risks, route |
+| `wp-interview` | You have a spark, a want, or a problem, but no requirement yet, or don't know where to start | Interview the idea or problem through a funnel (spark or problem → want → purpose → goal), one clickable question at a time until the *what* is settled, then rounds of up to 3; asks for reference docs, diagrams, meeting notes, flowcharts; routes the confirmed goal to the skill that builds it, which takes the record attached, named, or pasted; a past interview — attached as `@<record>` or found unfinished by its status line — continues from its `Resume` line, a `Done` one reopens | `project-memory/interviews/<name>-<date>-<slug>.md` — status header (`Interviewing` · `N/6`, `Blocked`, `Done`) + `Resume` line, answers, material, risks, route |
 
 ### Phase 0 · Brand-new system bootstrap (run once, only for a new system)
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) | Spec doc in `project-memory/overview/references/` |
+| 0a | `wp-system-spec-discuss` | No whole-system spec exists yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module); an interview record pre-fills the sections it settles | Spec doc in `project-memory/overview/references/` |
 | 0b | `wp-system-overview-spec-generator` | A system spec/PRD that covers the template's required sections exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD) | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` — fixed shape: Goal · five elements · touch points · decisions & open items |
+| 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD); an interview record states the goal and pre-fills the elements it settles | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` — fixed shape: Goal · five elements · touch points · decisions & open items |
 | 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (chain + Mermaid sequence diagram + fan-in table) + cut recommendation + blast radius · optional archify diagram, asked once |
 | 2 | `wp-module-technical-design` | A plan exists and the technical cut and/or the build order still needs nailing down before coding | Derive the concrete design per the layering rules, then break it into an ordered task list — vertical increments (tracer bullets, blockers-first) when the feature is too big for one code→build→test pass, plain steps when it is not; increments spanning several layers get a skeleton row and parallel waves | `## Technical Design` + `## Tasks` appended to the SAME plan file · `Status: Designed` |
 
@@ -96,7 +96,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task, built around "if this comes back" | `project-memory/tasks/<date>-<slug>/` |
+| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task, built around "if this comes back"; an interview record answers the opening questions and seeds the request | `project-memory/tasks/<date>-<slug>/` |
 
 ### Standing · Maintenance
 
@@ -114,7 +114,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 > - `.claude/hooks/project-memory-status.mjs` — rebuilds `project-memory/project-memory-status.md` when a module plan is written.
 > - `.claude/hooks/connstr-check.mjs` — rejects an off-template MSSQL `connectionString` that Claude writes; config edited elsewhere: `wp-connstr-check`.
 > - `.claude/hooks/template-update-check.mjs` — at session start, says when the master template is newer; applying it: `wp-update-from-master`.
-> - `.claude/hooks/idea-interview-hint.mjs` — at every session start, one line pointing at `wp-idea-interview`.
+> - `.claude/hooks/idea-interview-hint.mjs` — at every session start, one line pointing at `wp-interview`.
 
 ### Standing · Cross-project memory (Obsidian)
 
@@ -129,7 +129,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 
 ## Quick "what do I reach for?" forks
 
-- **Only an idea, don't know where to start** → `idea-interview` (ends in a confirmed goal and the command to type next).
+- **Only an idea or a problem, don't know where to start** → `interview` (ends in a confirmed goal and the command to type next).
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
 - **Plan done, need API/class/SQL detail, or a task breakdown, or both** → `technical-design` (it does the cut and the task list in one pass).

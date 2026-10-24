@@ -12,7 +12,7 @@ Drive a structured discussion that converges on a written whole-system spec — 
 spending a question they answer. Choices follow the **Question pattern** in
 `.claude/skills/_shared-conventions.md`.
 
-**Synthesize before you interview.** If the conversation that led here has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
+**Synthesize before you interview.** If the conversation that led here, or an interview record (**Interview record as input** in `.claude/skills/_shared-conventions.md`), has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
 
 </what-to-do>
 

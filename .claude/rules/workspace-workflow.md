@@ -8,7 +8,7 @@ asks for the requirement and offers the on-ramps:
 > "What's the requirement? Paste a spec doc · state it directly (name the module/files if you already know) · or let's discuss it if it's still fuzzy."
 
 It can arrive in any form — read it, confirm, then route:
-- **An idea, not yet a requirement** — a spark, a want, no goal yet → `/wp-idea-interview`; it ends in a confirmed goal routed to one of the entries below.
+- **An idea or a problem, not yet a requirement** → `/wp-interview`; it ends in a confirmed goal routed to one of the entries below.
 - **Whole-system spec** (format: `.claude/skills/_system-spec-template.md`) → `project-memory/overview/references/`, then the bootstrap (below). None exists and the system needs one → tell the user to run `/wp-system-spec-discuss` first.
 - **Module-level requirement** — a feature doc, or a goal stated directly, clear or fuzzy → any doc into the module's `references/`, then `/wp-module-plan-discuss` (lands in `plans/`; module work never needs a spec).
 - **Supporting material** → system-wide: `project-memory/overview/references/`; several modules, none owns it: `project-memory/docs/`; one module: its `references/`. Any `.sql` → that module's `schema/`.
