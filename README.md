@@ -29,7 +29,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── system-overview-spec.md        system-level functional WHAT (one per system; read on demand)
 │   └── references/                    system-wide reference material you provide (docs/images/links) + the whole-system spec
 ├── docs/                              shared files several modules lean on but none owns (read on demand)
-├── interviews/                        interviews (/wp-interview): an idea or a problem → answers → confirmed goal → route; status header + Resume line, so an interrupted interview picks up where it stopped
+├── interviews/                        interviews (/wp-interview): an idea or a problem → answers → confirmed goal → route; status header + Resume line, so an interrupted interview picks up where it stopped; references/<date>-<slug>/ holds the files an interview collects until its route moves them
 └── modules/<name>/                    one folder per module — its whole "brain"
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed scripts generated

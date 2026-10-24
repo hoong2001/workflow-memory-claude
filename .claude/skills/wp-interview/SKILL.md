@@ -75,9 +75,12 @@ flowcharts, screenshots, sample data, `.sql` scripts. Options such as "files are
 name", "a summary in Other", "none yet". Read what arrives before the next question — every fact it
 answers is a question dropped.
 
-Until the route is known, files stay where the user put them; the record lists each path. At Route,
-name the folder each one belongs in per Step 1 of `.claude/rules/workspace-workflow.md`, and move them
-on the user's yes.
+Copy each file the user supplies into `project-memory/interviews/references/<date>-<slug>/` — the
+record's own date and slug, so the folder outlives the record's rename — and list it in the record by
+that path; the original stays where it was. A pasted image has no file: describe what it shows in the
+record and ask the user to drop the file into that folder. At Route, name the folder each one belongs
+in per Step 1 of `.claude/rules/workspace-workflow.md`, move them on the user's yes, update the
+Material table, and delete the emptied folder.
 
 When the user describes a sequence of steps, draw it as a Mermaid `flowchart` in the record and ask
 whether it matches.
