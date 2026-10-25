@@ -28,7 +28,7 @@ jobs, an ORM, or a SPA framework), and challenge me immediately if my own wordin
 
 **If the file is missing or still a placeholder** (framework freshly copied, or the stack genuinely
 undecided): say so explicitly, then continue — do NOT block, and do NOT silently pretend constraints
-exist. The technical pass (Technical Considerations) flips role: instead of checking against constraints, it
+exist. The technical pass (System Design) flips role: instead of checking against constraints, it
 *produces candidate stack decisions* (each with a one-line why). At wrap-up, recommend seeding
 `stack-architecture.md` from them — but never create or edit that file yourself;
 the architecture doc is always the user's to write (same rule as the generator's tech
@@ -50,16 +50,21 @@ A spec rarely starts from nothing. Before questioning, read what already exists:
 - `project-memory/overview/system-overview-spec.md` (if partially filled) and `project-memory/overview/references/`.
 - Any existing module docs (`MODULE.md`, `<name>-flow.md`) if parts of the system are already built.
 
-## Step 2 — Discuss, section by section
+## Step 2 — Discuss, section by section, as the system's architect
 
 The spec's sections, their order, and what goes in each are `.claude/skills/_system-spec-template.md`
-— read it now and discuss its sections in that order. The interview adds:
+— read it now and discuss its sections in that order.
+
+**Hold the system altitude** the template's header sets: a screen or field the user raises is
+recorded the way it says, and the discussion carries on at system level.
+
+**Lead with a design.** For each System Design subsection, put forward a draft inferred from §1–§8
+and the architecture doc read in Step 0a, and ask the user to challenge it through the Question
+pattern, the draft as its recommended option. A choice that needs something outside the stack and
+forbidden-pattern rules (a new library, an external API) is named as a **delta** — never smuggled in.
+Each settled choice lands in Implementation Decisions.
 
 - **Acceptance Checks** — confirm each check matches the user's expectations.
-- **Technical Considerations** — a deliberate pass over the finished capability list, grounded in the
-  architecture doc read in Step 0a. A capability that genuinely needs something outside the stack and
-  forbidden-pattern rules (a new library, a scheduled job, an external API) is named here as a
-  **delta** — never smuggled in. This section is what the generator's tech reconciliation consumes.
 
 The spec is done when every section the template marks (required) is filled and every other one is
 filled or `(TBD — <what is still needed>)`.

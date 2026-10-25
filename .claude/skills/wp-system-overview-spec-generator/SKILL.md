@@ -54,8 +54,8 @@ Classify each section: **Confident** (stated or follows unambiguously) or **Gap*
 - A Gap in §3, §6 or §7 → write `(TBD — <what is needed>)` and continue; Step 8's checklist lists it.
 
 ### Step 4 — Tech reconciliation (keep HOW out of the overview)
-Specs usually carry a tech stack / framework (a template spec: its Technical Considerations and
-Implementation Decisions). Extract it, but **do not write it into the overview.**
+Specs usually carry a tech stack / framework (a template spec: the deltas in its System Design and
+its Implementation Decisions). Extract it, but **do not write it into the overview.**
 Instead diff it against `project-memory/stack-architecture.md` and prepare two lists:
 - **Overlaps** — spec tech that matches the architecture doc (consistent; just confirm).
 - **Inconsistencies** — spec tech that conflicts with, or is missing from, the architecture doc.
@@ -94,7 +94,7 @@ For each agreed **NEW** module:
    module-relevant tech into its "Local conventions"** (tech travels with the module; the overview
    stays HOW-free).
 3. **Point back to the spec** — last line of "What this module does":
-   `Source spec: <spec path> — capabilities <their numbers or headings>; read their acceptance checks and data there before planning work on them.`
+   `Source spec: <spec path> — capabilities <their numbers or headings>; read their acceptance checks, data and System Design there before planning work on them.`
 4. **Register** the module in root `CLAUDE.md` "Module Map" (one row: name · one-line responsibility
    · path · deep-doc path).
 
@@ -128,14 +128,15 @@ template spec section each one draws from is in brackets.
 3. **Actors / Users** [Actors] — Who uses it and in what role (human roles, calling systems, operators).
 4. **Capability Map** [Capabilities] — Major **functional areas** (the WHAT). One bullet per capability. Strip any
    HOW. Verbs of *function* ("manages X", "reports Y"), not of *implementation*.
-5. **Module Composition** [Implementation Decisions, when they name modules] — Group §4 capabilities into modules and show how they fit. Each module
+5. **Module Composition** [System Design 9.2; else Implementation Decisions that name modules] — Group §4 capabilities into modules and show how they fit. Each module
    here becomes a `project-memory/modules/<name>/` folder. Do NOT restate the module index (that's root
    CLAUDE.md Module Map). This is what you get sign-off on in Step 6.
 6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to.
 7. **Domain Glossary** [Domain Glossary] — Domain terms a new reader needs, each as `term — meaning`.
 
-The rest of the spec has no overview home and stays in the spec file: Technical Considerations feed
-Step 4; Data and Acceptance Checks are reached through each module's `Source spec:` line (Step 7).
+The rest of the spec has no overview home and stays in the spec file: System Design deltas feed
+Step 4; the rest of System Design, Data and Acceptance Checks are reached through each module's
+`Source spec:` line (Step 7).
 
 ## Quality checklist
 - Every `(TBD)` either filled or replaced with `(TBD — <specific missing input>)`.

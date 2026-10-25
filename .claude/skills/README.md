@@ -58,7 +58,7 @@ routed to one of the entry points above or to a one-off task.
 
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
-| 0a | `wp-system-spec-discuss` | A new system, or a new area spanning several modules of a live one, has no spec yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module); an interview record pre-fills the sections it settles | Spec doc in `project-memory/overview/references/` |
+| 0a | `wp-system-spec-discuss` | A new system, or a new area spanning several modules of a live one, has no spec yet and you want to talk one into being | Discuss a SYSTEM-scope spec into existence (system only, never a single module) as the system's architect: proposes the System Design — context, modules and data ownership, entry points, quality requirements, shared mechanisms — for you to challenge; an interview record pre-fills the sections it settles | Spec doc in `project-memory/overview/references/` |
 | 0b | `wp-system-overview-spec-generator` | A system spec/PRD that covers the template's required sections exists and you want to bootstrap from it | Bootstrap: the overview (the WHAT) + the modules it implies; on a live system, an expansion re-run grows the overview in place and appends the new capabilities to the existing modules it touches | `project-memory/overview/system-overview-spec.md` + new module folders |
 
 ### Phase 1 · Plan the module work (the on-ramp + optional refinements)
