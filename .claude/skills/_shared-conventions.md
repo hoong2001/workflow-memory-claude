@@ -24,6 +24,10 @@ information (the opening "what's the requirement?") may be plain text.
 2. **Up to 3 more real alternatives + 1 custom** — each alternative a genuine, distinct
    direction with a one-line trade-off; when fewer real ones exist, list fewer — never filler to
    pad the count. `AskUserQuestion`'s built-in "Other" serves as the free-form custom choice.
+3. **Preview on every option** — on a single-select question, a simple one included, each option
+   carries a `preview`: the concrete result of picking it (the text, file change or command it
+   leads to). Only that layout lets the user press `n` to add notes to the pick, so a
+   partly-fitting option needs no retyping in "Other".
 
 If `AskUserQuestion` is unavailable in the current environment, fall back to listing the
 same options as numbered plain text and asking the user to pick one or state a custom answer —
