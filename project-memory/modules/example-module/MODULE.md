@@ -3,6 +3,9 @@
 <!--
 ══════════════════════════════════════════════════════════════════
 　Layer 2 · module memory. Copy the whole folder to start a new module (e.g. `project-memory/modules/orders/`) and rename.
+　In the copy, replace each `_README.md` with one pointer line to the same file here, e.g.
+　`Conventions: project-memory/modules/example-module/plans/_README.md` — template sync keeps this
+　folder current and never touches a real module, so a full copy goes stale.
 　A module's whole brain lives in its own folder — switching module = switching a complete context.
 　
 　Standard file structure (every module looks like this):

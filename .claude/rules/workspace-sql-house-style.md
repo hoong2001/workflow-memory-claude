@@ -24,7 +24,7 @@ Moved to `wp-sql-query-design` → **Read the real definition first** — it app
 
 If a module needs seed / reference data, ship it as a real `.sql` file under that module's
 `schema/` folder — the single home for every `.sql` the module owns, provided or generated
-(see that folder's `_README.md`). Name a generated script `<name>-<date>-<slug>.sql` to match
+(see `project-memory/modules/example-module/schema/_README.md`). Name a generated script `<name>-<date>-<slug>.sql` to match
 its plan, so it is distinguishable from the files the user provided. Describing the inserts in a plan, an implementation record, or a chat
 reply does NOT count as delivering them.
 
