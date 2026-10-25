@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Drive a structured discussion that converges on a written whole-system spec — the WHAT of the system, precise enough for the bootstrap (or a future session) to build from without asking you again. This skill is system-scope only: a single module/feature requirement is talked straight into a work doc in `plans/` via `/wp-module-plan-discuss`, never into a spec.
 
+**Purpose gate** — `.claude/skills/_shared-conventions.md`; the purpose it yields seeds §1 Purpose.
+
 **Interview:** one question at a time, each answer in before the next; read the code and docs before
 spending a question they answer. Choices follow the **Question pattern** in
 `.claude/skills/_shared-conventions.md`.

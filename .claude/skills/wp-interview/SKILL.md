@@ -137,7 +137,7 @@ maps the result to its command.
 | A brand-new system, or a new area spanning several modules of a live one | `/wp-system-spec-discuss` → `/wp-system-overview-spec-generator`, then each module through `/wp-module-plan-discuss` |
 | A change to an existing module, code location known | `/wp-module-plan-discuss` |
 | A change to an existing module, location unknown | `/wp-module-code-trace-flow`, then `/wp-module-plan-discuss` |
-| A one-off output — the system keeps nothing | do the work, then `/wp-task-record` |
+| A one-off output — the system keeps nothing | `/wp-task-record` — it does the work, then records it |
 | A change to how Claude works here (skill, rule, hook) | name the lightest form that meets the goal; `wp-writing-for-agents` governs the edit |
 | Not software | one first step that fits in 15 minutes; no skill |
 

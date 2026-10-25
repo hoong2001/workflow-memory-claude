@@ -4,7 +4,7 @@
 > already states its detailed purpose and "do NOT use" cases — this file is the **map between
 > them**: what runs first, what's optional, and which skill answers "what do I reach for now?"
 
-> Rules that several skills share — the question pattern, the handoff block, the status header — live once in
+> Rules that several skills share — the purpose gate, the question pattern, the handoff block, the status header — live once in
 > `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
 > The whole-system spec format lives the same way in `_system-spec-template.md`: `system-spec-discuss`
 > writes it, `system-overview-spec-generator` reads it.
@@ -96,7 +96,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
-| `wp-task-record` | The output is a one-time artifact handed to a person, and no code, view, or schema ships into the system | One isolated folder per task, built around "if this comes back"; an interview record answers the opening questions and seeds the request | `project-memory/tasks/<date>-<slug>/` |
+| `wp-task-record` | The output is a one-time artifact handed to a person — typically a data check or a report the system does not have — and no code, view, or schema ships into the system | Typed at the start: clarifies the task in one round of up to 3 questions (no goal yet → `wp-interview`), does it, then records it; typed after the work: records it. One isolated folder per task, built around "if this comes back"; an interview record answers the opening questions and seeds the request | `project-memory/tasks/<date>-<slug>/` |
 
 ### Standing · Maintenance
 
@@ -140,7 +140,7 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **The session fought you — rebuilds, repeated corrections, a long hunt for one fact** → type `/wp-retro` (fixes the workflow so it does not recur; the code is not its job).
 - **Resuming this project after a gap / "where was I?"** → `project-memory/project-memory-status.md`, then the live plan's `> **Resume:**` line.
 - **Where do all my projects stand?** → `wp-obsidian-progress-log` (RESUME), or type `/wp-obsidian-start` if unsure which Obsidian skill you need.
-- **One-off report / data patch, nothing ships into the system** → type `/wp-task-record` when the work stops (skip the module layer and Step 3 entirely).
+- **One-off check, report or data patch, nothing ships into the system** → type `/wp-task-record` at the start: it clarifies, does the work and records it (no module layer, no Step 3).
 - **Brand-new system, or a new area spanning several modules of a live one** → type `/wp-system-spec-discuss` (if needed) → `/wp-system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → type `/wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → type `/wp-connstr-check`.

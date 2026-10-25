@@ -38,7 +38,7 @@ Branch first, then act, saving as you go:
 | **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then check for unfinished work (below) before starting anything new |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template per its `MODULE.md` header note) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
-| **D One-off task** | no module involved — the system keeps nothing afterwards | do the work; when it finishes or stops on a blocker, remind the user to type `/wp-task-record` → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql` and material. Skip Step 3 entirely; that folder IS the record. |
+| **D One-off task** | no module involved — the system keeps nothing afterwards | remind the user to type `/wp-task-record` — at the start it clarifies the task, does it and records it; for work already done, when it finishes or stops on a blocker → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql` and material. Skip Step 3 entirely; that folder IS the record. |
 
 **Branch A · check for unfinished work first.** Every plan carries a one-line status header, so
 one grep answers "is something already half-built here?" without opening a single plan:

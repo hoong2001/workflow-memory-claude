@@ -4,6 +4,14 @@ Not a skill — a shared reference for the workflow skills in this folder, so on
 several skills has exactly one wording. A skill that names a section below follows it in full;
 nothing here overrides a skill's own explicit instruction.
 
+## Purpose gate
+
+**No purpose, no session.** A skill that names this gate starts its steps only once the purpose of
+the work — what it is for and why — is stated: by the user in this request or earlier in the
+conversation, or by an interview record (**Interview record as input** below). Missing → ask for it
+in one line and wait for the user's words; an inferred purpose does not count. A user with no
+purpose yet → `/wp-interview`, which ends in one.
+
 ## Question pattern
 
 Every choice between options Claude puts to the user — in a discussion skill or anywhere else — goes through the `AskUserQuestion` tool — never a

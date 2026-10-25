@@ -1,6 +1,6 @@
 ---
 name: wp-task-record
-description: Record a one-off task (no module) in its own project-memory/tasks/ folder.
+description: Clarify, run and record a one-off task (no module) in its own project-memory/tasks/ folder.
 disable-model-invocation: true
 ---
 
@@ -9,6 +9,9 @@ disable-model-invocation: true
 The module layer assumes the system keeps what you built. A one-off report does not fit:
 there is no module to plan against, no flow to trace, no implementation to record. This
 skill is the whole memory path for that kind of work — one folder, one file, done.
+
+**Purpose gate** — `.claude/skills/_shared-conventions.md`; the purpose it yields — what was asked
+and why — seeds `## Request`.
 
 An interview record answers Step 0 and Step 0.6 and seeds `## Request`: follow
 **Interview record as input** in `.claude/skills/_shared-conventions.md`.
@@ -61,21 +64,26 @@ e.g. "Is this a continuation of `<old task title>` (`<old date>`)?"
 
 No candidate found → this is new. Continue to Step 0.6.
 
-## Step 0.6 · Clarify the goal before starting
+## Step 0.6 · Clarify the task
 
-A one-off request stated in one line often hides an ambiguous "why" — and the wrong "why"
-produces a technically-correct answer to the wrong question. Before touching any file, check:
-does the request's purpose (what + why) already read unambiguously from what the user said?
+The work already done → go to Step 1.
 
-- **Already clear** (e.g. "pull the list of active stockists for the audit team") → skip this
-  step silently. Not every task earns a question.
-- **Ambiguous or open to more than one reading** (e.g. a date range not stated, "the sales
-  report" when more than one could match, a patch whose intended scope could be narrow or
-  broad) → ask ONE question, following the **Question pattern** in
-  `.claude/skills/_shared-conventions.md`. Resolve it before Step 1 — don't let an assumed "why"
-  ride silently into the SQL.
+Most tasks here are a check on the data or a report the system does not have. Before the first
+query, settle what the request leaves open in one round of up to 3 questions (Question pattern),
+each with options inferred from the request, the database and past tasks:
 
-The answer becomes the `## Request` section in Step 3 directly — no re-deriving it later.
+| Open point | What to settle |
+|---|---|
+| Purpose | who needs it, and the decision or action it feeds |
+| Scope | period, data source, which records count — for a check, what counts as a problem |
+| Output | Excel, a list or a number in chat; who receives it, by when; whether it will be asked for again |
+
+A point the request already answers is skipped; nothing open → no question. A problem with no goal
+behind it yet → `/wp-interview`, then resume here with its record.
+
+## Step 0.7 · Do the work
+
+When it stops — finished, or blocked on something external — continue to Step 1.
 
 ## Step 1 · Create the task folder
 
@@ -136,8 +144,8 @@ today.
 ```
 
 The header line is the one allowed variant of the **Status header** — `Status · Date · Likely to
-repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. The user runs this
-skill once the work stops: `Done` when the task has landed; `Blocked · **Detail:** <reason>` when it
+repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. The record is written
+once the work stops: `Done` when the task has landed; `Blocked · **Detail:** <reason>` when it
 stopped on something external, with `## What was done` ending where the work stopped.
 
 ## Step 4 · Report, then stop
