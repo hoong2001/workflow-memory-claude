@@ -17,6 +17,14 @@ bound to it are swapped too: the staged `project-memory/stack-architecture.next.
 `wp-aspnet-mvc-frontend-standards`. `CLAUDE.md`'s system description and Module Map then grow as
 you work; everything else is reusable as-is.
 
+## Workflow at a glance
+
+![workflow-memory-claude workflow, template 15.5.0](assets/workflow-diagram.png)
+
+The three steps of `.claude/rules/workspace-workflow.md` as one picture: how a requirement comes in,
+the build loop, the wrap-up. The PNG shows template 15.5.0 and lives in this repo only — it is not
+part of the sync whitelist, so projects never receive it.
+
 ## Layout
 
 ```
