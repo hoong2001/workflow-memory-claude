@@ -46,6 +46,14 @@ building. Write "None" when nothing was ruled out.)
 |---|---|---|
 | Path/File.cs | `Method()` | ... |
 
+## Deployment
+(What a person does outside the build, in order, paths from the project root: each `.sql` to run
+— whichever module's `schema/` holds it — config key, file to move, app to deploy. Copy it from
+the plan's `### Deployment`; a plan without that section gets it built from this record's
+`Files touched` (every `.sql` and config file) plus the order the work needed. `None` when there
+is nothing.)
+1. <environment> — run `project-memory/modules/<name>/schema/<file>.sql`
+
 ## Known gotchas hit
 (Anything that tripped you up — also backfill it into the module MODULE.md "Known gotchas".)
 ```
@@ -97,14 +105,20 @@ The flow.md leaf says instead `unchanged — internal-only change`, or `left for
 /wp-module-code-trace-flow — large structural rewrite`. Any other file this step touched
 (MODULE.md gotchas, Module Map row) is a leaf of its own.
 
+**Show the deployment steps.** Write the record's `## Deployment` list into the reply body, in
+full — order, environment, project-root path and file name for each step. A finished plan means
+the user is about to go live or to UAT, and this list is what they work from. `None` → say so in
+one line.
+
 These leaves are the Done slot of the handoff (the **Handoff** section of
 `.claude/skills/_shared-conventions.md`). Run the closed test, then finish:
 
-- **Open** when something is still pending — **👉 You now** = the overview judgment that is the
+- **Open** when something is still pending — **👉 You now** = the deployment steps when the record
+  lists any (point to the list above), plus the overview judgment that is the
   user's (`.claude/rules/workspace-update-memory.md` item 5b — give your reasoning and a proposed
   line), or `nothing`; **🔜 Next** = the live plan the work belongs to while it is not `Done`,
   otherwise "on your yes, add the proposed line to the overview".
-- **Closed** when neither applies — a localized fix with no live plan the work belongs to ends with
+- **Closed** when neither applies and Deployment is `None` — a localized fix with no live plan the work belongs to ends with
   `└─ 🏁 Closed  nothing pending`
 - A friction signal this session (`.claude/rules/workspace-update-memory.md` item 7) → remind the
   user to type `/wp-retro`; the stop is then open.
