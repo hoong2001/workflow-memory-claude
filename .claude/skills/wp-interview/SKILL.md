@@ -28,7 +28,8 @@ question that depends on an open one waits for the next round. One question is a
    to resume it or start a new one. Resuming reads the record and continues from its `Resume` line.
    A `Done` record reopens: `Status` back to `Interviewing`, `Detail` at the step the user wants to
    revisit; Step 6 replaces its old Route. An attached file that is not an interview record is
-   material for Step 3.
+   material for Step 3: read it now, leave the original in place, and copy it per **Material**
+   once the first answer creates the record, taking the slug from the spark.
 1. **Open** — ask where it came from: a problem just hit, a repeated pain, an "if only we had…",
    something seen elsewhere.
 2. **Find the what** — narrow by kind, then domain, then the thing itself. Kind narrows the what; the
