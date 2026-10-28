@@ -19,10 +19,10 @@ you work; everything else is reusable as-is.
 
 ## Workflow at a glance
 
-![workflow-memory-claude workflow, template 16.0.0](assets/workflow-diagram.png)
+![workflow-memory-claude workflow, template 16.2.1](assets/workflow-diagram.png)
 
 The three steps of `.claude/rules/workspace-workflow.md` as one picture: how a requirement comes in,
-the build loop, the wrap-up. The PNG shows template 16.0.0 and lives in this repo only — it is not
+the build loop, the wrap-up. The PNG shows template 16.2.1 and lives in this repo only — it is not
 part of the sync whitelist, so projects never receive it.
 
 ## Layout

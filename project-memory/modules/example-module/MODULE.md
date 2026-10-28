@@ -13,7 +13,7 @@
 　  ├── MODULE.md                      ← this file
 　  ├── schema/                        ← EVERY .sql this module owns: tables/views/indexes (you provide) + seed scripts (generated). See schema/_README.md
 　  ├── references/                    ← source material YOU provide: requirement docs, images, links (read on demand)
-　  ├── <name>-flow.md                 ← handover map: module flow + Mermaid diagram + called files/methods + short notes
+　  ├── <name>-flow.md                 ← handover map: Mermaid sequence + data-flow diagrams + called files/methods + short notes
 　  ├── diagrams/                      ← optional archify HTML diagrams for people, made only when you say yes (created on first use)
 　  ├── plans/<name>-<date>-<slug>.md  ← pre-change plans (produced by /wp-module-plan-discuss)
 　  └── impl/<name>-<date>-<slug>.md   ← post-change records (produced by /wp-module-save-implementation, which also syncs <name>-flow.md)

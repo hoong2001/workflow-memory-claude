@@ -129,3 +129,5 @@ These leaves are the Done slot of the handoff (the **Handoff** section of
   `└─ 🏁 Closed  nothing pending`
 - A friction signal this session (`.claude/rules/workspace-update-memory.md` item 7) → remind the
   user to type `/wp-retro`; the stop is then open.
+- Changes left uncommitted in a git repo → the commit reminder of
+  `.claude/rules/workspace-update-memory.md` item 8 is a 👉 You now leaf; the stop is then open.

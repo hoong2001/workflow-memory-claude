@@ -17,7 +17,7 @@
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
 - **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), `wp-tfvc` in a TFVC workspace, and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
 
 ## The main flow (module work)
 
