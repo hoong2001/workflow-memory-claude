@@ -16,7 +16,7 @@ file is unchanged from it.
 | Stage | Change from the legacy baseline | Still forbidden |
 |---|---|---|
 | 1 | Runtime .NET Framework 4.7.2 → 4.8 | — |
-| 1 | Repository interfaces permitted (§4.1, §5.1) | Interface on UnitOfWork, Generic Repository, DI, async |
+| 2 | One connection string; another database is reached through the system DB — views for reads, synonyms for writes (§4.1, §5.2) | Stored procedures |
 
 ---
 
@@ -49,7 +49,7 @@ procedure in `.claude/adoption-conformance-scan.md` (read on demand at adoption 
 | Component | Version | Purpose | Usage |
 |-----------|---------|---------|-------|
 | IDE | Visual Studio 2017 Professional | Development environment | |
-| Language | C# 7.3 | Backend language (no newer syntax) | |
+| Language | C# 7.3 | Backend language | |
 | Framework | ASP.NET MVC 5, Web API 2.2 | Web framework | |
 | Runtime | .NET Framework 4.8 | Runtime environment | Built into Windows Server 2022 |
 | Database | SQL Server 2022 | Database server | |
@@ -191,7 +191,6 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 │   ├── ConstValues/                ← Shared constants and Enums
 │   ├── Repositories/              ← Repository classes, organised by Entity
 │   │   ├── BaseRepository.cs
-│   │   ├── I[Entity]Repository.cs ← optional interface, beside its class (§4.1)
 │   │   └── [Entity]Repository.cs
 │   ├── Results/                    ← Result objects
 │   │   ├── BaseResult.cs
@@ -228,27 +227,32 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✔ Repository + Unit of Work pattern
 - ✔ Parameterized SQL queries (prevent SQL injection)
 - ✔ Explicit transaction control via UnitOfWork
-- ✔ UnitOfWork is a concrete class — no interface on it
-- ✔ Repository interfaces are permitted, not required:
-  - `I[Entity]Repository` sits beside `[Entity]Repository` in `Repositories/`, and UnitOfWork's
-    repository property is typed as the interface. UnitOfWork still creates the Repository — it
-    owns the connection and the transaction the Repository runs on.
-  - A module uses them for every Repository or for none, and records which in its `MODULE.md`
-    Local conventions.
-  - A new module has none unless the user asks for them: with DI still forbidden, nothing
-    substitutes the interface yet.
 - ✔ Dapper (micro-ORM) as the sole data-access library — raw, parameterized SQL only
+- ✔ One connection string per system — its own database. Repository SQL never names another
+  database (`OtherDb.dbo.Table`); it goes through an object in the system DB, which holds the
+  other database's name in one place, so renaming or moving that database changes only that
+  object:
+  - **Read** → a view, `dbo.vw_<Name>`. It also fixes the shape the Repository sees, so a column
+    change in the other database is absorbed in the view.
+  - **Write** (INSERT / UPDATE / DELETE) → a synonym, `dbo.syn_<Name>`, pointing at the other
+    database's table. The Repository writes parameterized SQL against it as against a local
+    table, and UnitOfWork's transaction covers it:
+    - Same SQL Server instance → the synonym targets `OtherDb.dbo.Table`; the transaction stays
+      local.
+    - Another server → the synonym targets the linked server, `LinkedServer.OtherDb.dbo.Table`;
+      SQL Server promotes the transaction to a distributed one, so MSDTC must be configured on
+      both servers.
+  - The view / synonym `.sql` lives in the module's `schema/` and ships in the plan's Deployment
+    list like any schema change.
 - ✔ Query design per the **`wp-sql-query-design`** skill — the row-count test decides what
   belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
-- ✔ C# 7.3 syntax maximum
+- ✔ C# 7.3 syntax maximum — the ceiling of the VS2017 compiler (§1.1 IDE)
 
 **Forbidden:**
-- ✘ Dependency Injection (DI)
 - ✘ Generic Repository
 - ✘ Async / Await
 - ✘ Entity Framework, or any heavy/full ORM with change-tracking, lazy-loading, or LINQ-to-SQL translation — Dapper.NET (micro-ORM) is the only permitted data-access library
 - ✘ Stored procedures — SQL lives in Repository methods as raw, parameterized SQL
-- ✘ C# syntax newer than 7.3
 - ✘ DTO or Entity layers — use Result objects only
 
 ### 4.2 Frontend (JavaScript & CSS)
@@ -289,7 +293,16 @@ These apply regardless of language; the per-language casing rules below only ref
 | Private fields | `_camelCase` | `_unitOfWork`, `_connectionString` |
 | Constants | UPPER_SNAKE_CASE | `MAX_RETRY_COUNT` |
 | Repositories | `[Entity]Repository` | `CustomerRepository` |
-| Repository interfaces | `I[Entity]Repository` | `ICustomerRepository` |
 | Services | `[Entity]Service` | `ProductService` |
 
 > Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`wp-aspnet-mvc-frontend-standards`** skill.
+
+### 5.2 Database objects
+
+| Type | Convention | Example |
+|------|-----------|---------|
+| View | `vw_` + PascalCase | `vw_OtherCustomer` |
+| Synonym | `syn_` + PascalCase | `syn_OtherCustomer` |
+
+> The cross-database view and synonym (§4.1) name the object they expose, so a reader of the
+> Repository SQL knows it reaches another database without opening the definition.

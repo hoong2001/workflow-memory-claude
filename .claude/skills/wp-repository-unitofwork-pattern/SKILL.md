@@ -10,10 +10,6 @@ description: Repository + UnitOfWork data access with Dapper for this C# 7.3 / M
 §2.1 (layering), §3 (folders) and §4.1 of `project-memory/stack-architecture.md` apply in full;
 this skill adds:
 
-- Repositories and UnitOfWork are concrete classes. A Repository gets an interface only when
-  `project-memory/stack-architecture.md` §4.1 explicitly permits it **and** the module's
-  `MODULE.md` Local conventions records it — then read `references/repository-interfaces.md`
-  before writing the Repository. The samples below are the no-interface form.
 - Every value enters the SQL as a `DynamicParameters` parameter — a LIKE keyword included
   (`LIKE '%' + @Keyword + '%'`). Concatenating a value into the SQL string is the one hard ban
   (injection).

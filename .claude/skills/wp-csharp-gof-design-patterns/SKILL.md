@@ -1,6 +1,6 @@
 ---
 name: wp-csharp-gof-design-patterns
-description: GoF design patterns for this C# 7.3 stack with no DI: which fit, the pain that must exist first, which are banned. Use when designing or refactoring Service, ServBackend, or integration code (incl. the /wp-module-technical-design class map) and a smell shows — a type-code switch repeated across methods, two classes running the same step sequence, one third-party library (RestSharp, NPOI, NDbfReader) called from several places, Worker.cs gaining a second job — or the user asks which pattern fits (設計模式).
+description: GoF design patterns for this stack: which fit, the pain that must exist first, which are banned. Use when designing or refactoring Service, ServBackend, or integration code (incl. the /wp-module-technical-design class map) and a smell shows — a type-code switch repeated across methods, two classes running the same step sequence, one third-party library (RestSharp, NPOI, NDbfReader) called from several places, Worker.cs gaining a second job — or the user asks which pattern fits (設計模式).
 ---
 
 # C# Design Patterns
@@ -10,7 +10,7 @@ description: GoF design patterns for this C# 7.3 stack with no DI: which fit, th
 | Concern | Owner |
 |---|---|
 | Which pattern, when to introduce it, how it is shaped in this stack | **this skill** |
-| Repository, UnitOfWork, Dapper, Repository interfaces | `wp-repository-unitofwork-pattern` |
+| Repository, UnitOfWork, Dapper | `wp-repository-unitofwork-pattern` |
 | What is forbidden (its §4.1 Forbidden list), C# version, layering | `project-memory/stack-architecture.md` |
 | Whether logic lives in SQL or in the Service | `wp-sql-query-design` |
 
@@ -25,21 +25,22 @@ Before introducing a pattern, write one sentence that names the pain and points 
 
 If you cannot write that sentence, write the plain code — a pattern before its pain is an
 abstraction with one caller (`.claude/rules/workspace-reduce-coding-mistake.md` §2). Every pattern
-below therefore carries a trigger. If you can write it, it goes into the plan's Technical Design →
+below therefore carries a trigger.
+
+If you can write it, ask before the pattern goes anywhere — one `AskUserQuestion` per pattern,
+carrying the pain sentence, the pattern and why it fits that pain, and how it will be written: the
+class and file list plus a short skeleton in the option's `preview`. The options are *apply it* or
+*write the plain code*. The user's go lets it into the plan's Technical Design →
 **Decisions + why** (Touch points while the plan has no Technical Design yet) and into the impl
 record's **Decisions + why** — a future session that wants to remove the pattern needs to know
 what it was for.
 
 ## How this stack shapes every pattern
 
-- **No DI → objects are created with `new`, in one place:** the Factory, or the Service that owns
-  the pattern. Never a static registry or service locator standing in for a container.
-- **The family's abstraction is an abstract base class.** C# 7.3 has no default interface methods,
-  so shared step code can only live in a base class, and the Base-class convention in
-  `stack-architecture.md` §2.3 already makes that the house shape. Use an interface only for a
-  layer where `stack-architecture.md` §4.1 explicitly permits one — or where the module already
-  uses interfaces for the same kind of thing (its `MODULE.md` Local conventions, or the existing
-  code): brownfield code follows the local style.
+- **Objects are created in one place:** the Factory, or the Service that owns the pattern. Never a
+  static registry or service locator.
+- **The family's abstraction is an abstract base class.** Shared step code lives in it, and the
+  Base-class convention in `stack-architecture.md` §2.3 already makes that the house shape.
 - **Every Service class inherits `BaseService`** (§2.3), and C# allows one parent class. A pattern
   family in the Services project is held to the same rule: its base class inherits `BaseService`
   (`DiscountRuleBase : BaseService`), and its members reach it through that base. A C# `static`
@@ -53,8 +54,6 @@ what it was for.
   in §2.3, so a job inherits only its own family's base.
 - **Stateless:** synchronous, no mutable static state — IIS serves requests in parallel, so a
   static field that changes is a race.
-- **C# 7.3 syntax:** a `switch` statement, never a switch expression; `is` type patterns and
-  expression-bodied members are fine.
 
 Code samples below show the shape only. Before writing a real third-party call, verify it per
 `.claude/rules/workspace-library-docs-first.md`.
@@ -97,8 +96,8 @@ classes do not share a shape, so keep them separate.
 
 ### 2. Strategy + 3. Simple Factory — one rule per type, chosen in one place
 
-The two travel together. Strategy splits the branches; with no DI, the Factory is the one place
-that decides which branch to `new`.
+The two travel together. Strategy splits the branches; the Factory is the one place that decides
+which branch to `new`.
 
 **Trigger:** the same `switch` or if-chain on a type code appears in a second method, or one
 branch grows past about 15 lines of its own rules. A single short `switch` in one method stays a
@@ -246,8 +245,8 @@ private void RunDueJobs(DateTime now)
 |---|---|
 | Singleton holding a connection, a UnitOfWork, or any mutable state | Breaks *stateless*, and IIS recycles the app pool; a shared connection also breaks UnitOfWork's lifetime. Allowed: a `static readonly` immutable lookup, or `Lazy<T>` over read-only config |
 | Generic Repository, Specification | Forbidden by `stack-architecture.md` §4.1 |
-| Mediator (MediatR style) | Only pays off with DI, which is forbidden |
-| Decorator / Proxy around a Repository | Possible once Repository interfaces are allowed, but the concerns it would add (logging, timing) belong in `BaseRepository` or the Service's NLog call — one place, not a wrapper per Repository |
+| Mediator (MediatR style) | A request/handler layer between Controller and Service — the Service already is the one place each request lands |
+| Decorator / Proxy around a Repository | The concerns it would add (logging, timing) belong in `BaseRepository` or the Service's NLog call — one place, not a wrapper per Repository |
 | Abstract Factory, Visitor, Prototype, Flyweight, Memento, Interpreter | No problem in a synchronous CRUD MVC system that these solve |
 | Observer between entry points (Web, Api, ServBackend) | Each runs in its own process and shares no memory; in-process events cannot connect them |
 
@@ -264,15 +263,13 @@ private void RunDueJobs(DateTime now)
 
 ## Review checklist
 
-- [ ] Every pattern has its one-sentence pain in the plan or impl record
+- [ ] Every pattern has its one-sentence pain in the plan or impl record, and the user's go
 - [ ] No pattern family with a single implementation
 - [ ] Objects are created in the Factory or the owning Service, not scattered `new`s
-- [ ] The family abstraction is an abstract base class; an interface only where §4.1 permits it
-      or the module already uses one for the same kind of thing
+- [ ] The family abstraction is an abstract base class
 - [ ] Every Service class and pattern family class in the Services project inherits `BaseService`,
       directly or through its family base
 - [ ] Pattern classes that are not Services hold no UnitOfWork and run no SQL
 - [ ] No new folder — pattern classes sit beside the Service that owns them
 - [ ] Pattern classes are *stateless*
 - [ ] No third-party type leaks past its Adapter
-- [ ] C# 7.3 syntax only

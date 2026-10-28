@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `15.6.1` |
+| Version | `16.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -124,6 +124,7 @@ content untouched. A rule that gained `paths:` frontmatter loses its `@import` l
 | `.claude/mods/` (whole folder, in the target) | nothing — delete it; `.claude/skills/wp-tfvc/` replaces the old `tfvc` mod and the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces `plan-status`. Drop the `.claude/mods/*/.claude-plugin/types/` line from the target's `.gitignore`, clean `.claude/settings.json` per the grey-zone note, and on each machine run `claude plugin uninstall tfvc@workflow-memory-local --scope user` and `claude plugin marketplace remove workflow-memory-local` if `claude plugin list` still shows them |
 | `.claude/mods/plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it. On each machine run `claude plugin uninstall plan-status@workflow-memory-local --scope user` if `claude plugin list` shows it |
 | `.claude/skills/wp-auto-test-loop/` | nothing — delete it; Claude's build step is `.claude/scripts/build-solution.mjs` (`workspace-workflow.md` Step 2) and test is manual. A target's existing `schema/test/` scripts are project state and stay |
+| `.claude/skills/wp-repository-unitofwork-pattern/references/repository-interfaces.md` | nothing — delete it; the architecture doc and skills take no position on interfaces or DI. A module that uses them records its own form in its `MODULE.md` Local conventions |
 | `.claude/skills/plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it. The `plan-status-table` marker in `project-memory/project-memory-status.md` is a data contract and keeps its name |
 | `.claude/skills/context-panel/` | nothing — delete it |
 | `.claude/skills/mod-panel/` | nothing — delete it |

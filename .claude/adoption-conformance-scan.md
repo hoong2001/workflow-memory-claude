@@ -9,7 +9,7 @@ Check each hard rule in the architecture doc against repo evidence:
 - `packages.config` — library versions vs the §1 stack table
 - `.sln` project layout vs the §2/§3 layering
 - Base class inheritance (§2.3)
-- Grep for forbidden patterns (§4.1 — e.g. async / DI / EF)
+- Grep for every pattern §4.1 lists as forbidden (e.g. async, EF)
 - Frontend library versions vs §1.2
 
 **Outcome:**

@@ -26,7 +26,7 @@ Walk the layers top-down. For each design decision follow the **Question pattern
 
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
-- **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack) — a design pattern enters only with its named pain (`wp-csharp-gof-design-patterns`), written under Decisions + why
+- **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack) — a design pattern enters only with its named pain and the user's go (`wp-csharp-gof-design-patterns`), written under Decisions + why
 - **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-sql-query-design`
 - **Frontend** — view file, script/component structure, which stack components render which widget (e.g. DataTables / ECharts / Select2 / datepicker)
 - **Wiring** — whatever the project needs for the change to actually appear: menu/permission registration, route config, bundle/asset registration

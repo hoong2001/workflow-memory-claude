@@ -33,7 +33,7 @@ procedure in `.claude/adoption-conformance-scan.md` (read on demand at adoption 
 | Component | Version | Purpose | Usage |
 |-----------|---------|---------|-------|
 | IDE | Visual Studio 2017 Professional | Development environment | |
-| Language | C# 7.3 | Backend language (no newer syntax) | |
+| Language | C# 7.3 | Backend language | |
 | Framework | ASP.NET MVC 5, Web API 2.2 | Web framework | |
 | Runtime | .NET Framework 4.7.2 | Runtime environment | |
 | Database | SQL Server 2022 | Database server | |
@@ -211,19 +211,16 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✔ Repository + Unit of Work pattern
 - ✔ Parameterized SQL queries (prevent SQL injection)
 - ✔ Explicit transaction control via UnitOfWork
-- ✔ Concrete class dependencies — no interfaces on Repository or UnitOfWork
 - ✔ Dapper (micro-ORM) as the sole data-access library — raw, parameterized SQL only
 - ✔ Query design per the **`wp-sql-query-design`** skill — the row-count test decides what
   belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
-- ✔ C# 7.3 syntax maximum
+- ✔ C# 7.3 syntax maximum — the ceiling of the VS2017 compiler (§1.1 IDE)
 
 **Forbidden:**
-- ✘ Dependency Injection (DI)
 - ✘ Generic Repository
 - ✘ Async / Await
 - ✘ Entity Framework, or any heavy/full ORM with change-tracking, lazy-loading, or LINQ-to-SQL translation — Dapper.NET (micro-ORM) is the only permitted data-access library
 - ✘ Stored procedures — SQL lives in Repository methods as raw, parameterized SQL
-- ✘ C# syntax newer than 7.3
 - ✘ DTO or Entity layers — use Result objects only
 
 ### 4.2 Frontend (JavaScript & CSS)
