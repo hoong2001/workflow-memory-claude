@@ -9,6 +9,10 @@
 > The whole-system spec format lives the same way in `_system-spec-template.md`: `system-spec-discuss`
 > writes it, `system-overview-spec-generator` reads it.
 
+> Documents under `project-memory/` carry Mermaid diagrams — one per section that has structure,
+> ≤3 lines of prose after it — per **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`.
+> The optional archify HTML (`_optional-diagram.md`) is a separate, asked-once extra.
+
 ## Trigger convention
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
@@ -66,7 +70,7 @@ routed to one of the entry points above or to a one-off task.
 | # | Skill | When to use | Purpose / function | Output |
 |---|-------|-------------|--------------------|--------|
 | 1 | `wp-module-plan-discuss` | **Any** module-level task, before coding — the ONLY on-ramp for module work docs | Talk a requirement into a work-ready plan via five-element gap detection (Goal/Background/Material/Boundary/DoD); an interview record states the goal and pre-fills the elements it settles | `plans/<name>-<date>-<slug>.md`, opening `Status: Planned` — fixed shape: Goal · five elements · touch points · decisions & open items |
-| 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (chain + Mermaid sequence diagram + fan-in table) + cut recommendation + blast radius · optional archify diagram, asked once |
+| 1-alt | `wp-module-code-trace-flow` | You must change existing code but don't know where to start; legacy code with no docs; or you're editing a shared method and need to know who else it touches | Trace the real call chain (depth) AND sweep every shared symbol for all its callers (breadth), refresh `<name>-flow.md`, deliver a "where to cut" + blast-radius recommendation | Updated `<name>-flow.md` (Mermaid sequence + data-flow diagrams, ordered file table, fan-in table) + cut recommendation + blast radius · optional archify diagram, asked once |
 | 2 | `wp-module-technical-design` | A plan exists and the technical cut and/or the build order still needs nailing down before coding | Derive the concrete design per the layering rules, then break it into an ordered task list — vertical increments (tracer bullets, blockers-first) when the feature is too big for one code→build→test pass, plain steps when it is not; increments spanning several layers get a skeleton row and parallel waves | `## Technical Design` + `## Tasks` appended to the SAME plan file · `Status: Designed` |
 
 > `technical-design` (row 2) is **optional** and appends into the one plan file — never a separate doc. A trivial fix goes straight from the plan to coding. Design always precedes the task list inside it: you cannot name a path through every layer until you know which files sit on it.

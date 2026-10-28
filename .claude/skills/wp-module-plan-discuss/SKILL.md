@@ -105,6 +105,8 @@ twenty. A genuinely empty section keeps its heading, with one line saying why it
 |---|---|---|
 | `path/relative/to/root.cs` | Modified | one line, concrete |
 
+<Mermaid flowchart of the touched files grouped by layer — from 3 rows up; **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`>
+
 ## Decisions & open items
 
 | # | Item | Decision + why | Status | Blocks build |

@@ -34,3 +34,29 @@ needs. The rules below apply to both.
 
 Em dashes are house punctuation for glossing a term; these are reference documents read in
 fragments, so essay tuning (rhythm variation, list-length limits, prose scoring) does not apply.
+
+## Diagrams
+
+A section that has structure — a path, a set of relations, a movement of data — carries one Mermaid
+diagram, and the prose after it takes ≤3 lines: the reason, a caveat, an `unverified` link. Prose
+that restates the diagram is deleted.
+
+| Document | Section | Diagram |
+|---|---|---|
+| Overview | §5 Module Composition | `flowchart` — modules and the data each owns |
+| Overview | §6 External Integrations | `flowchart LR` — what crosses each boundary |
+| `MODULE.md` | Public interface / dependencies | `flowchart LR` — callers → this module → its dependencies |
+| `<name>-flow.md` | Diagram | `sequenceDiagram` of the main path; a Data flow `flowchart LR` when the module reads or writes tables |
+| Plan | Touch points | `flowchart` — touched files grouped by layer; omitted at ≤2 rows |
+| Plan | Class & file map, Data access | `flowchart` layered map; `flowchart LR` data flow |
+| Impl | Change map | `flowchart` of the structural change; omitted for an internal-only change |
+
+- **New documents carry the diagram; existing ones keep their shape.** A document that has no
+  diagram gets none until the user asks; a diagram already there is patched in place when its facts
+  change.
+- **Every node and edge traces to a file, table or document read this task**; a link nothing
+  confirms is labelled `unverified`.
+- **Tables and `file:method` lists are data** — the 3-line cap leaves them alone (impl `Files
+  touched`, plan `Decisions & open items` and `## Tasks`, flow `Called files & methods`).
+- **Syntax:** `flowchart`, `sequenceDiagram` and `classDiagram` only; ≤12 nodes per diagram, more
+  → split by layer; wrap a node label in double quotes when it holds `()`, `:`, `/` or `|`.

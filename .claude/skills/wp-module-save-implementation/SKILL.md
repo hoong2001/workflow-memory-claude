@@ -46,6 +46,11 @@ building. Write "None" when nothing was ruled out.)
 |---|---|---|
 | Path/File.cs | `Method()` | ... |
 
+## Change map
+(A Mermaid `flowchart` of the structural change — files and calls added, removed or rerouted;
+**Diagrams** in `.claude/rules/workspace-doc-writing-style.md`. An internal-only change writes
+`None — internal-only change`.)
+
 ## Deployment
 (What a person does outside the build, in order, paths from the project root: each `.sql` to run
 — whichever module's `schema/` holds it — config key, file to move, app to deploy. Copy it from
@@ -81,9 +86,11 @@ Decide the scope of this task's change:
 - **Purely internal change** — bug fix inside an existing method, wording, logic tweak with no new calls and no change to the flow path. → flow.md needs **no** change. State this explicitly in the report ("flow.md unchanged — internal-only change") and stop this step.
 
 - **Structural change** — a new file/method entered the call chain, an existing one was removed or repurposed, or the main flow path shifted. → Patch only the affected parts of flow.md:
-  - **Flow** section: adjust the narrative only where the path actually changed.
-  - **Diagram** section: patch the Mermaid `sequenceDiagram` to match the new Flow (add, remove or rename the participants and arrows that changed). A linked archify HTML is not regenerated — add `(outdated: <date>)` to its link line instead.
-  - **Called files & methods** table: add rows for new `file:method` links, fix the "Role" of any that changed, remove rows for calls that no longer exist.
+  - **Flow** section (only a doc that still has one): adjust the narrative only where the path actually changed.
+  - **Diagram** section: patch the Mermaid `sequenceDiagram` to match the new call order (add, remove or rename the participants and arrows that changed). A linked archify HTML is not regenerated — add `(outdated: <date>)` to its link line instead.
+  - **Data flow** section (only a doc that has one): patch the `flowchart LR` where a table, view or file read or write changed.
+  - **Called files & methods** table: add rows for new `file:method` links, fix the `#` order and the "Role" of any that changed, remove rows for calls that no longer exist.
+  - A flow.md in the old shape keeps it: add no Diagram or Data flow section it lacks unless the user asks.
   - **Shared symbols & their callers (fan-in)** table: if this change added or removed a caller of a shared symbol (`Base*`, `ConstValues/`, `Results/`, or any multi-caller method), patch that symbol's caller row. This table is the module's blast-radius map — a stale one is worse than none.
   - **Notes**: update only if a note is now wrong or a genuinely useful new one emerged.
   - Anchor every added/changed `file:method` to code you actually touched or read this task — no guessing (same rule as `/wp-module-code-trace-flow`).

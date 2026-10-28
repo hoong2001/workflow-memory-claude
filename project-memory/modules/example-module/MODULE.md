@@ -40,8 +40,14 @@
 -
 
 ## Public interface / dependencies
-- Exposed to:
-- Depends on which modules:
+(A Mermaid `flowchart LR`: who calls this module → the module → the modules it depends on; label
+each arrow with what crosses it. Keep it to the module's direct neighbours.)
+
+```mermaid
+flowchart LR
+    Caller["(e.g.) Web page or job"] -->|"calls"| M["Example Module"]
+    M -->|"reads"| Dep["(e.g.) another module"]
+```
 
 ## Standard workflow
 Changing this module follows `.claude/rules/workspace-workflow.md` Step 2 (Branch A starts by reading this file and `<name>-flow.md`).

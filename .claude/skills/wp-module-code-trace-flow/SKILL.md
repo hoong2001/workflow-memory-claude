@@ -67,7 +67,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram` and its Data flow `flowchart LR`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
 
 ## Verification Rule
 
@@ -83,12 +83,13 @@ Combine both directions into a single input → process → output chain, draw t
 yet → copy `project-memory/modules/example-module/example-module-flow.md` (the one source of its
 shape), rename its H1 to the module, keep its header block and every heading, then fill it. Fill rules:
 
-- **Flow** — the main path end to end, input → process → output, as one numbered chain:
-  `` 1. `path/File.ext : Method()` — one-line role ``.
-- **Diagram** — the same chain as a Mermaid `sequenceDiagram`: one participant per class/file on the
-  chain, one arrow per numbered step, a dashed return where a value comes back. Draw only what the
-  numbered chain holds; never add a call it does not list.
-- **Called files & methods** — one row per `file:method` on the chain.
+- **Diagram** — the main path end to end, input → process → output, as a Mermaid `sequenceDiagram`:
+  one participant per class/file on the chain, one arrow per call, a dashed return where a value
+  comes back. Draw only what the Called files table holds; never add a call it does not list.
+- **Data flow** — a Mermaid `flowchart LR` of the tables, views and files the chain reads or writes,
+  each tied to the method that touches it; `None — no table access` when there are none.
+- **Called files & methods** — one row per `file:method` on the chain, `#` = its order on the main
+  path (blank for a file off the path).
 - **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
   `file:method`, and its entry points.
 - **Notes** — cross-cutting concerns (noted, not expanded) and `unverified` links, each with its reason.
@@ -109,11 +110,11 @@ Plan already exists → write the rows into its table (merge with what is there;
 
 ## Save Workflow
 
-1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). No path dialog; confirm the target module with the user only if it is ambiguous.
+1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). A refreshed doc keeps its own shape: patch a `## Flow`, Diagram or Data flow section it already has, and add none it lacks unless the user asks. No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 4. **Offer a diagram** — `.claude/skills/_optional-diagram.md`.
-   Options: "No diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
+   Options: "No HTML diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
    "Architecture of the shared-symbol fan-in" (source: the fan-in table). Link line goes under the flow doc's
    `## Diagram` heading.
 5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the flow doc path + where the where-to-cut landed; You now = review the cut and its blast radius; Next = `/wp-module-plan-discuss` when no plan exists for the change yet, otherwise `/wp-module-technical-design` or the Step 2 act loop per the plan's size.

@@ -10,13 +10,12 @@
 > `/wp-module-code-trace-flow`, but keep only the stable "how it works" parts — a specific change's
 > "where to cut" belongs in that change's plan (`plans/`), not here.
 
-## Flow
-(The main path, end to end — how a request / operation travels through this module.)
-
 ## Diagram
-(The Flow above as a Mermaid `sequenceDiagram` — drawn by `/wp-module-code-trace-flow`, kept in
-step with Flow by `/wp-module-save-implementation`. An optional interactive archify diagram is
-linked here as one line: `Diagram: diagrams/<folder>/<file>.html — <type>, <date>`.)
+(The main path, end to end — how a request / operation travels through this module — as a Mermaid
+`sequenceDiagram`, drawn by `/wp-module-code-trace-flow` and kept in step with the table below by
+`/wp-module-save-implementation`. After it, ≤3 lines: the reason and the caveats the diagram cannot
+show. An optional interactive archify diagram is linked here as one line:
+`Diagram: diagrams/<folder>/<file>.html — <type>, <date>`.)
 
 ```mermaid
 sequenceDiagram
@@ -26,11 +25,22 @@ sequenceDiagram
     R-->>C: order
 ```
 
+## Data flow
+(A Mermaid `flowchart LR` of the tables, views and files the module reads and writes, and which
+method touches each. `None — no table access` when it has none.)
+
+```mermaid
+flowchart LR
+    R["(e.g.) order repository"] -->|reads| T[("(e.g.) Orders")]
+```
+
 ## Called files & methods
-| File | Method | Role (short) |
-|---|---|---|
-| (e.g., any stack) order repository file | `getById` | reads one order from the DB |
-| | | |
+(`#` = the call's order on the main path; blank for a file that sits off the path.)
+
+| # | File | Method | Role (short) |
+|---|---|---|---|
+| 1 | (e.g., any stack) order repository file | `getById` | reads one order from the DB |
+| | | | |
 
 ## Shared symbols & their callers (fan-in)
 (Symbols reused beyond the main path — base classes, shared constants/enums, reused result

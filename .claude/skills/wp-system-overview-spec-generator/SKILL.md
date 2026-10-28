@@ -130,8 +130,11 @@ template spec section each one draws from is in brackets.
    HOW. Verbs of *function* ("manages X", "reports Y"), not of *implementation*.
 5. **Module Composition** [System Design 9.2; else Implementation Decisions that name modules] — Group §4 capabilities into modules and show how they fit. Each module
    here becomes a `project-memory/modules/<name>/` folder. Do NOT restate the module index (that's root
-   CLAUDE.md Module Map). This is what you get sign-off on in Step 6.
-6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to.
+   CLAUDE.md Module Map). This is what you get sign-off on in Step 6. Draw it as the template's
+   Mermaid `flowchart` (**Diagrams** in `.claude/rules/workspace-doc-writing-style.md`), starting from
+   the spec's 9.1 / 9.2 diagram when it has one.
+6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to,
+   drawn as the template's Mermaid `flowchart LR`.
 7. **Domain Glossary** [Domain Glossary] — Domain terms a new reader needs, each as `term — meaning`.
 
 The rest of the spec has no overview home and stays in the spec file: System Design deltas feed

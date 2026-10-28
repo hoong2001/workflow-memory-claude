@@ -9,7 +9,8 @@ source of truth; the diagram is for people and is never read back as a source.
 - **Ask once, never draw unasked.** One diagram costs roughly 15–25k tokens (archify reads its
   schema, example and authoring rules, writes typed JSON, then runs browser-backed checks). Ask
   through `AskUserQuestion` (**Question pattern** in `.claude/skills/_shared-conventions.md`), with
-  "No diagram" as the recommended option.
+  "No HTML diagram" as the recommended option. The Mermaid diagrams a document carries by default
+  (**Diagrams** in `.claude/rules/workspace-doc-writing-style.md`) are separate and never asked.
   The skill that calls this section names the diagram options.
 - **On yes,** invoke the `archify` skill. Hand it the source the calling skill names (the Mermaid
   block, or the plan's Class & file map) and, as its output location, the folder

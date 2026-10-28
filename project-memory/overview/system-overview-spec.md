@@ -38,10 +38,12 @@
      §4 → §5 is the bridge that DRIVES module creation: each capability is grouped into a module,
      each module here becomes a project-memory/modules/<name>/ folder.
      Procedure: /wp-system-overview-spec-generator (decompose → one sign-off → scaffold the NEW modules).
-     For the module index (names + paths) see root CLAUDE.md "Module Map" — do not duplicate it here. -->
+     For the module index (names + paths) see root CLAUDE.md "Module Map" — do not duplicate it here.
+     Draw the modules and the data each owns as a Mermaid `flowchart`; ≤3 lines of prose after it. -->
 - (TBD)
 
 ## 6. External Integrations
+<!-- Draw what crosses each boundary as a Mermaid `flowchart LR`; ≤3 lines of prose after it. -->
 - (external systems, APIs, file feeds this system talks to)
 
 ## 7. Domain Glossary

@@ -120,7 +120,7 @@ one-to-one. Use the templates below.
 ```
 
 **Offer a diagram** — `.claude/skills/_optional-diagram.md`.
-Options: "No diagram" (recommended) · "Class diagram of the Class & file map" · "Architecture of the
+Options: "No HTML diagram" (recommended) · "Class diagram of the Class & file map" · "Architecture of the
 layers touched" (source for both: the `### Class & file map` just written). Link line goes at the end
 of that `### Class & file map` section.
 
@@ -157,9 +157,15 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 | File | New/Modified | Layer | Responsibility |
 |------|--------------|-------|----------------|
 
+<Mermaid flowchart of the files by layer, one arrow per call — **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`>
+
 ### Data access
 
 Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.
+
+<Mermaid flowchart LR of the tables and views each method reads or writes>
+
+Prose after each diagram: ≤3 lines.
 
 ### Frontend structure
 

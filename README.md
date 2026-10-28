@@ -42,7 +42,7 @@ project-memory/                        the project's own memory — plain folder
     ├── MODULE.md                      rules, gotchas, boundaries (keep this exact name; tool-neutral)
     ├── schema/                        EVERY .sql the module owns — tables/views/indexes you provide + seed scripts generated
     ├── references/                    source material you provide (requirement docs/images/links; read on demand)
-    ├── <name>-flow.md                 handover map: flow + Mermaid sequence diagram + called files/methods (not change history)
+    ├── <name>-flow.md                 handover map: Mermaid sequence + data-flow diagrams + called files/methods (not change history)
     ├── diagrams/                      optional archify HTML diagrams for people — made only when you say yes
     ├── plans/<name>-<date>-<slug>.md  pre-change plans (/wp-module-plan-discuss; technical-design appends its Design + Tasks sections into the same file). Each opens with a one-line status header — Status (Planned / Designed / Building / Blocked / Done) · Detail (N/M counter or block reason, when needed) · Updated — so one grep finds unfinished work; while live, a second line `Resume` carries the last handoff's You now · Next; then a fixed four-section body: goal · five elements · touch points (file → what changes) · decisions & open items (every raised item as a ☑/☐ row)
     └── impl/<name>-<date>-<slug>.md   post-change records (/wp-module-save-implementation)
