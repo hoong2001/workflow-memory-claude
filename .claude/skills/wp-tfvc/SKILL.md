@@ -1,6 +1,6 @@
 ---
 name: wp-tfvc
-description: Operate TFVC with tf.exe the way git is used in a git repo — status, diff, get latest, add/delete, check in, undo, shelve, history, merge, resolve conflicts. Use whenever the working folder is a TFVC workspace (no .git; `tf workfold .` names a mapping), or the user names tf, a changeset, or an operation (簽入 / 取得最新版 / 擱置 / 合併分支). In a git repo use git.
+description: Operate TFVC with tf.exe the way git is used in a git repo — status, diff, get latest, add/delete, check in, undo, shelve, history, merge, resolve conflicts. Use whenever the working folder is a TFVC workspace (no .git; `tf workfold .` names a mapping), or the user names tf, a changeset, or an operation (簽入 / 取得最新版 / 擱置 / 合併分支). In a git repo use `wp-git`.
 ---
 
 # TFVC with `tf` — the git habits, translated

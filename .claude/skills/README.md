@@ -17,7 +17,7 @@
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
 - **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) and the steering-file writing standard (`writing-for-agents`).
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
 
 ## The main flow (module work)
 
@@ -110,6 +110,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 | `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
 | `wp-connstr-check` | Adopting this template on an existing .NET project, or after config files were edited outside Claude (Visual Studio, a merge, a shell command) | Dry-run every `Web.config` / `App.config` and transform against the house MSSQL `connectionString` template, report the diff with passwords masked, apply on your go |
+| `wp-git` | A git operation, a question about one, a new project with no version control, a branch you are unsure how to start, or a task reached a checkpoint (build green and tested, plan Done) | Orient in one line, then run git by risk tier: reads run, local reversible steps run on request, commit / push / merge into `main` and every destructive step (`reset --hard`, discarding edits, force push, rebase of pushed commits) wait for your answer; proposes `init`, a commit, a branch or a stash at the right moment; the command index covers `init` through `bisect` |
 | `wp-tfvc` | The project is a TFVC workspace (Azure DevOps / TFS), not git | Orient first (this folder's branch, its parent, what is waiting to merge each way), offer merges as choices, then use `tf.exe` the way git is used: status, diff, get latest, add/delete, check-in by explicit path after your go, shelve, history, merge, resolve — always with `/noprompt` |
 | `wp-packageref-to-packages-config` | A legacy (non-SDK) .NET Framework `.csproj` / `.vbproj` uses NuGet `PackageReference` and must go back to `packages.config` | Dry run, then on your go write `packages.config` + `Reference`/`HintPath` and the package build imports, clear stale `obj` NuGet files, `nuget restore`, build, and check `bin` for lost DLLs. Needs Python on `PATH` |
 
@@ -148,5 +149,6 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **Brand-new system, or a new area spanning several modules of a live one** → type `/wp-system-spec-discuss` (if needed) → `/wp-system-overview-spec-generator`, then per-module main flow.
 - **Worried a password or API key made it into the docs** → type `/wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → type `/wp-connstr-check`.
+- **Commit, push, branch, stash or undo in git — or a new folder with no version control** → `wp-git` (it asks before anything outward or destructive).
 - **Project is in TFVC, not git — check in, get latest, shelve, merge (which branch → which)** → `wp-tfvc`.
 - **A .NET Framework project uses `PackageReference` and must switch to `packages.config`** → `wp-packageref-to-packages-config`.

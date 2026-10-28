@@ -87,6 +87,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
     ├── wp-connstr-check/  sweep Web.config / App.config connectionStrings against the house template; apply on your go
+    ├── wp-git/            git with confirmation gates — commit, push, branch, undo; destructive steps always ask
     ├── wp-tfvc/           use tf.exe in a TFVC workspace the way git is used in a git repo
     ├── wp-packageref-to-packages-config/  convert a .NET Framework project from PackageReference back to packages.config
     ├── wp-task-record/  one-off task (report run once, data patch) → its own folder under project-memory/tasks/
@@ -201,8 +202,8 @@ with the folder:
 - the stack-bound standards that apply while coding: `wp-repository-unitofwork-pattern`,
   `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, `wp-aspnet-mvc-frontend-standards`;
 - the steering-file writing standard: `wp-writing-for-agents`;
-- maintenance: `wp-update-from-master`, `wp-secret-scan`, `wp-connstr-check`, `wp-tfvc`,
-  `wp-packageref-to-packages-config`;
+- maintenance: `wp-update-from-master`, `wp-secret-scan`, `wp-connstr-check`, `wp-git`,
+  `wp-tfvc`, `wp-packageref-to-packages-config`;
 - the Obsidian add-on: `wp-obsidian-start`, `wp-obsidian-progress-log` (see below).
 
 No user-level (global) skill is required: copying the framework files (adoption step 1) brings
@@ -218,6 +219,7 @@ Skills travel with the folder; these tools do not. Install them on each develope
 | `msbuild` on `PATH` | the build step of the act loop | build exits `2` | Visual Studio / Build Tools |
 | `csharp-ls` on `PATH` + the `csharp-lsp` Claude Code plugin | `/wp-module-code-trace-flow` Step 3.5 (callers of a shared symbol) | falls back to `rg` — more false hits to filter by hand | `dotnet tool install --global csharp-ls` (needs .NET SDK 6+), then `/plugin install csharp-lsp@claude-plugins-official` |
 | `nuget.exe` on `PATH` | restoring missing packages during the build | restore once in Visual Studio | nuget.org download |
+| `git` on `PATH` | `wp-git` | git commands unavailable | git-scm.com installer |
 | `tf.exe` on `PATH` | `wp-tfvc` | TFVC commands unavailable | Visual Studio Team Explorer |
 | Python on `PATH` | `wp-packageref-to-packages-config` | that skill cannot run | python.org installer |
 | `archify` skill (personal, optional) | the diagram offer at the end of `/wp-module-code-trace-flow` and `/wp-module-technical-design` | no offer — the Mermaid diagram in `<name>-flow.md` still renders | install it as a user-level skill; see `.claude/skills/_optional-diagram.md` |

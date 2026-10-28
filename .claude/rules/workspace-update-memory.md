@@ -45,4 +45,9 @@ this session — and name the one that fired:
 Remind once per session, after the item 1 reminder, as one line: `friction: <signal> → type
 /wp-retro to run a retro`. None observed → say nothing.
 
-End with the handoff (**Handoff** in `.claude/skills/_shared-conventions.md`): an item 5b judgment waiting on the user is You now, with "on your yes, add the proposed line to the overview" as Next; an item 7 reminder is an ⚠️ Attention leaf (or Next, when nothing else is).
+## 8. Reached a commit point? → REMIND the user in one line
+The task's build is green and tested, or its plan went `Done`, and `git status` shows changes →
+`git: <N> files changed → ask me to commit (wp-git)`. Nothing changed, or no git repo → say nothing.
+`wp-git` owns what happens next.
+
+End with the handoff (**Handoff** in `.claude/skills/_shared-conventions.md`): an item 5b judgment waiting on the user is You now, with "on your yes, add the proposed line to the overview" as Next; an item 7 reminder is an ⚠️ Attention leaf (or Next, when nothing else is); an item 8 reminder is a 👉 You now leaf.
