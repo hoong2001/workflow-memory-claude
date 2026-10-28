@@ -58,7 +58,8 @@ Plan landed and needs the technical cut and a task breakdown → `/wp-module-tec
 then wait for the go. Work its `## Tasks` rows top to bottom, one at a time through the Act loop
 below — wave by wave when the `Wave` column carries numbers.
 
-**Parallel waves** — a `Wave` column with numbers runs wave by wave, on the user's go per wave:
+**Parallel waves** — a `Wave` column with numbers runs wave by wave with no go between waves, up to 4
+agents per wave, until a build or decision-check stop:
 follow **Parallel waves → Running a wave** in `.claude/skills/wp-module-technical-design/SKILL.md`
 before dispatching.
 

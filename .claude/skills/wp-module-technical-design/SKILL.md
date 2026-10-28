@@ -91,14 +91,16 @@ Increments that span several layers get a **wave** each, so subagents can write 
    waves only fill method bodies.
 2. **Wave number** = 1 + the highest wave among the row's `Blocked by` rows. Every non-skeleton
    row is blocked by #1 at minimum.
-3. **Layer ownership** — a wave runs as one subagent per layer it touches: **Data** (SQL,
-   Repository, Result), **Service**, **Web** (Controller, View, JS). Each file in the Class & file
-   map belongs to exactly one of them. A file two layers would both edit → move that edit into the
-   skeleton, or add a `Blocked by` edge so the two rows land in different waves.
+3. **Agent ownership** — a wave runs as 1–4 subagents; the orchestrator groups the wave's rows by
+   file ownership, once the rows are known. Rows whose files are disjoint → one agent per row;
+   rows that share files → one agent per layer: **Data** (SQL, Repository, Result), **Service**,
+   **Web** (Controller, View, JS). More than 4 groups → merge the smallest. Each file in the Class &
+   file map belongs to exactly one agent. A file two agents would both edit → move that edit into
+   the skeleton, or add a `Blocked by` edge so the two rows land in different waves.
 
 #### Running a wave
 
-On the user's go per wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: dispatch one background `Agent` per layer the wave touches (Data / Service / Web, ownership per **Parallel waves** above), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check, then the user tests each row of the wave. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
+No go between waves: the go after this skill's task list covers every wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: group its rows per **Agent ownership** above and dispatch one background `Agent` per group (at most 4), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check. Build green and no decision conflict → start the next wave; either one stops (a "Claude stops" row, a conflict) → stop and ask the user. After the last wave the user tests each row of the table. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
 
 ### Quiz the user before writing
 
