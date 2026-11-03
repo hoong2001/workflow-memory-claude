@@ -53,10 +53,11 @@ building. Write "None" when nothing was ruled out.)
 
 ## Deployment
 (What a person does outside the build, in order, paths from the project root: each `.sql` to run
-— whichever module's `schema/` holds it — config key, file to move, app to deploy. Copy it from
-the plan's `### Deployment`; a plan without that section gets it built from this record's
-`Files touched` (every `.sql` and config file) plus the order the work needed. `None` when there
-is nothing.)
+— whichever module's `schema/` holds it — config key, file to move, app to deploy. This is the
+final go-live list. Start from the plan's `### Deployment` draft and reconcile it with `Files
+touched`: add every `.sql` and config file the draft misses, drop each step the build made
+obsolete, re-check the order. A plan without that section builds the list from `Files touched`
+plus the order the work needed. `None` when there is nothing.)
 1. <environment> — run `project-memory/modules/<name>/schema/<file>.sql`
 
 ## Known gotchas hit

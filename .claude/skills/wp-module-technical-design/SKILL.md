@@ -30,7 +30,7 @@ Cover at minimum:
 - **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-sql-query-design`
 - **Frontend** — view file, script/component structure, which stack components render which widget (e.g. DataTables / ECharts / Select2 / datepicker)
 - **Wiring** — whatever the project needs for the change to actually appear: menu/permission registration, route config, bundle/asset registration
-- **Deployment** — everything a person must do outside the build for the change to work, in order: each `.sql` to run (any module's `schema/`), config key, file to move, service or app to deploy. Every task that adds one of these puts a line here; a change with none writes `None`
+- **Deployment** — everything a person must do outside the build for the change to work, in order: each `.sql` to run (any module's `schema/`), config key, file to move, service or app to deploy. Every task that adds one of these puts a line here — a running draft that `/wp-module-save-implementation` reconciles into the final go-live list; a change with none writes `None`
 
 Batch related small decisions into one round; don't interrogate trivia the architecture doc already dictates — just apply the rules.
 
