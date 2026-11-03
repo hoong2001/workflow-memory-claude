@@ -146,6 +146,6 @@ stay open and the work proceeds around them.
 - Borderline or clearly too big → "This looks like more than one build pass — run `/wp-module-technical-design` to nail the cut and break it into ordered vertical increments first."
 - An open `🔴` row → Next is resolving that row; coding waits.
 
-**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the plan path + the status it carries; You now = review the plan and answer any `🔴` row; Next = the verdict above.
+**Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the plan path + the status it carries; You now = review the plan and answer any `🔴` row; Next = the verdict above. Overwrite the plan's `> **Resume:**` line with that same You now · Next in the same turn, so the plan and the reply carry one verdict; edits made earlier in the discussion leave the line alone.
 
 </supporting-info>
