@@ -12,7 +12,7 @@ Sync pulls the master by **git clone** — no machine-specific folder path to ma
 |---|---|
 | Repo | `https://github.com/hoong2001/workflow-memory-claude.git` (public — anonymous clone) |
 | Branch | `main` |
-| Version | `16.7.0` |
+| Version | `17.0.0` |
 
 Override by editing this block, or by giving the skill a different URL/branch when it asks.
 A **local master path** is the fallback only — for working offline or testing an unpushed
@@ -131,6 +131,7 @@ content untouched. A rule that gained `paths:` frontmatter loses its `@import` l
 | `.claude/skills/mods-plan-status/` | nothing — delete it; the optional `mods-plan-status` plugin (marketplace `hoong2001/workflow-memory-mods`) replaces it: `/plugin install mods-plan-status --marketplace hoong2001/workflow-memory-mods` on each machine that wants the pane |
 | `.claude/skills/mods-context-panel/` | nothing — delete it |
 | `.claude/skills/mods-toggle-band/` | nothing — delete it |
+| `.claude/skills/wp-sql-query-design/` | merged into `.claude/skills/wp-database-design/` — the query rules now live in its `references/query-design.md` and `references/rewrites-that-buy-nothing.md` |
 
 ### `workspace-*` → `wp-*` skill prefix
 

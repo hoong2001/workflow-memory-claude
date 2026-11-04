@@ -17,7 +17,7 @@
 
 - **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
 - **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
-- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `sql-query-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), `wp-tfvc` in a TFVC workspace, and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
+- **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `database-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), `wp-tfvc` in a TFVC workspace, and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
 
 ## The main flow (module work)
 
@@ -33,8 +33,9 @@ requirement ──────────────┤                       
                                    ┌──────────────────────────┘
                                    ▼
    code → build → test  ◄── coding standards auto-apply here:
-   (Claude builds, fixes or    repository-unitofwork-pattern (DAL) · sql-query-design (any SQL)
-    stops to ask; user tests)  csharp-gof-design-patterns (design / refactor)
+   (Claude builds, fixes or    repository-unitofwork-pattern (DAL)
+    stops to ask; user tests)  database-design (any SQL, tables, keys, ownership)
+                               csharp-gof-design-patterns (design / refactor)
                                aspnet-mvc-frontend-standards (UI)
                                    │
                                    ▼
@@ -80,7 +81,7 @@ routed to one of the entry points above or to a one-off task.
 | Skill | When to use | Purpose / function | Trigger |
 |-------|-------------|--------------------|---------|
 | `wp-repository-unitofwork-pattern` | Writing/reviewing any data-access code (Repository, UnitOfWork, Dapper) | The DAL standard: `DynamicParameters` always, no stored procedures; the stack's forbidden list is `project-memory/stack-architecture.md` §4.1 | Auto |
-| `wp-sql-query-design` | Writing/reviewing any SQL — Repository queries, `.sql` schema/seed scripts, persisted test scripts | The query standard: the row-count test draws the SQL↔C# line; keep the remaining SQL simple; `SELECT *` banned; readability-costing rewrites need a measured number | Auto |
+| `wp-database-design` | Writing/reviewing any SQL (Repository queries, `.sql` scripts, persisted test scripts); a task creates or alters a table, column, key, index or constraint; designing a module's data model (the `### Data model` of `technical-design` points here); deciding who owns a shared table; SQL that reaches another database | The database standard. Query design (`references/query-design.md`): the row-count test draws the SQL↔C# line, `SELECT *` banned, readability-costing rewrites need a measured number. Table design: conventions, one writer per table, one business operation per transaction, the plan's data model, cross-database access through views and synonyms | Auto |
 | `wp-csharp-gof-design-patterns` | Designing (the class & file map in `technical-design` points here) or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain and the user's go first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 
@@ -138,7 +139,8 @@ The always-current half needs no skill: on a machine with a vault path configure
 - **New requirement, no plan yet** → `plan-discuss` (always; it's the only door).
 - **Existing feature, don't know where the code is** → `code-trace-flow` first, then `plan-discuss`.
 - **Plan done, need API/class/SQL detail, or a task breakdown, or both** → `technical-design` (it does the cut and the task list in one pass).
-- **Should this calculation be in the query or the service?** → `sql-query-design` (the row-count test).
+- **Should this calculation be in the query or the service?** → `database-design` (`wp-database-design/references/query-design.md`, the row-count test).
+- **New table, new column, or who may write a shared table?** → `database-design` (conventions, ownership, the plan's Data model).
 - **Should this be a Strategy / Factory / some pattern?** → `csharp-gof-design-patterns` (no named pain, no pattern).
 - **Plan done, builds in one pass** → just code; skip `technical-design`.
 - **Done coding a milestone** → type `/wp-module-save-implementation` (your trigger, not the agent's).

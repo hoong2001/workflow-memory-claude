@@ -49,6 +49,7 @@ that restates the diagram is deleted.
 | `<name>-flow.md` | Diagram | `sequenceDiagram` of the main path; a Data flow `flowchart LR` when the module reads or writes tables |
 | Plan | Touch points | `flowchart` — touched files grouped by layer; omitted at ≤2 rows |
 | Plan | Class & file map, Data access | `flowchart` layered map; `flowchart LR` data flow |
+| Plan | Data model | `erDiagram` — tables, keys and relationships; omitted when no table changes |
 | Impl | Change map | `flowchart` of the structural change; omitted for an internal-only change |
 
 - **New documents carry the diagram; existing ones keep their shape.** A document that has no
@@ -58,5 +59,5 @@ that restates the diagram is deleted.
   confirms is labelled `unverified`.
 - **Tables and `file:method` lists are data** — the 3-line cap leaves them alone (impl `Files
   touched`, plan `Decisions & open items` and `## Tasks`, flow `Called files & methods`).
-- **Syntax:** `flowchart`, `sequenceDiagram` and `classDiagram` only; ≤12 nodes per diagram, more
+- **Syntax:** `flowchart`, `sequenceDiagram`, `classDiagram` and `erDiagram` only; ≤12 nodes per diagram, more
   → split by layer; wrap a node label in double quotes when it holds `()`, `:`, `/` or `|`.

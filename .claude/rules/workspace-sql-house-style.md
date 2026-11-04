@@ -18,7 +18,7 @@ that it silently did nothing.
 
 ## 2. Read the real definition before writing SQL against it
 
-Moved to `wp-sql-query-design` → **Read the real definition first** — it applies to every piece of SQL.
+Moved to `.claude/skills/wp-database-design/references/query-design.md` → **Read the real definition first** — it applies to every piece of SQL.
 
 ## 3. A seed script is a delivered file, never prose
 

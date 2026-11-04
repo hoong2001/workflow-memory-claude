@@ -21,7 +21,7 @@ maps its rows to a Result class, and every multi-step mutation runs in one UnitO
 `Commit()` / `Rollback()`.
 
 > This skill owns the C# around the query. What the query does, and how readable it is, belongs
-> to `wp-sql-query-design` — reach for it alongside this one when writing the SQL itself.
+> to `wp-database-design` — reach for it alongside this one when writing the SQL itself.
 
 ---
 
@@ -126,13 +126,13 @@ public abstract class BaseRepository
 Result classes (`Results/`, inheriting `BaseResult` — `stack-architecture.md` §2.3–2.4) carry
 data both ways: output, and input — `Insert(ProductResult model)`, and one criteria Result such as
 `ProductSearchResult` for a multi-criteria method, never a long parameter list. A single-key
-lookup takes the primitive (`GetById(int id)`).
+lookup takes the primitive (`GetById(long id)`).
 
 ```csharp
 // Results/ProductResult.cs
 public class ProductResult : BaseResult
 {
-    public int ProductId { get; set; }
+    public long ProductId { get; set; }
     public string ProductName { get; set; }
     public decimal Price { get; set; }
     public bool IsActive { get; set; }
@@ -149,7 +149,7 @@ parameter against a `varchar` column forces an implicit conversion and can turn 
 
 ```csharp
 var p = new DynamicParameters();
-p.Add("@ProductID", productId, DbType.Int32);
+p.Add("@ProductID", productId, DbType.Int64);
 p.Add("@ProductName", name, DbType.String);
 p.Add("@Price", price, DbType.Decimal);
 p.Add("@IsActive", isActive, DbType.Boolean);
@@ -166,10 +166,10 @@ public class ProductRepository : BaseRepository
     public ProductRepository(UnitOfWork uow) : base(uow) { }
 
     // Single record
-    public ProductResult GetById(int id)
+    public ProductResult GetById(long id)
     {
         var p = new DynamicParameters();
-        p.Add("@ProductID", id, DbType.Int32);
+        p.Add("@ProductID", id, DbType.Int64);
 
         var sql = @"SELECT ProductID, ProductName, Price, CategoryID, IsActive
                     FROM Products
@@ -187,7 +187,7 @@ public class ProductRepository : BaseRepository
     }
 
     // Insert — returns new ID
-    public int Insert(ProductResult model)
+    public long Insert(ProductResult model)
     {
         var p = new DynamicParameters();
         p.Add("@ProductName", model.ProductName, DbType.String);
@@ -196,15 +196,15 @@ public class ProductRepository : BaseRepository
 
         var sql = @"INSERT INTO Products (ProductName, Price, IsActive)
                     VALUES (@ProductName, @Price, @IsActive);
-                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
-        return _connection.ExecuteScalar<int>(sql, p, _transaction);
+                    SELECT CAST(SCOPE_IDENTITY() AS BIGINT)";
+        return _connection.ExecuteScalar<long>(sql, p, _transaction);
     }
 
     // Update
     public bool Update(ProductResult model)
     {
         var p = new DynamicParameters();
-        p.Add("@ProductID", model.ProductId, DbType.Int32);
+        p.Add("@ProductID", model.ProductId, DbType.Int64);
         p.Add("@ProductName", model.ProductName, DbType.String);
         p.Add("@Price", model.Price, DbType.Decimal);
 
@@ -216,10 +216,10 @@ public class ProductRepository : BaseRepository
     }
 
     // Delete
-    public bool Delete(int id)
+    public bool Delete(long id)
     {
         var p = new DynamicParameters();
-        p.Add("@ProductID", id, DbType.Int32);
+        p.Add("@ProductID", id, DbType.Int64);
 
         var sql = "DELETE FROM Products WHERE ProductID = @ProductID";
         return _connection.Execute(sql, p, _transaction) > 0;
@@ -239,7 +239,7 @@ Define the full SQL template with placeholder tokens, then replace only when val
 public class ProductSearchResult : BaseResult
 {
     public string Keyword { get; set; }
-    public int? CategoryId { get; set; }
+    public long? CategoryId { get; set; }
     public bool? IsActive { get; set; }
 }
 
@@ -268,7 +268,7 @@ public IEnumerable<ProductResult> Search(ProductSearchResult criteria)
     if (criteria.CategoryId.HasValue)
     {
         sql = sql.Replace("{CATEGORY}", "AND CategoryID = @CategoryID");
-        p.Add("@CategoryID", criteria.CategoryId.Value, DbType.Int32);
+        p.Add("@CategoryID", criteria.CategoryId.Value, DbType.Int64);
     }
     else
     {
@@ -296,7 +296,7 @@ public IEnumerable<ProductResult> Search(ProductSearchResult criteria)
 `DynamicParameters.Add()` supports passing an array or list directly — Dapper automatically expands it into an `IN` clause.
 
 ```csharp
-public IEnumerable<ProductResult> GetByIds(IEnumerable<int> ids)
+public IEnumerable<ProductResult> GetByIds(IEnumerable<long> ids)
 {
     var p = new DynamicParameters();
     p.Add("@Ids", ids);  // Dapper expands to: IN (@Ids1, @Ids2, @Ids3...)

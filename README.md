@@ -13,8 +13,8 @@ part stays small and depth is read only when needed.
 Per project you swap **`project-memory/stack-architecture.md`** (the stack, architecture, and hard
 constraints). On a stack other than this template's (ASP.NET MVC 5 / C# 7.3 / Dapper), the pieces
 bound to it are swapped too: the staged `project-memory/stack-architecture.next.md` and the skills
-`wp-repository-unitofwork-pattern`, `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, and
-`wp-aspnet-mvc-frontend-standards`. `CLAUDE.md`'s system description and Module Map then grow as
+`wp-repository-unitofwork-pattern`, `wp-database-design`,
+`wp-csharp-gof-design-patterns`, and `wp-aspnet-mvc-frontend-standards`. `CLAUDE.md`'s system description and Module Map then grow as
 you work; everything else is reusable as-is.
 
 ## Workflow at a glance
@@ -82,7 +82,7 @@ project-memory/                        the project's own memory — plain folder
     ├── wp-writing-for-agents/  how to write steering files (.claude/, CLAUDE.md) — fork of mattpocock/skills, MIT
     ├── wp-aspnet-mvc-frontend-standards/  frontend coding standards (SSOT)
     ├── wp-repository-unitofwork-pattern/  data-layer pattern (SSOT)
-    ├── wp-sql-query-design/  what belongs in SQL vs the Service layer, and keeping the SQL readable
+    ├── wp-database-design/  SQL query design, table conventions, one writer per table, and the data model a plan carries
     ├── wp-csharp-gof-design-patterns/  which GoF patterns fit this stack, and the pain each needs before it is used
     ├── wp-update-from-master/  pull template updates per SYNC-MANIFEST.md
     ├── wp-secret-scan/  audit docs for credentials the hook never saw; redact + flag rotation
@@ -200,7 +200,7 @@ with the folder:
   `wp-module-save-implementation`, `wp-retro`;
 - one-off work: `wp-task-record`;
 - the stack-bound standards that apply while coding: `wp-repository-unitofwork-pattern`,
-  `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, `wp-aspnet-mvc-frontend-standards`;
+  `wp-database-design`, `wp-csharp-gof-design-patterns`, `wp-aspnet-mvc-frontend-standards`;
 - the steering-file writing standard: `wp-writing-for-agents`;
 - maintenance: `wp-update-from-master`, `wp-secret-scan`, `wp-connstr-check`, `wp-git`,
   `wp-tfvc`, `wp-packageref-to-packages-config`;

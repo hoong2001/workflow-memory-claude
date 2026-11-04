@@ -1,29 +1,25 @@
----
-name: wp-sql-query-design
-description: SQL query design for this stack: the row-count test decides what belongs in SQL vs the C# Service layer, and the SQL that remains stays simple and readable. Use when writing or reviewing any SQL (a Repository query, a .sql schema, seed, or test script), deciding where a calculation or rule should live, weighing a performance rewrite against readability, or on N+1, paging, window-function, or CTE-vs-temp-table questions.
----
-
 # SQL Query Design
 
-Applies to every piece of SQL this project writes — a Repository query, a `.sql` schema or seed
-script, a persisted test script. Done when every query this task writes or reviews passes every
-row of the **Review checklist** at the end.
+Part of `wp-database-design`, whose `SKILL.md` sends every piece of SQL this project writes here —
+a Repository query, a `.sql` schema or seed script, a persisted test script. Done when every query
+this task writes or reviews passes every row of the **Review checklist** at the end.
 
 Readability and maintainability rank above query cleverness: performance may cost clarity only
 with a **measured** number (*Paid performance*).
 
-## Scope — what this skill owns, and what it does not
+## Scope — what this file owns, and what it does not
 
 | Concern | Owner |
 |---|---|
-| What the query should do, how simple it should be, where logic lives | **this skill** |
+| What the query should do, how simple it should be, where logic lives | **this file** |
 | `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-repository-unitofwork-pattern` |
+| Table shape — names, keys, types, constraints, indexes, table ownership, reaching another database | `SKILL.md` of this skill |
 | `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `workspace-sql-house-style.md` rule |
 | Stack versions, layering, forbidden patterns | `project-memory/stack-architecture.md` |
 
 The readability rules below apply to `.sql` files too — a seed or schema script gets the same
 explicit column lists and the same ban on `SELECT *`. The house-style rule owns what is
-special about `.sql` files; this skill owns what every piece of SQL has in common.
+special about `.sql` files; this file owns what every piece of SQL has in common.
 
 Seed / reference data ships as a `.sql` file in the module's `schema/` (`workspace-sql-house-style.md` rule 3).
 
@@ -251,7 +247,7 @@ A rewrite without that comment is an unexplained complication, and the next pers
 either break it or revert it. The comment is what makes the trade reversible.
 
 Before proposing or accepting an `ON`↔`WHERE`, `DISTINCT`→`GROUP BY`, or `OR`→`UNION` rewrite,
-read `references/rewrites-that-buy-nothing.md`.
+read `rewrites-that-buy-nothing.md` in this folder.
 
 ---
 

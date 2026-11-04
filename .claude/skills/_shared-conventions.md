@@ -132,7 +132,7 @@ emoji variation selector).
 - **Not at every question.** The block closes a run or a task; a skill mid-interview just asks
   its question.
 - **Auto-triggered coding standards add none of their own.** `wp-repository-unitofwork-pattern`,
-  `wp-sql-query-design`, `wp-csharp-gof-design-patterns`, and `wp-aspnet-mvc-frontend-standards` apply inside a coding task; that
+  `wp-database-design`, `wp-csharp-gof-design-patterns`, and `wp-aspnet-mvc-frontend-standards` apply inside a coding task; that
   task's handoff covers them. `wp-writing-for-agents` likewise applies inside the task that edits a steering file. A dispatcher (`wp-obsidian-start`) defers to the skill it routes to.
 - **Language follows the conversation.** The two shapes, their slots, and their order do not change.
 

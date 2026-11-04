@@ -1,6 +1,6 @@
 ---
 name: wp-module-technical-design
-description: Turn a confirmed plan into a build-ready breakdown: the technical cut (API surface, class/file map, data access, frontend) and the ordered task list — vertical slices, parallel waves when the feature needs them. Use when a plan exists and needs nailing down before coding, or the user says "technical design" or "slice this" / "切片". No plan yet → /wp-module-plan-discuss first.
+description: Turn a confirmed plan into a build-ready breakdown: the technical cut (API surface, class/file map, data model, data access, frontend) and the ordered task list — vertical slices, parallel waves when the feature needs them. Use when a plan exists and needs nailing down before coding, or the user says "technical design" or "slice this" / "切片". No plan yet → /wp-module-plan-discuss first.
 ---
 
 <what-to-do>
@@ -27,7 +27,8 @@ Walk the layers top-down. For each design decision follow the **Question pattern
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
 - **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack) — a design pattern enters only with its named pain and the user's go (`wp-csharp-gof-design-patterns`), written under Decisions + why
-- **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-sql-query-design`
+- **Data model** — when the change creates or alters a table, column, key or index: per table, the columns and types, keys, relationships, the one module that owns (writes) it, which methods read it, and the transaction boundary of each multi-table write — designed per `wp-database-design`, starting from the real definition in `schema/`. Every table the change touches is accounted for; no table change → `None`
+- **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-database-design`
 - **Frontend** — view file, script/component structure, which stack components render which widget (e.g. DataTables / ECharts / Select2 / datepicker)
 - **Wiring** — whatever the project needs for the change to actually appear: menu/permission registration, route config, bundle/asset registration
 - **Deployment** — everything a person must do outside the build for the change to work, in order: each `.sql` to run (any module's `schema/`), config key, file to move, service or app to deploy. Every task that adds one of these puts a line here — a running draft that `/wp-module-save-implementation` reconciles into the final go-live list; a change with none writes `None`
@@ -160,6 +161,14 @@ One shape breaks the vertical-slice rule: a **wide refactor** — a single mecha
 |------|--------------|-------|----------------|
 
 <Mermaid flowchart of the files by layer, one arrow per call — **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`>
+
+### Data model
+
+Per table the change creates or alters: owner module, columns and types, keys, constraints, indexes, and who reads it. `None` when no table changes.
+
+<Mermaid erDiagram of the tables and their relationships — **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`>
+
+Prose after the diagram: ≤3 lines.
 
 ### Data access
 

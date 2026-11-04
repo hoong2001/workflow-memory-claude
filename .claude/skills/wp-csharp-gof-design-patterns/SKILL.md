@@ -12,7 +12,7 @@ description: GoF design patterns for this stack: which fit, the pain that must e
 | Which pattern, when to introduce it, how it is shaped in this stack | **this skill** |
 | Repository, UnitOfWork, Dapper | `wp-repository-unitofwork-pattern` |
 | What is forbidden (its §4.1 Forbidden list), C# version, layering | `project-memory/stack-architecture.md` |
-| Whether logic lives in SQL or in the Service | `wp-sql-query-design` |
+| Whether logic lives in SQL or in the Service | `wp-database-design` |
 
 ---
 

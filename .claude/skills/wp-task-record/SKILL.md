@@ -107,7 +107,7 @@ Conventions match the module layer, so nothing new to learn:
 
 One standing rule is easiest to break here:
 
-- **SQL design** — the `wp-sql-query-design` standard governs this query too. One-off is
+- **SQL design** — the `wp-database-design` standard governs this query too. One-off is
   not a licence for `SELECT *` or a query nobody can read six months later.
 
 ## Step 3 · Write `TASK.md`

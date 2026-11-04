@@ -212,7 +212,10 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 - ✔ Parameterized SQL queries (prevent SQL injection)
 - ✔ Explicit transaction control via UnitOfWork
 - ✔ Dapper (micro-ORM) as the sole data-access library — raw, parameterized SQL only
-- ✔ Query design per the **`wp-sql-query-design`** skill — the row-count test decides what
+- ✔ One connection string per system — its own database. Repository SQL never names another
+  database (`OtherDb.dbo.Table`): reads go through a `vw_` view and writes through a `syn_`
+  synonym in the system DB — mechanics, naming and MSDTC in the **`wp-database-design`** skill.
+- ✔ Query design per the **`wp-database-design`** skill — the row-count test decides what
   belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
 - ✔ C# 7.3 syntax maximum — the ceiling of the VS2017 compiler (§1.1 IDE)
 
@@ -268,3 +271,9 @@ These apply regardless of language; the per-language casing rules below only ref
 | Services | `[Entity]Service` | `ProductService` |
 
 > Frontend (JavaScript) naming conventions, Store-Then-Bind, and the per-view JS structure → **`wp-aspnet-mvc-frontend-standards`** skill.
+
+---
+
+## 6. Database & Data Flow
+
+> Table conventions, data ownership and data flow live in the **`wp-database-design`** skill — the single source of truth for database design. This architecture doc owns only the stack facts it builds on: SQL Server and Dapper (§1.1), the layers (§2) and the data-access rules (§4.1).
