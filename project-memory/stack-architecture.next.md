@@ -232,6 +232,8 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
   synonym in the system DB — mechanics, naming and MSDTC in the **`wp-database-design`** skill.
 - ✔ Query design per the **`wp-database-design`** skill — the row-count test decides what
   belongs in SQL vs the Service layer; SQL stays simple and readable; `SELECT *` is forbidden
+- ✔ A literal that carries meaning (status code, limit, role name) is a named constant or Enum in
+  `UnitOfWork/ConstValues/`
 - ✔ C# 7.3 syntax maximum — the ceiling of the VS2017 compiler (§1.1 IDE)
 
 **Forbidden:**

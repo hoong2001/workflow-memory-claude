@@ -38,3 +38,14 @@ Multi-step → a brief plan:
 ```
 
 Write each criterion as something the user can observe and report back — the test is theirs (`.claude/rules/workspace-workflow.md` Step 2).
+
+## 5. Code shape
+
+- **One job per method.** A second job moves into its own method, named for it. A method takes at
+  most 3 parameters; a fourth means grouping them into one object or splitting the method.
+- **Failure is an exception.** A method signals failure by throwing, never by returning a code or flag.
+  A `try/catch` longer than a few lines moves into its own method, so the caller reads the happy path.
+- **Talk to direct collaborators only** (Law of Demeter). `order.Customer.Address.City` becomes a
+  call that asks `order` for the city.
+- **Smell sweep before handoff.** Scan the code this task wrote for a magic literal, a fourth
+  parameter, a method with two jobs, a name that needs its definition to be understood.
