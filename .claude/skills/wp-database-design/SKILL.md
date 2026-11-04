@@ -32,6 +32,7 @@ Open `references/query-design.md` before writing or reviewing any SQL: it holds 
 |---|---|
 | Table / column names | PascalCase, singular table (`SalesOrder`, `SalesOrderItem`); `stack-architecture.md` §5.0 principles apply |
 | Reserved words | A table, column, view or constraint name is never, as a whole word, on Microsoft's [Reserved Keywords (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql) page — its Transact-SQL reserved, ODBC reserved and future keyword lists. A compound name clears it: `Order` → `SalesOrder`, `Date` → `OrderDate`, `Key` → `ApiKey`, `User` → `AppUser`, `Level` → `AccessLevel`. A reserved name parses only inside `[brackets]`, in every query that touches it |
+| Index and constraint names | `<Type>_<Table>[_<Columns>]`, Type being `PK` (primary key), `UQ` (`UNIQUE`) or `IX` (index): `PK_SalesOrder`, `UQ_SalesOrder_OrderNo`, `IX_SalesOrderItem_SalesOrderId`. Columns follow in key order, joined by `_`. Every such object is named in the `.sql`; the name states the table and the columns it covers |
 | Result mapping | A Result property carries the same name as its column, so Dapper maps by name with no alias |
 | Primary key | The business key: one column (`CustomerId`) or a composite of several. Not every table has one: Claude infers the candidate (**Inferred keys**), and it enters the `.sql` only after the user confirms |
 | `Id` column | Every table also carries `Id bigint IDENTITY(1,1)` — a spare, ever-increasing counter (a `long` property in the Result class). It is the primary key only when the table has no business key, which is rare and recorded in the plan |
@@ -76,7 +77,7 @@ A primary key or `UNIQUE` constraint is not assumed on every table. Per table th
 
 | Check | Passes when |
 |---|---|
-| Names | Every table and column follows the naming row; no name is cryptic or over 50 characters |
+| Names | Every table and column follows the naming row, every index and constraint follows the index-and-constraint row; no name is cryptic or over 50 characters |
 | Reserved words | Each table, column, view and constraint name checked against the three keyword lists; none is a whole-word match |
 | Keys | Each primary key and `UNIQUE` was inferred, put to the user with its basis, and is in the `.sql` only if confirmed; every table carries `Id bigint IDENTITY(1,1)`; no `FOREIGN KEY` constraint is declared; each relationship column keeps the referenced key's name |
 | Integrity | The Service that writes a child row checks its parent, and the Service that deletes a parent handles its children, in one transaction |
