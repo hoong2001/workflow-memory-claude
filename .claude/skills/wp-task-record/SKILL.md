@@ -83,7 +83,7 @@ behind it yet → `/wp-interview`, then resume here with its record.
 
 ## Step 0.7 · Do the work
 
-When it stops — finished, or blocked on something external — continue to Step 1.
+Folder first: create it per Step 1 before the first file exists, then write every file straight to its place in Step 2's table — not to the project root, not to the task folder's root. When the work stops — finished, or blocked on something external — continue to Step 2.
 
 ## Step 1 · Create the task folder
 
@@ -92,8 +92,8 @@ project-memory/tasks/<YYYY-MM-DD>-<slug>/
 ```
 
 - Today's date, `<slug>` short kebab-case naming the request: `2026-09-14-q3-sales-report`.
-- Create `schema/` and `references/` inside it **only when there is something to put in
-  them**.
+- Create `schema/`, `output/` and `references/` inside it **only when there is something to put
+  in them**. The folder's root holds `TASK.md` and nothing else.
 
 ## Step 2 · Land every file the task touched
 
@@ -103,7 +103,9 @@ Conventions match the module layer, so nothing new to learn:
 |---|---|---|
 | Any `.sql` — the query that produced the report, the patch UPDATE, a test script | `schema/` | A described script is not a delivered script. Ship the real file. Name it `<date>-<slug>.sql`. |
 | Material received — spec, email text, screenshot, sample file | `references/` | Consulted on demand, never auto-loaded. |
-| The output itself (the Excel, the PDF sent to the requester) | usually NOT stored | Say in `TASK.md` where it went ("emailed to <role> on <date>"). Store it only if it is small and genuinely needed for comparison next time. |
+| A file the task produces for the requester — Excel, PDF, CSV | `output/` | Name it `<date>-<slug>.<ext>`. `TASK.md` says where it went ("emailed to <role> on <date>"). Small → it stays for comparison next time; large → move it out after sending and say where in `TASK.md`. |
+
+A file written before the folder existed — in the project root, or in the folder's root — moves to its place now. Done when the task folder's root lists `TASK.md` and the subfolders only.
 
 One standing rule is easiest to break here:
 
@@ -131,7 +133,7 @@ The actual steps, in order. Enough for a future session to redo it without the c
 | File / output | What it is |
 |---|---|
 | `schema/2026-09-14-q3-sales-report.sql` | The query that produced the numbers |
-| Excel workbook | Emailed to the requester 2026-09-14; not stored here |
+| `output/2026-09-14-q3-sales-report.xlsx` | The workbook emailed to the requester 2026-09-14 |
 
 ## Decisions + why
 Only the judgment calls — which date field counts as the sale date, which statuses were
@@ -153,7 +155,8 @@ stopped on something external, with `## What was done` ending where the work sto
 ```text
 ├─ ✅ Done
 │  ├─ project-memory/tasks/2026-09-14-q3-sales-report/TASK.md (48 lines, new) — Status: Done · Likely to repeat: Monthly
-│  └─ .../schema/2026-09-14-q3-sales-report.sql (22 lines, new) — query saved
+│  ├─ .../schema/2026-09-14-q3-sales-report.sql (22 lines, new) — query saved
+│  └─ .../output/2026-09-14-q3-sales-report.xlsx (18 KB, new) — workbook sent
 └─ 🏁 Closed  nothing pending
 ```
 

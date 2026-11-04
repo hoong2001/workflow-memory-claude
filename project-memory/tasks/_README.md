@@ -23,7 +23,7 @@ is as the origin story.
 ## What a task folder holds
 
 Each task is one self-contained folder, `<YYYY-MM-DD>-<slug>/`: its `TASK.md` record, plus
-`schema/` for the `.sql` it used and `references/` for the material it was given, when it had
+`schema/` for the `.sql` it used, `output/` for the files it produced and `references/` for the material it was given, when it had
 any. Two tasks never share a file. When a request comes back, open the old `TASK.md` at
 **"If this comes back"**: what to re-run, what to change first, what tripped someone up.
 
