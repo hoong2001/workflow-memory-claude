@@ -44,6 +44,21 @@ Before touching the codebase, ask the user **what change they intend** — this 
 
 Grep for the supplied method/feature name — **within the scope hint if one was given**, otherwise codebase-wide. Confirm the real definition before tracing. If multiple matches survive (common with generic names like `Save` / `GetData` / `Process`), ask which one through the Question pattern, one option per match with its path.
 
+### Step 1.5: Decide who traces
+
+When the `Codebase Onboarding Engineer` agent is among the available agent types, choose who runs Steps 2–3. Not listed → trace inline.
+
+| Situation | Who traces |
+|---|---|
+| Entry symbol is clear and the chain is expected to stay within 5 files | You, inline |
+| Entry symbol is ambiguous, or the chain crosses several layers or more than 5 files | One agent for the whole chain |
+| Upstream and downstream are both long | Two agents in one message, one per direction |
+| The user asked only to map, no change | One agent for the whole chain |
+
+The agent starts with no context and cannot ask the user, so its prompt carries the confirmed entry symbol, the scope hint, both boundaries (Entry & Boundaries), and the return format: each hop as `file:method` in call order, the boundary reached, every link it could not resolve with the reason, and the full list of files inspected. Cut points, edits and file writes stay with you.
+
+The report is a lead list. Open the file of every hop that feeds a cut point or a shared symbol; a hop you did not open is marked `unverified` (Verification Rule). Step 3.5 and everything after it run inline, since they need the whole chain.
+
 ### Step 2: Trace upstream to the input boundary
 
 From the entry symbol, follow callers upward until reaching a controller / handler / UI event / consumer. Record each hop as `file:method`. Stop at the input boundary.
