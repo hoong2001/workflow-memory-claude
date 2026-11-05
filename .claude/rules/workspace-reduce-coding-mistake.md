@@ -41,11 +41,22 @@ Write each criterion as something the user can observe and report back — the t
 
 ## 5. Code shape
 
-- **One job per method.** A second job moves into its own method, named for it. A method takes at
-  most 3 parameters; a fourth means grouping them into one object or splitting the method.
+- **One job per method, read top to bottom.** A method computes its values into local variables
+  and uses them in order, so the reader follows one method, not a chain. A method takes at most 6
+  parameters; a seventh means grouping them into one object.
+- **Extract a method when it earns a name:** two or more callers, a guard (validation, whitelist,
+  parameter or IN-list builder), or a named step of about 15 lines or more. A single-caller step
+  below that bar stays inline, under a one-line comment.
+- **Two hops at most.** From a public method, every value it uses is found within two levels of
+  private calls.
+- **Return values; keep state local.** A helper returns what it computes and the caller assigns it;
+  a `void` helper that changes an object passed in hides the order its callers depend on, so pass
+  the result back instead. A SQL condition and its `param.Add` sit in the same block. A `bool` that
+  switches behaviour through several layers becomes two plain methods, or the caller decides.
 - **Failure is an exception.** A method signals failure by throwing, never by returning a code or flag.
   A `try/catch` longer than a few lines moves into its own method, so the caller reads the happy path.
 - **Talk to direct collaborators only** (Law of Demeter). `order.Customer.Address.City` becomes a
   call that asks `order` for the city.
-- **Smell sweep before handoff.** Scan the code this task wrote for a magic literal, a fourth
-  parameter, a method with two jobs, a name that needs its definition to be understood.
+- **Smell sweep before handoff.** Scan the code this task wrote for a magic literal, a seventh
+  parameter, a method with two jobs, a single-caller helper below the extraction bar, a value more
+  than two hops from its public method, a name that needs its definition to be understood.
