@@ -43,7 +43,7 @@
 - (TBD)
 
 ## 6. External Integrations
-<!-- Draw what crosses each boundary as a Mermaid `flowchart LR`; ≤3 lines of prose after it. -->
+<!-- Draw what crosses each boundary as a Mermaid `flowchart`; ≤3 lines of prose after it. -->
 - (external systems, APIs, file feeds this system talks to)
 
 ## 7. Domain Glossary

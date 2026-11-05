@@ -57,7 +57,7 @@ When the `Codebase Onboarding Engineer` agent is among the available agent types
 
 The agent starts with no context and cannot ask the user, so its prompt carries the confirmed entry symbol, the scope hint, both boundaries (Entry & Boundaries), and the return format: each hop as `file:method` in call order, the boundary reached, every link it could not resolve with the reason, and the full list of files inspected. Cut points, edits and file writes stay with you.
 
-The report is a lead list. Open the file of every hop that feeds a cut point or a shared symbol; a hop you did not open is marked `unverified` (Verification Rule). Step 3.5 and everything after it run inline, since they need the whole chain.
+The report is a lead list. Open the file of every hop that feeds a cut point or a shared symbol; a hop you did not open is marked `unverified` (Verification Rule). Step 3.5 and everything after it run inline, since they need the whole chain. The flow doc's Notes then carry one line, `Traced by: inline` or `Traced by: agent — <why>`; Step 1.5 is done when that line is written.
 
 ### Step 2: Trace upstream to the input boundary
 
@@ -82,7 +82,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram` and its Data flow `flowchart LR`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram` and its Data flow `flowchart`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
 
 ## Verification Rule
 
@@ -101,13 +101,13 @@ shape), rename its H1 to the module, keep its header block and every heading, th
 - **Diagram** — the main path end to end, input → process → output, as a Mermaid `sequenceDiagram`:
   one participant per class/file on the chain, one arrow per call, a dashed return where a value
   comes back. Draw only what the Called files table holds; never add a call it does not list.
-- **Data flow** — a Mermaid `flowchart LR` of the tables, views and files the chain reads or writes,
+- **Data flow** — a Mermaid `flowchart` of the tables, views and files the chain reads or writes,
   each tied to the method that touches it; `None — no table access` when there are none.
 - **Called files & methods** — one row per `file:method` on the chain, `#` = its order on the main
   path (blank for a file off the path).
 - **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
   `file:method`, and its entry points.
-- **Notes** — cross-cutting concerns (noted, not expanded) and `unverified` links, each with its reason.
+- **Notes** — the `Traced by:` line (Step 1.5), cross-cutting concerns (noted, not expanded) and `unverified` links, each with its reason.
 - Every `(e.g.)` placeholder is replaced or removed.
 
 **Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace. It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision. List every other caller of a shared cut point as a Touch points row too, or state "no shared cut points" under the table.

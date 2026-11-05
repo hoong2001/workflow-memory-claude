@@ -134,7 +134,7 @@ template spec section each one draws from is in brackets.
    Mermaid `flowchart` (**Diagrams** in `.claude/rules/workspace-doc-writing-style.md`), starting from
    the spec's 9.1 / 9.2 diagram when it has one.
 6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to,
-   drawn as the template's Mermaid `flowchart LR`.
+   drawn as the template's Mermaid `flowchart`.
 7. **Domain Glossary** [Domain Glossary] — Domain terms a new reader needs, each as `term — meaning`.
 
 The rest of the spec has no overview home and stays in the spec file: System Design deltas feed

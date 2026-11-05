@@ -52,6 +52,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
 │   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured)
 │   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
+│   ├── sql-comment-check.mjs          PostToolUse: rejects a SQL line comment that ends a C# string literal in a Repositories/*.cs file (it would comment out what is appended after it)
 │   ├── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
 │   └── idea-interview-hint.mjs        SessionStart: one line pointing at /wp-interview, every session
 ├── scripts/

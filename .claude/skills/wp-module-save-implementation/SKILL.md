@@ -89,7 +89,7 @@ Decide the scope of this task's change:
 - **Structural change** — a new file/method entered the call chain, an existing one was removed or repurposed, or the main flow path shifted. → Patch only the affected parts of flow.md:
   - **Flow** section (only a doc that still has one): adjust the narrative only where the path actually changed.
   - **Diagram** section: patch the Mermaid `sequenceDiagram` to match the new call order (add, remove or rename the participants and arrows that changed). A linked archify HTML is not regenerated — add `(outdated: <date>)` to its link line instead.
-  - **Data flow** section (only a doc that has one): patch the `flowchart LR` where a table, view or file read or write changed.
+  - **Data flow** section (only a doc that has one): patch the `flowchart` where a table, view or file read or write changed.
   - **Called files & methods** table: add rows for new `file:method` links, fix the `#` order and the "Role" of any that changed, remove rows for calls that no longer exist.
   - A flow.md in the old shape keeps it: add no Diagram or Data flow section it lacks unless the user asks.
   - **Shared symbols & their callers (fan-in)** table: if this change added or removed a caller of a shared symbol (`Base*`, `ConstValues/`, `Results/`, or any multi-caller method), patch that symbol's caller row. This table is the module's blast-radius map — a stale one is worse than none.

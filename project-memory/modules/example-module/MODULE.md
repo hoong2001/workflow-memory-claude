@@ -40,11 +40,11 @@
 -
 
 ## Public interface / dependencies
-(A Mermaid `flowchart LR`: who calls this module → the module → the modules it depends on; label
+(A Mermaid `flowchart`: who calls this module → the module → the modules it depends on; label
 each arrow with what crosses it. Keep it to the module's direct neighbours.)
 
 ```mermaid
-flowchart LR
+flowchart TB
     Caller["(e.g.) Web page or job"] -->|"calls"| M["Example Module"]
     M -->|"reads"| Dep["(e.g.) another module"]
 ```

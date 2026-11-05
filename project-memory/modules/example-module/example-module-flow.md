@@ -26,11 +26,11 @@ sequenceDiagram
 ```
 
 ## Data flow
-(A Mermaid `flowchart LR` of the tables, views and files the module reads and writes, and which
+(A Mermaid `flowchart` of the tables, views and files the module reads and writes, and which
 method touches each. `None — no table access` when it has none.)
 
 ```mermaid
-flowchart LR
+flowchart TB
     R["(e.g.) order repository"] -->|reads| T[("(e.g.) Orders")]
 ```
 
@@ -53,4 +53,5 @@ inherits an edit to this symbol. Filled by `/wp-module-code-trace-flow` Step 3.5
 | | | |
 
 ## Notes
+Traced by: inline | agent — <why> (Step 1.5)
 (Brief — only what genuinely helps someone pick this module up.)

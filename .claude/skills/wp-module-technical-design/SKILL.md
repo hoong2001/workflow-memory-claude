@@ -101,7 +101,7 @@ Increments that span several layers get a **wave** each, so subagents can write 
 
 #### Running a wave
 
-No go between waves: the go after this skill's task list covers every wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: group its rows per **Agent ownership** above and dispatch one background `Agent` per group (at most 4), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check. Build green and no decision conflict → start the next wave; either one stops (a "Claude stops" row, a conflict) → stop and ask the user. After the last wave the user tests each row of the table. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
+No go between waves: the go after this skill's task list covers every wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: group its rows per **Agent ownership** above and dispatch one background `Agent` per group (at most 4), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. A **Data** agent returns only after each query it wrote has run once on the local test database (or compiled under `SET NOEXEC ON`); its report says what that run returned. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check. Build green and no decision conflict → start the next wave; either one stops (a "Claude stops" row, a conflict) → stop and ask the user. After the last wave the user tests each row of the table. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
 
 ### Quiz the user before writing
 
@@ -174,7 +174,7 @@ Prose after the diagram: ≤3 lines.
 
 Per Repository method: name, tables/views touched, SQL approach (one short paragraph or bullet), parameters.
 
-<Mermaid flowchart LR of the tables and views each method reads or writes>
+<Mermaid flowchart of the tables and views each method reads or writes>
 
 Prose after each diagram: ≤3 lines.
 

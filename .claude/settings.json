@@ -63,6 +63,14 @@
               "${CLAUDE_PROJECT_DIR}/.claude/hooks/connstr-check.mjs"
             ],
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/sql-comment-check.mjs"
+            ],
+            "timeout": 15
           }
         ]
       }
