@@ -1,6 +1,6 @@
 ---
 name: wp-module-technical-design
-description: Turn a confirmed plan into a build-ready breakdown: the technical cut (API surface, class/file map, data model, data access, frontend) and the ordered task list — vertical slices, parallel waves when the feature needs them. Use when a plan exists and needs nailing down before coding, or the user says "technical design" or "slice this" / "切片". No plan yet → /wp-module-plan-discuss first.
+description: Turn a confirmed plan into a build-ready breakdown: the technical cut (API surface, class/file map, data model, data access, frontend) and the ordered task list — vertical slices built one row at a time. Use when a plan exists and needs nailing down before coding, or the user says "technical design" or "slice this" / "切片". No plan yet → /wp-module-plan-discuss first.
 ---
 
 <what-to-do>
@@ -51,8 +51,8 @@ is what the rows are:
 
 | The plan | Rows are | Extra columns carry |
 |---|---|---|
-| One demoable behavior, builds in one code→build→test pass | The plain steps to do it | `—` for Layers / Blocked by / Wave |
-| Multiple behaviors, or a full flow end-to-end | **Vertical increments** (tracer bullets) | Real layers, blocking edges, and waves |
+| One demoable behavior, builds in one code→build→test pass | The plain steps to do it | `—` for Layers / Blocked by |
+| Multiple behaviors, or a full flow end-to-end | **Vertical increments** (tracer bullets) | Real layers and blocking edges |
 | A wide refactor — one mechanical change across many call sites | **Expand → migrate → contract** batches (**The wide-refactor exception**, below) | Blocking edges in that order |
 
 ### When the rows are vertical increments
@@ -73,40 +73,13 @@ that groundwork as the first increment(s).
 and blockers are listed earlier in the sequence.
 
 Every increment must be a **full vertical path** that can be built, manually tested, and demoed on
-its own — the skeleton and other prefactor rows excepted, done on a green build. If a proposed
+its own — prefactor rows excepted, done on a green build. If a proposed
 increment can't be verified until a *later* one lands, it's a horizontal slice in disguise — re-cut it.
-
-### Parallel waves
-
-Increments that span several layers get a **wave** each, so subagents can write them at once
-(**Running a wave** below runs them). Plain steps stay sequential:
-`Wave` = `—`.
-
-1. **Skeleton first** — row #1, alone in Wave 1, done when the build is green:
-   - every NEW file in the Class & file map, as a stub class registered in its `.csproj`;
-   - every new method in the map, as its final signature with a body that throws
-     `NotImplementedException`;
-   - all wiring — routes, bundles, menu/permission seed, `Web.config`.
-
-   The skeleton freezes the contract between layers and holds every shared-file edit, so later
-   waves only fill method bodies.
-2. **Wave number** = 1 + the highest wave among the row's `Blocked by` rows. Every non-skeleton
-   row is blocked by #1 at minimum.
-3. **Agent ownership** — a wave runs as 1–4 subagents; the orchestrator groups the wave's rows by
-   file ownership, once the rows are known. Rows whose files are disjoint → one agent per row;
-   rows that share files → one agent per layer: **Data** (SQL, Repository, Result), **Service**,
-   **Web** (Controller, View, JS). More than 4 groups → merge the smallest. Each file in the Class &
-   file map belongs to exactly one agent. A file two agents would both edit → move that edit into
-   the skeleton, or add a `Blocked by` edge so the two rows land in different waves.
-
-#### Running a wave
-
-No go between waves: the go after this skill's task list covers every wave. Row #1, the skeleton, runs alone and builds green first. Each later wave: group its rows per **Agent ownership** above and dispatch one background `Agent` per group (at most 4), all in the same working folder — no worktree, so git and TFVC alike. Each gets pointers only: the plan path, its rows, its owned files. It writes code and skips the build; a file outside its ownership or a skeleton signature it needs changed → it stops and reports, the orchestrator decides. A **Data** agent returns only after each query it wrote has run once on the local test database (or compiled under `SET NOEXEC ON`); its report says what that run returned. Once every agent has returned: one build, the build handling table in `.claude/rules/workspace-workflow.md` Step 2, the decision check. Build green and no decision conflict → start the next wave; either one stops (a "Claude stops" row, a conflict) → stop and ask the user. After the last wave the user tests each row of the table. A table whose `Wave` cells are `—`, or that has no `Wave` column, runs one row at a time.
 
 ### Quiz the user before writing
 
 Walk the proposed breakdown with them using the **Question pattern** in `.claude/skills/_shared-conventions.md`. Confirm
-granularity, the blocking edges, the waves and the skeleton's contents, and anything to merge or split. Don't publish the table until it is
+granularity, the blocking edges, and anything to merge or split. Don't publish the table until it is
 agreed.
 
 ## Step 5: Append both sections and set the status
@@ -206,14 +179,14 @@ In this order, paths from the project root:
 
 ## Tasks
 
-> Broken down: YYYY-MM-DD · vertical increments | plain steps · parallel waves | one at a time
+> Broken down: YYYY-MM-DD · vertical increments | plain steps
 
-| # | ✔ | Task | Manager summary | Layers touched | Blocked by | Wave | Done when (verifiable) |
-|---|---|------|-----------------|----------------|-----------|------|------------------------|
-| 1 | ☐ | Skeleton: stubs, signatures, wiring | Groundwork only — nothing visible changes yet | SQL + Repository + Service + Controller + View | — | 1 | Build green |
-| 2 | ☐ | ... | Users can now see the customer list on one screen | SQL + Repository + Service + Controller + View | #1 | 2 | ... |
-| 3 | ☐ | ... | ... | ... | #1 | 2 | ... |
-| 4 | ☐ | ... | ... | ... | #2 | 3 | ... |
+| # | ✔ | Task | Manager summary | Layers touched | Blocked by | Done when (verifiable) |
+|---|---|------|-----------------|----------------|-----------|------------------------|
+| 1 | ☐ | Groundwork, when the later rows need it | Groundwork only — nothing visible changes yet | Result class, menu slot, schema | — | Build green |
+| 2 | ☐ | ... | Users can now see the customer list on one screen | SQL + Repository + Service + Controller + View | #1 | ... |
+| 3 | ☐ | ... | ... | ... | #1 | ... |
+| 4 | ☐ | ... | ... | ... | #2 | ... |
 
 ### Notes
 - Prefactor / groundwork ordered first: ...

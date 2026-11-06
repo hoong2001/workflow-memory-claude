@@ -56,12 +56,7 @@ header says `Done` → this is new work, carry on below.
 
 Plan landed and needs the technical cut and a task breakdown → `/wp-module-technical-design`,
 then wait for the go. Work its `## Tasks` rows top to bottom, one at a time through the Act loop
-below — wave by wave when the `Wave` column carries numbers.
-
-**Parallel waves** — a `Wave` column with numbers runs wave by wave with no go between waves, up to 4
-agents per wave, until a build or decision-check stop:
-follow **Parallel waves → Running a wave** in `.claude/skills/wp-module-technical-design/SKILL.md`
-before dispatching.
+below, in the main session.
 
 → Act: **code → build → test** → **save on every change**.
    **Saving includes the plan's status header** — the `> **Status:** ...` line under its H1.
@@ -73,6 +68,8 @@ before dispatching.
    **Build is Claude's; test is the user's.** After each coding chunk Claude runs
    `node .claude/scripts/build-solution.mjs` (arguments, exit codes: its header) and reads the whole
    output, not just the exit code — no log file is kept, so the reply is the record.
+   A new SQL query runs once on the local test database (or compiles under `SET NOEXEC ON`) before the
+   build is reported; Done says what that run returned.
 
    **Whatever the build hits, Claude handles it when it can and stops when it can't.** The test:
    the fix stays inside code this task touched, needs no decision from the user, and breaks no hard
