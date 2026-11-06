@@ -59,6 +59,12 @@ The agent starts with no context and cannot ask the user, so its prompt carries 
 
 The report is a lead list. Open the file of every hop that feeds a cut point or a shared symbol; a hop you did not open is marked `unverified` (Verification Rule). Step 3.5 and everything after it run inline, since they need the whole chain. The flow doc's Notes then carry one line, `Traced by: inline` or `Traced by: agent — <why>`; Step 1.5 is done when that line is written.
 
+### Step 1.6: Seed with CodeGraph (optional)
+
+Runs only when the repo root holds a `.codegraph/` directory and `codegraph_explore` is among the available tools. Either is missing → skip to Step 2; the skill runs as written and nothing needs installing.
+
+Call `codegraph_explore` once with the confirmed entry symbol and `projectPath` set to the repo root. Its callers, callees and source excerpts are a lead list for Steps 2–3.5, on the same footing as an agent report: open the file of every hop that feeds a cut point or a shared symbol, and mark any other hop `unverified`. The index can lag the working tree, so when it disagrees with the file, the file wins. The Notes line becomes `Traced by: inline, CodeGraph-seeded` (or the agent variant).
+
 ### Step 2: Trace upstream to the input boundary
 
 From the entry symbol, follow callers upward until reaching a controller / handler / UI event / consumer. Record each hop as `file:method`. Stop at the input boundary.
@@ -75,6 +81,7 @@ How to sweep — **LSP first, `rg` as the fallback:**
 
 - **LSP `findReferences`** on the symbol's definition (position on the name itself, not its doc comment or modifiers — read the line first). It resolves by type, so a common name like `Insert` or `Save` returns only this symbol's callers. Measured on a .NET 4.7.2 solution: `rg "\bInsert\s*\("` returned 7 hits for one repository method, of which 2 were real callers and 4 were `List.Insert` or comments.
 - **Fall back to `rg -n "SymbolName"`** when the LSP tool is absent, errors, or returns nothing. An empty LSP answer is never taken as "no callers": check the position, then sweep with `rg` and filter the hits by hand. LSP needs the C# language server `csharp-ls` on `PATH` (`dotnet tool install --global csharp-ls`, used by the `csharp-lsp` Claude Code plugin) and answers only for the solution in the session's working directory.
+- A CodeGraph caller list (Step 1.6) is a lead, never the sweep itself: confirm it with LSP, or with `rg` when LSP is absent.
 - Say which method backed each caller list (`LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
 
 - Tag each caller by entry point (Web / Api / ServBackend) so the blast radius is legible.

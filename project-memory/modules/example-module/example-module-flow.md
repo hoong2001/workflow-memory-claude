@@ -53,5 +53,5 @@ inherits an edit to this symbol. Filled by `/wp-module-code-trace-flow` Step 3.5
 | | | |
 
 ## Notes
-Traced by: inline | agent — <why> (Step 1.5)
+Traced by: inline | agent — <why> (Step 1.5); add `, CodeGraph-seeded` when Step 1.6 ran
 (Brief — only what genuinely helps someone pick this module up.)
