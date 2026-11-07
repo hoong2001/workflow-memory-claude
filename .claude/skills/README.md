@@ -4,14 +4,14 @@
 > already states its detailed purpose and "do NOT use" cases — this file is the **map between
 > them**: what runs first, what's optional, and which skill answers "what do I reach for now?"
 
-> Rules that several skills share — the purpose gate, the question pattern, the handoff block, the status header — live once in
-> `_shared-conventions.md` beside this file; the skills point at it instead of each carrying a copy.
-> The whole-system spec format lives the same way in `_system-spec-template.md`: `system-spec-discuss`
+> Rules that several skills share — the purpose gate, the question pattern, interview pacing, the handoff block, the status header, the recorded-decisions read — live once in
+> `.claude/skills/_shared-conventions.md`; the skills point at it instead of each carrying a copy.
+> The whole-system spec format lives the same way in `.claude/skills/_system-spec-template.md`: `system-spec-discuss`
 > writes it, `system-overview-spec-generator` reads it.
 
 > Documents under `project-memory/` carry Mermaid diagrams — one per section that has structure,
 > ≤3 lines of prose after it — per **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`.
-> The optional archify HTML (`_optional-diagram.md`) is a separate, asked-once extra.
+> The optional archify HTML (`.claude/skills/_optional-diagram.md`) is a separate, asked-once extra.
 
 ## Trigger convention
 
@@ -85,14 +85,14 @@ routed to one of the entry points above or to a one-off task.
 | `wp-csharp-gof-design-patterns` | Designing (the class & file map in `technical-design` points here) or refactoring C# Service / ServBackend / integration code, or asking which pattern fits | The pattern standard: a pattern needs a named pain and the user's go first; five recommended (Template Method, Strategy + Simple Factory, Adapter, Command), three conditional, the rest ruled out for this stack | Auto |
 | `wp-aspnet-mvc-frontend-standards` | Writing/reviewing frontend JS (jQuery, Razor→JS, Web API calls, DataTables, Select2…) | The frontend standard: allowed ES6, Store-Then-Bind, per-view JS structure | Auto |
 
-> The build, the Decision check and the manual test need no skill — `.claude/rules/workspace-workflow.md` Step 2.
+> The build, the Decision check and the manual test need no skill — `.claude/rules/workspace-workflow.md` Step 2, with the build and the Decision check in `.claude/rules/workspace-build-loop.md` (path-scoped to code files).
 
 ### Phase 3 · Wrap up
 
 | Skill | When to use | Purpose / function | Output |
 |-------|-------------|--------------------|--------|
 | `wp-module-save-implementation` | After a feature, refactor, or significant bug fix is done — YOU decide when | Save the impl record (decision + why, ruled out, files touched, gotchas), close the paired plan's status header, lightweight-refresh `<name>-flow.md` | `impl/<name>-<date>-<slug>.md` + plan `Status: Done` + flow.md |
-| `wp-retro` | The session hit friction — the wrap-up reminder names the signal (`workspace-update-memory.md` item 7), or you just felt it was harder than it should be | Trace each struggle to a moment in the session, classify it, route it: mechanical → a check, judgement → a standard skill or `MODULE.md`, always-on lines that changed nothing → delete; template changes go to the master. Adapted from `retro` in `mattpocock/skills` | Ranked candidates (max 5); only the ones you pick are applied |
+| `wp-retro` | The session hit friction — the wrap-up reminder names the signal (`.claude/rules/workspace-update-memory.md` item 7), or you just felt it was harder than it should be | Trace each struggle to a moment in the session, classify it, route it: mechanical → a check, judgement → a standard skill or `MODULE.md`, always-on lines that changed nothing → delete; template changes go to the master. Adapted from `retro` in `mattpocock/skills` | Ranked candidates (max 5); only the ones you pick are applied |
 
 ### Standing · One-off work (no module)
 
@@ -107,7 +107,7 @@ main flow. No → `wp-task-record` (folder layout: the skill), and Step 3 is ski
 
 | Skill | When to use | Purpose / function |
 |-------|-------------|--------------------|
-| `wp-writing-for-agents` | Auto — creating or editing a skill or rule under `.claude/`, or `CLAUDE.md`; `wp-retro` loads it first | The steering-file writing standard: context pointers, the two loads, information hierarchy, completion criteria, leading words, the no-op test. `project-memory/` is out of its scope (people read those too — `workspace-doc-writing-style.md`). Fork of `writing-for-agents` from `mattpocock/skills` v1.3.1, MIT (`LICENSE-mattpocock`); local changes: name, description, the scope paragraph |
+| `wp-writing-for-agents` | Auto — creating or editing a skill or rule under `.claude/`, or `CLAUDE.md`; `wp-retro` loads it first | The steering-file writing standard: context pointers, the two loads, information hierarchy, completion criteria, leading words, the no-op test. `project-memory/` is out of its scope (people read those too — `.claude/rules/workspace-doc-writing-style.md`). Fork of `writing-for-agents` from `mattpocock/skills` v1.3.1, MIT (`LICENSE-mattpocock`); local changes: name, description, the scope paragraph |
 | `wp-update-from-master` | You want to pull template updates from the master repo | Sync master → project strictly by `SYNC-MANIFEST.md`; never bulk-copies `.claude/` or `project-memory/` |
 | `wp-secret-scan` | Adopting this template on an existing project, before making a repo public, or any time you suspect a credential is sitting in the docs | Audit `project-memory/`, `.claude/` and every `.md` for credentials the always-on hook never saw; redact the hits and flag which ones need rotating |
 | `wp-connstr-check` | Adopting this template on an existing .NET project, or after config files were edited outside Claude (Visual Studio, a merge, a shell command) | Dry-run every `Web.config` / `App.config` and transform against the house MSSQL `connectionString` template, report the diff with passwords masked, apply on your go |

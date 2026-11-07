@@ -36,6 +36,11 @@ If `AskUserQuestion` is unavailable in the current environment, fall back to lis
 same options as numbered plain text and asking the user to pick one or state a custom answer —
 never revert to a bare statement waiting for a nod.
 
+## Interview pacing
+
+One question at a time, each answer in before the next; read the code and docs before spending a
+question they answer. Each choice follows the **Question pattern**.
+
 ## Handoff
 
 Every skill run ends with a handoff, and so does every task that runs without a skill
@@ -263,3 +268,11 @@ Before the first question, read the files its `Material` table lists too.
   first with `/wp-interview @<path>`.
 - **Name the record** in what the skill writes — its path, or the H1 title of pasted text with no
   file.
+
+## Recorded decisions
+
+A module's past decisions are found by file: for each file in question,
+`grep -l "<FileName>" project-memory/modules/<name>/impl/*.md`, then read only the
+`Decisions + why` and `Ruled out` sections of the records it finds. The grep finds every record
+because each one lists every file it touched (**Files touched**, `/wp-module-save-implementation`
+Step 1).

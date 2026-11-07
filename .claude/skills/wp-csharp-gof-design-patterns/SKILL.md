@@ -40,7 +40,7 @@ what it was for.
 - **Objects are created in one place:** the Factory, or the Service that owns the pattern. Never a
   static registry or service locator.
 - **The family's abstraction is an abstract base class.** Shared step code lives in it, and the
-  Base-class convention in `stack-architecture.md` §2.3 already makes that the house shape.
+  Base-class convention in `project-memory/stack-architecture.md` §2.3 already makes that the house shape.
 - **Every Service class inherits `BaseService`** (§2.3), and C# allows one parent class. A pattern
   family in the Services project is held to the same rule: its base class inherits `BaseService`
   (`DiscountRuleBase : BaseService`), and its members reach it through that base. A C# `static`
@@ -49,7 +49,7 @@ what it was for.
   Service loads the data and passes it in; the Strategy only decides. A class that needs data
   access is a Service (Template Method across two export Services), and follows every Service rule.
 - **Placement: the same folder as the Service that owns it.** Never a new folder such as
-  `Services/Strategies/` — the structure in `stack-architecture.md` §3 stays as it is. ServBackend
+  `Services/Strategies/` — the structure in `project-memory/stack-architecture.md` §3 stays as it is. ServBackend
   jobs sit in the ServBackend project beside `Worker.cs`; that project has no mandatory base class
   in §2.3, so a job inherits only its own family's base.
 - **Stateless:** synchronous, no mutable static state — IIS serves requests in parallel, so a
@@ -148,7 +148,7 @@ order.Discount = rule.Apply(order);
 - Factory and strategies are *stateless*, so a new instance per call is safe and costs nothing.
 - `default` throws. A factory that silently returns a do-nothing rule hides a missing type until
   the numbers are wrong.
-- The type codes live in `ConstValues/` (`stack-architecture.md` §2.4).
+- The type codes live in `ConstValues/` (`project-memory/stack-architecture.md` §2.4).
 
 **Stop sign:** a Strategy family with one implementation. Delete the base class and inline it.
 
@@ -227,7 +227,7 @@ private void RunDueJobs(DateTime now)
 ```
 
 - One failing job is logged and does not stop the others.
-- A job calls Services — shared, or `Services.Backend` for backend-only logic (`stack-architecture.md` §2.2, §3.1).
+- A job calls Services — shared, or `Services.Backend` for backend-only logic (`project-memory/stack-architecture.md` §2.2, §3.1).
 
 ---
 
@@ -244,7 +244,7 @@ private void RunDueJobs(DateTime now)
 | Pattern | Why not |
 |---|---|
 | Singleton holding a connection, a UnitOfWork, or any mutable state | Breaks *stateless*, and IIS recycles the app pool; a shared connection also breaks UnitOfWork's lifetime. Allowed: a `static readonly` immutable lookup, or `Lazy<T>` over read-only config |
-| Generic Repository, Specification | Forbidden by `stack-architecture.md` §4.1 |
+| Generic Repository, Specification | Forbidden by `project-memory/stack-architecture.md` §4.1 |
 | Mediator (MediatR style) | A request/handler layer between Controller and Service — the Service already is the one place each request lands |
 | Decorator / Proxy around a Repository | The concerns it would add (logging, timing) belong in `BaseRepository` or the Service's NLog call — one place, not a wrapper per Repository |
 | Abstract Factory, Visitor, Prototype, Flyweight, Memento, Interpreter | No problem in a synchronous CRUD MVC system that these solve |

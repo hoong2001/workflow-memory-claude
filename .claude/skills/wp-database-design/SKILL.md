@@ -14,7 +14,7 @@ Two parts. **Query design** (`references/query-design.md`) applies to every piec
 | Table shape: names, keys, types, audit columns, constraints, indexes; who owns and writes a table; transaction boundary of a write | **this skill** |
 | What a query does, how simple it stays, where logic lives (SQL vs Service), reading the real definition first | **this skill** → `references/query-design.md` |
 | `DynamicParameters`, UnitOfWork, BaseRepository, Dapper mechanics | `wp-repository-unitofwork-pattern` |
-| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `workspace-sql-house-style.md` rule |
+| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `.claude/rules/workspace-sql-house-style.md` rule |
 | SQL Server version, layering, forbidden patterns (no stored procedures, no EF) | `project-memory/stack-architecture.md` §1, §2, §4.1 |
 
 ## Query design
@@ -30,7 +30,7 @@ Open `references/query-design.md` before writing or reviewing any SQL: it holds 
 
 | Item | Rule |
 |---|---|
-| Table / column names | PascalCase, singular table (`SalesOrder`, `SalesOrderItem`); `stack-architecture.md` §5.0 principles apply |
+| Table / column names | PascalCase, singular table (`SalesOrder`, `SalesOrderItem`); `project-memory/stack-architecture.md` §5.0 principles apply |
 | Reserved words | A table, column, view or constraint name is never, as a whole word, on Microsoft's [Reserved Keywords (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql) page — its Transact-SQL reserved, ODBC reserved and future keyword lists. A compound name clears it: `Order` → `SalesOrder`, `Date` → `OrderDate`, `Key` → `ApiKey`, `User` → `AppUser`, `Level` → `AccessLevel`. A reserved name parses only inside `[brackets]`, in every query that touches it |
 | Index and constraint names | `<Type>_<Table>[_<Columns>]`, Type being `PK` (primary key), `UQ` (`UNIQUE`) or `IX` (index): `PK_SalesOrder`, `UQ_SalesOrder_OrderNo`, `IX_SalesOrderItem_SalesOrderId`. Columns follow in key order, joined by `_`. Every such object is named in the `.sql`; the name states the table and the columns it covers |
 | Result mapping | A Result property carries the same name as its column, so Dapper maps by name with no alias |

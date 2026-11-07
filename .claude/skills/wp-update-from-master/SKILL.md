@@ -56,7 +56,7 @@ Then validate the master (clone OR local path) before proceeding — ALL must pa
    itself is a no-op. Warn and stop. No git repo or no `origin` (a TFVC project) → not the
    master; carry on.
 
-**Every exit after a clone deletes it** — a stop in this validation, Step 2.5 or Step 3 as much
+**Every exit after a clone deletes it** — a stop in this validation or Step 3 as much
 as the end of Step 6: `Remove-Item "<master path>" -Recurse -Force`. A local-path master is never
 deleted.
 
@@ -66,7 +66,7 @@ Read `SYNC-MANIFEST.md` **from the freshly cloned master** (not the target's loc
 the clone is the newest by definition). Its ✅ / 🚫 / ⚠️ categories drive everything below.
 If the manifest lists paths this skill doesn't mention, follow the manifest.
 
-## Step 2.5 · Run the pre-flight report
+## Step 3 · Pre-flight report
 
 Run the script from the **clone** — the target's own copy may be older or missing, and an
 out-of-date copy runs out-of-date logic. A local-path master runs its own copy the same way:
@@ -81,16 +81,12 @@ It writes nothing. Its first line is the version pair (`target vX.Y.Z → master
 - **Equal** → report `Target already at vX.Y.Z — no template changes to pull.` and stop. The
   version tracks commits, not content: when the user wants to be sure, the rest of the report
   is the ground truth.
-- **Different, or none** → Step 3, carrying both numbers into the Step 6 summary.
-
-## Step 3 · Pre-flight report
-
-Show the user the report: ✅ overwrite (content differs), 🆕 add (master only), 🗑️ target paths
-on the manifest's Renames / deletions list with what replaces each (deleted in Step 4b), 🧩
-project-own files under a ✅ folder (left untouched), ⚠️ grey-zone files that differ (Step 5).
-Files that differ only in line endings or BOM are counted and ignored — they are never copied.
-
-If nothing differs, report "already up to date" and stop.
+- **Different, or none** → carry both numbers into the Step 6 summary and show the user the rest
+  of the report: ✅ overwrite (content differs), 🆕 add (master only), 🗑️ target paths on the
+  manifest's Renames / deletions list with what replaces each (deleted in Step 4b), 🧩 project-own
+  files under a ✅ folder (left untouched), ⚠️ grey-zone files that differ (Step 5). Files that
+  differ only in line endings or BOM are counted and ignored — they are never copied. Nothing
+  differs → report "already up to date" and stop.
 
 **Gate: present the report and WAIT for the user's go before executing Steps 4–5b.** The
 deletions in Step 4b rely on this confirmation — without it, nothing is copied or deleted.

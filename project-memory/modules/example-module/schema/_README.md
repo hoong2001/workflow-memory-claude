@@ -9,7 +9,7 @@ module's database side look like" opens one place.
 | Origin | What | Naming |
 |---|---|---|
 | You provide | Table/view definitions, indexes, constraints, or any other `.sql` you hand over | Keep the original filenames |
-| Claude generates | Seed / reference-data scripts (`workspace-sql-house-style.md` rule 3) | `<name>-<date>-<slug>.sql`, matching the plan it belongs to |
+| Claude generates | Seed / reference-data scripts (`.claude/rules/workspace-sql-house-style.md` rule 3) | `<name>-<date>-<slug>.sql`, matching the plan it belongs to |
 
 The naming split is how you tell at a glance which files are yours: your originals keep their
 own names, everything derived carries the module + date + slug convention already used by

@@ -18,7 +18,7 @@ Write to: `project-memory/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
 
 - Take the paired plan's file name whole, its date included: `plans/<name>-2026-06-23-add-login.md` → `impl/<name>-2026-06-23-add-login.md`, so they pair up. No plan for this change → today's date and a short kebab-case `<slug>`.
 
-Every record holds the sections below. **Files touched** has one row per file the change touched — every one: the Step 2 decision check finds this record by `grep -l "<FileName>"` (`.claude/rules/workspace-workflow.md`).
+Every record holds the sections below. **Files touched** has one row per file the change touched — every one: **Recorded decisions** in `.claude/skills/_shared-conventions.md` finds this record by file name.
 
 ```markdown
 # Impl: <what was done, one line>

@@ -39,7 +39,7 @@ buries the record where nobody looks for it.
 
 ## Step 0.5 · Check for a prior task before starting
 
-Tasks have no module `plans/*.md` to grep, but the same idea from `workspace-workflow.md`
+Tasks have no module `plans/*.md` to grep, but the same idea from `.claude/rules/workspace-workflow.md`
 Branch A applies: before creating a fresh folder, check whether this request already has a
 home under `project-memory/tasks/`.
 

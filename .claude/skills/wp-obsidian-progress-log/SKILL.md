@@ -1,6 +1,6 @@
 ---
 name: wp-obsidian-progress-log
-description: Record and read back a lightweight, expandable cross-project progress record in the user's central Obsidian vault — a project card plus one card per module (status, done work, next step) — so a project paused for a while can be resumed without re-reading everything, and nothing built gets lost from the system view. Two modes — LOG (draft this project's + its modules' snapshot from real memory, confirm, write to the vault) and RESUME (read the cards back, or show the project/module Base dashboards oldest-first). Use when the user says "log progress", "記進度", or asks where things stand across projects in the vault. Never suggest it unprompted — not everyone uses Obsidian. Do NOT use for the detailed in-project implementation record — that is /wp-module-save-implementation; this skill only keeps the shallow cards that link back to it.
+description: Cross-project progress cards in the user's Obsidian vault — LOG this project's and its modules' snapshot, or RESUME by reading the cards back. Use only when the user says "log progress" / "記進度" or asks where projects stand in the vault; the in-project record is /wp-module-save-implementation.
 ---
 
 # Obsidian Progress Log — cross-project state board

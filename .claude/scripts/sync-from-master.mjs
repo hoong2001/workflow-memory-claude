@@ -6,7 +6,7 @@
 //   node "<master>/.claude/scripts/sync-from-master.mjs" copy   "<target root>"
 //   node "<master>/.claude/scripts/sync-from-master.mjs" scan   "<target root>"
 //
-// report  Step 2.5 + Step 3 of the skill: versions, then every ✅ manifest path compared by
+// report  Step 3 of the skill: versions, then every ✅ manifest path compared by
 //         content with line endings and BOM ignored — overwrite (differs), add (master only),
 //         project-own (target only), plus 🗑️ paths present in the target and ⚠️ files that differ.
 //         Writes nothing.

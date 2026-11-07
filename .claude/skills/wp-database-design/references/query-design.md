@@ -14,14 +14,14 @@ with a **measured** number (*Paid performance*).
 | What the query should do, how simple it should be, where logic lives | **this file** |
 | `DynamicParameters`, UnitOfWork, BaseRepository, dynamic WHERE assembly, `WHERE IN`, Dapper method choice, parameterization | `wp-repository-unitofwork-pattern` |
 | Table shape — names, keys, types, constraints, indexes, table ownership, reaching another database | `SKILL.md` of this skill |
-| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `workspace-sql-house-style.md` rule |
+| `.sql`-file conventions — plain-INSERT seeds, ship it as a real file | `.claude/rules/workspace-sql-house-style.md` rule |
 | Stack versions, layering, forbidden patterns | `project-memory/stack-architecture.md` |
 
 The readability rules below apply to `.sql` files too — a seed or schema script gets the same
 explicit column lists and the same ban on `SELECT *`. The house-style rule owns what is
 special about `.sql` files; this file owns what every piece of SQL has in common.
 
-Seed / reference data ships as a `.sql` file in the module's `schema/` (`workspace-sql-house-style.md` rule 3).
+Seed / reference data ships as a `.sql` file in the module's `schema/` (`.claude/rules/workspace-sql-house-style.md` rule 3).
 
 ---
 

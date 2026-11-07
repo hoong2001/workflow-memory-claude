@@ -12,7 +12,7 @@ everything between that and the first line of code.
 ## Step 1: Locate and absorb the inputs
 
 1. **The plan** — the user names it; otherwise grep the status headers (`grep -H "^> \*\*Status:\*\*" project-memory/modules/<name>/plans/[!_]*.md`) and take the plan at `Planned`. Several → ask which (Question pattern); none → stop and route to `/wp-module-plan-discuss`. Collect its rows marked `→ /wp-module-technical-design` — this run's inbox; Step 5 starts only when each is `☑`.
-2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and the `impl/` records that name a file on the suspected cut — `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md` per file — reading their `Decisions + why` and `Ruled out` sections.
+2. **Module memory** — read `project-memory/modules/<name>/MODULE.md` (conventions + gotchas), `<name>-flow.md`, `schema/`, and the recorded decisions on each file of the suspected cut (**Recorded decisions** in `.claude/skills/_shared-conventions.md`).
 3. **Hard rules** — apply whatever layering, forbidden patterns, language-version limits, and naming conventions `project-memory/stack-architecture.md` defines; it is non-negotiable.
 4. **Project skills** — follow any stack-bound skills present in `.claude/skills/` (e.g. a data-layer pattern skill, a frontend-standards skill); the design must not contradict them.
 

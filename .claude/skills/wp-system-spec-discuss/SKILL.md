@@ -10,9 +10,7 @@ Drive a structured discussion that converges on a written whole-system spec — 
 
 **Purpose gate** — `.claude/skills/_shared-conventions.md`; the purpose it yields seeds §1 Purpose.
 
-**Interview:** one question at a time, each answer in before the next; read the code and docs before
-spending a question they answer. Choices follow the **Question pattern** in
-`.claude/skills/_shared-conventions.md`.
+**Interview pacing** — `.claude/skills/_shared-conventions.md`.
 
 **Synthesize before you interview.** If the conversation that led here, or an interview record (**Interview record as input** in `.claude/skills/_shared-conventions.md`), has already settled a section, do NOT re-ask it — synthesize what was discussed into that section and present it for a one-line confirmation. Interview only the genuine gaps. A spec growing out of a long working conversation may need no interview at all, just synthesis.
 
@@ -32,7 +30,7 @@ jobs, an ORM, or a SPA framework), and challenge me immediately if my own wordin
 undecided): say so explicitly, then continue — do NOT block, and do NOT silently pretend constraints
 exist. The technical pass (System Design) flips role: instead of checking against constraints, it
 *produces candidate stack decisions* (each with a one-line why). At wrap-up, recommend seeding
-`stack-architecture.md` from them — but never create or edit that file yourself;
+`project-memory/stack-architecture.md` from them — but never create or edit that file yourself;
 the architecture doc is always the user's to write (same rule as the generator's tech
 reconciliation).
 

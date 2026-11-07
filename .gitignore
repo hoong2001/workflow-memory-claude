@@ -10,3 +10,7 @@ project-memory/tasks/*
 # Master only - not in SYNC-MANIFEST's .gitignore row. Interviews run here test
 # wp-interview; a project commits its own interviews like its plans.
 project-memory/interviews/
+
+# Master only - archify working folders (candidate.json, rendered HTML, receipts) for diagrams
+# drawn here; the committed result is assets/workflow-diagram.png.
+.archify/

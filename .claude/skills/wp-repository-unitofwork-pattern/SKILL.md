@@ -123,7 +123,7 @@ public abstract class BaseRepository
 
 ## Result Classes
 
-Result classes (`Results/`, inheriting `BaseResult` — `stack-architecture.md` §2.3–2.4) carry
+Result classes (`Results/`, inheriting `BaseResult` — `project-memory/stack-architecture.md` §2.3–2.4) carry
 data both ways: output, and input — `Insert(ProductResult model)`, and one criteria Result such as
 `ProductSearchResult` for a multi-criteria method, never a long parameter list. A single-key
 lookup takes the primitive (`GetById(long id)`).

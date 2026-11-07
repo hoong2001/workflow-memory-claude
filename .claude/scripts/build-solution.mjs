@@ -2,7 +2,7 @@
 /**
  * build-solution.mjs — Rebuild (clean + build) the project's .sln with the MSBuild found on PATH.
  *
- * Claude runs this after each coding chunk (`.claude/rules/workspace-workflow.md` Step 2):
+ * Claude runs this after each coding chunk (`.claude/rules/workspace-build-loop.md`):
  *   node .claude/scripts/build-solution.mjs                  # the one .sln at the project root
  *   node .claude/scripts/build-solution.mjs <path.sln> [Configuration] [Platform]
  *   node .claude/scripts/build-solution.mjs <path.csproj|path.vbproj> [Configuration] [Platform]

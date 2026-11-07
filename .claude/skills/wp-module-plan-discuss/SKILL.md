@@ -11,9 +11,7 @@ Converge a stated module-level requirement into a work-ready plan in the module'
 
 **Detection over judgment.** Never classify the requirement as "clear" or "fuzzy" by impression. Instead, test each of the five elements individually (Step 2): an element is CLEAR only if it can be filled from the user's statement + module docs + code AND survives a contradiction check; otherwise it is a GAP. The gap list — not a vibe — decides how deep the session goes.
 
-**Interview:** one question at a time, each answer in before the next; read the code and docs before
-spending a question they answer. Choices follow the **Question pattern** in
-`.claude/skills/_shared-conventions.md`.
+**Interview pacing** — `.claude/skills/_shared-conventions.md`.
 
 **Order decisions parent-first.** When one decision depends on another (the choice of storage shape depends on whether a value is nullable; the API shape depends on the chosen boundary), settle the parent before the child — never ask a downstream question while its upstream is still open, or the answer may not survive the parent's resolution. Walk the plan as a tree of decisions, resolving the dependencies in order.
 
@@ -28,7 +26,7 @@ spending a question they answer. Choices follow the **Question pattern** in
 
 ## Step 1 — Evidence before questions
 
-Read the target module's memory BEFORE asking anything: `MODULE.md` (local conventions + known gotchas), `<name>-flow.md`, the `impl/` records that name a file on the suspected cut — `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md` per file — reading their `Decisions + why` and `Ruled out` sections, `schema/` and `references/` if relevant, and the real code around the suspected cut point. Most "questions" die here — the docs or the code already answer them.
+Read the target module's memory BEFORE asking anything: `MODULE.md` (local conventions + known gotchas), `<name>-flow.md`, the recorded decisions on each file of the suspected cut (**Recorded decisions** in `.claude/skills/_shared-conventions.md`), `schema/` and `references/` if relevant, and the real code around the suspected cut point. Most "questions" die here — the docs or the code already answer them.
 
 If the code is unfamiliar and no flow doc exists, route through `/wp-module-code-trace-flow` first to extract the flow, then come back.
 
