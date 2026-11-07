@@ -66,29 +66,29 @@ Read `SYNC-MANIFEST.md` **from the freshly cloned master** (not the target's loc
 the clone is the newest by definition). Its ✅ / 🚫 / ⚠️ categories drive everything below.
 If the manifest lists paths this skill doesn't mention, follow the manifest.
 
-## Step 2.5 · Version pre-check (fast path)
+## Step 2.5 · Run the pre-flight report
 
-Compare versions before doing the full content diff:
+Run the script from the **clone** — the target's own copy may be older or missing, and an
+out-of-date copy runs out-of-date logic. A local-path master runs its own copy the same way:
 
-1. Read the **target's local** `SYNC-MANIFEST.md` → 📦 Master source table → `Version` row.
-   Missing (a project synced before versioning existed) → treat as unknown and go straight
-   to Step 3 — there is nothing to compare yet.
-2. Compare it to the **freshly cloned master's** Version (read in Step 2).
-3. **Equal** → report `Target already at vX.Y.Z — no template changes to pull.` and stop
-   here. Offer to run the full diff anyway if the user wants to be sure — the version is
-   advisory (it tracks commits, not a content hash), so Step 3 stays the ground truth
-   whenever there is any doubt.
-4. **Different, or target has no Version row** → proceed to Step 3 as normal, carrying both
-   numbers (`vX.Y.Z → vA.B.C`, or `none → vA.B.C`) into the Step 3 report and the Step 6 summary.
+```powershell
+node "<master path>\.claude\scripts\sync-from-master.mjs" report "<target root>"
+```
+
+It writes nothing. Its first line is the version pair (`target vX.Y.Z → master vA.B.C`, or
+`target none`, for a project synced before versioning existed).
+
+- **Equal** → report `Target already at vX.Y.Z — no template changes to pull.` and stop. The
+  version tracks commits, not content: when the user wants to be sure, the rest of the report
+  is the ground truth.
+- **Different, or none** → Step 3, carrying both numbers into the Step 6 summary.
 
 ## Step 3 · Pre-flight report
 
-Before copying anything, show the user a dry-run summary:
-- ✅ paths that will be overwritten (only files whose content differs — compare content; a fresh clone stamps every file with the checkout time)
-- 🆕 files that exist only in master (will be added)
-- 🗑️ target paths that appear on the manifest's Renames / deletions list (will be deleted in Step 4b — show the old → new mapping so the user sees what replaces each)
-- 🧩 files that exist only in the target under any ✅ folder row AND are not on the deletions list (project-own additions — will be left untouched; list them so the user knows they're safe)
-- ⚠️ grey-zone files that differ and need manual merge (Step 5)
+Show the user the report: ✅ overwrite (content differs), 🆕 add (master only), 🗑️ target paths
+on the manifest's Renames / deletions list with what replaces each (deleted in Step 4b), 🧩
+project-own files under a ✅ folder (left untouched), ⚠️ grey-zone files that differ (Step 5).
+Files that differ only in line endings or BOM are counted and ignored — they are never copied.
 
 If nothing differs, report "already up to date" and stop.
 
@@ -97,15 +97,12 @@ deletions in Step 4b rely on this confirmation — without it, nothing is copied
 
 ## Step 4 · Copy the whitelist paths
 
-Copy every ✅ row of the freshly cloned master's manifest from master → target, overwriting
-but never deleting (PowerShell `Copy-Item -Force`, `-Recurse` for a folder). Create any missing
-target folder first. A folder row copies the folder's contents into the target's folder, so the
-target's own files there stay; a file row copies that one file:
-
 ```powershell
-Copy-Item "<master path>\.claude\skills\*" "<target root>\.claude\skills\" -Recurse -Force          # folder row
-Copy-Item "<master path>\project-memory\tasks\_README.md" "<target root>\project-memory\tasks\" -Force  # file row
+node "<master path>\.claude\scripts\sync-from-master.mjs" copy "<target root>"
 ```
+
+It copies exactly the ✅ overwrite and 🆕 add files of the report, creating missing folders,
+and leaves line-ending-only differences and the target's own files as they are. It never deletes.
 
 ## Step 4b · Delete obsolete template paths (manifest-listed ONLY)
 
@@ -146,27 +143,26 @@ switched off; say so in the report if the user skips it.
 Copying updates template files, but the target's project-state docs still reference
 whatever was renamed or removed. Scan and align them — this step is NOT optional:
 
-1. Build the search-term list from **every table in** the manifest's 🗑️ Renames / deletions
-   section — it holds more than one, and a sub-heading table (e.g. a bulk prefix rename) counts.
-   Take each obsolete skill name (e.g. `workspace-task-brief`) and removed concept (e.g. a module
-   `specs/` folder).
-2. Grep those terms with `rg --no-ignore` — the target's `.gitignore` may hide `.md` / `.claude`,
-   and the scan then silently reports "aligned" — across the target's LIVING docs only:
-   root `CLAUDE.md`, `project-memory/overview/system-overview-spec.md`,
-   `project-memory/modules/*/MODULE.md`, `project-memory/modules/*/<name>-flow.md`.
-   **Leave historical archives untouched**: `plans/`, `impl/`, `references/` describe what
-   was true at the time — stale names there are correct history, not defects.
-3. For each hit, propose the fix (old → new, using the manifest mapping) and apply only
-   after user confirmation — these files are project state; never mechanically rewrite them.
-4. If a real module still has a `specs/` folder, don't touch it — remind the user of the
+1. Run the scan from the clone:
+
+   ```powershell
+   node "<master path>\.claude\scripts\sync-from-master.mjs" scan "<target root>"
+   ```
+
+   It takes every obsolete name from all tables of the manifest's 🗑️ section and greps the
+   target's LIVING docs: root `CLAUDE.md`, `project-memory/overview/system-overview-spec.md`, and
+   each real module's `MODULE.md` and `<name>-flow.md`. Historical archives — `plans/`, `impl/`,
+   `references/` — are left out: stale names there are correct history.
+2. Each hit is a lead, not a defect: a line can name the concept on purpose ("no separate
+   `specs/` folder"). For a stale name, propose the fix (old → new, from the manifest mapping)
+   and apply it only after user confirmation — these files are project state.
+3. If a real module still has a `specs/` folder, don't touch it — remind the user of the
    routing rule (material → `references/`, `.sql` → `schema/`, work docs → `plans/`) and
    offer to migrate its content as a separate, per-file confirmed task.
-5. Live plans in an old shape: list every plan whose status header is not `Done` and whose
-   `## Tasks` table has no `Manager summary` column
-   (`grep -l "^## Tasks" project-memory/modules/*/plans/[!_]*.md 2>/dev/null | xargs -r grep -L "Manager summary"`,
-   then drop the `Done` ones). Offer to backfill them; on the user's go, add the column and write
-   each row's summary from the plan itself (rules: `/wp-module-technical-design` Guardrails).
-   `Done` plans are history — leave them alone.
+4. Live plans in an old shape: the scan's second list holds every plan not `Done` whose
+   `## Tasks` table has no `Manager summary` column. Offer to backfill them; on the user's go,
+   add the column and write each row's summary from the plan itself (rules:
+   `/wp-module-technical-design` Guardrails). `Done` plans are history — leave them alone.
 
 ## Step 6 · Report
 

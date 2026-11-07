@@ -56,7 +56,8 @@ project-memory/                        the project's own memory — plain folder
 │   ├── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
 │   └── idea-interview-hint.mjs        SessionStart: one line pointing at /wp-interview, every session
 ├── scripts/
-│   └── build-solution.mjs             Claude's build step (how it runs and what it hands back: workspace-workflow.md Step 2)
+│   ├── build-solution.mjs             Claude's build step (how it runs and what it hands back: workspace-workflow.md Step 2)
+│   └── sync-from-master.mjs           /wp-update-from-master's report, copy and alignment scan, run from the fresh master clone
 ├── rules/                             behavioral rules (each loads at launch unless path-scoped)
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
@@ -216,7 +217,7 @@ Skills travel with the folder; these tools do not. Install them on each develope
 
 | Tool | Needed by | Without it | Install |
 |---|---|---|---|
-| Node.js on `PATH` | every hook in `.claude/hooks/`, `.claude/scripts/build-solution.mjs` | hooks fail open (no secret guard, plan-status rebuild, connection-string check, or update notice); no build | nodejs.org installer |
+| Node.js on `PATH` | every hook in `.claude/hooks/`, the scripts in `.claude/scripts/` | hooks fail open (no secret guard, plan-status rebuild, connection-string check, or update notice); no build, no template sync | nodejs.org installer |
 | `msbuild` on `PATH` | the build step of the act loop | build exits `2` | Visual Studio / Build Tools |
 | `csharp-ls` on `PATH` + the `csharp-lsp` Claude Code plugin | `/wp-module-code-trace-flow` Step 3.5 (callers of a shared symbol) | falls back to `rg` — more false hits to filter by hand | `dotnet tool install --global csharp-ls` (needs .NET SDK 6+), then `/plugin install csharp-lsp@claude-plugins-official` |
 | `nuget.exe` on `PATH` | restoring missing packages during the build | restore once in Visual Studio | nuget.org download |

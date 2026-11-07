@@ -77,13 +77,14 @@ From the entry symbol, follow callees downward through the process layers until 
 
 The main path gives you one caller per symbol; this step finds the rest. For **every** shared symbol on the chain (definition above), do a full reference sweep across the whole solution and enumerate **every** call site as `file:method`.
 
-How to sweep — **CodeGraph first when available (Step 1.6), then always a second source: LSP, `rg` as the fallback:**
+How to sweep — **CodeGraph first when available (Step 1.6); the second source (LSP, `rg` as the fallback) covers where the index is weakest. Without CodeGraph, the second source sweeps every shared symbol:**
 
-- **CodeGraph**: `codegraph_explore` on the shared symbol lists its callers. It is the first pass, never the only one: the second source below runs on the same symbol every time, since DI and dynamic dispatch can hide callers from the index. An empty CodeGraph answer is never taken as "no callers".
-- **Merge**: the caller list is the union of both sources. A caller only the second source found is tagged `missed by CodeGraph` and noted in the flow doc's Notes, so the next reader knows how far to trust the index.
+- **CodeGraph**: one `codegraph_explore` call naming every shared symbol of the chain gives each one's caller count — a count only: the answer is capped, so a symbol can be left out of its summary and a call list ends in `… and N more`. List each symbol's callers in full with the CLI, `codegraph callers <Symbol> -l <count + 10> -p <repo root>` (`-f <file>` when the name has several definitions); a list shorter than `-l` is complete.
+- **Second source** on a symbol when any of these holds: it is a cut point (where the change lands); CodeGraph returned no callers (an empty answer is never "no callers"); it is an interface, virtual or abstract member, event, delegate, or DI-registered type — the index's blind spots. Every other symbol keeps its CodeGraph list, tagged `CodeGraph only`.
+- **Merge**: on a symbol that ran both, the caller list is the union. A caller only the second source found is tagged `missed by CodeGraph` and noted in the flow doc's Notes, so the next reader knows how far to trust the index.
 - **LSP `findReferences`** on the symbol's definition (position on the name itself, not its doc comment or modifiers — read the line first). It resolves by type, so a common name like `Insert` or `Save` returns only this symbol's callers. Measured on a .NET 4.7.2 solution: `rg "\bInsert\s*\("` returned 7 hits for one repository method, of which 2 were real callers and 4 were `List.Insert` or comments.
 - **Fall back to `rg -n "SymbolName"`** when the LSP tool is absent, errors, or returns nothing. An empty LSP answer is never taken as "no callers": check the position, then sweep with `rg` and filter the hits by hand. LSP needs the C# language server `csharp-ls` on `PATH` (`dotnet tool install --global csharp-ls`, used by the `csharp-lsp` Claude Code plugin) and answers only for the solution in the session's working directory.
-- Say which methods backed each caller list (`CodeGraph: 3 + LSP: 1 extra = 4 callers` / `LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
+- Say which methods backed each caller list (`CodeGraph only: 3 callers` / `CodeGraph: 3 + LSP: 1 extra = 4 callers` / `LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
 
 - Tag each caller by entry point (Web / Api / ServBackend) so the blast radius is legible.
 - Many callers (say > 15)? List them but cap with a stated count ("28 callers; the 12 in `[Name].Services` shown, rest are views") — never silently truncate.

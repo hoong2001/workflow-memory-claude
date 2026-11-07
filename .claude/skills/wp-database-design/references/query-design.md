@@ -130,9 +130,12 @@ both sets in one round trip.
 
 ### Read the real definition first
 
-Before designing anything on top of a view or table, read its ACTUAL current definition — the
-`.sql` in the module's `schema/` folder, or the live database object. Never infer a schema from a
-sibling module or an earlier design document, and never rely on recall. The user hand-edits views:
+Before designing anything on top of a view or table, read its ACTUAL current definition: the live
+database object (`OBJECT_DEFINITION`, `sys.columns`, `sys.indexes`) whenever a database is
+reachable. The `.sql` in the module's `schema/` folder is the fallback — it can predate a later
+change such as a partitioning; when the two differ, the live object wins and the difference is
+reported to the user. Never infer a schema from a sibling module or an earlier design document,
+and never rely on recall. The user hand-edits views:
 their local edit is the source of truth, and every round of "fix the columns" is a round a single
 read would have prevented. Echo back the exact column list you are relying on before writing the
 query, so a mismatch surfaces in one cheap confirmation.

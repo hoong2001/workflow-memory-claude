@@ -16,7 +16,7 @@ Identify the target **module name** (`<name>`) from the conversation — the mod
 
 Write to: `project-memory/modules/<name>/impl/<name>-<YYYY-MM-DD>-<slug>.md`
 
-- Use today's date. `<slug>` is a short kebab-case tag for this change; keep it identical to the paired plan file in `plans/` so they pair up.
+- Take the paired plan's file name whole, its date included: `plans/<name>-2026-06-23-add-login.md` → `impl/<name>-2026-06-23-add-login.md`, so they pair up. No plan for this change → today's date and a short kebab-case `<slug>`.
 
 Every record holds the sections below. **Files touched** has one row per file the change touched — every one: the Step 2 decision check finds this record by `grep -l "<FileName>"` (`.claude/rules/workspace-workflow.md`).
 
