@@ -50,9 +50,9 @@ The build compiles C# only: Razor views (`.cshtml`) are not compiled unless the 
 ## Decision check — before every test handoff
 
 A green build proves the code compiles, not that it keeps what the module already decided. For each
-file this chunk changed, read its records per **Recorded decisions** in
-`.claude/skills/_shared-conventions.md`, plus the module's `MODULE.md` Local conventions and Known
-gotchas. A change that reverses a recorded decision or brings back a ruled-out option → stop and
+file this chunk changed: `grep -l "<FileName>" project-memory/modules/<name>/impl/*.md`, then read
+only the `Decisions + why` and `Ruled out` sections of the records it finds, plus the module's
+`MODULE.md` Local conventions and Known gotchas. A change that reverses a recorded decision or brings back a ruled-out option → stop and
 quote the record (file, date, the line), and ask through `AskUserQuestion`: keep the old decision,
 or override it. An override is recorded in the next impl record as "Overrides impl/<file>.md —
 <why>". Report the outcome in the handoff's Done as one leaf: `decision check: no conflict (N
