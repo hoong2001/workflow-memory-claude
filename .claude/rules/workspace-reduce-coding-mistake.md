@@ -22,7 +22,8 @@ senior engineer would call over-engineered gets cut back.
 **Plain syntax** — write the form a debugger steps through line by line:
 
 - a nested ternary → `if` / `else` (a single ternary stays);
-- a LINQ chain of more than 3 calls → named intermediate variables, one step each;
+- a LINQ or array-method chain (`.Where().Select()`, `.map().filter()`) of more than 3 calls →
+  named intermediate variables, one step each;
 - `?.` / `??` chained more than once → an explicit `null` check;
 - an expression-bodied method (`=>`), a tuple return, pattern matching (`is` / `switch` on type) →
   a block body, a named class, an `as` cast plus a `null` check.

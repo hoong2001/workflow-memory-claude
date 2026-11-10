@@ -23,6 +23,10 @@ submit, and a loading state on every AJAX call.
 - `Array.find()` / `findIndex()` / `includes()`
 - `Object.assign()` / `Object.keys/values/entries`
 
+Allowed means available, not preferred: readability ranks first
+(`.claude/rules/workspace-reduce-coding-mistake.md` §2), so pick the form that reads plainer, and
+its *Plain syntax* list applies to JavaScript too.
+
 **JavaScript — Forbidden:**
 - `async` / `await` — use `$.ajax()` with callbacks
 - IIFE — use namespace objects
