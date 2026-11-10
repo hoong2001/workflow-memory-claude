@@ -62,7 +62,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-build-loop.md        Step 2 build + decision check (path-scoped: loads when a code file is read or written)
 │   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
-│   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (incl. KISS / DRY)
+│   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (readability first, KISS / DRY, plain syntax, code shape, comments, imports, naming principles)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions (path-scoped: loads when a .sql file is read or written)
 │   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer

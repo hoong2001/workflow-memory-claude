@@ -30,7 +30,7 @@ Open `references/query-design.md` before writing or reviewing any SQL: it holds 
 
 | Item | Rule |
 |---|---|
-| Table / column names | PascalCase, singular table (`SalesOrder`, `SalesOrderItem`); `project-memory/stack-architecture.md` §5.0 principles apply |
+| Table / column names | PascalCase, singular table (`SalesOrder`, `SalesOrderItem`); `.claude/rules/workspace-reduce-coding-mistake.md` §7 naming principles apply |
 | Reserved words | A table, column, view or constraint name is never, as a whole word, on Microsoft's [Reserved Keywords (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql) page — its Transact-SQL reserved, ODBC reserved and future keyword lists. A compound name clears it: `Order` → `SalesOrder`, `Date` → `OrderDate`, `Key` → `ApiKey`, `User` → `AppUser`, `Level` → `AccessLevel`. A reserved name parses only inside `[brackets]`, in every query that touches it |
 | Index and constraint names | `<Type>_<Table>[_<Columns>]`, Type being `PK` (primary key), `UQ` (`UNIQUE`) or `IX` (index): `PK_SalesOrder`, `UQ_SalesOrder_OrderNo`, `IX_SalesOrderItem_SalesOrderId`. Columns follow in key order, joined by `_`. Every such object is named in the `.sql`; the name states the table and the columns it covers |
 | Result mapping | A Result property carries the same name as its column, so Dapper maps by name with no alias |

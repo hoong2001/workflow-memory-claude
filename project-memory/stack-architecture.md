@@ -223,42 +223,20 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 **Forbidden:**
 - ✘ Generic Repository
-- ✘ Async / Await
+- ✘ Async / Await — a team choice, not a compiler limit: synchronous code keeps stack traces and breakpoints simple to follow, which lowers the debugging barrier
 - ✘ Entity Framework, or any heavy/full ORM with change-tracking, lazy-loading, or LINQ-to-SQL translation — Dapper.NET (micro-ORM) is the only permitted data-access library
 - ✘ Stored procedures — SQL lives in Repository methods as raw, parameterized SQL
 - ✘ DTO or Entity layers — use Result objects only
 
 ### 4.2 Frontend (JavaScript & CSS)
 
-> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — the backend rules above, and §4.3, which covers frontend code too.
-
-### 4.3 All languages
-
-- ✔ **Comments** — a comment you write or rewrite opens with today's date as `yyyy.MM.dd`, then
-  gives the reason for the code block and the problem it solves, in under 120 characters (the
-  date is not counted). It sits directly above the block it explains, so every block carries its own
-  comment; `/// <summary>` holds the method's overview only.
-  `// 2026.10.23 Closed accounts carry no balance; skipping them avoids a divide-by-zero in the average.`
-  In `/// <summary>` the date opens the first text line; a multi-line comment dates its first
-  line only. Older `yyyy-MM-dd` dates stay as written.
-- ✔ **Imports** sit at the top of the file — `using`, `Imports`, `import`, `require` — and belong
-  to the change that needs them, not to adjacent code. The body names an imported item the way
-  its language does: the short name in C#, VB, Java and JS; `module.name` in Python and Go. A
-  fully-qualified path written inline is for a clash only — e.g. `System.Web.Http` and
-  `System.Web.Mvc` attributes in one file.
+> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — and the backend rules above. Comment, import and naming-principle rules for every language live in `.claude/rules/workspace-reduce-coding-mistake.md` §6–§7.
 
 ---
 
 ## 5. Naming Conventions
 
-### 5.0 Universal Naming Principles (ALL languages — C#, JavaScript, SQL, anything)
-
-These apply regardless of language; the per-language casing rules below only refine *how* to spell them.
-
-- ✔ **Self-descriptive, no cryptic shorthand** — the name alone says what a method *does* or a variable *holds*: `GetActiveCustomersByRegion`, not `GetData2`; `errorMessage`, not `errMsg`. Exceptions: a conventional loop index (`i`, `j`) in a short loop; domain-standard acronyms (`Id`, `Url`, `Html`, `Sql`).
-- ✔ **Length ≤ 50 characters** — a hard cap. If a name approaches 50 chars, the method/variable is usually doing too much — reconsider the design, don't truncate into cryptic shorthand.
-
-> The test: a teammate with no context reads the name and knows roughly what it is. If they'd have to open the definition to find out, rename it.
+> The language-independent naming principles live in `.claude/rules/workspace-reduce-coding-mistake.md` §7; this section holds the stack's casing rules.
 
 ### 5.1 Backend (C#)
 

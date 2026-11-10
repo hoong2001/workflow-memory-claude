@@ -4,8 +4,9 @@ Part of `wp-database-design`, whose `SKILL.md` sends every piece of SQL this pro
 a Repository query, a `.sql` schema or seed script, a persisted test script. Done when every query
 this task writes or reviews passes every row of the **Review checklist** at the end.
 
-Readability and maintainability rank above query cleverness: performance may cost clarity only
-with a **measured** number (*Paid performance*).
+Readability and maintainability rank above query cleverness, and performance may cost clarity only
+with a **measured** number (`.claude/rules/workspace-reduce-coding-mistake.md` §2). Which SQL
+rewrites count as paid, and how to measure them → *Paid performance*.
 
 ## Scope — what this file owns, and what it does not
 
