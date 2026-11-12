@@ -4,7 +4,7 @@
  * every module plan that is not Done. Done plans are left out, so the file grows with live
  * work only and shrinks back as plans close.
  *
- * The plans stay the source of truth (.claude/skills/_shared-conventions.md → Status header).
+ * The plans stay the source of truth (.claude/skills/_status-header.md).
  * The output is a derived view: never edited by hand, rebuilt from the headers whenever a
  * write lands on a module plan, so it cannot drift from them.
  *

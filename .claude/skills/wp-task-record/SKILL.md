@@ -146,7 +146,7 @@ today.
 ```
 
 The header line is the one allowed variant of the **Status header** — `Status · Date · Likely to
-repeat` — defined in `.claude/skills/_shared-conventions.md`; follow it there. The record is written
+repeat` — defined in `.claude/skills/_status-header.md`; follow it there. The record is written
 once the work stops: `Done` when the task has landed; `Blocked · **Detail:** <reason>` when it
 stopped on something external, with `## What was done` ending where the work stopped.
 

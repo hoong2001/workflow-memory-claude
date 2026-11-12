@@ -75,8 +75,8 @@ Run in this order; the header is written last.
    a `🔴` row makes the impl `Blocked`.
 2. **Header.** Match the impl record's `**Status**`: `Done` → `> **Status:** Done · **Updated:** <today>`
    and delete the `> **Resume:**` line; `TODO left` → `Building`; `Blocked` →
-   `Blocked · **Detail:** <the blocker>`. Shape and values: **Status header** in
-   `.claude/skills/_shared-conventions.md`.
+   `Blocked · **Detail:** <the blocker>`. Shape and values:
+   `.claude/skills/_status-header.md`.
 
 ## Step 3 · Sync `<name>-flow.md` (lightweight, incremental)
 

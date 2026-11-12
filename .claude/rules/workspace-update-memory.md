@@ -16,7 +16,7 @@ So the same trap isn't hit again.
 ## 3. Plan saved? → `project-memory/modules/<name>/plans/<name>-<date>-<slug>.md` (`/wp-module-plan-discuss`)
 Use the same name as its impl file so they pair up.
 
-Before you walk away, its status header and `> **Resume:**` line match reality — values and rules: **Status header** in `.claude/skills/_shared-conventions.md`.
+Before you walk away, its status header and `> **Resume:**` line match reality — values and rules: `.claude/skills/_status-header.md`.
 
 ## 4. Update the index
 - New module → add a row to the module map in root `CLAUDE.md` (**path + one-line description**).

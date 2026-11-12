@@ -230,13 +230,13 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 
 ### 4.2 Frontend (JavaScript & CSS)
 
-> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — and the backend rules above. Comment, import and naming-principle rules for every language live in `.claude/rules/workspace-reduce-coding-mistake.md` §6–§7.
+> Frontend coding rules (allowed/forbidden ES6 features, CSS constraints) **and** all frontend how-to patterns live in the **`wp-aspnet-mvc-frontend-standards`** skill — the single source of truth for frontend. This architecture doc owns only §1.2 — the frontend versions and the widget mandates in its Usage column ("ALL tabular data" …) — and the backend rules above. Comment, import and naming-principle rules for every language live in `.claude/rules/workspace-code-style.md` (**Comments and imports**, **Naming**).
 
 ---
 
 ## 5. Naming Conventions
 
-> The language-independent naming principles live in `.claude/rules/workspace-reduce-coding-mistake.md` §7; this section holds the stack's casing rules.
+> The language-independent naming principles live in **Naming** of `.claude/rules/workspace-code-style.md`; this section holds the stack's casing rules.
 
 ### 5.1 Backend (C#)
 

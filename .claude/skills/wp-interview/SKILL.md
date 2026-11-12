@@ -122,8 +122,8 @@ English, per `.claude/rules/workspace-doc-writing-style.md`.
 <each open point, and who or what settles it>
 ```
 
-The status line and the `Resume` line follow **Status header** in
-`.claude/skills/_shared-conventions.md` (values: interview records); rewrite both with every answer.
+The status line and the `Resume` line follow
+`.claude/skills/_status-header.md` (values: interview records); rewrite both with every answer.
 An empty section keeps its heading with one line saying why.
 
 ## Route

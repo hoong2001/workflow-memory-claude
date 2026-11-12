@@ -88,8 +88,8 @@ Append `## Technical Design` and `## Tasks` to the SAME plan document
 (`plans/<name>-<date>-<slug>.md`) — never a separate file, so the plan/impl pairing stays
 one-to-one. Use the templates below.
 
-**Set the plan's status header to `Designed`** — the line directly under the H1 (rules: the
-**Status header** section of `.claude/skills/_shared-conventions.md`):
+**Set the plan's status header to `Designed`** — the line directly under the H1 (rules:
+`.claude/skills/_status-header.md`):
 
 ```markdown
 > **Status:** Designed · **Updated:** <today>

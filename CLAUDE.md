@@ -45,10 +45,10 @@
 - What is live across all modules → `project-memory/project-memory-status.md` — every plan not `Done`, in one table (Done plans are left out), rebuilt by a hook (`.claude/hooks/project-memory-status.mjs`); never edit it, the plans are the source.
 - One-off work that changes no module → workflow Branch D (`/wp-task-record`)
 - Files several modules lean on but none owns → `project-memory/docs/` (committed, read on demand)
-- Skills map (order · when to use · purpose · output) → `.claude/skills/README.md`
+- Skills map (order · when to use) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
-- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up), `workspace-doc-writing-style.md`, `workspace-sql-house-style.md` (`.sql` files), and `workspace-build-loop.md` (code files: build + decision check), which load when a matching file is read or written
+- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up), `workspace-doc-writing-style.md`, `workspace-sql-house-style.md` (`.sql` files), `workspace-build-loop.md` (code files: build + decision check), and `workspace-code-style.md` (code files: plain syntax, code shape, comments, imports, naming), which load when a matching file is read or written
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
 - Hooks (credential guard, document-language check, connection-string check, SQL-comment check, plan-status rebuild, template-update check, idea-interview hint) → `.claude/hooks/`, wired in `.claude/settings.json`; each file's header says what it does
 
@@ -56,7 +56,8 @@
 <!-- Index only: every .claude/rules/*.md without `paths:` frontmatter loads at launch whether or not
      it is listed here, so deleting a line disables nothing — to disable a rule, move it out of
      .claude/rules/. Never list the path-scoped rules (workspace-update-memory.md,
-     workspace-doc-writing-style.md, workspace-sql-house-style.md, workspace-build-loop.md): an
+     workspace-doc-writing-style.md, workspace-sql-house-style.md, workspace-build-loop.md,
+     workspace-code-style.md): an
      @import loads at launch and undoes their scoping. -->
 @.claude/rules/workspace-workflow.md
 @.claude/rules/workspace-doc-relative-paths.md

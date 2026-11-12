@@ -25,7 +25,7 @@ submit, and a loading state on every AJAX call.
 
 Allowed means available, not preferred: readability ranks first
 (`.claude/rules/workspace-reduce-coding-mistake.md` §2), so pick the form that reads plainer, and
-its *Plain syntax* list applies to JavaScript too.
+the *Plain syntax* list in `.claude/rules/workspace-code-style.md` applies to JavaScript too.
 
 **JavaScript — Forbidden:**
 - `async` / `await` — use `$.ajax()` with callbacks

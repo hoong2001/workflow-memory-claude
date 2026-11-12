@@ -70,7 +70,7 @@ Complete the plan at `project-memory/modules/<name>/plans/<name>-<date>-<slug>.m
 
 **The status header** — one line directly under the H1, as in the template below. This
 skill writes **`Planned`**, or **`Blocked · **Detail:** <that item>`** while a `🔴` row is open. Shape,
-value set and `Detail` rules: the **Status header** section of `.claude/skills/_shared-conventions.md`.
+value set and `Detail` rules: `.claude/skills/_status-header.md`.
 
 ### Output template — the plan's fixed shape
 

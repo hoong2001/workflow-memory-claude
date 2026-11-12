@@ -41,5 +41,5 @@ You now and Next. Every module's plans not `Done`, in one table:
 `project-memory/project-memory-status.md` (hook-generated).
 
 The values (`Planned` → `Designed` → `Building` → `Blocked` → `Done`), who writes each, the
-`Detail` and `N/M` rules, and the Resume line are defined once in the **Status header** section of
-`.claude/skills/_shared-conventions.md`.
+`Detail` and `N/M` rules, and the Resume line are defined once in
+`.claude/skills/_status-header.md`.

@@ -63,7 +63,8 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-workflow.md          the 3-step development workflow
 │   ├── workspace-build-loop.md        Step 2 build + decision check (path-scoped: loads when a code file is read or written)
 │   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
-│   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (readability first, KISS / DRY, plain syntax, code shape, comments, imports, naming principles)
+│   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (think first, readability first, KISS / DRY, surgical changes, done-criterion)
+│   ├── workspace-code-style.md        plain syntax, code shape, comments, imports, naming principles (path-scoped: loads when a code file is read or written)
 │   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions (path-scoped: loads when a .sql file is read or written)
 │   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer
@@ -73,7 +74,8 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-no-secrets.md        never write credentials into memory/workflow docs
 │   └── workspace-update-memory.md     Step 3: wrap-up memory update (path-scoped: loads when a module file is read or written)
 └── skills/                            project-bound skills (travel WITH .claude/)
-    ├── _shared-conventions.md         one wording for rules several skills share (not a skill)
+    ├── _shared-conventions.md         one wording for rules several skills share: gates, question pattern, handoff (not a skill)
+    ├── _status-header.md              the status line of plans, task records and interview records (not a skill)
     ├── _system-spec-template.md       the whole-system spec format: spec-discuss writes it, the generator reads it (not a skill)
     ├── wp-interview/   only an idea or a problem? interview it into a confirmed goal, then route it
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
@@ -190,7 +192,7 @@ skills-dir plugin whose name matches an installed one is not loaded.
 
 ## Notes
 
-- Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md`, `workspace-doc-writing-style.md`, `workspace-sql-house-style.md`, and `workspace-build-loop.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
+- Every rule in `.claude/rules/` without `paths:` frontmatter loads at launch, so it costs context every turn — keep them tight. `workspace-update-memory.md`, `workspace-doc-writing-style.md`, `workspace-sql-house-style.md`, `workspace-build-loop.md`, and `workspace-code-style.md` are path-scoped: each loads when Claude reads or writes a matching file. The `@import` list in `CLAUDE.md` is an index; removing a line disables nothing — to disable a rule, move it out of `.claude/rules/`.
 - `stack-architecture.md` is `@import`ed too: hard constraints stay always-on so Claude never suggests off-stack code.
 - Ten skills are user-invoked — Claude never runs them; type the command yourself: `/wp-module-save-implementation`, `/wp-task-record`, `/wp-retro`, `/wp-system-spec-discuss`, `/wp-system-overview-spec-generator`, `/wp-update-from-master`, `/wp-secret-scan`, `/wp-connstr-check`, `/wp-packageref-to-packages-config`, `/wp-obsidian-start`. Trigger tiers: `.claude/skills/README.md` → Trigger convention.
 
