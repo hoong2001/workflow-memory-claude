@@ -90,8 +90,9 @@ Decide the scope of this task's change:
   - **Flow** section (only a doc that still has one): adjust the narrative only where the path actually changed.
   - **Diagram** section: patch the Mermaid `sequenceDiagram` to match the new call order (add, remove or rename the participants and arrows that changed). A linked archify HTML is not regenerated — add `(outdated: <date>)` to its link line instead.
   - **Data flow** section (only a doc that has one): patch the `flowchart` where a table, view or file read or write changed.
+  - **States** section (only a doc that has one): patch the `stateDiagram-v2` where a status value or a transition was added, removed, or moved to another method.
   - **Called files & methods** table: add rows for new `file:method` links, fix the `#` order and the "Role" of any that changed, remove rows for calls that no longer exist.
-  - A flow.md in the old shape keeps it: add no Diagram or Data flow section it lacks unless the user asks.
+  - A flow.md in the old shape keeps it: add no Diagram, Data flow or States section it lacks unless the user asks.
   - **Shared symbols & their callers (fan-in)** table: if this change added or removed a caller of a shared symbol (`Base*`, `ConstValues/`, `Results/`, or any multi-caller method), patch that symbol's caller row. This table is the module's blast-radius map — a stale one is worse than none.
   - **Notes**: update only if a note is now wrong or a genuinely useful new one emerged.
   - Anchor every added/changed `file:method` to code you actually touched or read this task — no guessing (same rule as `/wp-module-code-trace-flow`).

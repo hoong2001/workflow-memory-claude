@@ -132,7 +132,10 @@ template spec section each one draws from is in brackets.
    here becomes a `project-memory/modules/<name>/` folder. Do NOT restate the module index (that's root
    CLAUDE.md Module Map). This is what you get sign-off on in Step 6. Draw it as the template's
    Mermaid `flowchart` (**Diagrams** in `.claude/rules/workspace-doc-writing-style.md`), starting from
-   the spec's 9.1 / 9.2 diagram when it has one.
+   the spec's 9.1 / 9.2 diagram when it has one. Then fill the template's CRUD matrix from the
+   spec's data ownership (9.2): the owning module's cell takes the letters it performs, each module
+   the spec names as a reader takes `R`; an entity whose owner the spec leaves open keeps
+   `(TBD — owner)` in its row.
 6. **External Integrations** [External Integrations] — External systems, APIs, file feeds the system talks to,
    drawn as the template's Mermaid `flowchart`.
 7. **Domain Glossary** [Domain Glossary] — Domain terms a new reader needs, each as `term — meaning`.
@@ -147,6 +150,7 @@ Step 4; the rest of System Design, Data and Acceptance Checks are reached throug
   report, not into the overview.
 - The architecture doc was **not** auto-edited; any change to it was the user's explicit decision.
 - §4 capabilities and §5 modules are consistent — every module traces back to capabilities.
+- Every row of the §5 CRUD matrix has exactly one module holding C, U or D, or says `(TBD — owner)`.
 - Every signed-off NEW module is both **scaffolded** and **registered in the Module Map**, and §5
   reflects the same set.
 - Every NEW module, and every EXISTING one this run touched, has a `Source spec:` line naming its

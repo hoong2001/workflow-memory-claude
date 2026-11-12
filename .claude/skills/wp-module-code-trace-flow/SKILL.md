@@ -91,7 +91,7 @@ How to sweep — **CodeGraph first when available (Step 1.6); the second source 
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram` and its Data flow `flowchart`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, its Data flow `flowchart` and its States `stateDiagram-v2`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
 
 ## Verification Rule
 
@@ -112,6 +112,10 @@ shape), rename its H1 to the module, keep its header block and every heading, th
   comes back. Draw only what the Called files table holds; never add a call it does not list.
 - **Data flow** — a Mermaid `flowchart` of the tables, views and files the chain reads or writes,
   each tied to the method that touches it; `None — no table access` when there are none.
+- **States** — one Mermaid `stateDiagram-v2` per status field the chain reads or sets: a state per
+  constant of that field, a transition per caller Step 3.5 found setting it, labelled
+  `Class.Method`. A transition no source read confirms is `unverified`; `None — no status field`
+  when the chain touches none.
 - **Called files & methods** — one row per `file:method` on the chain, `#` = its order on the main
   path (blank for a file off the path).
 - **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
@@ -134,7 +138,7 @@ Plan already exists → write the rows into its table (merge with what is there;
 
 ## Save Workflow
 
-1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). A refreshed doc keeps its own shape: patch a `## Flow`, Diagram or Data flow section it already has, and add none it lacks unless the user asks. No path dialog; confirm the target module with the user only if it is ambiguous.
+1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). A refreshed doc keeps its own shape: patch a `## Flow`, Diagram, Data flow or States section it already has, and add none it lacks unless the user asks. No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 4. **Offer a diagram** — `.claude/skills/_optional-diagram.md`.

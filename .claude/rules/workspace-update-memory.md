@@ -27,7 +27,9 @@ Before you walk away, its status header and `> **Resume:**` line match reality �
 
 ## 5b. Changed the system's WHAT? → JUDGE, then REMIND
 The overview (`project-memory/overview/system-overview-spec.md`) is a curated system-level WHAT, not
-a module inventory. A new user-facing capability, a new subsystem, or changed scope → REMIND the
+a module inventory. A new user-facing capability, a new subsystem, changed scope, or a module that
+now creates, reads, updates or deletes a data entity it did not before (a cell of the §5 CRUD
+matrix, when the overview has one) → REMIND the
 user in one line with your reasoning and a proposed one-line entry; the user decides, and on their
 yes you add it. A localized fix or tweak → nothing.
 

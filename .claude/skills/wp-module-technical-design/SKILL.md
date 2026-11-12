@@ -27,7 +27,7 @@ Walk the layers top-down. For each design decision follow the **Question pattern
 Cover at minimum:
 - **Routes & API surface** — the pages/endpoints this change adds or touches (URL, verb, request/response shape)
 - **Class & file map** — which files are NEW, which are MODIFIED, exact names per the architecture doc's layering and naming rules (e.g. Controller / Service / Repository / Result classes in a layered .NET stack) — a design pattern enters only with its named pain and the user's go (`wp-csharp-gof-design-patterns`), written under Decisions + why
-- **Data model** — when the change creates or alters a table, column, key or index: per table, the columns and types, keys, relationships, the one module that owns (writes) it, which methods read it, and the transaction boundary of each multi-table write — designed per `wp-database-design`, starting from the real definition in `schema/`. Every table the change touches is accounted for; no table change → `None`
+- **Data model** — when the change creates or alters a table, column, key or index: per table, the columns and types, keys, relationships, the one module that owns (writes) it, which methods read it, and the transaction boundary of each multi-table write — designed per `wp-database-design`, starting from the real definition in `schema/`. Every table the change touches is accounted for; no table change → `None`. A status field the change adds or changes → its values and the method that makes each transition
 - **Data access** — per data-layer method: the query approach (joins, grouping, parameters), which schema tables/views it touches, any performance concern — logic placed on its side of the SQL/Service line per `wp-database-design`
 - **Frontend** — view file, script/component structure, which stack components render which widget (e.g. DataTables / ECharts / Select2 / datepicker)
 - **Wiring** — whatever the project needs for the change to actually appear: menu/permission registration, route config, bundle/asset registration
@@ -141,7 +141,9 @@ Per table the change creates or alters: owner module, columns and types, keys, c
 
 <Mermaid erDiagram of the tables and their relationships — **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`>
 
-Prose after the diagram: ≤3 lines.
+<Mermaid stateDiagram-v2 per status field the change adds or changes — omitted when there is none>
+
+Prose after each diagram: ≤3 lines.
 
 ### Data access
 

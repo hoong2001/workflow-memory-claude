@@ -49,7 +49,8 @@ Open `references/query-design.md` before writing or reviewing any SQL: it holds 
 - **Direction of data.** Request → Controller → Service (rules, decides what to save) → Repository (parameterized SQL) → UnitOfWork (commits) → SQL Server. A read returns the same path in reverse as a Result object.
 - **Referential integrity lives in the Service.** With no `FOREIGN KEY`, the Service that inserts a child row first confirms its parent exists, and the Service that deletes a parent decides what happens to its children (delete them, block the delete, or keep them), both inside the one transaction. The owning Repository supplies the existence and child-count queries.
 - **One business operation, one transaction.** A write that touches more than one table commits or rolls back as a whole through the UnitOfWork; a Service never commits half of an operation.
-- **A table several modules read and none owns** → record its owner and readers in the overview §5 and `project-memory/docs/`.
+- **A table several modules read and none owns** → record its owner and readers in the overview §5 CRUD matrix and `project-memory/docs/`.
+- **Who writes this data today?** → the CRUD matrix in `project-memory/overview/system-overview-spec.md` §5, when the overview has one: the one module holding C, U or D on that row.
 
 ## Another database
 
@@ -71,7 +72,7 @@ A primary key or `UNIQUE` constraint is not assumed on every table. Per table th
 
 ## The data model of a plan
 
-`/wp-module-technical-design` writes the plan's `### Data model` from this skill. Start from the real definition in the module's `schema/` (`references/query-design.md` → **Read the real definition first**). Per table the change creates or alters, state the owner module, columns and types, keys, constraints, indexes, who reads it, and the transaction boundary of each multi-table write; draw the relationships as an `erDiagram`. The table itself ships as a real `.sql` in the owning module's `schema/`, named `<name>-<date>-<slug>.sql` when Claude generates it.
+`/wp-module-technical-design` writes the plan's `### Data model` from this skill. Start from the real definition in the module's `schema/` (`references/query-design.md` → **Read the real definition first**). Per table the change creates or alters, state the owner module, columns and types, keys, constraints, indexes, who reads it, and the transaction boundary of each multi-table write; draw the relationships as an `erDiagram`, and each status field the change adds or changes as a `stateDiagram-v2`. The table itself ships as a real `.sql` in the owning module's `schema/`, named `<name>-<date>-<slug>.sql` when Claude generates it.
 
 ## Review checklist
 

@@ -39,8 +39,15 @@
      each module here becomes a project-memory/modules/<name>/ folder.
      Procedure: /wp-system-overview-spec-generator (decompose → one sign-off → scaffold the NEW modules).
      For the module index (names + paths) see root CLAUDE.md "Module Map" — do not duplicate it here.
-     Draw the modules and the data each owns as a Mermaid `flowchart`; ≤3 lines of prose after it. -->
+     Draw how the modules depend on each other as a Mermaid `flowchart`; ≤3 lines of prose after it.
+     Then the CRUD matrix: one row per data entity, one column per module, each cell the letters of
+     what that module does to the entity — C create · R read · U update · D delete; blank = no access.
+     Exactly one module per row holds C, U or D: that module owns the entity. -->
 - (TBD)
+
+| Data entity | (module) | (module) |
+|---|---|---|
+| (TBD) | | |
 
 ## 6. External Integrations
 <!-- Draw what crosses each boundary as a Mermaid `flowchart`; ≤3 lines of prose after it. -->

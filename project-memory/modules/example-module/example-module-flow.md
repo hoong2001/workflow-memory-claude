@@ -34,6 +34,18 @@ flowchart TB
     R["(e.g.) order repository"] -->|reads| T[("(e.g.) Orders")]
 ```
 
+## States
+(One Mermaid `stateDiagram-v2` per status field the module owns: one state per value, named as its
+constant; one arrow per transition, labelled with the method that makes it. `None — no status
+field` when it has none.)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Submitted: e.g. submitOrder
+    Submitted --> [*]
+```
+
 ## Called files & methods
 (`#` = the call's order on the main path; blank for a file that sits off the path.)
 
