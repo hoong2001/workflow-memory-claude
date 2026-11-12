@@ -59,6 +59,8 @@ const OUTPUT = join(ROOT, 'project-memory', 'project-memory-status.md');
 const HEADER = /^> \*\*Status:\*\*\s*(.+?)\s*$/;
 const DETAIL = /\*\*Detail:\*\*\s*(.+?)\s*(?: · |$)/;
 const UPDATED = /\*\*Updated:\*\*\s*(\S+)/;
+// Shown in the You now cell when a plan has a Resume line that neither regex below can read.
+const RESUME_WARNING = '⚠ Resume line unparsed — write it as "You now — … · Next — …"';
 const RESUME_NEXT = /^> \*\*Resume:\*\*.*?\bNext\s*—\s*(.+?)\s*$/;
 const RESUME_YOU_NOW = /^> \*\*Resume:\*\*\s*You now\s*—\s*(.+?)\s*(?:·\s*Next\s*—.*)?$/;
 
@@ -86,7 +88,9 @@ function readHeader(file) {
   const lines = readFileSync(file, 'utf8').split(/\r?\n/).slice(0, 10);
   let next = '';
   let youNow = '';
+  let hasResume = false;
   for (const line of lines) {
+    if (line.startsWith('> **Resume:**')) hasResume = true;
     const r = RESUME_NEXT.exec(line);
     if (r) next = r[1];
     const y = RESUME_YOU_NOW.exec(line);
@@ -99,7 +103,14 @@ function readHeader(file) {
     const status = parts[0].trim();
     const detail = DETAIL.exec(m[1]);
     const updated = UPDATED.exec(m[1]);
-    return { status, detail: detail ? detail[1] : '', youNow, next, updated: updated ? updated[1] : '' };
+    return {
+      status,
+      detail: detail ? detail[1] : '',
+      youNow,
+      next,
+      resumeUnparsed: hasResume && !next && !youNow,
+      updated: updated ? updated[1] : '',
+    };
   }
   return null;
 }
@@ -120,7 +131,7 @@ function collect() {
         link: `modules/${name}/plans/${file}`,
         status: header ? header.status : '⚠ no status header',
         detail: header ? header.detail : '',
-        youNow: header ? header.youNow : '',
+        youNow: header ? (header.resumeUnparsed ? RESUME_WARNING : header.youNow) : '',
         next: header ? header.next : '',
         updated: header ? header.updated : '',
         done: header ? header.status === 'Done' : false,

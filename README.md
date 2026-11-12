@@ -50,7 +50,8 @@ project-memory/                        the project's own memory — plain folder
 ├── settings.json                      hook wiring (commit it — the credential guard and the status view live here)
 ├── hooks/
 │   ├── block-secrets.mjs              PreToolUse guard: denies credentials written into docs (Node, any OS)
-│   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured)
+│   ├── project-memory-english-check.mjs  PreToolUse: denies a write that adds Chinese characters to a project-memory .md file (references/ and tasks/ are exempt)
+│   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured); flags a Resume line it cannot read
 │   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 │   ├── sql-comment-check.mjs          PostToolUse: rejects a SQL line comment that ends a C# string literal in a Repositories/*.cs file (it would comment out what is appended after it)
 │   ├── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
