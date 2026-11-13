@@ -46,7 +46,8 @@ that restates the diagram is deleted.
 | Overview | §5 Module Composition | `flowchart` — how the modules depend on each other; a CRUD matrix (table) — which module creates, reads, updates and deletes each data entity |
 | Overview | §6 External Integrations | `flowchart` — what crosses each boundary |
 | `MODULE.md` | Public interface / dependencies | `flowchart` — callers → this module → its dependencies |
-| `<name>-flow.md` | Diagram | `sequenceDiagram` of the main path; a Data flow `flowchart` when the module reads or writes tables |
+| `<name>-flow.md` | Diagram | `sequenceDiagram` of the main path; a Data flow `flowchart` with its Database objects and Files tables when the module reads or writes a database object or a file |
+| `<name>-flow.md` | Data model | `erDiagram` — the tables the module reads and writes, keys and relationships; `None` when their structure was not read |
 | `<name>-flow.md` | States | `stateDiagram-v2` per status field — its values and the method that makes each transition; `None` when the module has no status field |
 | Plan | Touch points | `flowchart` — touched files grouped by layer; omitted at ≤2 rows |
 | Plan | Class & file map, Data access | `flowchart` layered map; `flowchart` data flow |
@@ -59,7 +60,7 @@ that restates the diagram is deleted.
 - **Every node and edge traces to a file, table or document read this task**; a link nothing
   confirms is labelled `unverified`.
 - **Tables and `file:method` lists are data** — the 3-line cap leaves them alone (impl `Files
-  touched`, plan `Decisions & open items` and `## Tasks`, flow `Called files & methods`, the
+  touched`, plan `Decisions & open items` and `## Tasks`, flow `Called files & methods`, `Database objects` and `Files`, the
   overview's CRUD matrix).
 - **Direction:** every `flowchart` is `TB` — a long chain grows taller, never smaller. `LR` only
   when the whole diagram holds ≤2 subgraphs, or is one short chain of ≤5 nodes.

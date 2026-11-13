@@ -76,6 +76,7 @@ project-memory/                        the project's own memory — plain folder
 └── skills/                            project-bound skills (travel WITH .claude/)
     ├── _shared-conventions.md         one wording for rules several skills share: gates, question pattern, handoff (not a skill)
     ├── _status-header.md              the status line of plans, task records and interview records (not a skill)
+    ├── _database-access.md            how a skill reads the database catalog: ask first, read-only, no connection string in a document (not a skill)
     ├── _system-spec-template.md       the whole-system spec format: spec-discuss writes it, the generator reads it (not a skill)
     ├── wp-interview/   only an idea or a problem? interview it into a confirmed goal, then route it
     ├── wp-system-spec-discuss/   no system spec yet? discuss one into existence (system scope only)
@@ -228,6 +229,7 @@ Skills travel with the folder; these tools do not. Install them on each develope
 | `git` on `PATH` | `wp-git` | git commands unavailable | git-scm.com installer |
 | `tf.exe` on `PATH` | `wp-tfvc` | TFVC commands unavailable | Visual Studio Team Explorer |
 | Python on `PATH` | `wp-packageref-to-packages-config` | that skill cannot run | python.org installer |
+| A SQL client on `PATH` (`sqlcmd`) | the read-only catalog read of `.claude/skills/_database-access.md` (`/wp-module-code-trace-flow` Step 3.1, `wp-database-design`) | no direct read — the user runs the catalog query and saves the output to `schema/` | Microsoft's `sqlcmd` (SQL Server command-line tools) |
 | `archify` skill (personal, optional) | the diagram offer at the end of `/wp-module-code-trace-flow` and `/wp-module-technical-design` | no offer — the Mermaid diagram in `<name>-flow.md` still renders | install it as a user-level skill; see `.claude/skills/_optional-diagram.md` |
 
 ### Obsidian memory skills (optional add-on)

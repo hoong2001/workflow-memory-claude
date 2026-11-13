@@ -23,8 +23,8 @@ A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`
 ## Entry & Boundaries
 
 - **Entry point:** a feature name or method name supplied by the user. Trace **both directions** from it.
-- **Upstream stop (input boundary):** stop at the entry point that receives input — controller / handler / UI event / message consumer.
-- **Downstream stop (output boundary):** stop at persistence, an external call, or the produced output — repository/query, HTTP/queue client, file/response write.
+- **Upstream stop (input boundary):** the page that fires the request — its view, the script call and the control that triggers it (Step 2) — or, with no page, the controller / handler / message consumer.
+- **Downstream stop (output boundary):** the database object the SQL names — table, view, stored procedure, function, synonym (Step 3) — an external call, or the produced output — HTTP/queue client, file/response write.
 - **Cross-cutting concerns** (logging, DI registration, generic utilities, framework plumbing) are *noted in passing, never expanded.* They turn a clean line into a spider web.
 
 The shape to recover is always: **input → process → output.**
@@ -67,11 +67,43 @@ Call `codegraph_explore` with the confirmed entry symbol and `projectPath` set t
 
 ### Step 2: Trace upstream to the input boundary
 
-From the entry symbol, follow callers upward until reaching a controller / handler / UI event / consumer. Record each hop as `file:method`. Stop at the input boundary.
+From the entry symbol, follow callers upward until reaching a controller / handler / consumer. Record each hop as `file:method`.
+
+A controller action a page calls is one hop short of the boundary: the page reaches it by a URL string, which CodeGraph and LSP cannot follow. `rg` the action's route (`<Controller>/<Action>`, and the URL or form helpers that name the action) across the views and scripts, and record the view, the script function that fires the call, and the control that triggers it. No hit → `unverified — no caller found in views or scripts`. Step 2 is done when the chain starts at a control on a page, at a non-page entry point, or at an `unverified` link.
 
 ### Step 3: Trace downstream to the output boundary
 
-From the entry symbol, follow callees downward through the process layers until reaching persistence / external call / output. Record each hop as `file:method`. Stop at the output boundary.
+From the entry symbol, follow callees downward through the process layers until reaching persistence / external call / output. Record each hop as `file:method`.
+
+The data-access method is one hop short of the boundary: read its SQL text and record **every** object it names —
+
+- **Kind** — table / view / stored procedure / function / synonym.
+- **Database** — the connection the method runs on (name the connection-string key, never its value), or the database prefix in the object's name.
+- **Read or write**, and the method that does it.
+
+A view, stored procedure or function is one more hop: open its definition (the module's `schema/`, else `rg` the repo for its `CREATE`) and record the objects it reads and writes the same way. SQL assembled at run time → record the objects every branch can name.
+
+A file is data too, wherever on the chain it is touched — an upload, an import, an export, a generated report. Sweep every file on the chain for file access (`System.IO` calls, streams, the upload object, and each file library the project references), and record for each file:
+
+- **Format** — Excel, DBF, CSV, text, PDF …
+- **Path source** — the config key, request field or constant the path comes from; name the source, never a machine path.
+- **Input or output**, and the method that reads or writes it.
+
+Step 3 is done when every data-access method on the chain has its objects, and every file access its file, recorded or marked `unverified`.
+
+### Step 3.1: Read the structure the repo does not hold
+
+A definition missing from the repo, or a table on the chain whose columns and keys no `schema/` file gives, lives in the database. Read it under `.claude/skills/_database-access.md` — the ask, the read-only connect and the fallbacks are there. What to read: each missing definition and, for every table on the chain, its columns, types, keys and foreign keys.
+
+Step 3.1 is done when every object of Step 3 has a definition read, or an `unverified` mark the user chose.
+
+### Step 3.2: Trace the field (the change names one)
+
+The Step 0 change names a field — a value shown, saved or calculated → follow that field hop by hop, each hop as `file:line`; a field that does not exist yet follows its nearest sibling on the same screen:
+
+table column → SQL select / alias (or the stored procedure's result column) → Result property → ViewModel or JSON property → script binding → the control or grid column that shows it.
+
+A saved value runs the same path in reverse, control → column. Step 3.2 is done when every hop from column to control is recorded or marked `unverified`. "Just map it" runs skip this step.
 
 ### Step 3.5: Sweep every shared symbol for ALL its callers (breadth)
 
@@ -91,7 +123,7 @@ How to sweep — **CodeGraph first when available (Step 1.6); the second source 
 
 ### Step 4: Assemble and deliver the two outputs
 
-Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, its Data flow `flowchart` and its States `stateDiagram-v2`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
+Combine both directions into a single input → process → output chain, draw that chain as the flow doc's Mermaid `sequenceDiagram`, its Data flow `flowchart` with the Database objects and Files tables (Step 3), its Data model `erDiagram` (Step 3.1) and its States `stateDiagram-v2`, group the touched files, fold in the Step 3.5 fan-in (as the flow doc's shared-symbols table), and write the tailored "where to cut" recommendation for the Step 0 change, every other caller of a shared cut point included. Then persist per the Save Workflow.
 
 ## Verification Rule
 
@@ -110,20 +142,24 @@ shape), rename its H1 to the module, keep its header block and every heading, th
 - **Diagram** — the main path end to end, input → process → output, as a Mermaid `sequenceDiagram`:
   one participant per class/file on the chain, one arrow per call, a dashed return where a value
   comes back. Draw only what the Called files table holds; never add a call it does not list.
-- **Data flow** — a Mermaid `flowchart` of the tables, views and files the chain reads or writes,
-  each tied to the method that touches it; `None — no table access` when there are none.
+- **Data flow** — a Mermaid `flowchart` of the database objects and files the chain reads or
+  writes, each tied to the method that touches it, then the **Database objects** table: one row
+  per object Step 3 recorded, the objects behind a view or stored procedure included, and the
+  **Files** table: one row per file Step 3 recorded. A table with no rows holds `None`.
+- **Data model** — a Mermaid `erDiagram` of the tables on the chain with their keys and
+  relationships, drawn from `schema/` or Step 3.1; `None — structure not read` when neither gave it.
 - **States** — one Mermaid `stateDiagram-v2` per status field the chain reads or sets: a state per
   constant of that field, a transition per caller Step 3.5 found setting it, labelled
   `Class.Method`. A transition no source read confirms is `unverified`; `None — no status field`
   when the chain touches none.
-- **Called files & methods** — one row per `file:method` on the chain, `#` = its order on the main
-  path (blank for a file off the path).
+- **Called files & methods** — one row per `file:method` on the chain, the view and script of
+  Step 2 included, `#` = its order on the main path (blank for a file off the path).
 - **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
   `file:method`, and its entry points.
 - **Notes** — the `Traced by:` line (Step 1.5), cross-cutting concerns (noted, not expanded) and `unverified` links, each with its reason.
 - Every `(e.g.)` placeholder is replaced or removed.
 
-**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace. It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision. List every other caller of a shared cut point as a Touch points row too, or state "no shared cut points" under the table.
+**Deliverable 2 — the where-to-cut recommendation.** This is the payoff of the trace. It goes to the change's plan (`plans/<name>-<date>-<slug>.md`) as the plan's own `## Touch points — what changes where` table — the shape `/wp-module-plan-discuss` Step 4 defines. **Fill that table; never add a second section beside it**, or the plan carries two lists of cut points that drift apart by the first revision. List every other caller of a shared cut point as a Touch points row too, or state "no shared cut points" under the table. Every hop of the Step 3.2 field path is a Touch points row, in path order, a database object the change alters included.
 
 Plan already exists → write the rows into its table (merge with what is there; a row you would duplicate is a row you update instead). No plan yet → present the same table in the conversation, so `/wp-module-plan-discuss` lands it directly:
 
@@ -138,14 +174,14 @@ Plan already exists → write the rows into its table (merge with what is there;
 
 ## Save Workflow
 
-1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). A refreshed doc keeps its own shape: patch a `## Flow`, Diagram, Data flow or States section it already has, and add none it lacks unless the user asks. No path dialog; confirm the target module with the user only if it is ambiguous.
+1. **Module identified** (the normal case): persist Deliverable 1 to `project-memory/modules/<name>/<name>-flow.md` — create it, or refresh the existing file in place (merge: update what changed, keep still-valid content). A refreshed doc keeps its own shape: patch a `## Flow`, Diagram, Data flow, Data model or States section it already has, and add none it lacks unless the user asks. No path dialog; confirm the target module with the user only if it is ambiguous.
 2. **Where-to-cut**: route Deliverable 2 to the change's plan as above.
 3. **Fallback** (traced code belongs to no module, or the codebase has not adopted this framework): ask the user for a save path — never pick one silently.
 4. **Offer a diagram** — `.claude/skills/_optional-diagram.md`.
    Options: "No HTML diagram" (recommended) · "Sequence of the main path" (source: the flow doc's Mermaid block) ·
    "Architecture of the shared-symbol fan-in" (source: the fan-in table). Link line goes under the flow doc's
    `## Diagram` heading.
-5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the flow doc path + where the where-to-cut landed; You now = review the cut and its blast radius; Next = `/wp-module-plan-discuss` when no plan exists for the change yet, otherwise `/wp-module-technical-design` or the Step 2 act loop per the plan's size.
+5. **Close with the handoff** — the **Handoff** section of `.claude/skills/_shared-conventions.md`: Done = the flow doc path, one leaf per diagram it now carries (Diagram, Data flow, Data model, States — `None` ones named as such) + where the where-to-cut landed; You now = review the cut and its blast radius; Next = `/wp-module-plan-discuss` when no plan exists for the change yet, otherwise `/wp-module-technical-design` or the Step 2 act loop per the plan's size.
 
 ## Conduct Rules
 

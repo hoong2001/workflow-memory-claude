@@ -12,6 +12,7 @@
 > Documents under `project-memory/` carry Mermaid diagrams — one per section that has structure,
 > ≤3 lines of prose after it — per **Diagrams** in `.claude/rules/workspace-doc-writing-style.md`.
 > The optional archify HTML (`.claude/skills/_optional-diagram.md`) is a separate, asked-once extra.
+> A skill that reads the live database (`code-trace-flow`, `wp-database-design`) does it under `.claude/skills/_database-access.md`.
 
 ## Trigger convention
 

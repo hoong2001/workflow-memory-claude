@@ -133,7 +133,7 @@ both sets in one round trip.
 
 Before designing anything on top of a view or table, read its ACTUAL current definition: the live
 database object (`OBJECT_DEFINITION`, `sys.columns`, `sys.indexes`) whenever a database is
-reachable. The `.sql` in the module's `schema/` folder is the fallback — it can predate a later
+reachable — read it under `.claude/skills/_database-access.md`. The `.sql` in the module's `schema/` folder is the fallback — it can predate a later
 change such as a partitioning; when the two differ, the live object wins and the difference is
 reported to the user. Never infer a schema from a sibling module or an earlier design document,
 and never rely on recall. The user hand-edits views:

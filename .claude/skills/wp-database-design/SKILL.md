@@ -22,7 +22,7 @@ Two parts. **Query design** (`references/query-design.md`) applies to every piec
 Open `references/query-design.md` before writing or reviewing any SQL: it holds the full rules and its own review checklist. Every query meets these four:
 
 - **Row-count test.** Keep work in SQL when moving it to C# would send more rows across the connection; move it to C# when it would not. Business rules and display formatting stay in the Service.
-- **Read the real definition first.** Read the actual table or view — the live object when a database is reachable, else the `.sql` in the module's `schema/` — and echo the column list back before writing the query.
+- **Read the real definition first.** Read the actual table or view — the live object when a database is reachable (read it under `.claude/skills/_database-access.md`), else the `.sql` in the module's `schema/` — and echo the column list back before writing the query.
 - **Name every column.** List the columns instead of `SELECT *`, and give every computed column an alias.
 - **Simple first.** A rewrite that costs readability needs a measured row count and run time, written into a comment (`references/query-design.md` → *Paid performance*).
 

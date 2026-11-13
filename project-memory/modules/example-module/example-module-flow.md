@@ -26,12 +26,49 @@ sequenceDiagram
 ```
 
 ## Data flow
-(A Mermaid `flowchart` of the tables, views and files the module reads and writes, and which
-method touches each. `None — no table access` when it has none.)
+(A Mermaid `flowchart` of the database objects and files the module reads and writes, and which
+method touches each; then the Database objects table, one row per object — the objects behind a
+view or stored procedure included — and the Files table, one row per file read or written. A
+table with no rows holds `None`.)
 
 ```mermaid
 flowchart TB
     R["(e.g.) order repository"] -->|reads| T[("(e.g.) Orders")]
+```
+
+### Database objects
+(Database = the connection-string key the method runs on, or the database prefix in the object's
+name — never the connection string itself.)
+
+| Object | Kind (table / view / stored procedure / function / synonym) | Database | Read / Write | Method |
+|---|---|---|---|---|
+| (e.g.) `Orders` | table | (e.g.) `MainDb` | Read | (e.g.) order repository `getById` |
+| | | | | |
+
+### Files
+(Path source = the config key, request field or constant the path comes from — never a machine
+path.)
+
+| File | Format | Path source | Input / Output | Method |
+|---|---|---|---|---|
+| (e.g.) order export | (e.g.) Excel | (e.g.) config key `ExportFolder` | Output | (e.g.) order service `exportOrders` |
+| | | | | |
+
+## Data model
+(A Mermaid `erDiagram` of the tables the module reads and writes — keys and relationships — drawn
+from the module's `schema/` or from the database catalog. `None — structure not read` when
+neither gave it.)
+
+```mermaid
+erDiagram
+    ORDERS ||--o{ ORDER_ITEMS : "(e.g.) has"
+    ORDERS {
+        int OrderId PK
+    }
+    ORDER_ITEMS {
+        int OrderItemId PK
+        int OrderId FK
+    }
 ```
 
 ## States
