@@ -23,7 +23,7 @@ A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`
 ## Entry & Boundaries
 
 - **Entry point:** a feature name or method name supplied by the user. Trace **both directions** from it.
-- **Upstream stop (input boundary):** the page that fires the request — its view, the script call and the control that triggers it (Step 2) — or, with no page, the controller / handler / message consumer.
+- **Upstream stop (input boundary):** the **trigger** — what starts the chain: a control on a screen, another system's request, a timer or schedule, a message, a file arriving, a command line (Step 2).
 - **Downstream stop (output boundary):** the database object the SQL names — table, view, stored procedure, function, synonym (Step 3) — an external call, or the produced output — HTTP/queue client, file/response write.
 - **Cross-cutting concerns** (logging, DI registration, generic utilities, framework plumbing) are *noted in passing, never expanded.* They turn a clean line into a spider web.
 
@@ -67,9 +67,19 @@ Call `codegraph_explore` with the confirmed entry symbol and `projectPath` set t
 
 ### Step 2: Trace upstream to the input boundary
 
-From the entry symbol, follow callers upward until reaching a controller / handler / consumer. Record each hop as `file:method`.
+From the entry symbol, follow callers upward to the trigger. Record each hop as `file:method`.
 
-A controller action a page calls is one hop short of the boundary: the page reaches it by a URL string, which CodeGraph and LSP cannot follow. `rg` the action's route (`<Controller>/<Action>`, and the URL or form helpers that name the action) across the views and scripts, and record the view, the script function that fires the call, and the control that triggers it. No hit → `unverified — no caller found in views or scripts`. Step 2 is done when the chain starts at a control on a page, at a non-page entry point, or at an `unverified` link.
+The last hop to a trigger is wiring, which CodeGraph and LSP rarely follow — find it by the trigger's kind:
+
+| Trigger | The chain starts at | Find the wiring |
+|---|---|---|
+| A control on a web page | the control, the script function that fires the request, the page file | `rg` the server method's route or URL across the page and script files |
+| A control on a desktop form or a server-rendered page | the control and its event handler | `rg` the handler name in the designer file or the page markup |
+| Another system's request | the endpoint method and its route | the routing config; name the caller when a document or config gives it |
+| A timer, a schedule, a service start | the job's entry method and where its schedule is set | `rg` the method name in config and startup code |
+| A message, a file arriving, a command line | the consumer, watcher or `Main`, and the queue, folder or argument it reads | config and startup code |
+
+Wiring not found → `unverified — trigger not found`, with what was searched. Step 2 is done when the chain starts at a trigger or at an `unverified` link.
 
 ### Step 3: Trace downstream to the output boundary
 
@@ -99,11 +109,11 @@ Step 3.1 is done when every object of Step 3 has a definition read, or an `unver
 
 ### Step 3.2: Trace the field (the change names one)
 
-The Step 0 change names a field — a value shown, saved or calculated → follow that field hop by hop, each hop as `file:line`; a field that does not exist yet follows its nearest sibling on the same screen:
+The Step 0 change names a field — a value shown, saved or calculated → follow that field hop by hop, each hop as `file:line`; a field that does not exist yet follows its nearest sibling in the same output:
 
-table column → SQL select / alias (or the stored procedure's result column) → Result property → ViewModel or JSON property → script binding → the control or grid column that shows it.
+table column → SQL select / alias (or the stored procedure's result column) → each class property that carries it, layer by layer → the output binding → the control, grid column, file column or response field that shows it.
 
-A saved value runs the same path in reverse, control → column. Step 3.2 is done when every hop from column to control is recorded or marked `unverified`. "Just map it" runs skip this step.
+A saved value runs the same path in reverse, input → column. Step 3.2 is done when every hop between the column and where it surfaces is recorded or marked `unverified`. "Just map it" runs skip this step.
 
 ### Step 3.5: Sweep every shared symbol for ALL its callers (breadth)
 
@@ -118,7 +128,7 @@ How to sweep — **CodeGraph first when available (Step 1.6); the second source 
 - **Fall back to `rg -n "SymbolName"`** when the LSP tool is absent, errors, or returns nothing. An empty LSP answer is never taken as "no callers": check the position, then sweep with `rg` and filter the hits by hand. LSP needs the C# language server `csharp-ls` on `PATH` (`dotnet tool install --global csharp-ls`, used by the `csharp-lsp` Claude Code plugin) and answers only for the solution in the session's working directory.
 - Say which methods backed each caller list (`CodeGraph only: 3 callers` / `CodeGraph: 3 + LSP: 1 extra = 4 callers` / `LSP: 2 callers` / `rg: 7 hits, 2 callers after filtering`).
 
-- Tag each caller by entry point (Web / Api / ServBackend) so the blast radius is legible.
+- Tag each caller by entry point — the application or project it runs in — so the blast radius is legible.
 - Many callers (say > 15)? List them but cap with a stated count ("28 callers; the 12 in `[Name].Services` shown, rest are views") — never silently truncate.
 
 ### Step 4: Assemble and deliver the two outputs
@@ -152,7 +162,7 @@ shape), rename its H1 to the module, keep its header block and every heading, th
   constant of that field, a transition per caller Step 3.5 found setting it, labelled
   `Class.Method`. A transition no source read confirms is `unverified`; `None — no status field`
   when the chain touches none.
-- **Called files & methods** — one row per `file:method` on the chain, the view and script of
+- **Called files & methods** — one row per `file:method` on the chain, the trigger's files of
   Step 2 included, `#` = its order on the main path (blank for a file off the path).
 - **Shared symbols & their callers (fan-in)** — one row per Step 3.5 symbol: every caller as
   `file:method`, and its entry points.
