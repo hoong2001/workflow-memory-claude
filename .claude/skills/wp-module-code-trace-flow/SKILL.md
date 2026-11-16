@@ -1,6 +1,6 @@
 ---
 name: wp-module-code-trace-flow
-description: Trace a feature's call chain through the codebase by reading real source, then refresh the module's <name>-flow.md handover map (flow, called files/methods) and deliver a concrete "where to cut" recommendation to the change's plan. Use when the user wants to modify an existing feature but does not know where in the code to start — "add a display field", "where do I touch for...", "trace this feature". Do NOT trigger for greenfield work with no code to trace, or trivial edits whose location is already known.
+description: Trace a feature's call chain through the codebase by reading real source, then refresh the module's <name>-flow.md handover map (flow, called files/methods) and deliver a concrete "where to cut" recommendation to the change's plan. Use when the user wants to modify an existing feature but does not know where in the code to start — "add a display field", "where do I touch for...", "trace this feature" — or hands over a page, a form or a program's Main to trace. Do NOT trigger for greenfield work with no code to trace, or trivial edits whose location is already known.
 ---
 
 # Module Code Trace Flow — Feature-to-Flow Mapping
@@ -22,7 +22,7 @@ A symbol is **shared** when it is defined in `Base*`, `ConstValues/`, `Results/`
 
 ## Entry & Boundaries
 
-- **Entry point:** a feature name or method name supplied by the user. Trace **both directions** from it.
+- **Entry point:** a feature name or method name supplied by the user, or a **trigger file** — a file that holds triggers: a web page, a web form, a desktop form, a program's `Main` (Step 1). Trace **both directions** from it.
 - **Upstream stop (input boundary):** the **trigger** — what starts the chain: a control on a screen, another system's request, a timer or schedule, a message, a file arriving, a command line (Step 2).
 - **Downstream stop (output boundary):** the database object the SQL names — table, view, stored procedure, function, synonym (Step 3) — an external call, or the produced output — HTTP/queue client, file/response write.
 - **Cross-cutting concerns** (logging, DI registration, generic utilities, framework plumbing) are *noted in passing, never expanded.* They turn a clean line into a spider web.
@@ -36,13 +36,25 @@ The shape to recover is always: **input → process → output.**
 Before touching the codebase, ask the user **what change they intend** — this is what makes the final "where to cut" section useful instead of a generic file dump.
 
 - Ask it through the **Question pattern** (`.claude/skills/_shared-conventions.md`): options such as add a display field · change a behavior · fix a bug in this flow · extend an output, with the one the user's words point to marked recommended.
-- Also confirm the **entry symbol** to trace from (the feature/method name) if not already clear.
+- Also confirm the **entry symbol** to trace from (the feature/method name, or the trigger file) if not already clear.
 - Ask for an **optional scope hint** — a starting file, module, or directory. If given, it narrows the search; if not, proceed with a codebase-wide grep. Never demand it: not knowing where to look is the exact problem this skill solves.
 - If the user says "just map it, no specific change yet" — accept it, skip the cut-recommendation tailoring, and deliver only the flow doc.
 
 ### Step 1: Locate the entry symbol in source
 
 Grep for the supplied method/feature name — **within the scope hint if one was given**, otherwise codebase-wide. Confirm the real definition before tracing. If multiple matches survive (common with generic names like `Save` / `GetData` / `Process`), ask which one through the Question pattern, one option per match with its path.
+
+The entry is a trigger file → list **every** trigger it holds before tracing, each as `file:line`:
+
+| Trigger file | Its triggers | Read them from |
+|---|---|---|
+| A web page | each control whose script fires a request, and the page's own load request | the page's markup and every script file it loads |
+| A web form or a desktop form | each control event wired to a handler, and the form's lifecycle handlers (load, init, close) | the markup or designer file, and the code-behind |
+| A program's `Main` | each command, job or worker it dispatches by argument or starts | `Main` and the startup code it calls |
+
+One trigger → its handler is the entry symbol. Several → show the full list, then ask which through the Question pattern, "all of them" among the options; each trigger picked is one entry symbol, traced as its own chain. A trigger already is the upstream boundary, so its Step 2 records the wiring alone.
+
+Step 1 is done when every entry symbol is confirmed against its definition in source.
 
 ### Step 1.5: Decide who traces
 
