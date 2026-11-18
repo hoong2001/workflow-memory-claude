@@ -6,7 +6,7 @@ frontend plugin), verify its signatures, option names, events, and CSS classes, 
 1. **Match existing usage** — grep the codebase for how the library is already called and
    follow that pattern (it also encodes past fixes).
 2. **No existing usage, or any doubt** → read the docs before coding: context7
-   (`mcp__context7__*`) when connected, else the official docs on the web. Neither reachable →
+   (plugin or MCP server, whichever is connected), else the official docs on the web. Neither reachable →
    say exactly what is unverified.
 3. **Version-pin the lookup** — docs must match the version pinned in
    `project-memory/stack-architecture.md` §1; when they are newer, confirm the feature exists in

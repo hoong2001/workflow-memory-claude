@@ -65,7 +65,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (think first, readability first, KISS / DRY, surgical changes, done-criterion)
 │   ├── workspace-code-style.md        plain syntax, code shape, comments, imports, naming principles (path-scoped: loads when a code file is read or written)
-│   ├── workspace-library-docs-first.md  look up library docs (context7 MCP) before use — never guess an API
+│   ├── workspace-library-docs-first.md  look up library docs (context7) before use — never guess an API
 │   ├── workspace-sql-house-style.md   schema / seed .sql conventions (path-scoped: loads when a .sql file is read or written)
 │   ├── workspace-plan-impl.md        document rules: one task one doc, sweep docs after a convention change, style pointer
 │   ├── workspace-doc-writing-style.md  how documents are written (path-scoped: loads when a matching file is read or written)
