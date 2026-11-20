@@ -13,11 +13,14 @@ this skill adds:
 - Every value enters the SQL as a `DynamicParameters` parameter — a LIKE keyword included
   (`LIKE '%' + @Keyword + '%'`). Concatenating a value into the SQL string is the one hard ban
   (injection).
+- The SQL text is one literal template with `{UPPER_SNAKE}` tokens, filled only by `sql.Replace` (**Dynamic Query
+  Pattern** below). A table or view name, an optional condition, `ORDER BY` and paging each get a token; `+`, `Append`
+  and `string.Format` assemble no SQL text.
 - SQL Server only — `SqlConnection` is hardcoded; no multi-database abstraction
 
 **Done when** every Repository method this task writes or changes passes each value through
 `DynamicParameters` with an explicit `DbType` (`AnsiString` for `varchar`), passes `_transaction`,
-maps its rows to a Result class, and every multi-step mutation runs in one UnitOfWork with
+keeps its SQL text one `{UPPER_SNAKE}` template filled by `sql.Replace`, maps its rows to a Result class, and every multi-step mutation runs in one UnitOfWork with
 `Commit()` / `Rollback()`.
 
 > This skill owns the C# around the query. What the query does, and how readable it is, belongs
@@ -231,8 +234,19 @@ public class ProductRepository : BaseRepository
 
 ## Dynamic Query Pattern
 
-Use string replace to build conditional WHERE clauses.
-Define the full SQL template with placeholder tokens, then replace only when values are present.
+Define the whole SQL as one literal template with `{UPPER_SNAKE}` tokens, then fill every token with `sql.Replace`.
+
+- **One token per line**, so a `--` comment never sits in front of a filled token. An unused token is filled with `string.Empty`.
+- **Token names are `UPPER_SNAKE_CASE`** (`{KEYWORD}`, `{INVENTORY_TABLE}`, `{ORDER_BY}`). A query that already spells its
+  tokens another way (`{PascalCase}`, `#Token`) keeps that spelling while it is edited; one query holds one spelling.
+- **A token holds** a table or view name, an optional condition, an `ORDER BY` or a paging clause. An identifier token is
+  filled from an enum, from a named constant, or after a whitelist check, never from request text.
+- **A helper returns the text for a token** and adds that condition's parameter in the same method; the caller writes
+  `sql = sql.Replace("{KEYWORD}", BuildKeywordFilter(p, criteria))`. A fragment that itself varies is a small template
+  filled the same way.
+- **A literal that carries meaning** (status code, warehouse code) is a named constant filled into a token.
+- **Extending a legacy `+` / `Append` query:** the added line carries `// legacy-sql`, which `sql-concat-check.mjs` lets
+  through; a new query is a template.
 
 ```csharp
 // Results/ProductSearchResult.cs — search criteria (a Result class; no separate input layer exists)

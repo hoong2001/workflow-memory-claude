@@ -49,6 +49,15 @@
             ],
             "timeout": 15,
             "statusMessage": "Checking document language..."
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/sql-concat-check.mjs"
+            ],
+            "timeout": 15,
+            "statusMessage": "Checking SQL text assembly..."
           }
         ]
       }

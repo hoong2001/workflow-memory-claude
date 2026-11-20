@@ -46,6 +46,11 @@ Write the form a debugger steps through line by line:
   than two hops from its public method, a name that needs its definition to be understood, a form
   *Plain syntax* replaces.
 
+## SQL in C#
+
+Repository code that holds SQL → load `wp-repository-unitofwork-pattern` before the first line: the SQL text is one
+`{UPPER_SNAKE}` template filled by `sql.Replace`.
+
 ## Comments and imports (every language)
 
 - **Comments.** A comment you write or rewrite opens with today's date as `yyyy.MM.dd`, then gives

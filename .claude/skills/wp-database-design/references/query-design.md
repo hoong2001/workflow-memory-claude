@@ -155,7 +155,7 @@ The ban is absolute because the failure is silent: add a column to the table and
 query returns, and nothing errors. The column list is also the only place a reader learns
 which columns a Result class actually needs.
 
-This includes the `{PLACEHOLDER}` templates of the dynamic query pattern — write the column
+This includes the `{UPPER_SNAKE}` token templates of the dynamic query pattern — write the column
 list into the template, not `*`.
 
 ### One query, one purpose

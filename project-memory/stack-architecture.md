@@ -210,6 +210,7 @@ Dapper query results are wrapped in Result classes. There are no separate DTO or
 **Required:**
 - ✔ Repository + Unit of Work pattern
 - ✔ Parameterized SQL queries (prevent SQL injection)
+- ✔ Dynamic SQL is one `{UPPER_SNAKE}` template filled by `sql.Replace` — the **`wp-repository-unitofwork-pattern`** skill, Dynamic Query Pattern
 - ✔ Explicit transaction control via UnitOfWork
 - ✔ Dapper (micro-ORM) as the sole data-access library — raw, parameterized SQL only
 - ✔ One connection string per system — its own database. Repository SQL never names another

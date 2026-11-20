@@ -54,6 +54,7 @@ project-memory/                        the project's own memory — plain folder
 │   ├── project-memory-status.mjs      PostToolUse: rebuilds project-memory/project-memory-status.md on each plan write (+ vault board if configured); flags a Resume line it cannot read
 │   ├── connstr-check.mjs              PostToolUse: rejects a Web.config / App.config connectionString off the house format
 │   ├── sql-comment-check.mjs          PostToolUse: rejects a SQL line comment that ends a C# string literal in a Repositories/*.cs file (it would comment out what is appended after it)
+│   ├── sql-concat-check.mjs           PreToolUse: denies an added line that assembles SQL text with +, Append or string.Format in a Repositories/*.cs file (SQL text is one {UPPER_SNAKE} template filled by sql.Replace; `// legacy-sql` lets an extension of an old query through)
 │   ├── template-update-check.mjs      SessionStart: says when the master template has a newer version — run /wp-update-from-master
 │   └── idea-interview-hint.mjs        SessionStart: one line pointing at /wp-interview, every session
 ├── scripts/
