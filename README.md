@@ -62,7 +62,7 @@ project-memory/                        the project's own memory — plain folder
 │   └── sync-from-master.mjs           /wp-update-from-master's report, copy and alignment scan, run from the fresh master clone
 ├── rules/                             behavioral rules (each loads at launch unless path-scoped)
 │   ├── workspace-workflow.md          the 3-step development workflow
-│   ├── workspace-build-loop.md        Step 2 build + decision check (path-scoped: loads when a code file is read or written)
+│   ├── workspace-build-loop.md        Step 2 build + decision check + flow check (path-scoped: loads when a code file is read or written)
 │   ├── workspace-tech-mentor.md       engineering judgment: flag risks, root cause, English code
 │   ├── workspace-reduce-coding-mistake.md  guardrails against common LLM mistakes (think first, readability first, KISS / DRY, surgical changes, done-criterion)
 │   ├── workspace-code-style.md        plain syntax, code shape, comments, imports, naming principles (path-scoped: loads when a code file is read or written)
@@ -161,7 +161,7 @@ it is the failure this layout exists to prevent.
 
 ## Daily workflow (3 steps)
 
-Defined in `.claude/rules/workspace-workflow.md` (always-on; the build and decision check in `.claude/rules/workspace-build-loop.md`, path-scoped to code files):
+Defined in `.claude/rules/workspace-workflow.md` (always-on; the build, decision check and flow check in `.claude/rules/workspace-build-loop.md`, path-scoped to code files):
 
 1. **Requirement in** — bring the requirement (only an idea or a problem so far → `/wp-interview` turns it into a confirmed goal first / a whole-system spec in the format of `.claude/skills/_system-spec-template.md`, none yet → `/wp-system-spec-discuss`, then `/wp-system-overview-spec-generator` bootstraps a new system or expands a live one / stated directly, optionally naming the module + files / or any goal, clear or fuzzy, via `/wp-module-plan-discuss` — its gap detection scales the discussion depth). Claude extracts what + why and identifies the target module + state.
 2. **Core loop** — branch by module state (A existing — open BOTH `MODULE.md` and `<name>-flow.md`, then grep the plan headers in `plans/` for work left unfinished / B legacy / C new / D one-off task, where the system keeps nothing afterwards → `/wp-task-record`, and Step 3 is skipped) → code → build → test (Claude builds, handles what the build hits when the fix stays inside the task's own code, stops and asks for the rest, and reports both; before the test it checks the changed files against the module's recorded decisions, ruled-out options and Local conventions and stops on a conflict; the user runs the test, Claude fixes from the reported results) → save on every change, the plan's status header included.

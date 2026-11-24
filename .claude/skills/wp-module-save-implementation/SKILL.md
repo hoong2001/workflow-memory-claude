@@ -84,6 +84,8 @@ Open `project-memory/modules/<name>/<name>-flow.md`. Remember what it is: a **ha
 
 Decide the scope of this task's change:
 
+- **Already re-traced this task** (the build-loop flow check ran `/wp-module-code-trace-flow`) → verify its `Called files & methods` table against the files touched, report `flow.md refreshed by trace`, and stop this step.
+
 - **Purely internal change** — bug fix inside an existing method, wording, logic tweak with no new calls and no change to the flow path. → flow.md needs **no** change. State this explicitly in the report ("flow.md unchanged — internal-only change") and stop this step.
 
 - **Structural change** — a new file/method entered the call chain, an existing one was removed or repurposed, or the main flow path shifted. → Patch only the affected parts of flow.md:

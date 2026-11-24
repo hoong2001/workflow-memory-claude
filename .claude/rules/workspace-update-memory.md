@@ -20,7 +20,7 @@ Before you walk away, its status header and `> **Resume:**` line match reality �
 
 ## 4. Update the index
 - New module → add a row to the module map in root `CLAUDE.md` (**path + one-line description**).
-- Code changed → `<name>-flow.md` is already lightweight-synced by `/wp-module-save-implementation` (item 1). Only rerun the full `/wp-module-code-trace-flow` if the change was a large structural rewrite the lightweight sync flagged as needing a full re-trace.
+- Code changed → `<name>-flow.md` is already lightweight-synced by `/wp-module-save-implementation` (item 1). Only rerun the full `/wp-module-code-trace-flow` if the change was a large structural rewrite the lightweight sync flagged as needing a full re-trace; the build-loop flow check may already have run it.
 - Generic behavioral rule changed → update `.claude/rules/`.
 
 ## 5. Architecture changed → update `project-memory/stack-architecture.md`

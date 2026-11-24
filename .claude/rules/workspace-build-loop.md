@@ -42,7 +42,7 @@ fails → stop and ask.
 - **Worth knowing** — warnings left alone and why (pre-existing noise in untouched code is skipped,
   repeats are grouped), a skipped project, anything else odd in the output.
 
-A green build with nothing to note is one line: "build green". Then check decisions, then hand over for test.
+A green build with nothing to note is one line: "build green". Then check decisions and the flow, then hand over for test.
 
 The build compiles C# only: Razor views (`.cshtml`) are not compiled unless the Web project sets
 `MvcBuildViews`, so a green build still leaves view errors for the test to catch.
@@ -57,3 +57,12 @@ quote the record or convention (file, date, the line), and ask through `AskUserQ
 or override it. A Local convention changes only on the user's answer. An override is recorded in the next impl record as "Overrides impl/<file>.md —
 <why>". Report the outcome in the handoff's Done as one leaf: `decision check: no conflict (N
 records read)`, or the conflict and how it was settled.
+
+## Flow check — before every test handoff
+
+`<name>-flow.md` maps how the module works now, so it is stale the moment the call chain changes.
+Compare each file this chunk changed with the flow.md `Called files & methods` table: a file or
+method this chunk added, removed, renamed or moved to another caller → flow.md is stale. Put the
+refresh in the handoff's **👉 You now**: type `/wp-module-code-trace-flow` before the test. A body
+edit with no new call leaves flow.md current. Report one Done leaf: `flow check: current`, or
+`flow check: stale — <file:method>`.

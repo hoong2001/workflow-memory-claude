@@ -52,7 +52,7 @@ requirement ──────────────┤                       
 **Only an idea or a problem, no requirement yet** — `interview` runs first and ends in a confirmed goal,
 routed to one of the entry points above or to a one-off task.
 
-> The build, the Decision check and the manual test need no skill — `.claude/rules/workspace-workflow.md` Step 2, with the build and the Decision check in `.claude/rules/workspace-build-loop.md` (path-scoped to code files).
+> The build, the Decision check, the Flow check and the manual test need no skill — `.claude/rules/workspace-workflow.md` Step 2, with the build, the Decision check and the Flow check in `.claude/rules/workspace-build-loop.md` (path-scoped to code files).
 >
 > Hooks need no skill either — `.claude/hooks/`, wired in `.claude/settings.json`; each file's header owns its behaviour.
 

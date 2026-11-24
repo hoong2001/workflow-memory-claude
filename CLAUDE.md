@@ -48,7 +48,7 @@
 - Skills map (order · when to use) → `.claude/skills/README.md`
 - System overview & spec (functional WHAT) → `project-memory/overview/system-overview-spec.md`
 - Stack / architecture (SSOT, technical HOW) → `project-memory/stack-architecture.md`
-- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up), `workspace-doc-writing-style.md`, `workspace-sql-house-style.md` (`.sql` files), `workspace-build-loop.md` (code files: build + decision check), and `workspace-code-style.md` (code files: plain syntax, code shape, comments, imports, naming), which load when a matching file is read or written
+- Behavioral rules → `.claude/rules/` — each loads at launch, except the path-scoped `workspace-update-memory.md` (Step 3 wrap-up), `workspace-doc-writing-style.md`, `workspace-sql-house-style.md` (`.sql` files), `workspace-build-loop.md` (code files: build + decision check + flow check), and `workspace-code-style.md` (code files: plain syntax, code shape, comments, imports, naming), which load when a matching file is read or written
 - Template sync whitelist (master → project updates) → `SYNC-MANIFEST.md`
 - Hooks (credential guard, document-language check, connection-string check, SQL-comment check, SQL-concatenation check, plan-status rebuild, template-update check, idea-interview hint) → `.claude/hooks/`, wired in `.claude/settings.json`; each file's header says what it does
 

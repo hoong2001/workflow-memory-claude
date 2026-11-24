@@ -35,7 +35,7 @@ Branch first, then act, saving as you go:
 
 | Branch | Module state | First action |
 |---|---|---|
-| **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), then check for unfinished work (below) before starting anything new |
+| **A Existing module** | already has flow / plans / impl | read BOTH `MODULE.md` (rules first) and `<name>-flow.md` (then the map), grep each `file:method` of its `Called files & methods` table in the code — a missing one means the map is stale: run `/wp-module-code-trace-flow` first — then check for unfinished work (below) before starting anything new |
 | **B Legacy code** | code exists, no docs | ask me for an entry point → `/wp-module-code-trace-flow` to extract the flow |
 | **C Brand-new module** | folder doesn't exist yet | scaffold `project-memory/modules/<name>/` (copy the example-module template per its `MODULE.md` header note) → `/wp-module-plan-discuss` for requirements + plan (lands in `plans/`). *(For a brand-new system, this branch is run once per module derived in Step 1 bootstrap.)* |
 | **D One-off task** | no module involved — the system keeps nothing afterwards | remind the user to type `/wp-task-record` — at the start it clarifies the task, does it and records it; for work already done, when it finishes or stops on a blocker → one isolated folder `project-memory/tasks/<date>-<slug>/` holding `TASK.md` + its `.sql`, output and material. Skip Step 3 entirely; that folder IS the record. |
@@ -66,8 +66,8 @@ below, in the main session.
    Do this as you go, not at the end: a session that stops mid-feature must leave the plan
    saying where it stopped, because that line is all the next session gets for free.
    **Build is Claude's; test is the user's.** After each coding chunk Claude builds with
-   `node .claude/scripts/build-solution.mjs`, runs the decision check, then hands over for test.
-   What to handle, what to stop on, the build report and the decision check:
+   `node .claude/scripts/build-solution.mjs`, runs the decision check and the flow check, then hands over for test.
+   What to handle, what to stop on, the build report, the decision check and the flow check:
    `.claude/rules/workspace-build-loop.md` — path-scoped to code files; read it before the first
    build whenever it is not yet in context.
    Wait for the test results the user reports back, and fix from there.
