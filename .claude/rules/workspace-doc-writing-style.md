@@ -38,7 +38,7 @@ fragments, so essay tuning (rhythm variation, list-length limits, prose scoring)
 ## Diagrams
 
 A section that has structure — a path, a set of relations, a movement of data — carries one Mermaid
-diagram, and the prose after it takes ≤3 lines: the reason, a caveat, an `unverified` link. Prose
+diagram (plus a decision flow where a rule branches — see **Decision flow** below), and the prose after it takes ≤3 lines: the reason, a caveat, an `unverified` link. Prose
 that restates the diagram is deleted.
 
 | Document | Section | Diagram |
@@ -62,6 +62,12 @@ that restates the diagram is deleted.
 - **Tables and `file:method` lists are data** — the 3-line cap leaves them alone (impl `Files
   touched`, plan `Decisions & open items` and `## Tasks`, flow `Called files & methods`, `Database objects` and `Files`, the
   overview's CRUD matrix).
+- **Decision flow:** a rule that branches (validation, routing, approval, status choice) may add one
+  extra `flowchart` of decision nodes — in a `<name>-flow.md` Diagram section, a plan's Touch points
+  or Decisions & open items, or the overview §5 — beside the section's table diagram. A decision is a
+  diamond `{"question?"}`; each outgoing edge is labelled with the answer (`Yes` / `No` or the value);
+  every path ends at a result node. One branching rule per diagram; each diamond traces to the
+  `file:method` or document that holds the condition. Prose after it stays ≤3 lines.
 - **Direction:** every `flowchart` is `TB` — a long chain grows taller, never smaller. `LR` only
   when the whole diagram holds ≤2 subgraphs, or is one short chain of ≤5 nodes.
 - **Syntax:** `flowchart`, `sequenceDiagram`, `classDiagram`, `erDiagram` and `stateDiagram-v2` only; ≤12 nodes per diagram, more
