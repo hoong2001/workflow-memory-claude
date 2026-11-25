@@ -16,7 +16,7 @@
 
 ## Trigger convention
 
-- **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `packageref-to-packages-config`, `obsidian-start`.
+- **User-invoked** (`disable-model-invocation: true`) — only you can run these: type `/wp-<name>`. The agent never fires them; where a rule names one, it tells you to run it, and the wrap-up reminders name the full command to type (`/wp-module-save-implementation`, `/wp-retro`, `/wp-task-record`). `module-save-implementation`, `task-record`, `retro`, `system-spec-discuss`, `system-overview-spec-generator`, `update-from-master`, `secret-scan`, `connstr-check`, `nlog-check`, `packageref-to-packages-config`, `obsidian-start`.
 - **User-triggered** (model-invocable, never auto-run) — you type `/skill-name`, or ask in words and the agent fires it. Everything in the build chain, `wp-interview`, and `wp-obsidian-progress-log` — the Obsidian skill is never reminded, only invoked.
 - **Auto-triggered** — the agent reaches for these on its own when the work matches. The coding-standard skills (`repository-unitofwork-pattern`, `database-design`, `csharp-gof-design-patterns`, `aspnet-mvc-frontend-standards`) the steering-file writing standard (`writing-for-agents`), `wp-tfvc` in a TFVC workspace, and `wp-git` — which only proposes; every tier 2 and tier 3 operation waits for your answer.
 
@@ -75,6 +75,7 @@ routed to one of the entry points above or to a one-off task.
 - **The session-start notice says the master template is newer** → type `/wp-update-from-master` (syncs by `SYNC-MANIFEST.md`, never a bulk copy).
 - **Worried a password or API key made it into the docs** → type `/wp-secret-scan`.
 - **Config files edited outside Claude, or connection strings all over the place** → type `/wp-connstr-check`.
+- **NLog.config files that drifted from the house template** → type `/wp-nlog-check`.
 - **Commit, push, branch, stash or undo in git — or a new folder with no version control** → `wp-git` (it asks before anything outward or destructive).
 - **Project is in TFVC, not git — check in, get latest, shelve, merge (which branch → which)** → `wp-tfvc`.
 - **A .NET Framework project uses `PackageReference` and must switch to `packages.config`** → `wp-packageref-to-packages-config`.
