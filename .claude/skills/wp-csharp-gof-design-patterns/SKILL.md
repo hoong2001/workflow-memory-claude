@@ -100,7 +100,7 @@ The two travel together. Strategy splits the branches; the Factory is the one pl
 which branch to `new`.
 
 **Trigger:** the same `switch` or if-chain on a type code appears in a second method, or one
-branch grows past about 15 lines of its own rules. A single short `switch` in one method stays a
+branch grows past about 50 lines of its own rules. A single short `switch` in one method stays a
 `switch`.
 
 ```csharp

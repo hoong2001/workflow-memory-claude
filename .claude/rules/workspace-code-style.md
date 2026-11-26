@@ -17,8 +17,11 @@ first* settles any pull between two rules here.
 Write the form a debugger steps through line by line:
 
 - a nested ternary → `if` / `else` (a single ternary stays);
-- a LINQ or array-method chain (`.Where().Select()`, `.map().filter()`) of more than 3 calls →
-  named intermediate variables, one step each;
+- every `if` / `else if` / `else`, `for` / `foreach` / `while`, `using` and `lock` body in C# and JS
+  sits inside `{ }`, even a one-line body (`case` sections and lambda bodies keep their own form);
+- a LINQ or array-method chain (`.Where().Select().OrderBy()`, `.map().filter().sort()`) of more than 2 calls →
+  at most 2 calls per statement: store the result in a named variable (`var`), then continue the
+  next calls from that variable;
 - `?.` / `??` chained more than once → an explicit `null` check;
 - an expression-bodied method (`=>`), a tuple return, pattern matching (`is` / `switch` on type) →
   a block body, a named class, an `as` cast plus a `null` check.
@@ -29,7 +32,7 @@ Write the form a debugger steps through line by line:
   and uses them in order, so the reader follows one method, not a chain. A method takes at most 6
   parameters; a seventh means grouping them into one object.
 - **Extract a method when it earns a name:** two or more callers, a guard (validation, whitelist,
-  parameter or IN-list builder), or a named step of about 15 lines or more. A single-caller step
+  parameter or IN-list builder), or a named step of about 50 lines or more. A single-caller step
   below that bar stays inline, under a one-line comment.
 - **Two hops at most.** From a public method, every value it uses is found within two levels of
   private calls.
